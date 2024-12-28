@@ -1,0 +1,5 @@
+## DATABASE 생성확인
+DROP DATABASE IF EXISTS onestack;
+CREATE DATABASE IF NOT EXISTS onestack;
+USE onestack;
+
