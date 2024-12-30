@@ -1,53 +1,251 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
-<th:block layout:fragment="content">
-	<!-- Hero Section -->
-	    <header class="hero">
-	        <div class="container">
-	            <h1 class="display-4">Find Your Service</h1>
-	            <p class="lead">Connecting you with the best local professionals.</p>
-	            <a href="#services" class="btn btn-light btn-lg">Get Started</a>
-	        </div>
-	    </header>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/main_layout}">
 
-	    <!-- Services Section -->
-	    <section id="services" class="container my-5">
-	        <h2 class="text-center mb-4">Popular Services</h2>
-	        <div class="row">
-	            <!-- Service Card 1 -->
-	            <div class="col-md-4 service-card">
-	                <div class="card">
-	                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="Service 1">
-	                    <div class="card-body">
-	                        <h5 class="card-title">Service 1</h5>
-	                        <p class="card-text">Description of Service 1.</p>
-	                        <a href="#" class="btn btn-primary">Learn More</a>
-	                    </div>
-	                </div>
-	            </div>
-	            <!-- Service Card 2 -->
-	            <div class="col-md-4 service-card">
-	                <div class="card">
-	                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="Service 2">
-	                    <div class="card-body">
-	                        <h5 class="card-title">Service 2</h5>
-	                        <p class="card-text">Description of Service 2.</p>
-	                        <a href="#" class="btn btn-primary">Learn More</a>
-	                    </div>
-	                </div>
-	            </div>
-	            <!-- Service Card 3 -->
-	            <div class="col-md-4 service-card">
-	                <div class="card">
-	                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="Service 3">
-	                    <div class="card-body">
-	                        <h5 class="card-title">Service 3</h5>
-	                        <p class="card-text">Description of Service 3.</p>
-	                        <a href="#" class="btn btn-primary">Learn More</a>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	    </section>
-</th:block>
+<head>
+    <link rel="stylesheet" href="css/main_style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .category-box {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .category-box:hover .overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .card {
+            margin: 10px; /* Add margin for spacing between cards */
+        }
+
+        /* Change arrow color to gray */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: gray; /* Set background color to gray */
+            border-radius: 50%; /* Optional: round the icon background */
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            filter: invert(1); /* Invert colors for visibility */
+        }
+    </style>
+</head>
+
+<body>
+
+    <th:block layout:fragment="content">
+        <!-- Hero Section -->
+        <header class="hero d-flex justify-content-center align-items-center" style="height: 65vh;">
+            <div class="search-container text-center">
+                <h1 class="m-5">코딩을 몰라도<br>디자인을 몰라도<br>합리적인 가격에 시작하세요.</h1>
+                <div class="d-flex justify-content-center align-items-center">
+                    <input type="text" class="search-bar" placeholder="검색어를 입력하세요"
+                        style="border: 2px solid #0d6efd; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
+                    <button class="search-button"
+                        style="margin-left: -50px; border: none; background: none; cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-search" viewBox="0 0 16 16">
+                            <path
+                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.442.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Category Section -->
+        <section class="categories py-5">
+            <div class="container">
+                <h3 class="mb-4">가장 인기있는 카테고리</h3>
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="category-box">
+                            <img src="https://via.placeholder.com/300x200" alt="Category Image"
+                                class="img-fluid rounded">
+                            <div class="overlay text-white d-flex flex-column justify-content-end p-3">
+                                <small>당신의 스토리를 담아드립니다.</small>
+                                <h5 class="mt-2">영상/사진</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="category-box">
+                            <img src="https://via.placeholder.com/300x200" alt="Category Image"
+                                class="img-fluid rounded">
+                            <div class="overlay text-white d-flex flex-column justify-content-end p-3">
+                                <small>당신의 브랜드를 구축하세요</small>
+                                <h5 class="mt-2">디자인</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="category-box">
+                            <img src="https://via.placeholder.com/300x200" alt="Category Image"
+                                class="img-fluid rounded">
+                            <div class="overlay text-white d-flex flex-column justify-content-end p-3">
+                                <small>기획에서 모든 번역</small>
+                                <h5 class="mt-2">문서/번역</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="category-box">
+                            <img src="https://via.placeholder.com/300x200" alt="Category Image"
+                                class="img-fluid rounded">
+                            <div class="overlay text-white d-flex flex-column justify-content-end p-3">
+                                <small>당신의 아이디어를 현실로</small>
+                                <h5 class="mt-2">IT 개발</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Review Section -->
+        <section class="message-cards py-5">
+            <div class="container py-5">
+                <h3 class="mb-4">베스트 리뷰</h3>
+                <div id="reviewCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리a | 전문가 닉네임</h5>
+                                            <p class="card-text">이번에 알려준 강사님은 너무 친절하셔서 배우는 내내 너무 감사했습니다.</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리b | 전문가 닉네임</h5>
+                                            <p class="card-text">이번에 알려준 강사님은 너무 친절하셔서 배우는 내내 너무 감사했습니다.</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리c | 전문가 닉네임</h5>
+                                            <p class="card-text">이번에 알려준 강사님은 너무 친절하셔서 배우는 내내 너무 감사했습니다.</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리1 | 전문가 닉네임</h5>
+                                            <p class="card-text">정말 유익한 시간이었고, 많은 것을 배웠습니다!</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리2 | 전문가 닉네임</h5>
+                                            <p class="card-text">항상 친절하고 자세히 설명해 주셔서 감사합니다.</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">카테고리3 | 전문가 닉네임</h5>
+                                            <p class="card-text">항상 친절하고 자세히 설명해 주셔서 감사합니다.</p>
+                                            <p class="card-text text-muted">작성자 닉네임</p>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-warning">★★★★★</span>
+                                                <span><i class="bi bi-hand-thumbs-up"></i> 0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#reviewCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">이전</span>
+                    </a>
+                    <a class="carousel-control-next" href="#reviewCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">다음</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // JavaScript to ensure sliding one card at a time
+        $('.carousel-control-next').click(function() {
+            var activeItem = $('#reviewCarousel .carousel-item.active');
+            var nextItem = activeItem.next('.carousel-item');
+            if (nextItem.length === 0) {
+                nextItem = $('#reviewCarousel .carousel-item').first();
+            }
+            activeItem.removeClass('active');
+            nextItem.addClass('active');
+        });
+
+        $('.carousel-control-prev').click(function() {
+            var activeItem = $('#reviewCarousel .carousel-item.active');
+            var prevItem = activeItem.prev('.carousel-item');
+            if (prevItem.length === 0) {
+                prevItem = $('#reviewCarousel .carousel-item').last();
+            }
+            activeItem.removeClass('active');
+            prevItem.addClass('active');
+        });
+    </script>
+</body>
+
 </html>
