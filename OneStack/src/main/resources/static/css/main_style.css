@@ -1,11 +1,14 @@
 .carousel-item {
-            display: flex; /* 가로로 정렬 */
-        }
+	display: flex;
+	/* 가로로 정렬 */
+}
 
-        .card {
-            flex: 1; /* 카드의 크기를 같게 만듭니다 */
-            margin: 5px; /* 카드 간의 여백 */
-        }
+.card {
+	flex: 1;
+	/* 카드의 크기를 같게 만듭니다 */
+	margin: 5px;
+	/* 카드 간의 여백 */
+}
 
 .category-box {
 	overflow: hidden;
@@ -32,6 +35,14 @@
 	background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
 	opacity: 0;
 	transition: opacity 0.3s ease;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	transition: background-color 0.3s ease;
 }
 
 .category-box:hover .overlay {
