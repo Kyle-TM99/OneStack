@@ -16,4 +16,8 @@ public class MainController {
 		return "views/mainPage";
 	}
 	
+	@GetMapping("/loginForm")
+	public String loginForm(Model model) {
+		return "member/loginForm";
+	}
 }
