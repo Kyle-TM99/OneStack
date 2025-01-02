@@ -1,6 +1,12 @@
+:root {
+  --primary-color: #215EA3; 
+  --hover-color: #ffffff; 
+  --hover-text-color: #215EA3; 
+}
+
 .custom-button {
   background-color: var(--primary-color);
-  color: black;
+  color: white;
   border: 2px solid var(--primary-color);
   padding: 10px 20px;
   border-radius: 20px;
@@ -14,6 +20,7 @@
   color: var(--hover-text-color);
   border-color: var(--hover-text-color);
 }
+
 
 
 .carousel-item {
