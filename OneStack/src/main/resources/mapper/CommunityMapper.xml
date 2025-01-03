@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.CommunityMapper">
+<!-- 커뮤니티 리스트 조회 -->
+<select id = "getCommunity" resultType = "Community">
+	SELECT c.*, m.*
+	FROM Community c JOIN Member m
+		ON c.member_no = m.member_no
+	<where>	
+		<if test="type == 'title'">
+			AND c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="type == 'memberNickname'">
+			AND m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="type == 'content'">
+			AND c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test="type == 'date'">
+			AND c.community_board_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+	ORDER BY c.community_board_reg_date DESC
+</select>
+
+<!-- 커뮤니티 게시글 수 조회 -->
+<select id="getCommunityBoardCount" resultType ="int">
+	SELECT COUNT(community_board_no)
+	FROM Community c JOIN Member m
+		ON c.member_no = m.member_no
+	<where>	
+		<if test="type == 'title'">
+			AND c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="type == 'memberNickname'">
+			AND m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="type == 'content'">
+			AND c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test="type == 'date'">
+			AND c.community_board_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+</select>
+
+<!-- 커뮤니티 추가 -->
+<insert id = "addCommunity" parameterType = "Community" useGeneratedKeys = "true" keyProperty = "communityBoardNo">
+	INSERT INTO Community(member_no, community_board_title, community_board_content, community_file)
+	VALUES (#{memberNo}, #{communityBoardTitle}, #{communityBoardContent}, #{communityFile})
+</insert>
+	
+<!-- 커뮤니티 수정 -->	
+<update id = "updateCommunity" parameterType = "Community">
+	UPDATE Community
+	SET community_board_title = #{communityBoardTitle}, community_board_content = #{communityBoardContent}, community_file = #{communityFile}
+	WHERE community_board_no = #{communityBoardNo}
+</update>
+
+<!-- 커뮤니티 삭제 -->
+<delete id = "deleteCommunity" parameterType = "int">
+	DELETE FROM Community
+	WHERE community_board_no = #{communityBoardNo}
+</delete>
+
+<!-- 커뮤니티 좋아요/싫어요 -->
+<update id="updateCommunityRecommend" parameterType = "int">
+	UPDATE Community
+		SET
+		<if test="communityRecommend == 'like'">		
+			community_board_like = community_board_like + 1
+		</if>
+		<if test="communityRecommend == 'dislike'">
+			community_board_dislike = community_board_dislike + 1
+		</if>
+	WHERE community_board_no = #{communityBoardNo}
+</update>
+
+
+
+
+
+<!-- 커뮤니티 댓글 조회 -->
+<select id = "getCommunityReply" resultType = "CommunityReply">
+	SELECT cr.*, m.*
+	FROM CommunityReply cr JOIN Member m
+		ON cr.member_no = m.member_no
+	ORDER BY cr.community_reply_reg_date DESC
+</select>
+
+<!-- 커뮤니티 댓글 추가 -->
+<insert id = "addCommunityReply" parameterType = "CommunityReply" useGeneratedKeys = "true" keyProperty = "communityReplyNo">
+	INSERT INTO CommunityReply(community_board_no, member_no, community_reply_content)
+	VALUES(#{communityBoardNo}, #{memberNo}, #{communityReplyContent})
+</insert>
+
+<!-- 커뮤니티 댓글 수정 -->
+<update id = "updateCommunityReply" parameterType = "CommunityReply">
+	UPDATE CommunityReply
+	SET community_reply_content = #{communityReplyContent}
+	WHERE community_reply_no = #{communityReplyNo}
+</update>
+
+<!-- 커뮤니티 댓글 삭제 -->
+<delete id = "deleteCommunityReply" parameterType = "int">
+	DELETE FROM CommunityReply
+	WHERE community_reply_no = #{communityReplyNo}
+</delete>
+
+<!-- 커뮤니티 댓글 좋아요/싫어요 -->
+<update id="updateCommunityReplyRecommend" parameterType = "int">
+	UPDATE Community
+		SET
+		<if test="communityReplyRecommend == 'like'">		
+			community_reply_like = community_reply_like + 1
+		</if>
+		<if test="communityReplyRecommend == 'dislike'">
+			community_reply_dislike = community_reply_dislike + 1
+		</if>
+	WHERE community_reply_no = #{communityReplyNo}
+</update>
+
+
+
+
+
+</mapper>

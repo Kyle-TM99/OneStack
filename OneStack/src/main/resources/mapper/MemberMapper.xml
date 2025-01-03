@@ -2,7 +2,119 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.onestack.project.mapper.MemberMapper">
+<!-- 회원 조회 -->
+<select id = "getMember" parameterType = "String" resultType = "Member">
+   SELECT * 
+   FROM Member 
+   WHERE member_id = #{memberId}
+</select>
 
-	
+<!-- 회원 가입 -->
+<insert id = "addMember" parameterType = "Member" useGeneratedKeys="true" keyProperty="memberNo">
+   INSERT INTO Member(name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date)
+   VALUES(#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, SYSDATE())
+</insert>
+
+<!-- 회원 수정 -->
+<update id = "updateMember" parameterType = "Member">
+	Update Member
+	SET name = #{name}, pass = #{pass}, zipcode = #{zipcode}, address = #{address}, address2 = #{address2}, email = #{email}, email_get = #{emailGet}, phone = #{phone}
+	WHERE member_no = #{memberNo}
+</update>
+
+<!-- 회원 탈퇴 -->
+<update id = "withdrawalMember" parameterType = "int">
+	Update Member
+	SET member_type = 2
+	WHERE member_no = #{memberNo}
+</update>
+
+<!-- 회원 삭제 -->
+<delete id = "deleteMember" parameterType = "int">
+	DELETE FROM Member
+	WHERE member_no = #{memberNo}
+</delete>
+
+
+
+
+
+<!-- 자신이 작성한 커뮤니티 조회 -->
+<select id = "findMyCommunity" parameterType = "memberNo" resultType = "Community">
+	SELECT c.* 
+	FROM Community c JOIN Member m
+		ON c.member_no = m.member_no
+	ORDER BY community_board_reg_date DESC
+</select>
+
+<!-- 자신이 작성한 커뮤니티 수 조회 -->
+<select id = "findMyCommunityCount" parameterType = "memberNo" resultType = "int">
+	SELECT COUNT(c.community_board_no)
+	FROM Community c JOIN Member m
+		ON c.member_no = m.member_no
+</select>
+
+<!-- 자신이 작성한 커뮤니티 댓글 조회 -->
+<select id = "findMyCommunityReply" parameterType = "memberNo" resultType = "CommunityReply">
+	SELECT cr.* 
+	FROM CommunityReply cr JOIN Member m
+		ON cr.member_no = m.member_no
+	ORDER BY community_reply_reg_date DESC
+</select>
+
+<!-- 자신이 작성한 커뮤니티 댓글 수 조회 -->
+<select id = "findMyCommunityReplyCount" parameterType = "memberNo" resultType = "int">
+	SELECT COUNT(cr.community_reply_no)
+	FROM CommunityReply cr JOIN Member m
+		ON cr.member_no = m.member_no
+</select>
+
+<!-- 자신이 작성한 QnA 조회 -->
+<select id = "findMyQnA" parameterType = "memberNo" resultType = "QnA">
+	SELECT q.* 
+	FROM QnA q JOIN Member m
+		ON q.member_no = m.member_no
+	ORDER BY qna_board_reg_date DESC
+</select>
+
+<!-- 자신이 작성한 QnQ 수 조회 -->
+<select id = "findMyQnACount" parameterType = "memberNo" resultType = "int">
+	SELECT COUNT(q.qna_board_no) 
+	FROM QnA q JOIN Member m
+		ON q.member_no = m.member_no
+</select>
+
+<!-- 자신이 작성한 QnA 댓글 조회 -->
+<select id = "findMyQnAReply" parameterType = "memberNo" resultType = "QnAReply">
+	SELECT qr.* 
+	FROM QnAReply qr JOIN Member m
+		ON qr.member_no = m.member_no
+	ORDER BY qna_reply_reg_date DESC
+</select>
+
+<!-- 자신이 작성한 QnA 댓글 수 조회 -->
+<select id = "findMyQnAReplyCount" parameterType = "memberNo" resultType = "int">
+	SELECT COUNT(qr.qna_reply_no) 
+	FROM QnAReply qr JOIN Member m
+		ON qr.member_no = m.member_no
+</select>
+
+<!-- 자신이 작성한 리뷰 조회 -->
+<select id = "findMyReview" parameterType = "memberNo" resultType = "Review">
+	SELECT r.* 
+	FROM Review r JOIN Member m
+		ON r.member_no = m.member_no
+	ORDER BY review_date DESC
+</select>
+
+<!-- 자신이 작성한 리뷰 수 조회 -->
+<select id = "findMyReviewCount" parameterType = "memberNo" resultType = "int">
+	SELECT COUNT(r.review_no) 
+	FROM Review r JOIN Member m
+		ON r.member_no = m.member_no
+</select>
+
+
+
 
 </mapper>
