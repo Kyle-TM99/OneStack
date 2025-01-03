@@ -1,0 +1,491 @@
+/* 공통 스타일 */
+.nav-link {
+  color: #333 !important;
+  font-weight: 500;
+  padding: 0 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #3366FF !important;
+  font-weight: 600;
+}
+
+.navbar {
+  position: relative;
+  z-index: 1000;
+  background-color: white;
+  height: 70px;
+  padding: 0 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-right: 3rem;
+}
+
+.navbar-brand img {
+  height: 28px;
+}
+
+/* 메가 메뉴 스타일 */
+.mega-menu-wrapper {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  padding: 30px 0;
+  z-index: 999;
+  top: 100%;
+}
+
+.mega-menu-container {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.mega-menu-container.active {
+  display: grid;
+}
+
+.mega-menu-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.mega-menu-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.mega-menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mega-menu-item {
+  margin-bottom: 10px;
+}
+
+.mega-menu-item a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-size: 14px;
+}
+
+.mega-menu-item a:hover {
+  color: #007bff;
+}
+
+/* 모달 스타일 */
+.modal-backdrop {
+  display: none !important;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  border-radius: 12px 12px 0 0;
+  padding: 15px 20px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  padding: 15px 20px;
+  border-color: #eee;
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+/* 버튼 스타일 */
+.btn-outline-primary-custom {
+  color: #3366FF;
+  border: 1.5px solid #3366FF;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+
+.btn-outline-primary-custom:hover {
+  background-color: rgba(51, 102, 255, 0.04);
+  color: #3366FF;
+  border-color: #3366FF;
+}
+
+.btn-primary-custom {
+  background-color: #3366FF;
+  border: none;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.btn-primary-custom:hover {
+  background-color: #2952cc;
+  color: white;
+  box-shadow: 0 2px 4px rgba(51, 102, 255, 0.15);
+}
+
+/* 관리자 페이지 링크 스타일 */
+#adminPageLink {
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-left: 2rem;
+}
+
+#adminPageLink:hover {
+  color: #3366FF !important;
+  font-weight: 600;
+}
+
+/* 네비게이션 메뉴 정렬 */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  margin: 0;
+  gap: 2rem;
+}
+
+/* 메뉴 항목 스타일 */
+.nav-item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+/* 메뉴 링크 스타일 */
+.nav-link {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  color: #333 !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* 오른쪽 메뉴 정렬 */
+.d-flex.align-items-center {
+  height: 70px;
+}
+
+#chatMenu, 
+#notificationMenu {
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+/* 버튼 컨테이너 정렬 */
+.d-flex.gap-2 {
+  display: flex;
+  align-items: center;
+}
+
+/* 버튼 크기 조정 */
+.btn-outline-primary-custom,
+.btn-primary-custom {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+/* 다크모드 스타일 */
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #e9ecef;
+}
+
+body.dark-mode .navbar {
+  background-color: #1a1b1e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .nav-link {
+  color: #e9ecef !important;
+}
+
+body.dark-mode .nav-link:hover {
+  color: #668fff !important;
+  font-weight: 600;
+}
+
+body.dark-mode .mega-menu-wrapper {
+  background-color: #242424;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .mega-menu-title {
+  color: #e9ecef;
+  border-bottom-color: #444;
+}
+
+body.dark-mode .mega-menu-item a {
+  color: #adb5bd;
+}
+
+body.dark-mode .mega-menu-item a:hover {
+  color: #668fff;
+}
+
+body.dark-mode .theme-toggle-btn {
+  color: #e9ecef;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+  background-color: #2d2e32;
+  color: #668fff;
+}
+
+body.dark-mode .modal-content {
+  background-color: #242424;
+}
+
+body.dark-mode .modal-header {
+  background-color: #2a2a2a;
+  border-bottom-color: #444;
+}
+
+body.dark-mode .modal-title {
+  color: #e9ecef;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #242424;
+  color: #e9ecef;
+  border-color: #444;
+}
+
+body.dark-mode .list-group-item:hover {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .btn-outline-primary-custom {
+  color: #668fff;
+  border-color: #668fff;
+}
+
+body.dark-mode .btn-outline-primary-custom:hover {
+  background-color: rgba(102, 143, 255, 0.1);
+  color: #668fff;
+}
+
+body.dark-mode .btn-primary-custom {
+  background-color: #668fff;
+}
+
+body.dark-mode .btn-primary-custom:hover {
+  background-color: #5276e1;
+  box-shadow: 0 2px 4px rgba(102, 143, 255, 0.2);
+}
+
+/* 다크모드에서의 관리자 페이지 링크 스타일 */
+body.dark-mode #adminPageLink:hover {
+  color: #668fff !important;
+}
+
+/* 다크모드 토글 버튼 */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: #495057;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: #f8f9fa;
+}
+
+/* 다크모드에서의 토글 버튼 */
+body.dark-mode .theme-toggle-btn {
+  color: #e9ecef;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+  background-color: #2d2e32;
+  color: #668fff;
+}
+
+/* 채팅 모달 스타일 */
+.chat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chat-item {
+  display: flex;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  background-color: #f8f9fa;
+}
+
+.chat-item-avatar {
+  position: relative;
+  margin-right: 15px;
+}
+
+.chat-item-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.online-status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ddd;
+  border: 2px solid white;
+}
+
+.online-status.active {
+  background-color: #22c55e;
+}
+
+.chat-item-content {
+  flex: 1;
+  position: relative;
+  padding-right: 40px;
+}
+
+.chat-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.chat-item-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.chat-item-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.chat-item-message {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 10px);
+}
+
+.unread-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: none;
+  background-color: #3366FF;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* 다크모드 채팅 스타일 */
+body.dark-mode .chat-item {
+  border-bottom-color: #2d2e32;
+}
+
+body.dark-mode .chat-item:hover {
+  background-color: #2d2e32;
+}
+
+body.dark-mode .chat-item-name {
+  color: #e9ecef;
+}
+
+body.dark-mode .chat-item-time {
+  color: #adb5bd;
+}
+
+body.dark-mode .chat-item-message {
+  color: #ced4da;
+}
+
+body.dark-mode .online-status {
+  border-color: #1a1b1e;
+}
