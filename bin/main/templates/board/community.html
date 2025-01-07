@@ -5,32 +5,32 @@
 <th:block>
 <div layout:fragment="content" class="container py-5">
     <!-- 헤더 섹션 -->
-    <div class="row mb-4">
+    <div class="row mt-5">
         <div class="col-md-8">
             <h2 class="fw-bold">커뮤니티</h2>
             <p class="text-muted">다양한 분야의 사람들과 활발하게 소통해보세요!</p>
         </div>
         <div class="col-md-4 d-flex align-items-center justify-content-end">
-            <a href="/communityWriteForm" class="btn custom-button px-4">
+            <a href="/communityWriteForm" class="btn custom-button">
                 <i class="bi bi-pencil-square me-2"></i>글쓰기
             </a>
         </div>
     </div>
 
     <!-- 탭 섹션 -->
-    <div class="row mb-4">
-        <div class="col">
-            <a href="/community" class="nav-link active text-center">커뮤니티</a>|
-            <a href="/QnA" class="nav-link text-center">Q&A</a>
+    <div class="row my-5">
+        <div class="col d-flex align-items-center justify-content-center">
+            <a href="/community" class="nav-link active text-center me-5">Community</a>|
+            <a href="/QnA" class="nav-link text-center ms-5">Q&A</a>
         </div>
     </div>
 
     <!-- 검색 및 필터 섹션 -->
     <div class="row mb-4">
-        <div class="col-md-8">
+        <div class="col-md-12 d-flex align-items-center justify-content-center">
         <div class="d-flex align-items-center">
             <input type="text" class="search-bar" placeholder="검색어를 입력하세요"
-                style="border: 2px solid #0d6efd; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
+                style="border: 2px solid #215EA3; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
             <button class="search-button"
                 style="margin-left: -50px; border: none; background: none; cursor: pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -41,16 +41,44 @@
             </button>
         </div>
     </div>
-        <div class="col-md-4">
-            <div class="btn-group float-end" role="group">
-                <input type="radio" class="btn-check" name="sort" id="sort-popular" checked>
-                <label class="btn custom-button" for="sort-popular">인기순</label>
-                
-                <input type="radio" class="btn-check" name="sort" id="sort-recommended">
-                <label class="btn custom-button" for="sort-recommended">추천순</label>
-            </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-md">
+        <div class="sort-control float-end">
+            <label class="sort-option">
+                <input type="radio" name="sort" checked>
+                <span>인기순</span>
+            </label>
+            <label class="sort-option">
+                <input type="radio" name="sort">
+                <span>추천순</span>
+            </label>
         </div>
     </div>
+</div>
+    
+<!-- 토글 버전  
+  <div class="row">
+	    <div class="col-md">
+	        <div class="segment-control float-end">
+	            <input type="radio" name="sort" id="sort-popular" checked>
+	            <input type="radio" name="sort" id="sort-recommended">
+	            <label for="sort-popular">인기순</label>
+	            <label for="sort-recommended">추천순</label>
+	            <div class="segment-indicator"></div>
+	        </div>
+	    </div>
+	</div> -->
+    <!-- <div class="row">
+        <div class="col-md">
+            <div class="float-end" role="group">
+                <input type="radio" name="sort" id="sort-popular" checked>인기순
+                
+                <input type="radio" name="sort" id="sort-recommended">추천순
+            </div>
+        </div>
+    </div> -->
 
     <!-- 게시물 리스트 -->
     <div class="row g-4">
