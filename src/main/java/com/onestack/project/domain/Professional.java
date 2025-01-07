@@ -23,13 +23,5 @@ public class Professional {
     private int professorStatus;
     private String screeningMsg;
     private Timestamp proDate;
-    
-
-    private String name;           
-    private String memberId;        
-    private String email;           
-    private String itemTitle;      
-    private String portfolioTitle; 
-
 }
 
