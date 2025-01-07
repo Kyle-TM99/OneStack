@@ -64,18 +64,18 @@
                 <tbody>
                     <tr th:each="pro : ${pro}">
                         <td><input type="checkbox"/></td>
-                        <td th:text="${pro.name}">이름</td>
-                        <td th:text="${pro.memberId}">아이디</td>
-                        <td th:text="${pro.itemTitle}">전문 분야</td>
-                        <td th:text="${pro.email}">이메일</td>
-                        <td th:text="${pro.portfolioTitle}">포트폴리오</td>
-                        <td th:text="${#dates.format(pro.proDate, 'yyyy-MM-dd HH:mm:ss')}">요청일</td>
+                        <td th:text="${pro.member.name}">이름</td>
+                        <td th:text="${pro.member.memberId}">아이디</td>
+                        <td th:text="${pro.category.itemTitle}">전문 분야</td>
+                        <td th:text="${pro.member.email}">이메일</td>
+                        <td th:text="${pro.portfolio.portfolioTitle}">포트폴리오</td>
+                        <td th:text="${#dates.format(pro.professional.proDate, 'yyyy-MM-dd HH:mm:ss')}">요청일</td>
                         <td>
 							<button class="btn btn-outline-dark btn-sm screening-btn" 
-							        th:data-pro-no="${pro.proNo}"
-							        th:data-name="${pro.name}"
-							        th:data-item-title="${pro.itemTitle}"
-							        th:data-portfolio-title="${pro.portfolioTitle}">
+							        th:data-pro-no="${pro.professional.proNo}"
+							        th:data-name="${pro.member.name}"
+							        th:data-item-title="${pro.category.itemTitle}"
+							        th:data-portfolio-title="${pro.portfolio.portfolioTitle}">
 							    승인 관리
 							</button>
                         </td>

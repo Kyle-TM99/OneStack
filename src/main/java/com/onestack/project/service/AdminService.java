@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.onestack.project.domain.MemProPortCate;
 import com.onestack.project.domain.Member;
 import com.onestack.project.domain.Professional;
 import com.onestack.project.mapper.ManagerMapper;
@@ -21,10 +22,9 @@ public class AdminService {
 		return managerMapper.getAllMember();
 	}
 	
-	public List<Professional> getRequestPro(){
-		return managerMapper.getRequestPro();
+	public List<MemProPortCate> getMemProPortCate(){
+		return managerMapper.getMemProPortCate();
 	}
-	
 	public void updateProStatus(int proNo, Integer status, String screeningMsg) {
 	    managerMapper.updateProStatus(proNo, status, screeningMsg);
 	}
