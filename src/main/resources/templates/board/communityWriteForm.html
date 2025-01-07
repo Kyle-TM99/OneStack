@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<!-- <head>
+    TUI 에디터 CSS CDN
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head> -->
+<th:block>
+    <div layout:fragment="content" class="container py-5">
+    
+    <div class="row my-5">
+        <div class="col-md">
+            <h2><i class="bi bi-pencil-square me-2"></i>작성하기</h2>
+            <p class="text-muted">자유롭게 게시글을 작성해보세요!</p>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="col-auto mx-3">
+                게시판
+            </div>
+            |
+            <div class="col-auto">
+                <!-- 라디오 버튼 숨기기 -->
+                <label class="board-label mx-5">
+                    <input type="radio" name="board" id="communityRadio" class="radio-input" checked />
+                    <span class="board-text">Community</span>
+                </label>
+                <label class="board-label">
+                    <input type="radio" name="board" id="qaRadio" class="radio-input" />
+                    <span class="board-text">Q&A</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 에디터를 적용할 요소 (컨테이너) -->
+        <div id="content" class="my-5"></div>
+
+<!--         <!-- TUI 에디터 JS CDN
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script> -->
+       <!--  <script>
+             // 페이지가 로드된 후에 실행되도록 변경
+            document.addEventListener("DOMContentLoaded", function () {
+                const editor = new toastui.Editor({
+                    el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
+                    height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
+                    initialEditType: 'markdown',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
+                    initialValue: '내용을 입력해 주세요.',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
+                    previewStyle: 'vertical'                // 마크다운 프리뷰 스타일 (tab || vertical)
+                });
+            });
+        </script> -->
+    </div>
+</th:block>
+</html>
