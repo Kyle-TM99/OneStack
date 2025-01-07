@@ -44,12 +44,12 @@
 									<div class="my-2 fw-bold" th:text="${survey.survey.surveyQuestion}"></div>
 									
 									<!-- Radio Buttons for Options -->
-									<div th:each="option : ${#strings.split(survey.survey.surveyOption, ', ')}">
+									<!-- <div th:each="option : ${#strings.split(survey.survey.surveyOption, ', ')}">
 									    <label>
 									        <input type="radio" th:name="'answer' + ${survey.survey.surveyNo}" th:value="${option.trim()}">
 									        <span th:text="${option.trim()}"></span>
 									    </label>
-									</div>
+									</div> -->
 
 								</div>
 							</div>
