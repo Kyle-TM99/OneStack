@@ -39,7 +39,7 @@
 							data-bs-toggle="dropdown" aria-expanded="false">커뮤니티</a>
 							<ul class="dropdown-menu">
 								<li><a class="dropdown-item" href="#">질문 게시판</a></li>
-								<li><a class="dropdown-item" href="#">자유 게시판</a></li>
+								<li><a class="dropdown-item" href="community">자유 게시판</a></li>
 							</ul></li>
 						<!-- 채팅 메뉴 -->
 						<li class="nav-item" id="chatMenu"><a class="nav-link"
@@ -52,9 +52,17 @@
 								이동</a></li>
 					</ul>
 					<div class="d-flex gap-2 me-5">
-						<a class="btn btn-outline-dark btn-sm" href="#">로그인</a> <a
-							class="btn btn-outline-dark btn-sm" href="#">로그아웃</a> <a
-							class="btn btn-outline-dark btn-sm" href="#">회원가입</a>
+						<!-- 로그인하지 않은 경우에만 보이는 버튼들 -->
+						<th:block th:unless="${session.isLogin}">
+							<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
+							<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
+						</th:block>
+						
+						<!-- 로그인한 경우에만 보이는 버튼들 -->
+						<th:block th:if="${session.isLogin}">
+							<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
+							<a class="btn btn-outline-dark btn-sm" href="memberLogout">로그아웃</a>
+						</th:block>
 					</div>
 				</div>
 
