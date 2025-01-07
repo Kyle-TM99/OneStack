@@ -72,4 +72,49 @@ VALUES
 ('admin5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100');
 
 
+-- 설문조사 더미 데이터 --
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(1, 11, '의뢰 받을 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(2, 11, '의뢰 받을 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(3, 12, '의뢰받으려는 프로젝트의 제작 상태를 선택해주세요.', '신규 제작, 기존 웹 리뉴얼');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(4, 12, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(5, 13, '제작 가능한 플랫폼을 선택해주세요.', 'Windows, Mac, Linux, iOS, Android, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(6, 13, '제작 가능한 개발 종류를 선택해주세요.', '일반 프로그램, 게임, 임베디드, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(7, 13, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(8, 14, '개발 가능한 앱 형태를 선택해주세요.', '네이티브, 하이브리드, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(9, 14, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(10, 15, '개발 가능한 형태의 앱을 선택해주세요.', '네이티브, 하이브리드, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(11, 15, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(12, 15, '서버 개발이 가능하신지 선택해주세요.', '네., 아니요.');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(13, 16, '개발 가능한 플랫폼을 선택해주세요.', '안드로이드, PC, iOS, Mac, Linux, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(14, 16, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(15, 17, '개발 가능한 인공지능 기반을 선택해주세요.', '텍스트, 음성, 이미지, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(16, 17, '개발 가능한 작업을 선택해주세요.', '분류, 예측, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(17, 17, '개발자 경력을 선택해주세요.', '주니어 (3년 이하), 미드 (4~9년), 시니어 (10년 이상)');
+
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(18, 18, '테스트 가능한 분야를 선택해주세요.', '기능 테스트, 비기능 테스트, 성능 테스트, 테스트 자동화, 기타');
+INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+VALUES(19, 18, '원하는 테스트 기간을 선택해주세요.', '1회 계약, 정기 계약, 무관');
