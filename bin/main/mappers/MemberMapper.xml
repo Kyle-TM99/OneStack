@@ -1,21 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.onestack.project.mapper.MemberMapper">
-<!-- 회원 조회 -->
-<select id = "getMember" parameterType = "int" resultType = "Member">
-   SELECT * 
-   FROM Member 
-   WHERE member_no = #{memberNo}
-</select>
 
-<!-- 회원 가입 -->
-<insert id = "addMember" parameterType = "Member" useGeneratedKeys = "true" keyProperty = "memberNo">
-   INSERT INTO Member(name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date)
-   VALUES(#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, SYSDATE())
+<mapper namespace="com.onestack.project.mapper.MemberMapper">
+    <!-- 회원 조회 -->
+    <select id="getMember" parameterType = "String" resultType="Member">
+        SELECT *
+        FROM Member
+        WHERE member_id = #{memberId}
+    </select>
+
+
+    <!-- 회원 가입 -->
+<insert id="insertMember" parameterType="Member" useGeneratedKeys = "true" keyProperty = "memberNo">
+    INSERT INTO Member (
+        name,
+        member_id,
+        pass,
+        nickname,
+        birth,
+        gender,
+        zipcode,
+        address,
+        address2,
+        email,
+        email_get,
+        phone,
+        member_reg_date
+    ) VALUES (
+        #{name},
+        #{memberId},
+        #{pass},
+        #{nickname},
+        #{birth},
+        #{gender},
+        #{zipcode},
+        #{address},
+        #{address2},
+        #{email},
+        #{emailGet},
+        #{phone},
+        NOW()
+    )
 </insert>
 
-<!-- 회원 수정 -->
+
+
+<select id="checkMemberId" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM Member WHERE member_id = #{memberId}
+</select>
+
+
+<select id="checkNickname" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM Member WHERE nickname = #{nickname}
+</select>
+
+
+<select id="checkPhone" parameterType="String" resultType="int">
+    SELECT COUNT(*) FROM Member WHERE phone = #{phone}
+</select>
+
+    <!-- 아이디 찾기 -->
+    <select id="findMemberId" parameterType="Member" resultType="String">
+        SELECT member_id 
+        FROM Member 
+        WHERE name = #{name} 
+        AND phone = #{phone}
+    </select>
+    
+   <!-- 회원 수정 -->
 <update id = "updateMember" parameterType = "Member">
 	Update Member
 	SET name = #{name}, pass = #{pass}, zipcode = #{zipcode}, address = #{address}, address2 = #{address2}, email = #{email}, email_get = #{emailGet}, phone = #{phone}
@@ -42,6 +95,8 @@
 	DELETE FROM Member
 	WHERE member_no = #{memberNo}
 </delete>
+
+
 
 
 

@@ -14,6 +14,12 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addViewControllers(ViewControllerRegistry registry) {
 
 		registry.addViewController("/mainPage").setViewName("views/mainPage");
+		
+		// 로그인 폼 뷰 전용 컨트롤러 설정 추가
+		registry.addViewController("/loginForm").setViewName("member/loginForm");
+						
+		// 회원가입 폼 뷰 전용 컨트롤러 설정 추가
+		registry.addViewController("/joinForm").setViewName("member/joinForm");
 
 	}
 

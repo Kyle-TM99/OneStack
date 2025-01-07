@@ -37,6 +37,38 @@
         <association property="professional" resultMap="ProfessionalResultMap" />
     </resultMap>
     
+<select id="getAllMember" resultType="Member">
+   SELECT * 
+   FROM Member 
+   WHERE member_type != 2  <!-- 탈퇴회원 제외 -->
+   ORDER BY member_reg_date DESC
+</select>
+
+
+<!-- 전문가 정보 조회 -->
+<select id="getRequestPro" resultType="Professional">
+    SELECT 
+    	p.pro_no,
+        m.name,
+        m.member_id,
+        m.email,
+        c.item_title,
+        p.pro_date,
+        pf.portfolio_title
+    FROM Professional p
+    INNER JOIN Member m ON p.member_no = m.member_no
+    INNER JOIN Category c ON p.item_no = c.item_no
+    INNER JOIN Portfolio pf ON p.pro_no = pf.pro_no
+    WHERE p.professor_status = 1
+    ORDER BY p.pro_date DESC
+</select>
+
+<update id="updateProStatus" parameterType="map">
+    UPDATE Professional 
+    SET professor_status = #{status}, screening_msg = #{screeningMsg}
+    WHERE pro_no = #{proNo}
+</update>
+
 
 <!-- 회원 조회 -->
 <select id = "getMember" parameterType = "int" resultType = "Member">
@@ -119,12 +151,6 @@
 			ON p.pro_no = pf.pro_no
 </select>
 
-<!-- 전문가 심사 처리 -->
-<update id = "updateProStatus" parameterType ="map">
-	UPDATE Professional
-	SET professor_status = #{status}, screening_msg = #{screeningMsg}
-	WHERE pro_no = #{pro}
-</update>
 
 
 
