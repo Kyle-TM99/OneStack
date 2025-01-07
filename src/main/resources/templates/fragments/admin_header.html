@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="admin_header" class="col-10">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center bg-white py-3 px-4 border-bottom">
+        <h3>대시보드</h3>
+        <div>
+            <span class="fw-bold mx-3">bokbok 관리자</span>
+            <a class="btn btn-outline-dark btn-sm" href="mainPage">메인 페이지</a>
+            <button class="btn btn-outline-dark btn-sm">로그아웃</button>
+        </div>
+    </div>
+    
+    <!-- 검색 및 필터링 조회 -->  
+<div class="container mt-4">
+    <h4 class="mb-3">회원 조회</h4>
+    <div class="row g-3 align-items-center mb-3 pb-2 border-bottom">
+        <!-- 선택 창 -->
+        <div class="col-auto">
+            <select class="form-select form-select-sm">
+                <option value="id">아이디</option>
+                <option value="name">초보자</option>
+                <option value="group">전문가</option>
+            </select>
+        </div>
+        
+        <!-- 검색어 입력 -->
+        <div class="col-auto">
+            <input type="text" class="form-control form-control-sm" placeholder="검색어 입력" />
+        </div>
+        
+        <!-- 상태 선택 -->
+        <div class="col-auto">
+            <select class="form-select form-select-sm">
+                <option value="all">전체</option>
+                <option value="active">활성화</option>
+                <option value="inactive">비활성화</option>
+            </select>
+        </div>
+        
+        <div class="col-auto d-flex align-items-center">
+	    <!-- startDatePicker -->       
+	    <input type="text" id="startPicker" class="form-control-sm" value="2025-01-03" />&nbsp; - &nbsp;
+	    <!-- endDatePicker -->
+	    <input type="text" id="endPicker" class="form-control-sm"  value="2025-01-02" />
+         </div>
+
+        <!-- 조회 버튼 -->
+        <div class="col-auto">
+            <button class="btn btn-outline-dark btn-sm">조회</button>
+        </div>
+    </div>
+   <div class="mb-3 d-flex justify-content-between">
+        <div class="dropdown me-2">
+            <button class="btn btn-sm dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-filter-right fs-5"></i>
+            </button>
+            <div class="dropdown-menu p-3" style="width: 250px;" id="dynamicFilterContent">
+                <!-- 여기에 동적으로 필터 내용이 들어갑니다 -->
+            </div>
+        </div>
+        <button class="btn btn-outline-dark btn-sm h-25" id="deleteButton" style="display: none;">삭제</button>
+    </div>
+    
+    <!-- 콘텐츠 영역 -->
+    <div class=" text-center" id="dashboard-content">
+        <h2>카테고리를 선택하여 조회하세요.</h2>
+    </div>
+</div>
+</div>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html><!-- 이헌복 - 관리자 페이지 사이드바 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="sidebar" class="col-2 bg-dark text-secondary p-0">
+    <div class="p-3">
+        <h4 class="text-white">OneStack</h4>
+    </div>
+    <div class="accordion" id="sidebarMenu">
+        <!-- 회원 관리 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingMembers">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#membersMenu" aria-expanded="false" aria-controls="membersMenu">
+                    회원관리
+                </button>
+            </h2>
+            <div id="membersMenu" class="accordion-collapse collapse" aria-labelledby="headingMembers" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a class="d-block" data-url="/members">회원 조회</a>
+                    <a class="d-block" data-url="/suspendedMembers">정지 회원 조회</a>
+                    <a class="d-block" data-url="/withdrawnMembers">탈퇴 회원 조회</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 전문가 신청 관리 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingExperts">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#proMenu" aria-expanded="false" aria-controls="proMenu">
+                    전문가 신청 관리
+                </button>
+            </h2>
+            <div id="proMenu" class="accordion-collapse collapse" aria-labelledby="headingExperts" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a class="d-block" data-url="/reviewPendingInquiry">심사 대기 조회</a>
+                    <a class="d-block" data-url="/reviewProcessingDetails">심사 처리 내역 조회</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 신고 요청 관리 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingReports">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reportsMenu" aria-expanded="false" aria-controls="reportsMenu">
+                    신고 관리
+                </button>
+            </h2>
+            <div id="reportsMenu" class="accordion-collapse collapse" aria-labelledby="headingReports" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a class="d-block" data-url="/reportApplicationInquiry">신고신청 조회</a>
+                    <a class="d-block" data-url="/manageReportdPosts">신고 게시물 관리</a>
+                    <a class="d-block" data-url="/reportProcessingDetails" >신고 처리 내역</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 관리자 관리 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAdmin">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="false" aria-controls="adminMenu">
+                    관리자 관리
+                </button>
+            </h2>
+            <div id="adminMenu" class="accordion-collapse collapse" aria-labelledby="headingAdmin" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a href="#" class="d-block">관리자 조회</a>
+                    <a href="#" class="d-block">관리자 로그 조회</a>
+                    <a href="#" class="d-block">등급 관리</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게시물 관리 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPosts">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#postsMenu" aria-expanded="false" aria-controls="postsMenu">
+                    게시물 관리
+                </button>
+            </h2>
+            <div id="postsMenu" class="accordion-collapse collapse" aria-labelledby="headingPosts" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a href="#" class="d-block">카테고리 관리</a>
+                    <a href="#" class="d-block">FAQ</a>
+                    <a href="#" class="d-block">1:1 상담관리</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 통계/분석 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingStats">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#statsMenu" aria-expanded="false" aria-controls="statsMenu">
+                    통계/분석
+                </button>
+            </h2>
+            <div id="statsMenu" class="accordion-collapse collapse" aria-labelledby="headingStats" data-bs-parent="#sidebarMenu">
+                <div class="accordion-body text-end">
+                    <a href="#" class="d-block">회원 유입 통계</a>
+                    <a href="#" class="d-block">매출 통계</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
