@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.NoticeMapper">
+    <resultMap id="NoticeResultMap" type="com.onestack.project.domain.Notice">
+        <id property="noticeNo" column="notice_no" />
+        <result property="managerNo" column="manager_no" />
+        <result property="noticeTitle" column="notice_title" />
+        <result property="noticeContent" column="notice_content" />
+        <result property="noticeRegDate" column="notice_reg_date" />
+        <result property="noticeView" column="notice_view" />
+        <result property="noticeFile" column="notice_file" />
+    </resultMap>
+    
+    <resultMap id="ManagerResultMap" type="com.onestack.project.domain.Manager">
+        <id property="manager_no" column="manager_no" />
+        <result property="manager_name" column="manager_name" />
+        <result property="manager_pass" column="manager_pass" />
+        <result property="member_type" column="member_type" />
+        <result property="manager_image" column="manager_image" />
+        <result property="manager_type" column="manager_type" />
+    </resultMap>
+    
+   	<resultMap id="ManagerWithNoticeResultMap" type="com.onestack.project.domain.MemberWithInquiry">
+		<association property="manager" resultMap="ManagerResultMap" />
+	    <association property="notice" resultMap="NoticeResultMap" />
+	</resultMap>
+    
+<!-- 공지사항 조회 -->
+<select id = "getNotice" parameterType = "map" resultMap = "ManagerWithNoticeResultMap">
+	SELECT n.*, mg.*
+	FROM Notice n JOIN Manager mg
+		ON n.manager_no = mg.manager_no
+	<where>	
+		<if test = "type == 'title'">
+			n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'content'">
+			n.notice_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test = "type == 'date'">
+			notice_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+	ORDER BY n.notice_reg_date DESC
+	LIMIT #{startRow}, #{num}
+</select>
+
+<!-- 공지사항 수 조회 -->
+<select id = "getNoticeCount" parameterType = "map" resultType = "int">
+	SELECT COUNT(n.notice_no)
+	FROM Notice n JOIN Manager mg
+		ON n.manager_no = mg.manager_no
+	<where>	
+		<if test = "type == 'title'">
+			n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'content'">
+			n.notice_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test = "type == 'date'">
+			notice_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+</select>
+
+<!-- 공지사항 작성 -->
+<insert id = "addNotice" parameterType = "Notice" useGeneratedKeys = "true" keyProperty = "noticeNo">
+	INSERT INTO Notice(manager_no, notice_title, notice_content, notice_file)
+	VALUES (#{managerNo}, #{noticeTitle}, #{noticeContent}, #{noticeFile})
+</insert>
+
+<!-- 공지사항 수정 -->
+<update id = "updateNotice" parameterType = "Notice">
+	UPDATE Notice
+	SET notice_title = #{noticeTitle}, notice_content = #{noticeContent}, notice_file = #{noticeFile}
+	WHERE notice_no = #{noticeNo}
+</update>
+
+<!-- 공지사항 삭제 -->
+<delete id = "deleteNotice" parameterType = "int">
+	DELETE FROM Notice
+	WHERE notice_no = #{noticeNo}
+</delete>
+
+<!-- 공지사항 조회수 증가 -->
+<update id = "incrementNoticeReadCount" parameterType = "int" >
+	UPDATE Notice
+	SET notice_view = notice_view + 1
+	WHERE notice_no = #{noticeNo}
+</update>
+
+<!-- 회원 가이드 -->
+<select id="getMemberGuide" parameterType = "int" resultType="Notice">
+    SELECT *
+    FROM Notice
+    WHERE <!-- 회원 가이드 번호 -->
+</select>
+
+<!-- 전문가 가이드 -->
+<select id="getProGuide" parameterType = "int" resultType="Notice">
+    SELECT *
+    FROM Notice
+    WHERE <!-- 전문가 가이드 번호 -->
+</select>
+
+
+</mapper>

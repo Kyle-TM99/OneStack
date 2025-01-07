@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.QnAMapper">
+    <resultMap id="QnAResultMap" type="com.onestack.project.domain.QnA">
+        <id property="qnaBoardNo" column="qna_board_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="qnaBoardTitle" column="qna_board_title" />
+        <result property="qnaBoardContent" column="qna_board_content" />
+        <result property="qnaBoardRegDate" column="qna_board_reg_date" />
+        <result property="qnaView" column="qna_view" />
+        <result property="qnaFile" column="qna_file" />
+        <result property="qnaBoardLike" column="qna_board_like" />
+        <result property="qnaAdoptionStatus" column="qna_adoption_status" />
+        <result property="qnaBoardActivation" column="qna_board_activation" />
+    </resultMap>
+    
+    <resultMap id="QnAReplyResultMap" type="com.onestack.project.domain.QnAReply">
+        <id property="qnaReplyNo" column="qna_reply_no" />
+        <result property="qnaBoardNo" column="qna_board_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="qnaReplyContent" column="qna_reply_content" />
+        <result property="qnaReplyRegDate" column="qna_reply_reg_date" />
+        <result property="qnaAdoption" column="qna_adoption" />
+        <result property="qnaReplyLike" column="qna_reply_like" />
+        <result property="qnaReplyActivation" column="qna_reply_activation" />
+    </resultMap>
+
+	<resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
+        <id property="memberNo" column="member_no" />
+		<result property="name" column="name" />
+		<result property="memberId" column="member_id" />
+		<result property="kakaoId" column="kakao_id" />
+		<result property="pass" column="pass" />
+		<result property="nickname" column="nickname" />
+		<result property="birth" column="birth" />
+		<result property="gender" column="gender" />
+		<result property="zipcode" column="zipcode" />
+		<result property="address" column="address" />
+		<result property="address2" column="address2" />
+		<result property="email" column="email" />
+		<result property="emailGet" column="email_get" />
+		<result property="phone" column="phone" />
+		<result property="memberRegDate" column="member_reg_date" />
+		<result property="memberType" column="member_type" />
+		<result property="memberImage" column="member_image" />
+		<result property="stack" column="stack" />
+		<result property="stackName" column="stack_name" />
+		<result property="withdrawalEndDate" column="withdrawal_end_date" />
+		<result property="banEndDate" column="ban_end_date" />
+		<result property="reportedCount" column="reported_count" />
+		<result property="isSocial" column="is_social" />
+		<result property="socialType" column="social_type" />
+    </resultMap>
+    
+   	<resultMap id="MemberWithQnAResultMap" type="com.onestack.project.domain.MemberWithQnA">
+		<association property="member" resultMap="MemberResultMap" />
+	    <association property="qna" resultMap="QnAResultMap" />
+	</resultMap>
+	
+	<resultMap id="MemberWithQnAReplyResultMap" type="com.onestack.project.domain.MemberWithQnAReply">
+		<association property="member" resultMap="MemberResultMap" />
+	    <association property="qnaReply" resultMap="QnAReplyResultMap" />
+	</resultMap>
+
+<!-- QnA 리스트 조회 -->
+<select id = "getQnA" parameterType = "map" resultMap = "MemberWithQnAResultMap">
+	SELECT q.*, m.*
+	FROM QnA q JOIN Member m
+		ON q.member_no = m.member_no
+	<where>	
+		<if test = "type == 'title'">
+			q.qna_board_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'memberNickname'">
+			m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'content'">
+			q.qna_board_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test = "type == 'date'">
+			q.qna_board_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+	ORDER BY q.qna_board_reg_date DESC
+	LIMIT #{startRow}, #{num}
+</select>
+
+<!-- QnA 게시글 수 조회 -->
+<select id = "getQnACount" parameterType = "map" resultType = "int">
+	SELECT COUNT(qna_board_no)
+	FROM QnA q JOIN Member m
+		ON q.member_no = m.member_no
+	<where>	
+		<if test = "type == 'title'">
+			q.qna_board_title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'memberNickname'">
+			m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test = "type == 'content'">
+			q.qna_board_content LIKE CONCAT('%', #{keyword}, '%')
+		</if>	
+		<if test = "type == 'date'">
+			q.qna_board_reg_date BETWEEN #{date1} AND #{date2}   
+		</if>
+	</where>
+</select>
+
+<!-- 이전 QnA글 -->
+<select id = "preQnA" parameterType = "int" resultType = "int">
+    SELECT qna_board_no 
+    FROM QnA 
+    WHERE qna_board_no &lt; #{currentQnABoardNo}
+    ORDER BY qna_board_no DESC 
+    LIMIT 1
+</select>
+
+<!-- 다음 QnA글 -->
+<select id = "nextQnA" parameterType = "int" resultType = "int">
+    SELECT qna_board_no 
+    FROM QnA 
+    WHERE qna_board_no &gt; #{currentQnABoardNo}
+    ORDER BY qna_board_no ASC 
+    LIMIT 1
+</select>
+
+<!-- QnA 추가 -->
+<insert id = "addQnA" parameterType = "QnA" useGeneratedKeys = "true" keyProperty = "qnaBoardNo">
+	INSERT INTO QnA(member_no, qna_board_title, qna_board_content, qna_file)
+	VALUES(#{memberNo}, #{qnaBoardTitle}, #{qnaBoardContent}, #{qnaFile})
+</insert>
+
+<!-- QnA 수정 -->
+<update id = "updateQnA" parameterType = "QnA">
+	UPDATE QnA
+	SET qna_board_title = #{qnaBoardTitle}, qna_board_content = #{qnaBoardContent}, qna_file = #{qnaFile}
+	WHERE qna_board_no = #{qnaBoardNo}
+</update>
+
+<!-- QnA 삭제 -->
+<delete id = "deleteQnA" parameterType = "int">
+	DELETE FROM QnA
+	WHERE qna_board_no = #{qnaBoardNo}
+</delete>
+
+<!-- QnA 좋아요 -->
+<update id="updateQnARecommend" parameterType = "int">
+	UPDATE QnA
+	SET qna_board_like = qna_board_like + 1
+	WHERE qna_board_no = #{qnaBoardNo}	
+</update>
+
+<!-- QnA 댓글 채택 수 조회 -->
+<select id = "countAdoption" parameterType = "int" resultType = "int">
+	SELECT COUNT(qna_adoption)
+	FROM QnAReply
+	WHERE qna_board_no = #{qnaBoardNo}	
+</select>
+
+<!-- QnA 게시글 채택 -->
+<update id = "updateQnAAdoptionState" parameterType = "int">
+	UPDATE QnA
+	SET qna_adoption_status = 1
+	WHERE qna_board_no = #{qnaBoardNo}
+</update>
+
+<!-- QnA 조회수 증가 -->
+<update id = "incrementQnAReadCount">
+	UPDATE QnA
+	SET qna_view = qna_view + 1
+	WHERE qna_board_no = #{qnaBoardNo}
+</update>
+
+
+
+<!-- QnA 댓글 조회 -->
+<select id = "getQnAReply" parameterType = "int" resultMap = "MemberWithQnAReplyResultMap">
+	SELECT cr.*, m.*
+	FROM QnAReply qr JOIN Member m
+		ON qr.member_no = m.member_no
+	WHERE qr.qna_board_no = #{qnaBoardNo}
+	ORDER BY cr.community_reply_reg_date DESC
+</select>
+
+<!-- QnA 댓글 추가 -->
+<insert id = "addQnAReply" parameterType = "QnAReply" useGeneratedKeys = "true" keyProperty = "qnaReplyNo">
+	INSERT INTO QnAReply(qna_board_no, member_no, qna_reply_content)
+	VALUES(#{qnaBoardNo}, #{memberNo}, #{qnaReplyContent})
+</insert>
+
+<!-- QnA 댓글 수정 -->
+<update id = "updateQnAReply" parameterType = "QnAReply">
+	UPDATE QnAReply
+	SET qna_reply_content = #{qnaReplyContent}
+	WHERE qna_reply_no = #{qnaReplyNo}
+</update>
+
+<!-- QnA 댓글 삭제 -->
+<delete id = "deleteQnAReply" parameterType = "int">
+	DELETE FROM QnAReply
+	WHERE qna_reply_no = #{qnaReplyNo}
+</delete>
+
+<!-- QnA 댓글 좋아요 -->
+<update id="updateQnAReplyRecommend" parameterType = "int">
+	UPDATE QnAReply
+	SET	qna_reply_like = qna_reply_like + 1
+	WHERE qna_reply_no = #{qnaReplyNo}
+</update>
+
+<!-- QnA 댓글 채택 -->
+<update id = "updateQnAReplyAdoption" parameterType = "int">
+	UPDATE QnAReply
+	SET qna_adoption = 1
+	WHERE qna_reply_no = #{qnaReplyNo}
+</update>
+
+
+
+
+</mapper>

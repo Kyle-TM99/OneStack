@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<!-- Navigation-->
+	<div th:fragment="header" class="header-container">
+		<nav class="navbar navbar-expand-lg navbar-light">
+			<div class="container-fluid">
+				<a class="navbar-brand ms-5" href="#"><img
+					src="https://placehold.co/110x40" alt="Logo"></a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav me-auto mb-2">
+						<!-- 고수 찾기 메뉴 -->
+						<li class="nav-item dropdown" id="findMasterMenu"><a
+							class="nav-link dropdown-toggle" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false">고수 찾기</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">카테고리 1</a></li>
+								<li><a class="dropdown-item" href="#">카테고리 2</a></li>
+							</ul></li>
+						<!-- 견적 요청 메뉴 -->
+						<li class="nav-item dropdown" id="requestQuoteMenu"><a
+							class="nav-link dropdown-toggle" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false">견적 요청</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">견적 신청하기</a></li>
+								<li><a class="dropdown-item" href="#">견적 내역보기</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" href="#">견적 가이드</a></li>
+							</ul></li>
+						<!-- 커뮤니티 메뉴 -->
+						<li class="nav-item dropdown" id="communityMenu"><a
+							class="nav-link dropdown-toggle" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false">커뮤니티</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">질문 게시판</a></li>
+								<li><a class="dropdown-item" href="#">자유 게시판</a></li>
+							</ul></li>
+						<!-- 채팅 메뉴 -->
+						<li class="nav-item" id="chatMenu"><a class="nav-link"
+							href="#">채팅</a></li>
+						<!-- 알림 메뉴 -->
+						<li class="nav-item" id="notificationMenu"><a
+							class="nav-link" href="#">알림</a></li>
+						<!-- 관리자 페이지 이동 메뉴-->
+						<li class="nav-item"><a class="nav-link" href="#">관리자 페이지
+								이동</a></li>
+					</ul>
+					<div class="d-flex gap-2 me-5">
+						<a class="btn btn-outline-dark btn-sm" href="#">로그인</a> <a
+							class="btn btn-outline-dark btn-sm" href="#">로그아웃</a> <a
+							class="btn btn-outline-dark btn-sm" href="#">회원가입</a>
+					</div>
+				</div>
+
+				<!-- 메가 메뉴 추가 -->
+				<div class="mega-menu-wrapper">
+					<div class="mega-menu-container">
+						<!-- 고수 찾기 섹션 -->
+						<div class="mega-menu-column">
+							<h3 class="mega-menu-title">고수 찾기</h3>
+							<ul class="mega-menu-list">
+								<li class="mega-menu-item"><a href="#">레슨</a></li>
+								<li class="mega-menu-item"><a href="#">홈/리빙</a></li>
+								<li class="mega-menu-item"><a href="#">이벤트</a></li>
+								<li class="mega-menu-item"><a href="#">비즈니스</a></li>
+								<li class="mega-menu-item"><a href="#">디자인/개발</a></li>
+							</ul>
+						</div>
+
+						<!-- 견적 요청 섹션 -->
+						<div class="mega-menu-column">
+							<h3 class="mega-menu-title">견적 요청</h3>
+							<ul class="mega-menu-list">
+								<li class="mega-menu-item"><a href="#">견적 신청하기</a></li>
+								<li class="mega-menu-item"><a href="#">견적 내역보기</a></li>
+								<li class="mega-menu-item"><a href="#">견적 가이드</a></li>
+								<li class="mega-menu-item"><a href="#">자주 묻는 질문</a></li>
+							</ul>
+						</div>
+
+						<!-- 커뮤니티 섹션 -->
+						<div class="mega-menu-column">
+							<h3 class="mega-menu-title">커뮤니티</h3>
+							<ul class="mega-menu-list">
+								<li class="mega-menu-item"><a href="#">질문 게시판</a></li>
+								<li class="mega-menu-item"><a href="#">자유 게시판</a></li>
+								<li class="mega-menu-item"><a href="#">고수 후기</a></li>
+								<li class="mega-menu-item"><a href="#">이벤트/공지</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<!-- 채팅 모달 -->
+	<div class="modal fade" id="chatModal" tabindex="-1"
+		aria-labelledby="chatModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="chatModalLabel">채팅 목록</h5>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li class="list-group-item">채팅 메시지 1</li>
+						<li class="list-group-item">채팅 메시지 2</li>
+						<li class="list-group-item">채팅 메시지 3</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 알림 모달 -->
+	<div class="modal fade" id="notificationModal" tabindex="-1"
+		aria-labelledby="notificationModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="notificationModalLabel">알림</h5>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li class="list-group-item">알림 1</li>
+						<li class="list-group-item">알림 2</li>
+						<li class="list-group-item">알림 3</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</html>
