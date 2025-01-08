@@ -25,8 +25,8 @@ public class AdminService {
 	public List<MemProPortCate> getMemProPortCate(){
 		return managerMapper.getMemProPortCate();
 	}
-	public void updateProStatus(int proNo, Integer status, String screeningMsg) {
-	    managerMapper.updateProStatus(proNo, status, screeningMsg);
+	public void updateProStatus(int proNo, Integer professorStatus, String screeningMsg) {
+	    managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
 	}
 
 }

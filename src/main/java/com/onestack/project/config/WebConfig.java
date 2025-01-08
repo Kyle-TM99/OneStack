@@ -21,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 		// 회원가입 폼 뷰 전용 컨트롤러 설정 추가
 		registry.addViewController("/joinForm").setViewName("member/joinForm");
 
+		registry.addViewController("/proconversion").setViewName("views/proConversion");
 	}
 
 	@Override

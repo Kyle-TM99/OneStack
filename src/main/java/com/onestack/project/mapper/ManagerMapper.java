@@ -17,7 +17,7 @@ public interface ManagerMapper {
 	public List<MemProPortCate> getMemProPortCate();
 	
 	void updateProStatus(@Param("proNo") int proNo, 
-            @Param("status") Integer status, 
+            @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
 }

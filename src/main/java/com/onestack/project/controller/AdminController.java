@@ -60,10 +60,10 @@ public class AdminController {
     public ResponseEntity<String> reviewPro(@RequestBody Map<String, Object> request) {
         try {
             int proNo = Integer.parseInt(request.get("pro").toString());
-            Integer status = Integer.parseInt(request.get("professorStatus").toString());
+            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
             String screeningMsg = (String) request.get("screeningMsg");
             
-            adminService.updateProStatus(proNo, status, screeningMsg);
+            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
             return ResponseEntity.ok("심사가 완료되었습니다.");
         } catch (Exception e) {
             log.error("심사 처리 중 오류 발생: ", e);

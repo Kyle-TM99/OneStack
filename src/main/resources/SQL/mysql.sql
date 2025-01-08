@@ -41,7 +41,7 @@ CREATE TABLE Professional (
    award_carrer VARCHAR(500) NULL,
    student_count INTEGER DEFAULT 0 NOT NULL,
    rate INTEGER DEFAULT 0 NOT NULL,
-   professor_status INTEGER NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
+   professor_status INTEGER DEFAULT 1 NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
    screening_msg VARCHAR(100) NULL,
    pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
