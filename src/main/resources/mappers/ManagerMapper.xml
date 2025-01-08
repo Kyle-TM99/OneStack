@@ -92,8 +92,16 @@
         <association property="portfolio" resultMap="PortfolioResultMap" />
         <association property="category" resultMap="CategoryResultMap" />        
     </resultMap>
-    
-    
+
+
+
+<!-- 탈회회원 빼고 모든 회원 조회 -->
+<select id="getAllMember" resultType="Member">
+	SELECT *
+	FROM Member
+	WHERE member_type != 2  <!-- 탈퇴회원 제외 -->
+	ORDER BY member_reg_date DESC
+</select>    
 
 <!-- 회원 조회 -->
 <select id = "getMember" parameterType = "int" resultType = "Member">
@@ -170,22 +178,27 @@
 
 
 <!-- 전문가 심사 처리 -->
-<update id = "updateProStatus" parameterType ="map">
-	UPDATE Professional
-	SET professor_status = #{status}, screening_msg = #{screeningMsg}
-	WHERE pro_no = #{pro}
+<update id="updateProStatus" parameterType="map">
+    UPDATE Professional 
+    SET professor_status = #{status}, screening_msg = #{screeningMsg}
+    WHERE pro_no = #{proNo}
 </update>
 
 <!-- 회원, 전문가, 포트폴리오, 카테고리 -->
 <select id = "getMemProPortCate" parameterType = "int" resultMap = "MemProPortCateResultMap">
-	SELECT m.*, p.*, pf.* c.*
+	SELECT m.*, p.*, pf.*, c.*
 	FROM Member m JOIN Professional p
 			ON m.member_no = p.member_no
 		JOIN Portfolio pf
 			ON p.pro_no = pf.pro_no
 		JOIN Category c
 			ON p.item_no = c.item_no
+    WHERE p.professor_status = 1
+    ORDER BY p.pro_date DESC
 </select>
+
+
+
 
 
 
