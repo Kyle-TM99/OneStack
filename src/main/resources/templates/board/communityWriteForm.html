@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
-<!-- <head>
-    TUI 에디터 CSS CDN
+ <head>
+    <!-- TUI 에디터 CSS CDN -->
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-</head> -->
+    
+</head>
+<body>
 <th:block>
     <div layout:fragment="content" class="container py-5">
     
@@ -36,9 +38,9 @@
         <!-- 에디터를 적용할 요소 (컨테이너) -->
         <div id="content" class="my-5"></div>
 
-<!--         <!-- TUI 에디터 JS CDN
-        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script> -->
-       <!--  <script>
+         <!-- TUI 에디터 JS CDN -->
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script> 
+         <script>
              // 페이지가 로드된 후에 실행되도록 변경
             document.addEventListener("DOMContentLoaded", function () {
                 const editor = new toastui.Editor({
@@ -49,7 +51,8 @@
                     previewStyle: 'vertical'                // 마크다운 프리뷰 스타일 (tab || vertical)
                 });
             });
-        </script> -->
+        </script>
     </div>
 </th:block>
+</body>
 </html>

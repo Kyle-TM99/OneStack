@@ -138,13 +138,15 @@ public class MemberController {
     public String findIdForm() {
         return "member/findId";  // findId.html을 보여줌
     }
+    
+    
+   
 
     @PostMapping("/findId")
-    @ResponseBody
-    public Map<String, Object> findId(
+    public String findId(
         @RequestParam(name = "name") String name, 
-        @RequestParam(name = "phone") String phone) {
-        Map<String, Object> response = new HashMap<>();
+        @RequestParam(name = "phone") String phone,
+        Model model) {
         
         try {
             Member member = new Member();
@@ -153,18 +155,19 @@ public class MemberController {
             
             String memberId = memberService.findMemberId(member);
             if (memberId != null) {
-                response.put("status", "success");
-                response.put("memberId", memberId);
+                // 회원정보가 일치하는 경우
+                model.addAttribute("memberId", memberId);
+                model.addAttribute("found", true);
             } else {
-                response.put("status", "error");
-                response.put("message", "일치하는 회원정보가 없습니다.");
+                // 회원정보가 일치하지 않는 경우
+                model.addAttribute("found", false);
             }
         } catch (Exception e) {
-            response.put("status", "error");
-            response.put("message", "처리 중 오류가 발생했습니다.");
+            model.addAttribute("found", false);
         }
         
-        return response;
+        return "member/findId";
     }
+
 
 }
