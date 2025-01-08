@@ -2,32 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
    layout:decorate="~{layouts/main_layout}">
    
+   <head>
+   <link th:href="@{/css/community.css}" rel="stylesheet">
+   </head>
+   
 <th:block>
 <div layout:fragment="content" class="container py-5">
     <!-- 헤더 섹션 -->
     <div class="row mt-5">
-        <div class="col-md-8">
+        <div class="col-md">
             <h2 class="fw-bold">커뮤니티</h2>
             <p class="text-muted">다양한 분야의 사람들과 활발하게 소통해보세요!</p>
-        </div>
-        <div class="col-md-4 d-flex align-items-center justify-content-end">
-            <a href="/communityWriteForm" class="btn custom-button">
-                <i class="bi bi-pencil-square me-2"></i>글쓰기
-            </a>
         </div>
     </div>
 
     <!-- 탭 섹션 -->
-    <div class="row my-5">
-        <div class="col d-flex align-items-center justify-content-center">
-            <a href="/community" class="nav-link active text-center me-5">Community</a>|
-            <a href="/QnA" class="nav-link text-center ms-5">Q&A</a>
-        </div>
+<div class="row my-5">
+    <div class="col-md d-flex align-items-center justify-content-center">
+        <div class="sort-control float-end">
+    <label class="sort-option">
+        <input type="radio" name="sort" checked>
+        <a href="/community" class="text-center me-5 text-decoration-none fw-bold">Community</a>
+    </label>
+    <label class="sort-option">
+        <input type="radio" name="sort">
+        <a href="/QnA" class="text-center ms-5 text-decoration-none">Q&A</a>
+    </label>
+</div>
     </div>
+</div>
 
     <!-- 검색 및 필터 섹션 -->
-    <div class="row mb-4">
-        <div class="col-md-12 d-flex align-items-center justify-content-center">
+    <div class="row my-5">
+    <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <a href="/communityWriteForm" class="btn custom-button">
+                <i class="bi bi-pencil-square me-2"></i>글쓰기
+            </a>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
         <div class="d-flex align-items-center">
             <input type="text" class="search-bar" placeholder="검색어를 입력하세요"
                 style="border: 2px solid #215EA3; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
@@ -41,69 +53,59 @@
             </button>
         </div>
     </div>
-    </div>
-    
-    <div class="row">
-    <div class="col-md">
-        <div class="sort-control float-end">
-            <label class="sort-option">
-                <input type="radio" name="sort" checked>
-                <span>인기순</span>
-            </label>
-            <label class="sort-option">
-                <input type="radio" name="sort">
-                <span>추천순</span>
-            </label>
-        </div>
-    </div>
-</div>
-    
-<!-- 토글 버전  
-  <div class="row">
-	    <div class="col-md">
+	    <div class="col-md-3 d-flex align-items-center justify-content-center">
 	        <div class="segment-control float-end">
 	            <input type="radio" name="sort" id="sort-popular" checked>
 	            <input type="radio" name="sort" id="sort-recommended">
-	            <label for="sort-popular">인기순</label>
+	            <label for="sort-popular">최신순</label>
 	            <label for="sort-recommended">추천순</label>
 	            <div class="segment-indicator"></div>
 	        </div>
 	    </div>
-	</div> -->
-    <!-- <div class="row">
-        <div class="col-md">
-            <div class="float-end" role="group">
-                <input type="radio" name="sort" id="sort-popular" checked>인기순
-                
-                <input type="radio" name="sort" id="sort-recommended">추천순
-            </div>
-        </div>
-    </div> -->
-
-    <!-- 게시물 리스트 -->
-    <div class="row g-4">
-        <!-- 게시물 카드 반복 -->
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h5 class="card-title">게시물 제목</h5>
-                            <p class="card-text text-muted">게시물 내용 미리보기...</p>
-                            <div class="d-flex gap-3">
-                                <span><i class="bi bi-heart"></i> 좋아요 0</span>
-                                <span><i class="bi bi-chat"></i> 댓글 0</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <img src="placeholder.jpg" class="img-fluid rounded" alt="게시물 이미지">
-                            <small class="text-muted d-block text-end mt-2">2024.03.21</small>
-                        </div>
+	</div> 
+    
+<!-- 게시물 리스트 -->
+<div class="row g-4 mt-5">
+    <!-- 게시물 카드 반복 -->
+    <div class="col-12 col-lg-8 mx-auto">  <!-- 가로 사이즈 조절 -->   <!-- 패딩 축소 -->
+                <div class="row mb-2 mx-3">      <!-- 상단 마진 축소 -->
+                    <div class="col d-flex align-items-center justify-content-end">
+                        <i class="bi bi-three-dots"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <div class="row mx-3">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">게시물 제목</h5>
+                                <p class="card-text text-muted">게시물 내용 미리보기...</p>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <img src="placeholder.jpg" class="img-fluid rounded" alt="게시물 이미지">
+                            </div>
+                        </div>
+                
+                       <div class="row">
+						    <div class="col-md-8 mt-3">
+						        <div class="d-flex gap-3">
+						            <span><i class="bi bi-heart"></i> 좋아요 0</span>
+						            <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 0</span>
+						            <span><i class="bi bi-chat"></i> 댓글 0</span>
+						        </div>
+						    </div>
+						    <div class="col-md-4 mt-3 d-flex align-items-center justify-content-end">  <!-- 수정된 부분 -->
+						        <small class="text-muted">2024.03.21</small>
+						    </div>
+						</div>
+		            </div>
+		        </div>
+		        <div class="row">
+				    <div class="col">
+				        <hr class="my-4 opacity-25">
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </th:block>
 </html>

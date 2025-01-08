@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/main_layout}">
+	<head>
+	<link th:href="@{/css/joinForm.css}" rel="stylesheet">
+</head>
+<body>
         <th:block>
             <div layout:fragment="content" class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
                 <div class="d-flex justify-content-center align-items-center vh-80">
@@ -41,4 +45,5 @@
                 </div>
             </div>
         </th:block>
+       </body>
 </html>

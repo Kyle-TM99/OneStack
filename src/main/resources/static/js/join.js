@@ -1,4 +1,4 @@
-$(function(){
+$(document).ready(function() {
   // 정규식 패턴 정의
   const patterns = {
       name: /^[A-Za-z가-힣]{1,5}$/,  // 1~5자로 제한 (DB VARCHAR(5)에 맞춤)
@@ -201,6 +201,29 @@ $(function(){
           });
       }
   });
+  
+  
+  
+  // 생년월일 최대 날짜 설정 (오늘)
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      const maxDate = `${year}-${month}-${day}`;
+      
+      // birth input에 max 속성 설정
+      $("#birth").attr("max", maxDate);
+      
+      // 또는 더 엄격한 제한을 위해 change 이벤트 리스너 추가
+      $("#birth").on("change", function() {
+          const selectedDate = new Date($(this).val());
+          if (selectedDate > today) {
+              alert("미래의 날짜는 선택할 수 없습니다.");
+              $(this).val('');  // 입력값 초기화
+          }
+      });
+  
+  
 
   // 회원가입 폼 제출
   $("#joinForm").on("submit", function(e) {
@@ -262,4 +285,112 @@ $(function(){
           }
       });
   });
+  
+  // 폼 제출 전 모든 필드 유효성 검사
+      $("#joinForm").on("submit", function(e) {
+          e.preventDefault();
+          
+          // 필수 필드 유효성 검사
+          const requiredFields = {
+              name: "이름",
+              memberId: "아이디",
+              pass: "비밀번호",
+              memberPwCheck: "비밀번호 확인",
+              nickname: "닉네임",
+              birth: "생년월일",
+              email: "이메일",
+              phone: "전화번호",
+              zipcode: "우편번호",
+              address: "주소",
+              address2: "상세주소"
+          };
+
+          // 모든 필드가 유효한지 확인
+          let isValid = true;
+          
+          // 필수 필드 입력 확인
+          for (const [field, label] of Object.entries(requiredFields)) {
+              const $field = $(`#${field}`);
+              if (!$field.val()) {
+                  alert(`${label}을(를) 입력해주세요.`);
+                  $field.focus();
+                  isValid = false;
+                  return false;
+              }
+          }
+
+          // 성별 선택 확인
+          if (!$("input[name='gender']:checked").val()) {
+              alert("성별을 선택해주세요.");
+              isValid = false;
+              return false;
+          }
+
+          // 각 필드별 유효성 검사 결과 확인
+          if (!$("#memberId").data("valid")) {
+              alert("아이디 중복 확인이 필요합니다.");
+              $("#memberId").focus();
+              isValid = false;
+              return false;
+          }
+
+          if (!$("#nickname").data("valid")) {
+              alert("닉네임 중복 확인이 필요합니다.");
+              $("#nickname").focus();
+              isValid = false;
+              return false;
+          }
+
+          if (!$("#phone").data("valid")) {
+              alert("전화번호 중복 확인이 필요합니다.");
+              $("#phone").focus();
+              isValid = false;
+              return false;
+          }
+
+          // 비밀번호 일치 확인
+          if ($("#pass").val() !== $("#memberPwCheck").val()) {
+              alert("비밀번호가 일치하지 않습니다.");
+              $("#memberPwCheck").focus();
+              isValid = false;
+              return false;
+          }
+
+          // 모든 검증을 통과한 경우에만 서버로 전송
+          if (isValid) {
+              const formData = {
+                  memberId: $("#memberId").val(),
+                  pass: $("#pass").val(),
+                  name: $("#name").val(),
+                  nickname: $("#nickname").val(),
+                  email: $("#email").val(),
+                  phone: $("#phone").val(),
+                  zipcode: $("#zipcode").val(),
+                  address: $("#address").val(),
+                  address2: $("#address2").val(),
+                  emailGet: $("#emailConsent").is(":checked"),
+                  gender: $("input[name='gender']:checked").val(),
+                  birth: $("#birth").val()
+              };
+
+              $.ajax({
+                  url: "/join",
+                  type: "POST",
+                  contentType: "application/json",
+                  data: JSON.stringify(formData),
+                  success: function(response) {
+                      if(response.status === "success") {
+                          alert("회원가입이 완료되었습니다.");
+                          window.location.href = "/loginForm";
+                      } else {
+                          alert(response.message || "회원가입에 실패했습니다.");
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error("Error:", error);
+                      alert("서버 오류가 발생했습니다.");
+                  }
+              });
+          }
+      });
 });

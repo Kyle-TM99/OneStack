@@ -13,4 +13,8 @@ public class BoardController {
 	public String loginForm(Model model) {
 		return "board/community";
 	}
+	@GetMapping("/communityWriteForm")
+	public String joinForm(Model model) {
+		return "board/communityWriteForm";
+	}
 }
