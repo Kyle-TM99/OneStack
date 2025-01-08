@@ -44,7 +44,7 @@ public class AdminController {
         return "adminDashboard/membershipManagement/suspendedMembers";
     }
 
-    @GetMapping("withdrawnMembers")
+    @GetMapping("/withdrawnMembers")
     public String getWithdrawnDashboard() {
         return "adminDashboard/membershipManagement/withdrawnMembers";
     }
@@ -59,7 +59,7 @@ public class AdminController {
     @PostMapping("/reviewPro")
     public ResponseEntity<String> reviewPro(@RequestBody Map<String, Object> request) {
         try {
-            int proNo = Integer.parseInt(request.get("pro").toString());
+            int proNo = Integer.parseInt(request.get("proNo").toString());
             Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
             String screeningMsg = (String) request.get("screeningMsg");
             
@@ -71,11 +71,29 @@ public class AdminController {
                                .body("심사 처리 중 오류가 발생했습니다.");
         }
     }
+    
+    @PostMapping("/updateReviewPro")
+    public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
+        try {
+            int proNo = Integer.parseInt(request.get("proNo").toString());
+            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
+            String screeningMsg = (String) request.get("screeningMsg");
+            
+            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
+            return ResponseEntity.ok("승인수정이 완료되었습니다.");
+        } catch (Exception e) {
+            log.error("승인 수정 처리 중 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body("승인 수정 중 오류가 발생했습니다.");
+        }
+    }
 
 
     
     @GetMapping("/reviewProcessingDetails")
-	public String getReviewProcessingDetails() {
+	public String getReviewProcessingDetails(Model model) {
+    	List<MemProPortCate> pList = adminService.getMemProPortCate();
+    	model.addAttribute("pro", pList);
 		return "adminDashboard/screeningManagement/reviewProcessingDetails";
 	}
     
