@@ -1,10 +1,9 @@
 package com.onestack.project.controller;
 
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.Map;
 
-import com.onestack.project.domain.SurveyWithCategory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
