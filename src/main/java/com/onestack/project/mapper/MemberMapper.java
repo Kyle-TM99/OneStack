@@ -18,6 +18,8 @@ public interface MemberMapper {
 	
 	public int checkNickname(String nickname);
 	
+	public int checkEmail(String email);
+	
 	public int checkPhone(String phone);
 	
 	public String findMemberId(Member member); 

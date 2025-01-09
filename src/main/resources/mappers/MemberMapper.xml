@@ -34,6 +34,13 @@
     WHERE nickname = #{nickname}
 </select>
 
+<!-- 이메일 중복 체크 -->
+<select id="checkEmail" parameterType="String" resultType="int">
+    SELECT COUNT(*) 
+    FROM Member 
+    WHERE email = #{email}
+</select>
+
 <!-- 전화번호 중복 체크 -->
 <select id="checkPhone" parameterType="String" resultType="int">
     SELECT COUNT(*) 

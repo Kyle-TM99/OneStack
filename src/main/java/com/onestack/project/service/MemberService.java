@@ -51,6 +51,9 @@ public class MemberService {
     public int checkNickname(String nickname) {
         return memberMapper.checkNickname(nickname);
     }
+    public int checkEmail(String email) {
+    	return memberMapper.checkEmail(email);
+    }
 
     public int checkPhone(String phone) {
         return memberMapper.checkPhone(phone);
