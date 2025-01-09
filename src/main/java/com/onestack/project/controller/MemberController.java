@@ -103,6 +103,7 @@ public class MemberController {
 		 * gender: $("input[name='gender']:checked").val(), birth: $("#birth").val()
 		 */
     }
+    
 
     @PostMapping("/checkId")
     @ResponseBody
