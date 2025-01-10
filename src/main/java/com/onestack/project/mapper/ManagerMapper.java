@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.onestack.project.domain.MemProPortCate;
 import com.onestack.project.domain.Member;
 import com.onestack.project.domain.Professional;
 
@@ -13,10 +14,10 @@ public interface ManagerMapper {
 	
 	public List<Member> getAllMember();
 	
-	public List<Professional> getRequestPro();
+	public List<MemProPortCate> getMemProPortCate();
 	
 	void updateProStatus(@Param("proNo") int proNo, 
-            @Param("status") Integer status, 
+            @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
 }

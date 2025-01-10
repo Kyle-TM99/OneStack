@@ -180,7 +180,7 @@
 <!-- 전문가 심사 처리 -->
 <update id="updateProStatus" parameterType="map">
     UPDATE Professional 
-    SET professor_status = #{status}, screening_msg = #{screeningMsg}
+    SET professor_status = #{professorStatus}, screening_msg = #{screeningMsg}
     WHERE pro_no = #{proNo}
 </update>
 
@@ -193,7 +193,6 @@
 			ON p.pro_no = pf.pro_no
 		JOIN Category c
 			ON p.item_no = c.item_no
-    WHERE p.professor_status = 1
     ORDER BY p.pro_date DESC
 </select>
 
