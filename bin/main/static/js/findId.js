@@ -18,7 +18,7 @@ $(function() {
     return memberId.substring(0, visibleLength) + "*".repeat(length - visibleLength);
 }
 
-  // 페이지 로드 시 �스킹 처리
+  // 페이지 로드 시 마스킹 처리
   if ($("#resultModal").is(":visible")) {
       const idElement = $("#maskedId");
       const originalId = idElement.attr("data-id");

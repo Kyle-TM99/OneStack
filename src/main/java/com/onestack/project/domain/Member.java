@@ -18,7 +18,6 @@ public class Member {
     private Integer memberNo;
     private String name;
     private String memberId;
-    private String kakaoId;
     private String pass;
     private String nickname;
     private Date birth;
@@ -38,5 +37,5 @@ public class Member {
     private Timestamp banEndDate;
     private Integer reportedCount;
     private boolean isSocial;
-    private Integer socialType;
+    private String socialType;
 }

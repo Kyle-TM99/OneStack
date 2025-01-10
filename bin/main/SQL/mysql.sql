@@ -8,7 +8,6 @@ CREATE TABLE Member (
    member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(5) NOT NULL,
    member_id VARCHAR(20) UNIQUE NOT NULL,
-   kakao_id VARCHAR(50) UNIQUE NULL,
    pass VARCHAR(100) NULL,
    nickname VARCHAR(20) UNIQUE NOT NULL,
    birth DATE NOT NULL,
@@ -16,7 +15,7 @@ CREATE TABLE Member (
    zipcode   VARCHAR(5) NOT NULL,
    address   VARCHAR(50) NOT NULL,
    address2 VARCHAR(50) NOT NULL,
-   email VARCHAR(30) NOT NULL,
+   email VARCHAR(30) UNIQUE NOT NULL,
    email_get TINYINT DEFAULT 1 NOT NULL, -- 1(수신) 0(비수신) --
    phone VARCHAR(13) UNIQUE NOT NULL,
    member_reg_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
