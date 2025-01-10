@@ -8,6 +8,7 @@
 </head>
 <body>
     <!-- 전체를 감싸는 컨테이너 추가 -->
+    
     <div class="d-flex flex-column min-vh-100">
         <!-- 테이블을 감싸는 영역 -->
         <div class="flex-grow-1">
@@ -97,15 +98,14 @@
         </div>
     </div>
     
-    <!-- 테이블 아래에 모달 추가 -->
-    <div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="memberModalLabel">회원 상세 정보</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+	<div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="memberModalLabel">회원 상세 정보</h5>
+	                <button type="button" class="btn btn-outline-secondary close-custom-btn" data-modal-id="memberModal">X</button>
+	            </div>
+	            <div class="modal-body">
                     <form id="memberForm">
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -151,7 +151,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-Secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-outline-Secondary close-custom-btn" data-modal-id="memberModal">취소</button>
                     <button type="button" class="btn btn-outline-primary" id="saveChanges">변경사항 저장</button>
                 </div>
             </div>

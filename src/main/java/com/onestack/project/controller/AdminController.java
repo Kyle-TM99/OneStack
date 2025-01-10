@@ -11,10 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
+
+import com.onestack.project.domain.MemProPortCate;
 import com.onestack.project.domain.Member;
-import com.onestack.project.domain.Professional;
 import com.onestack.project.service.AdminService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,14 +44,14 @@ public class AdminController {
         return "adminDashboard/membershipManagement/suspendedMembers";
     }
 
-    @GetMapping("withdrawnMembers")
+    @GetMapping("/withdrawnMembers")
     public String getWithdrawnDashboard() {
         return "adminDashboard/membershipManagement/withdrawnMembers";
     }
     
     @GetMapping("/reviewPendingInquiry")
 	public String getReviewPendingInquiry(Model model) {
-    	List<Professional> pList = adminService.getRequestPro();
+    	List<MemProPortCate> pList = adminService.getMemProPortCate();
     	model.addAttribute("pro", pList);
 		return "adminDashboard/screeningManagement/reviewPendingInquiry";
 	}
@@ -59,11 +59,11 @@ public class AdminController {
     @PostMapping("/reviewPro")
     public ResponseEntity<String> reviewPro(@RequestBody Map<String, Object> request) {
         try {
-            int proNo = Integer.parseInt(request.get("pro").toString());
-            Integer status = Integer.parseInt(request.get("professorStatus").toString());
+            int proNo = Integer.parseInt(request.get("proNo").toString());
+            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
             String screeningMsg = (String) request.get("screeningMsg");
             
-            adminService.updateProStatus(proNo, status, screeningMsg);
+            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
             return ResponseEntity.ok("심사가 완료되었습니다.");
         } catch (Exception e) {
             log.error("심사 처리 중 오류 발생: ", e);
@@ -71,11 +71,29 @@ public class AdminController {
                                .body("심사 처리 중 오류가 발생했습니다.");
         }
     }
+    
+    @PostMapping("/updateReviewPro")
+    public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
+        try {
+            int proNo = Integer.parseInt(request.get("proNo").toString());
+            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
+            String screeningMsg = (String) request.get("screeningMsg");
+            
+            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
+            return ResponseEntity.ok("승인수정이 완료되었습니다.");
+        } catch (Exception e) {
+            log.error("승인 수정 처리 중 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body("승인 수정 중 오류가 발생했습니다.");
+        }
+    }
 
 
     
     @GetMapping("/reviewProcessingDetails")
-	public String getReviewProcessingDetails() {
+	public String getReviewProcessingDetails(Model model) {
+    	List<MemProPortCate> pList = adminService.getMemProPortCate();
+    	model.addAttribute("pro", pList);
 		return "adminDashboard/screeningManagement/reviewProcessingDetails";
 	}
     
