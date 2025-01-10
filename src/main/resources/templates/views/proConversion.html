@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/main_layout}">
+
+<body>
+<div layout:fragment="content"
+	class="d-flex align-items-center justify-content-center"
+	style="min-height: 100vh;">
+	<div class="d-flex align-items-center justify-content-center vh-80">
+		<div class="container">
+			<h3 class="fw-bold mt-5 text-center">전문가 전환 신청서</h3>
+			<p class="text-muted mt-3 mb-5 text-center">쉽고 간편한 외주 서비스</p>
+			<div class="card" style="width: 800px" >
+
+				<form id="auditForm" method="post">
+
+					<div class="row">
+						<div class="form-field">
+							<label for="name">&nbsp;이름</label> 
+							<input id="name" name="name" type="text" class="form-control mb-2" maxlength="5" readonly>
+							<small id="nameMessage" class="form-text"></small>
+							<small class="text-muted d-block">최대 5자까지 입력 가능합니다.</small>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-field">
+							<label for="memberId">&nbsp;닉네임</label>
+							<div class="input-group custom-border mb-2">
+								<input id="memberId" name="memberId" type="text"
+									class="form-control" readonly>
+							</div>
+							<small id="memberIdMessage" class="form-text"></small>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-field mb-3">
+							<label for="phone">&nbsp;핸드폰</label> 
+							<input id="pnone" name="phone" type="text" class="form-control mb-2" readonly>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-field">
+							<label for="email">&nbsp;이메일 *</label>
+							<input id="email" type="email" class="form-control">
+						</div>
+					</div>
+					<div class="row mt-3">
+					<div class="form-field">
+						<label for="itemTitle">&nbsp;전문분야 *</label>
+						<select class="form-select mb-3" id="itemTitle" required>
+						  <option value="" hidden>전문분야를 선택해주세요.</option>
+						  <option value="11">기획</option>
+						  <option value="12">웹</option>
+						  <option value="13">소프트웨어</option>
+						  <option value="14">안드로이드</option>
+						  <option value="15">ios</option>
+						  <option value="16">게임</option>
+						  <option value="17">AI</option>
+						  <option value="18">QA 및 테스트</option>
+						  <option value="21">가공 및 라벨링</option>
+						  <option value="22">데이터 복구</option>
+						  <option value="23">크롤링</option>
+						  <option value="24">DB 구축</option>
+						  <option value="25">통계분석</option>
+						</select>
+						</div>
+					</div> 
+
+				<div class="form-field">
+						<label for="SelfIntroduction">&nbsp;자기소개 *</label> <input type="text"
+							class="form-control" id="SelfIntroduction" name="SelfIntroduction" required>
+							<small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
+				</div>
+					
+				<div class="form-field my-5">
+					<div class="d-flex justify-content-between align-items-center">
+					    <label for="proHistory">경력 *</label>
+					    <button type="button" id="addProHistoryBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+					</div>
+					<div id="proHistoryContainer">
+					    <input type="text" class="form-control" name="proHistory">
+					    </div>
+				</div>
+
+				<div class="form-field my-5">
+					<div class="d-flex justify-content-between align-items-center">
+					    <label for="awards">수상경력 *</label>
+					    <button type="button" id="addAwardsBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+					</div>
+					<div id="awardsContainer">
+					    <input type="text" class="form-control" name="awards">
+					    </div>
+				</div>
+				<div class="form-field my-5">
+					<div class="d-flex justify-content-between align-items-center">
+					    <label for="portfolio">포트폴리오 *</label>
+					    <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+					</div>
+					<div id="portfolioContainer">
+					    <input type="text" class="form-control" name="portfolio">
+					    </div>
+				</div>
+					<button type="submit" class="custom-button2 w-100 my-5">심사 요청</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
