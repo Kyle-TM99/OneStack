@@ -17,9 +17,9 @@
 			<p class="text-muted mt-3 mb-5 text-center">쉽고 간편한 외주 서비스</p>
 			<div class="card" style="width: 100%; max-width: 500px;">
 				<form action="/oauth/kakao/register" method="post">
-				<input type="hidden" name="id" th:value="${kakaoId}">
-					<input type="hidden" name="nickname" th:value="${nickname}">
-					<input type="hidden" name="profileImage" th:value="${profileImage}">
+				<input type="hidden" name="memberId" th:value="${kakaoId}">
+					<input type="hidden" name="name" th:value="${nickname}">
+					<input type="hidden" name="memberImage" th:value="${profileImage}">
 
 					<div class="row mb-3">
 						<div class="form-field">

@@ -59,6 +59,7 @@ public class KakaoController {
         Model model) {
         
         log.info("=== Kakao Callback Start ===");
+        log.info("REDIRECT_URI: {}", REDIRECT_URI);
         
         // 에러가 있는 경우 처리
         if (error != null) {
@@ -91,14 +92,14 @@ public class KakaoController {
                 log.info("Existing member found. Logging in...");
                 session.setAttribute("member", existingMember);
                 session.setAttribute("isLogin", true);
-                return "redirect:/mainList";
+                return "redirect:/mainPage";
             } else {
                 // 5b. 신규 회원이면 추가 정보 입력 페이지로
                 log.info("New member. Redirecting to additional info page...");
                 model.addAttribute("kakaoId", kakaoId);
                 model.addAttribute("nickname", nickname);
                 model.addAttribute("profileImage", profileImage);
-                return "member/kakaoAdditionalInfo";
+                return "member/kakaoAddJoinForm";
             }
         } catch (Exception e) {
             log.error("Error in Kakao callback: ", e);
@@ -165,7 +166,7 @@ public class KakaoController {
             session.setAttribute("isLogin", true);
             
             
-            return "redirect:/mainList";
+            return "redirect:/mainPage";
             
         } catch (Exception e) {
             log.error("카카오 멤버에서 에러 확인: {}", e.getMessage(), e);
@@ -187,8 +188,7 @@ public class KakaoController {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(parameters, headers);
         
         try {
-            log.info("=== Token Request Start ===");
-            log.info("Parameters: {}", parameters);
+            log.info("Token Request Parameters: {}", parameters);
             
             ResponseEntity<String> response = restTemplate.postForEntity(
                 "https://kauth.kakao.com/oauth/token",
