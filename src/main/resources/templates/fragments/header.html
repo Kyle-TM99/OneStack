@@ -57,11 +57,21 @@
 							<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
 							<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
 						</th:block>
-						
+
 						<!-- 로그인한 경우에만 보이는 버튼들 -->
 						<th:block th:if="${session.isLogin}">
 							<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
-							<a class="btn btn-outline-dark btn-sm" href="memberLogout">로그아웃</a>
+							<th:block th:if="${session.member != null}">
+								<th:block th:if="${session.member.socialType == 'none'}">
+									<li><a class="btn btn-outline-dark btn-sm" href="/logout">로그아웃</a></li>
+								</th:block>
+								<th:block th:if="${session.member.socialType == 'kakao'}">
+									<li><a class="btn btn-outline-dark btn-sm" href="/oauth/kakao/logout">로그아웃</a></li>
+								</th:block>
+								<th:block th:if="${session.member.socialType == 'google'}">
+									<li><a class="btn btn-outline-dark btn-sm" href="/google/logout">로그아웃</a></li>
+								</th:block>
+							</th:block>
 						</th:block>
 					</div>
 				</div>
