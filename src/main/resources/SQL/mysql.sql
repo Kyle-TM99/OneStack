@@ -307,3 +307,12 @@ CREATE TABLE FAQ (
    faq_question VARCHAR(100) NOT NULL,
    faq_response VARCHAR(500) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+## 비밀번호 찾기 테이블
+CREATE TABLE PasswordResetToken (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id VARCHAR(50) NOT NULL,
+    token VARCHAR(100) NOT NULL,
+    expiry_date DATETIME NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES Member(member_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
