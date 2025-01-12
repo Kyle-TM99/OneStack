@@ -50,15 +50,6 @@
         <result property="portfolioTitle" column="portfolio_title" />
         <result property="portfolioContent" column="portfolio_content" />
         <result property="visibility" column="visibility" />
-    </resultMap>
-      
-    <resultMap id="PortfolioWithImagesResultMap" type="com.onestack.project.domain.PortfolioWithImages">
-        <id property="portfolioNo" column="portfolio_no" />
-        <result property="proNo" column="pro_no" />
-        <result property="proAdvancedNo" column="pro_advanced_no" />
-        <result property="portfolioTitle" column="portfolio_title" />
-        <result property="portfolioContent" column="portfolio_content" />
-        <result property="visibility" column="visibility" />
         <result property="thumbnailImage" column="thumbnail_image" />
         <result property="portfolioFile1" column="portfolio_file1" />
         <result property="portfolioFile2" column="portfolio_file2" />
@@ -71,6 +62,7 @@
         <result property="portfolioFile9" column="portfolio_file9" />
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
+      
     
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
@@ -83,7 +75,7 @@
             
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolioWithImages" resultMap="PortfolioWithImagesResultMap" />        
+        <association property="portfolio" resultMap="PortfolioResultMap" />        
     </resultMap>
     
     <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">

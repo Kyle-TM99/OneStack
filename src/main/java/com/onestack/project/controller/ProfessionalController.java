@@ -32,5 +32,10 @@ public class ProfessionalController {
 
 	}
 
-
+	@GetMapping("/findPro")
+	public String getProList() {
+		return "views/findPro";
+	}
+	
+	
 }

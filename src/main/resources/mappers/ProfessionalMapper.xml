@@ -91,12 +91,11 @@
 
 
 <!-- 포트폴리오, 이미지 조회 -->
-<select id = "getPortfolio" parameterType = "int" resultType = "PortfolioWithImages">
-	SELECT p.*, pi.*
-	FROM Portfolio p JOIN PortfolioImages pi
-		ON p.portfolio_no = pi.portfolio_no
+<select id = "getPortfolio" parameterType = "int" resultType = "Portfolio">
+	SELECT *
+	FROM Portfolio p 
 	WHERE p.pro_no = #{proNo}
-		AND p.visibility = 1
+		AND visibility = 1
 </select>
 
 <!-- 포트폴리오 추가 -->

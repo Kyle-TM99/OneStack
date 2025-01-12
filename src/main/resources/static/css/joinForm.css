@@ -91,38 +91,3 @@ body {
 .form-field .gender-options input {
     margin-right: 20px;
 }
---body {
-background-color: #f9f9f9;
- }
-   .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
-        }
-
-        .btn-primary {
-            background-color: #4A90E2;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #357ABD;
-        }
-
-        .form-floating label {
-            color: #6c757d;
-        }
-
-        .form-floating input:focus {
-            box-shadow: none;
-            border-color: #4A90E2;
-        }
-
-        .kakao-login img {
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .pw-match-message {
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-        }
