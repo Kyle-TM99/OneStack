@@ -1,8 +1,10 @@
 package com.onestack.project.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.onestack.project.domain.Member;
+import com.onestack.project.domain.PasswordResetToken;
 
 @Mapper
 public interface MemberMapper {
@@ -23,4 +25,13 @@ public interface MemberMapper {
 	public int checkPhone(String phone);
 	
 	public String findMemberId(Member member); 
+
+	public void savePasswordResetToken(PasswordResetToken token);
+
+	public PasswordResetToken findByToken(String token);
+
+	public void updatePassword(@Param("memberId") String memberId, @Param("newPassword") String newPassword);
+
+	public void deletePasswordResetToken(String token);
+
 }

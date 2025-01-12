@@ -165,6 +165,31 @@
 	WHERE member_no = #{memberNo}
 </select>
 
+<!-- 비밀번호 재설정 토큰 저장 -->
+<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
+    INSERT INTO PasswordResetToken (member_id, token, expiry_date)
+    VALUES (#{memberId}, #{token}, #{expiryDate})
+</insert>
+
+<!-- 토큰으로 비밀번호 재설정 정보 조회 -->
+<select id="findByToken" parameterType="String" resultType="PasswordResetToken">
+    SELECT * FROM PasswordResetToken 
+    WHERE token = #{token}
+</select>
+
+<!-- 비밀번호 업데이트 -->
+<update id="updatePassword">
+    UPDATE member 
+    SET pass = #{newPassword} 
+    WHERE member_id = #{memberId}
+</update>
+
+<!-- 사용된 토큰 삭제 -->
+<delete id="deletePasswordResetToken" parameterType="String">
+    DELETE FROM PasswordResetToken 
+    WHERE token = #{token}
+</delete>
+
 
 
 
