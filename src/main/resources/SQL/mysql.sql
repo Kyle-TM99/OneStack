@@ -75,13 +75,6 @@ CREATE TABLE Portfolio (
    portfolio_title   VARCHAR(20)   NOT NULL,
    portfolio_content VARCHAR(500) NOT NULL,
    visibility   TINYINT DEFAULT 1 NOT NULL, -- 1(공개) 0(비공개) -- 
-    CONSTRAINT pro_no_portfolio_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE,
-    CONSTRAINT pro_advanced_no_portfolio_fk FOREIGN KEY (pro_advanced_no) REFERENCES ProfessionalAdvancedInformation(pro_advanced_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-## PortfolioImages - 포트폴리오 이미지
-CREATE TABLE PortfolioImages (
-   portfolio_no INTEGER NOT NULL,
    thumbnail_image VARCHAR(100) NOT NULL,
    portfolio_file1   VARCHAR(100) NOT NULL,
    portfolio_file2   VARCHAR(100) NULL,
@@ -93,8 +86,10 @@ CREATE TABLE PortfolioImages (
    portfolio_file8   VARCHAR(100) NULL,
    portfolio_file9   VARCHAR(100) NULL,
    portfolio_file10 VARCHAR(100) NULL,
-    CONSTRAINT portfolio_no_portfolioImage_fk FOREIGN KEY (portfolio_no) REFERENCES Portfolio(portfolio_no) ON DELETE CASCADE
+    CONSTRAINT pro_no_portfolio_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE,
+    CONSTRAINT pro_advanced_no_portfolio_fk FOREIGN KEY (pro_advanced_no) REFERENCES ProfessionalAdvancedInformation(pro_advanced_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 ## Survey - 설문조사
 CREATE TABLE Survey (

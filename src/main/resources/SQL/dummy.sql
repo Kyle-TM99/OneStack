@@ -53,14 +53,14 @@ VALUES
     (6, 16, 'PC', '미드(4~9년)', '어떤 방식이든 상관없어요', NULL, NULL);
 
 -- 포트폴리오
-INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content)
+INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content,thumbnail_image,portfolio_file1)
 VALUES
-    (1, 1, '기획 프로젝트 A', '대규모 프로젝트 기획 및 실행 사례'),
-    (2, 2, '웹 프로젝트 B', '고객 웹사이트 제작 및 유지 보수 경험'),
-    (3, 3, '소프트웨어 프로젝트 C', '다양한 소프트웨어 개발 프로젝트 사례'),
-    (4, 4, '모바일 앱 프로젝트 D', 'Android 앱 개발 및 배포 사례'),
-    (5, 5, 'iOS 앱 프로젝트 E', 'iOS 앱 개발 및 사용자 경험 개선'),
-    (6, 6, '게임 프로젝트 F', '다수의 인기 게임 개발 사례');
+    (1, 1, '기획 프로젝트 A', '대규모 프로젝트 기획 및 실행 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
+    (2, 2, '웹 프로젝트 B', '고객 웹사이트 제작 및 유지 보수 경험', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
+    (3, 3, '소프트웨어 프로젝트 C', '다양한 소프트웨어 개발 프로젝트 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
+    (4, 4, '모바일 앱 프로젝트 D', 'Android 앱 개발 및 배포 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
+    (5, 5, 'iOS 앱 프로젝트 E', 'iOS 앱 개발 및 사용자 경험 개선', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
+    (6, 6, '게임 프로젝트 F', '다수의 인기 게임 개발 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link');
 
 -- 관리자
 INSERT INTO Manager (manager_name, manager_pass, member_type, manager_image)
