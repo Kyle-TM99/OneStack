@@ -190,7 +190,4 @@
     WHERE token = #{token}
 </delete>
 
-
-
-
 </mapper>
