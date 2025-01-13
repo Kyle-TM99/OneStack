@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM 로드 완료');
+
     // 경력 추가 버튼 동작
     const addCarrerBtn = document.getElementById('addCarrerBtn');
     const carrerContainer = document.getElementById('carrerContainer');
     if (addCarrerBtn) {
         addCarrerBtn.addEventListener('click', function () {
-            const carrerCount = carrerContainer.children.length + 1; // 현재 입력 필드 수
+            const carrerCount = carrerContainer.children.length + 1;
             const newCarrerInput = document.createElement('div');
             newCarrerInput.className = 'mb-3';
             newCarrerInput.setAttribute('id', `carrerDiv${carrerCount}`);
@@ -24,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const awardsContainer = document.getElementById('awardsContainer');
     if (addAwardCarrerBtn) {
         addAwardCarrerBtn.addEventListener('click', function () {
-            const awardsCount = awardsContainer.children.length + 1; // 현재 입력 필드 수
+            const awardsCount = awardsContainer.children.length + 1;
             const newAwardInput = document.createElement('div');
             newAwardInput.className = 'mb-3';
             newAwardInput.setAttribute('id', `awardDiv${awardsCount}`);
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const targetId = event.target.getAttribute('data-target');
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
-                targetElement.remove(); // 해당 요소 삭제
+                targetElement.remove();
             }
         }
     });
@@ -57,30 +59,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const applicationForm = document.getElementById('applicationForm');
     if (addPortfolioBtn) {
         addPortfolioBtn.addEventListener('click', function () {
-            // 레이아웃 변경: applicationForm을 왼쪽으로 이동, surveyContainer를 표시
             surveyContainer.style.display = 'block';
             applicationFormContainer.classList.add('justify-content-between');
             applicationForm.classList.replace('col-md-6', 'col-md-4');
             surveyContainer.classList.replace('col-md-6', 'col-md-8');
 
-            // 설문조사 로드
             const itemNoElement = document.getElementById('itemNo');
             const selectedItemValue = itemNoElement.value;
 
             if (!selectedItemValue) {
-                console.error('전문분야 선택 값이 비어있습니다.');
                 alert('전문분야를 선택해주세요.');
                 return;
             }
-            console.log('Selected itemNo:', selectedItemValue);
 
-            fetch('/survey?itemNo=' + selectedItemValue)
+            fetch(`/survey?itemNo=${selectedItemValue}`)
                 .then(response => {
-                    if (!response.ok) throw new Error('Failed to load survey');
+                    if (!response.ok) throw new Error('설문조사 로드 실패');
                     return response.text();
                 })
                 .then(html => {
-                    surveyContainer.innerHTML = html; // 설문조사 내용 삽입
+                    surveyContainer.innerHTML = html;
                 })
                 .catch(error => {
                     console.error(error);
@@ -89,55 +87,100 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 포트폴리오 제출 버튼 동작
-    const submitPortfolioBtn = document.getElementById('submitPortfolioBtn'); // 포트폴리오 제출 버튼
-    if (submitPortfolioBtn) {
-        submitPortfolioBtn.addEventListener('click', function () {
-            // 입력된 데이터를 가져오기
-            const portfolioTitle = document.getElementById('portfolioTitle').value;
-            const portfolioContent = document.getElementById('portfolioContent').value;
-            const thumbnailImage = document.getElementById('thumbnailImage').files[0];
-            const portfolioFile1 = document.getElementById('portfolioFile1').files[0];
+    // 설문조사 및 포트폴리오 제출
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.id === 'submitPortfolioBtn') {
+            const portfolioTitle = document.getElementById('portfolioTitle')?.value.trim();
+            const portfolioContent = document.getElementById('portfolioContent')?.value.trim();
+            const thumbnailImageInput = document.getElementById('thumbnailImage');
+            const portfolioFileInputs = Array.from(document.querySelectorAll('[id^="portfolioFile"]'));
 
-            // 데이터 확인
-            console.log('포트폴리오 제목:', portfolioTitle);
-            console.log('포트폴리오 내용:', portfolioContent);
-            console.log('썸네일 이미지:', thumbnailImage);
-            console.log('파일 1:', portfolioFile1);
+            if (!portfolioTitle) {
+                alert('포트폴리오 제목을 입력해주세요.');
+                return;
+            }
 
-            // 데이터를 FormData로 준비
-            const formData = new FormData();
-            formData.append('portfolioTitle', portfolioTitle);
-            formData.append('portfolioContent', portfolioContent);
-            formData.append('thumbnailImage', thumbnailImage);
-            formData.append('portfolioFile1', portfolioFile1);
+            if (!portfolioContent) {
+                alert('포트폴리오 내용을 입력해주세요.');
+                return;
+            }
 
-            // proConversion.html로 데이터 전송
-            fetch('/proConversion/receivePortfolio', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // proConversion.html의 폼에 데이터 추가
-                        const form = document.getElementById('applicationForm');
-                        form.insertAdjacentHTML('beforeend', `
-                            <input type="hidden" name="portfolioTitle" value="${portfolioTitle}">
-                            <input type="hidden" name="portfolioContent" value="${portfolioContent}">
-                            <input type="hidden" name="thumbnailImage" value="${data.thumbnailPath}">
-                            <input type="hidden" name="portfolioFile1" value="${data.filePath}">
-                        `);
+            if (!thumbnailImageInput?.files.length) {
+                alert('썸네일 이미지를 추가해주세요.');
+                return;
+            }
 
-                        alert('포트폴리오 데이터가 성공적으로 추가되었습니다!');
-                    } else {
-                        alert('포트폴리오 데이터를 추가하는 데 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다.');
-                });
+            const thumbnailImage = thumbnailImageInput.files[0].name;
+            const portfolioFiles = portfolioFileInputs
+                .filter(fileInput => fileInput.files.length > 0)
+                .map(fileInput => fileInput.files[0].name);
+
+            if (!portfolioFiles.length) {
+                alert('포트폴리오 파일을 추가해주세요.');
+                return;
+            }
+
+            const surveyAnswers = Array.from(document.querySelectorAll('[name^="answer_"]:checked')).map(input => ({
+                surveyNo: input.name.replace('answer_', ''),
+                answer: input.value,
+            }));
+
+            const dataToSend = {
+                portfolioTitle,
+                portfolioContent,
+                thumbnailImage,
+                portfolioFiles,
+                surveyAnswers,
+            };
+
+            console.log('전송 데이터:', dataToSend);
+            window.parent.postMessage(dataToSend, '*');
+        }
+    });
+	document.getElementById('addFileButton').addEventListener('click', function () {
+	    const portfolioFilesContainer = document.getElementById('portfolioFiles');
+	    const fileCount = portfolioFilesContainer.querySelectorAll('input[type="file"]').length;
+
+	    if (fileCount >= 10) {
+	        alert('최대 10개의 파일만 추가할 수 있습니다.');
+	        return;
+	    }
+
+	    const newFileInput = document.createElement('input');
+	    newFileInput.type = 'file';
+	    newFileInput.className = 'form-control mt-2';
+	    newFileInput.name = `portfolioFile${fileCount + 1}`;
+	    newFileInput.accept = '*';
+
+	    portfolioFilesContainer.appendChild(newFileInput);
+	});
+
+
+    // proConversion에서 데이터 수신 및 반영
+    window.addEventListener('message', function (event) {
+        console.log('받은 데이터:', event.data);
+
+        const { portfolioTitle, portfolioContent, surveyAnswers, thumbnailImage, portfolioFiles } = event.data;
+
+        surveyAnswers.forEach((answer, index) => {
+            const answerField = document.querySelector(`[name="proAnswer${index + 1}"]`);
+            if (answerField) {
+                answerField.value = answer.answer;
+            }
         });
-    }
+
+        document.querySelector('[name="portfolioTitle"]').value = portfolioTitle;
+        document.querySelector('[name="portfolioContent"]').value = portfolioContent;
+
+        document.getElementById('thumbnailImage').value = thumbnailImage;
+
+        const portfolioFilesDisplay = document.getElementById('portfolioFilesDisplay');
+        if (portfolioFilesDisplay) {
+            portfolioFilesDisplay.innerHTML = portfolioFiles.map(file => `<li>${file}</li>`).join('');
+        }
+
+        surveyContainer.style.display = 'none';
+        applicationFormContainer.classList.remove('justify-content-between');
+        applicationForm.classList.replace('col-md-4', 'col-md-6');
+    });
 });

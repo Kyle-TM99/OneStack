@@ -91,35 +91,56 @@
                                 <label for="portfolio">포트폴리오 *</label>
                                 <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
                             </div>
-                            <label for="portfolioTitle">포트폴리오 제목 *</label>
-                            <input type="text" class="form-control mb-2" name="portfolioTitle" required readonly>
-                            <label for="portfolioContent">포트폴리오 내용 *</label>
-                            <textarea id="portfolioContent" name="portfolioContent" class="form-control" required readonly></textarea>
-                            <label for="thumbnailImage">썸네일 이미지</label>
-                            <input type="file" class="form-control mb-2" name="thumbnailImage">
+		                        <label for="portfolioTitle">포트폴리오 제목 *</label>
+		                        <input type="text" class="form-control mb-2" name="portfolioTitle" required readonly>
+		                        <label for="portfolioContent">포트폴리오 내용 *</label>
+		                        <textarea class="form-control mb-2" name="portfolioContent" required readonly></textarea>
+								<!-- 썸네일 이미지 표시 -->
+								<label for="thumbnailImage">썸네일 이미지</label>
+								<!-- <input type="text" class="form-control mb-2" id="thumbnailImage" name="thumbnailImage" required readonly> -->
+								<div id="thumbnailImageDisplay" class="text-muted"></div>
+								
+								<!-- 포트폴리오 파일 표시 -->
+								<label for="portfolioFile1">포트폴리오 이미지</label>
+								<ul id="portfolioFilesDisplay" class="text-muted"></ul>
+
                         </div>
-
-                        <label for="proAnswer1">전문가 질문 1 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
-                        <label for="proAnswer2">전문가 질문 2 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer2" required readonly>
-
+		                        <label for="proAnswer1">전문가 질문 1 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
+		                        <label for="proAnswer2">전문가 질문 2 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer2" required readonly>
+		                        <label for="proAnswer3">전문가 질문 3 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer3" readonly>
+		                        <label for="proAnswer4">전문가 질문 4 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer4" readonly>
+		                        <label for="proAnswer5">전문가 질문 5 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
                         <button type="submit" class="custom-button2 w-100 my-5">심사 요청</button>
                     </form>
                 </div>
             </div>
 
-            <!-- 설문조사 로드 -->
-            <div id="surveyContainer" class="col-md-6" style="display: none;">
-                <div class="card">
-                    <p class="text-muted">포트폴리오 추가하기 버튼을 눌러 설문조사를 시작하세요.</p>
+					 <!-- 설문조사 로드 -->
+            <div id="surveyContainer" class="col-md-6">
+                <div>
+                    <h5>설문조사 답변</h5>
+                    <div th:each="entry : ${surveyAnswers}">
+                        <p>질문 번호: <span th:text="${entry.key}"></span></p>
+                        <p>답변: <span th:text="${entry.value}"></span></p>
+                    </div>
+                    <h5>포트폴리오 정보</h5>
+                    <p>제목: <span th:text="${portfolioTitle}"></span></p>
+                    <p>내용: <span th:text="${portfolioContent}"></span></p>
+                    <p>썸네일: <span th:text="${thumbnailImage}"></span></p>
+                    <p>포트폴리오 이미지: <span th:text="${portfolioFile1}"></span></p>
                 </div>
             </div>
         </div>
     </div>
-
-    <th:block layout:fragment="script">
+    
+	<th:block layout:fragment="script">
         <script th:src="@{/js/proConversion.js}"></script>
-    </th:block>
+    </th:block> 
+
 </body>
 </html>
