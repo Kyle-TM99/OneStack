@@ -8,7 +8,7 @@ VALUES
     ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 0),
     ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 0),
     ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 0),
-     ('김태민', 'rlaxoals97', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle', '1999-07-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals9977@gmail.com', 1, '010-5578-5037', SYSDATE(), 0),
+    ('김태민', 'rlaxoals97', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle', '1999-07-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals9977@gmail.com', 1, '010-5578-5037', SYSDATE(), 0),
 -- 전문가
     ('이사부', 'pro1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname1', '1980-01-01', 'male', '12345', '서울특별시 강남구', '테헤란로 321', 'pro1@example.com', 1, '010-9876-5432', SYSDATE(), 1),
     ('김유신', 'pro2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname2', '1982-02-02', 'male', '54321', '서울특별시 종로구', '세종대로 654', 'pro2@example.com', 1, '010-8765-4321', SYSDATE(), 1),
@@ -54,14 +54,11 @@ VALUES
     (6, 16, 'PC', '미드(4~9년)', '어떤 방식이든 상관없어요', NULL, NULL);
 
 -- 포트폴리오
-INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content)
-VALUES
-    (1, 1, '기획 프로젝트 A', '대규모 프로젝트 기획 및 실행 사례'),
-    (2, 2, '웹 프로젝트 B', '고객 웹사이트 제작 및 유지 보수 경험'),
-    (3, 3, '소프트웨어 프로젝트 C', '다양한 소프트웨어 개발 프로젝트 사례'),
-    (4, 4, '모바일 앱 프로젝트 D', 'Android 앱 개발 및 배포 사례'),
-    (5, 5, 'iOS 앱 프로젝트 E', 'iOS 앱 개발 및 사용자 경험 개선'),
-    (6, 6, '게임 프로젝트 F', '다수의 인기 게임 개발 사례');
+INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
+                      thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
+                      portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
+VALUES (1, 1, '포트폴리오 제목', '포트폴리오 내용', 1, 'thumbnail image', 'image1', 'image2', 'image3', 'image4', 'image5', null, null, null, null, null);
+
 
 -- 관리자
 INSERT INTO Manager (manager_name, manager_pass, member_type, manager_image)
