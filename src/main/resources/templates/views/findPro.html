@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <link th:href="@{/css/findForm.css}" rel="stylesheet">
+</head>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <!-- 상단 제목 섹션 -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold">고수 찾기</h2>
+                <p class="text-muted">원하는 서비스의 고수를 찾아보세요</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <!-- 카테고리 선택 및 초기화 -->
+                <div class="category-section mb-4">
+                    <select class="form-select mb-2" id="categorySelect">
+                        <option selected value="">카테고리 선택</option>
+                        <option value="1">레슨</option>
+                        <option value="2">홈/리빙</option>
+                        <option value="3">이벤트</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary w-100" id="resetCategory">
+                        <i class="bi bi-arrow-counterclockwise"></i> 초기화
+                    </button>
+                </div>
+
+                <!-- 카테고리 설문조사 -->
+                <div class="category-survey p-3 border rounded">
+                    <h5 class="mb-3">카테고리 설문</h5>
+                    <div class="survey-questions">
+                        <div class="mb-3">
+                            <label class="form-label">원하시는 레슨 종류는?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="lessonType" id="lessonType1">
+                                <label class="form-check-label" for="lessonType1">개인 레슨</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="lessonType" id="lessonType2">
+                                <label class="form-check-label" for="lessonType2">그룹 레슨</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 검색 및 결과 -->
+            <div class="col-9">
+                <div class="row mb-4">
+                    <div class="col-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="검색어를 입력하세요">
+                            <button class="btn custom-button2" type="button">검색</button>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-select" id="sortSelect">
+                            <option selected value="">정렬 기준</option>
+                            <option value="review">리뷰 많은순</option>
+                            <option value="rating">평점 높은순</option>
+                            <option value="price_low">가격 낮은순</option>
+                            <option value="price_high">가격 높은순</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 고수 목록 -->
+                <div class="row" id="expertsListContainer">
+                    <div class="col-md-12 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="profile-image.jpg" class="rounded-circle me-3" style="width: 60px; height: 60px;" alt="프로필">
+                                    <div>
+                                        <h5 class="card-title mb-1">홍길동</h5>
+                                        <p class="card-subtitle text-muted mb-0">피아노 레슨</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge bg-primary me-2">서울</span>
+                                    <span class="badge bg-success">5년 경력</span>
+                                </div>
+                                <p class="card-text">안녕하세요. 10년 경력의 피아노 강사입니다. 초급부터 고급까지 맞춤형 레슨을 제공합니다.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="ratings">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <span class="ms-1">4.8 (123개 평가)</span>
+                                    </div>
+                                    <div class="price">가격: <strong>50,000원</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/findForm.js}"></script>
+</th:block>
+</html>
