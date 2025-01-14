@@ -41,6 +41,7 @@
         <result property="professorStatus" column="professor_status" />
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
+		<result property="contactableTime" column="contactable_time" />
     </resultMap>
     
     <resultMap id="PortfolioResultMap" type="com.onestack.project.domain.Portfolio">
