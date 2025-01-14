@@ -21,8 +21,16 @@ public class ProService {
         List<SurveyWithCategory> surveyList = proMapper.getSurvey(itemNo);
 
         Map<String, Object> modelMap = new HashMap<>();
-
         modelMap.put("surveyList", surveyList);
+
+        return modelMap;
+    }
+
+    public Map<String, Object> getMemProAdCateInfo(int itemNo) {
+        List<SurveyWithCategory> proList = proMapper.getMemProAdCateInfo(itemNo);
+
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("proList", proList);
 
         return modelMap;
     }

@@ -18,14 +18,14 @@ VALUES
     ('한석봉', 'pro6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname6', '1987-06-06', 'male', '56789', '부산광역시 해운대구', '광안로 987', 'pro6@example.com', 0, '010-4321-0987', SYSDATE(), 1);
 
 -- 전문가 등록
-INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, student_count, rate, professor_status, screening_msg)
+INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, student_count, rate, professor_status, screening_msg, contactable_time)
 VALUES
-    (8, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL),
-    (9, 12, '웹 개발 전문가입니다.', '5년 경력의 프론트엔드 개발자', '웹 개발 대회 1위', 50, 4, 2, NULL),
-    (10, 13, '소프트웨어 개발 전문가입니다.', '8년 경력의 소프트웨어 엔지니어', NULL, 80, 5, 2, NULL),
-    (11, 14, '안드로이드 개발자입니다.', '6년 경력의 모바일 앱 개발자', NULL, 60, 4, 2, NULL),
-    (12, 15, 'iOS 개발자입니다.', '5년 경력의 iOS 앱 개발자', NULL, 70, 5, 2, NULL),
-    (13, 16, '게임 개발 전문가입니다.', '7년 경력의 게임 개발자', '게임 개발 대회 2위', 90, 5, 2, NULL);
+    (8, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (9, 12, '웹 개발 전문가입니다.', '5년 경력의 프론트엔드 개발자', '웹 개발 대회 1위', 50, 4, 2, NULL, '오전 8시 - 오후 9시'),
+    (10, 13, '소프트웨어 개발 전문가입니다.', '8년 경력의 소프트웨어 엔지니어', NULL, 80, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (11, 14, '안드로이드 개발자입니다.', '6년 경력의 모바일 앱 개발자', NULL, 60, 4, 2, NULL, '오전 8시 - 오후 9시'),
+    (12, 15, 'iOS 개발자입니다.', '5년 경력의 iOS 앱 개발자', NULL, 70, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (13, 16, '게임 개발 전문가입니다.', '7년 경력의 게임 개발자', '게임 개발 대회 2위', 90, 5, 2, NULL, '오전 8시 - 오후 9시');
 
 -- 카테고리
 INSERT INTO Category (item_no, item_title, category_no)

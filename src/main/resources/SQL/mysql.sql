@@ -43,7 +43,7 @@ CREATE TABLE Professional (
    professor_status INTEGER DEFAULT 1 NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
    screening_msg VARCHAR(100) NULL,
    pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-   contactable_time VARCHAR(15) NOT NULL
+   contactable_time VARCHAR(15) NOT NULL,
     CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
