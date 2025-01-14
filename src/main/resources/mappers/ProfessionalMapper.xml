@@ -41,6 +41,7 @@
         <result property="professorStatus" column="professor_status" />
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
+      <result property="contactableTime" column="contactable_time" />
     </resultMap>
     
     <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
@@ -113,14 +114,20 @@
 </select>
 
 <!-- 포트폴리오 추가 -->
-<insert id = "addPortfolio" parameterType = "Portfolio" useGeneratedKeys = "true" keyProperty = "portfolioNo">
-	INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content, 
-						thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
-						portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
-	VALUES(#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, 
-			#{thumbnailImage}, #{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3}, #{portfolioFile4}, #{portfolioFile5},
-			#{portfolioFile6}, #{portfolioFile7}, #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
+<insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
+        INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content, 
+                              thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,
+                              portfolio_file4, portfolio_file5, portfolio_file6, portfolio_file7,
+                              portfolio_file8, portfolio_file9, portfolio_file10)
+        VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, 
+                #{thumbnailImage}, #{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3},
+                #{portfolioFile4}, #{portfolioFile5}, #{portfolioFile6}, #{portfolioFile7},
+                #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
 </insert>
+
+
+
+
 <!-- 포트폴리오 수정 -->
 <update id = "updatePortfolio" parameterType = "Portfolio">
 	UPDATE Portfolio

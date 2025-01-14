@@ -23,4 +23,8 @@ public interface MemberMapper {
 	public int checkPhone(String phone);
 	
 	public String findMemberId(Member member); 
+	
+	// LHB - 아이디로 회원번호 조회
+	Integer findMemberNoByMemberId(String memberId);
+
 }

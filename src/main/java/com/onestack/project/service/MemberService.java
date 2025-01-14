@@ -64,5 +64,9 @@ public class MemberService {
         // 아이디 찾기 실행
         return memberMapper.findMemberId(member);
     }
-
+    
+    public Integer getMemberById(String memberId) {
+        int memberNo = memberMapper.findMemberNoByMemberId(memberId);
+        return memberNo;
+    }
 }

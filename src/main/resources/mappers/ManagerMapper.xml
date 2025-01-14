@@ -29,7 +29,7 @@
 		<result property="socialType" column="social_type" />
     </resultMap>
 
-	<resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
+    <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
         <id property="proNo" column="pro_no" />
         <result property="memberNo" column="member_no" />
         <result property="itemNo" column="item_no" />
@@ -41,6 +41,7 @@
         <result property="professorStatus" column="professor_status" />
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
+      <result property="contactableTime" column="contactable_time" />
     </resultMap>
     
     <resultMap id="PortfolioResultMap" type="com.onestack.project.domain.Portfolio">

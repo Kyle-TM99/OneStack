@@ -18,7 +18,9 @@
             <div id="applicationForm" class="col-md-6">
                 <div class="card" style="width: 100%;">
                     <form action="/proConversion/submit" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="memberNo" th:value="${session.member.memberNo}">
+                    	<input type="hidden" name="memberId" th:value="${memberId}">
+                    	<input type="hidden" name="memberNo" th:value="${member.memberNo}">
+					    <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
                         <input type="hidden" name="memberType" value="1">
 
                         <!-- 이름 -->
@@ -61,7 +63,7 @@
                             <label for="selfIntroduction">자기소개 *</label>
                             <input type="text" class="form-control" id="selfIntroduction" name="selfIntroduction" required>
                             <small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
-                        </div>
+                        </div>                       
 
                         <!-- 경력 -->
                         <div class="form-field my-5">
@@ -97,12 +99,20 @@
 		                        <textarea class="form-control mb-2" name="portfolioContent" required readonly></textarea>
 								<!-- 썸네일 이미지 표시 -->
 								<label for="thumbnailImage">썸네일 이미지</label>
+								<ul id="thumbnailImageDisplay" class="text-muted"></ul>
+								
 								<!-- <input type="text" class="form-control mb-2" id="thumbnailImage" name="thumbnailImage" required readonly> -->
-								<div id="thumbnailImageDisplay" class="text-muted"></div>
+								<ul id="thumbnailImageDisplay" class="text-muted">
+								<li th:each="file : ${thumbnailImage}" th:text="${file}"></li>
+								</ul>
 								
 								<!-- 포트폴리오 파일 표시 -->
 								<label for="portfolioFile1">포트폴리오 이미지</label>
-								<ul id="portfolioFilesDisplay" class="text-muted"></ul>
+								<ul id="portfolioFilesDisplay" class="text-muted">
+								    <!-- 서버에서 받은 파일 경로가 이곳에 반영됨 -->
+								    <li th:each="file : ${portfolioFiles}" th:text="${file}"></li>
+								</ul>
+								
 
                         </div>
 		                        <label for="proAnswer1">전문가 질문 1 *</label>

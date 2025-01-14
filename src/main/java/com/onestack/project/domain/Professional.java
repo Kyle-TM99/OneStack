@@ -1,7 +1,6 @@
 package com.onestack.project.domain;
 
 import java.sql.Timestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +23,7 @@ public class Professional {
     private String screeningMsg;
     private Timestamp proDate;
     
+	/* private String contactableTime; */
 }
+    
 
