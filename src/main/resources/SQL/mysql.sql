@@ -7,7 +7,7 @@ use onestack;
 CREATE TABLE Member (
    member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(5) NOT NULL,
-   member_id VARCHAR(20) UNIQUE NOT NULL,
+   member_id VARCHAR(50) UNIQUE NOT NULL,
    pass VARCHAR(100) NOT NULL,
    nickname VARCHAR(20) UNIQUE NOT NULL,
    birth DATE NOT NULL,
