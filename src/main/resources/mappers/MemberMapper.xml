@@ -15,8 +15,8 @@
 
 <!-- 회원 가입 -->
 <insert id="insertMember" parameterType="Member" useGeneratedKeys = "true" keyProperty = "memberNo">
-    INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date ) 
-    VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW())
+    INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, is_social, social_type ) 
+    VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW(), #{isSocial}, #{socialType})
 </insert>
 
 
