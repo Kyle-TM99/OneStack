@@ -26,8 +26,8 @@ CREATE TABLE Member (
    withdrawal_end_date   TIMESTAMP NULL,
    ban_end_date   TIMESTAMP NULL,
    reported_count INTEGER DEFAULT 0 NOT NULL,
-   is_social TINYINT DEFAULT 0 NOT NULL, -- 0(로컬) 1(소셜) --
-   social_type INTEGER NULL -- 1(카카오) 2(구글) 3(네이버) -- 
+   is_social TINYINT(1) DEFAULT 0 NOT NULL, -- 0: 일반 계정, 1: 소셜 계정
+   social_type ENUM('none', 'kakao', 'google') DEFAULT 'none' NOT NULL -- 소셜 로그인 유형
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ## Professional - 전문가

@@ -8,6 +8,7 @@ VALUES
     ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 0),
     ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 0),
     ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 0),
+     ('김태민', 'rlaxoals97', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle', '1999-07-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals9977@gmail.com', 1, '010-5578-5037', SYSDATE(), 0),
 -- 전문가
     ('이사부', 'pro1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname1', '1980-01-01', 'male', '12345', '서울특별시 강남구', '테헤란로 321', 'pro1@example.com', 1, '010-9876-5432', SYSDATE(), 1),
     ('김유신', 'pro2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname2', '1982-02-02', 'male', '54321', '서울특별시 종로구', '세종대로 654', 'pro2@example.com', 1, '010-8765-4321', SYSDATE(), 1),
