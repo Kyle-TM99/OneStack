@@ -1,46 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <!-- footer -->
-<div th:fragment="footer" class="footer-container border-top">
-	<div class="container">
-		<footer
-			class="row row-cols-1 row-cols-sm-2 row-cols-md-4 py-4 my-3">
-			<div class="col mb-3 text-center">
-				<a class="navbar-brand" href="mainList"><img
-					src="images/onecodeicon.png" alt="..." width="100" height="15"
-					class="mt-5" /></a>
-				<p class="text-body-secondary">&copy; 2024 Kyle Mall</p>
-			</div>
+<div th:fragment="footer" class="border-top">
+	<footer class="footer">
+	    <div class="footer-content container">
+	        <div class="footer-contact">
+	            <!-- 로고 영역-->
+	            <div class="footer-logo">
+	                <img src="https://placehold.co/110x40" alt="Logo">
+	            </div>
 
-			<div class="col mb-3 text-center">
-				<h6 class="fw-bold">고객 서비스</h6>
-				<ul class="nav flex-column">
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">고객 지원</a></li>
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">1:1 문의하기</a></li>
-				</ul>
-			</div>
+	            <h2 class="contact-number">02-6020-0051</h2>
+	            <p class="content">평일 09:30 - 18:20</p>
+	            <p class="content">(점심시간 12:20 - 13:30 제외 · 주말/공휴일 제외)</p>
+	        </div>
 
-			<div class="col mb-3 text-center">
-				<h6 class="fw-bold">개발자 정보</h6>
-				<ul class="nav flex-column">`
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">개발자 소개</a></li>
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">포트폴리오</a></li>
-				</ul>
-			</div>
+	        <!-- 오른쪽 텍스트 링크 영역 -->
+	        <div class="footer-nav">          
+	            <div class="nav-column">
+	                <h3 class="nav-title">OneStack</h3>
+	                <ul>
+	                    <li><a href="#">OneStack 소개</a></li>
+	                    <li><a href="#">서비스 소개</a></li>
+	                </ul>
+	            </div>
+	            <div class="nav-column">
+	                <h3 class="nav-title">사용자안내</h3>
+	                <ul>
+	                    <li><a href="#">고수안내</a></li>
+	                    <li><a href="#">회원안내</a></li>
+	                    <li><a href="#">고수가이드</a></li>
+	                    <li><a href="#">회원가이드</a></li>
+	                </ul>
+	            </div>
+	            <div class="nav-column">
+	                <h3 class="nav-title">고객센터</h3>
+	                <ul>
+	                    <li><a href="#">공지사항</a></li>
+	                    <li><a href="#">자주묻는질문</a></li>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
 
-			<div class="col mb-3 text-center">
-				<h6 class="fw-bold">소셜 미디어</h6>
-				<ul class="nav flex-column">
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">페이스북</a></li>
-					<li class="nav-item mb-1"><a href="#"
-						class="nav-link p-0 text-body-secondary">인스타그램</a></li>
-				</ul>
-			</div>
-		</footer>
-	</div>
+	    <!-- 보더 라인 밑 텍스트 영역 -->
+	    <div class="footer-info container">
+	        <div class="company-info">
+	            <p>(주)원스택은 전문가 매칭 플랫폼으로서 매칭 본인(당사자)가 아니며 개별 판매자가 제공하는 서비스에 대한 이행, 계약사항 등과 관련한 의무와 책임은 거래당사자에게 있습니다.</p>
+	            <p>
+	                상호명 : (주)원스택 / 팀장 : 김태민 · 부팀장 : 도건민 팀원 : 이헌복 · 이나연 · 김건우 / 주소 :서울시 관악구 남부순환로 1820, 에그엘로우빌딩 6F<br>
+	            </p>
+	            <p>고객센터 : 010-4861-7375 / 이메일 : EggYellow@oneStack.com</p>
+	        </div>
+	        <div class="copyright">
+	            <p>Copyright ©OneStack Inc. All Rights Reserved.</p>
+	        </div>
+	        <div class="social-links">
+	            <a href="#" target="_blank" class="social-icon blog" title="블로그"><i class="bi bi-medium"></i></a>
+	            <a href="#" target="_blank" class="social-icon youtube" title="유튜브"><i class="bi bi-youtube"></i></a>
+	            <a href="#" target="_blank" class="social-icon instagram" title="인스타그램"><i class="bi bi-instagram"></i></a>
+	            <a href="#" target="_blank" class="social-icon kakao" title="카카오톡"><i class="bi bi-chat-fill"></i></a>
+	        </div>
+	    </div>
+	</footer> 
 </div>
