@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>고객센터 글 작성 페이지</title>
+  <style>
+    img {
+        max-height: 150px;
+        object-fit: cover;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row g-0">
+      <div class="col">
+        <img src="gray.png" alt="background_image" class="img-fluid" style="width: 100%;">
+      </div>
+    </div>
+    
+    <div class="row mt-2 g-0">
+      <div class="col-md-12 mt-3 border-bottom">
+        <h1 class="fw-bold mb-4">문의글 작성</h1>
+      </div>
+      
+      <div class="row g-0">
+        <div class="col-md-12">
+          <div class="breadcrumb-container mt-3 mb-3">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">고객센터</a></li>
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">회원 문의</a></li>
+                <li class="breadcrumb-item active" aria-current="page">문의글 작성</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-0 mt-4">
+        <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <form>
+              <div class="mb-3">
+                <label for="title" class="form-label" placeholder="제목을 입력해주세요">제목</label>
+                <textarea class="form-control" placeholder="제목을 입력해주세요" id="title" rows="1" required></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="content" class="form-label">내용</label>
+                <textarea class="form-control" placeholder="내용을 입력해주세요" id="content" rows="8" required></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="file" class="form-label">파일 첨부</label>
+                <input type="file" class="form-control" id="file" multiple>
+              </div>
+              
+              <div class="d-flex justify-content-center gap-2 mt-4">
+                <button type="submit" class="btn btn-primary me-2">등록</button>
+                <button type="button" class="btn btn-secondary ms-2">취소</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-2"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

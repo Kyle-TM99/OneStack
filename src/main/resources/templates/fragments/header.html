@@ -19,7 +19,7 @@
 								<div class="d-flex justify-content-between align-items-center">
 									<!-- 왼쪽 메뉴 -->
 									<div class="d-flex left-menu">
-										<a href="#" class="nav-link px-3">고수 찾기</a>
+										<a href="findPro" class="nav-link px-3">고수 찾기</a>
 										<a href="#" class="nav-link px-3">견적 요청</a>
 										<a href="#" class="nav-link px-3">커뮤니티</a>
 									</div>
@@ -44,7 +44,6 @@
 						                    	<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
 						                    	<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
 							                </th:block>
-						
 						                    <!-- 로그인한 경우에만 보이는 버튼들 -->
 						                    <th:block th:if="${session.isLogin}">
 						                    	<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
@@ -54,7 +53,11 @@
 														<i class="fas fa-chevron-down small text-muted"></i>
 													</a>
 													<ul class="dropdown-menu dropdown-menu-end">
-														<li><a class="dropdown-item" href="#">마이페이지</a></li>
+														<li><a class="dropdown-item" href="/myPage">마이페이지</a></li>
+														<!-- 관리자 페이지 버튼 -->
+														<th:block th:if="${session.member != null&&session.member.memberType == 4}">
+															<li><a class="dropdown-item text-manager" href="#">관리자 페이지 이동</a></li>
+														</th:block>
 														<li><hr class="dropdown-divider"></li>														
 								                    	<th:block th:if="${session.member != null}">
 															<th:block th:if="${session.member.socialType == 'none'}">
@@ -81,14 +84,29 @@
 											<div class="col-md-4">
 												<h6 class="fw-bold mb-3">고수 찾기</h6>
 												<div class="d-flex flex-column gap-2">
-													<a href="#" class="text-decoration-none text-secondary">기획</a>
-													<a href="#" class="text-decoration-none text-secondary">웹</a>
-													<a href="#" class="text-decoration-none text-secondary">소프트웨어</a>
-													<a href="#" class="text-decoration-none text-secondary">안드로이드</a>
-													<a href="#" class="text-decoration-none text-secondary">iOS</a>
-													<a href="#" class="text-decoration-none text-secondary">게임</a>
-													<a href="#" class="text-decoration-none text-secondary">AI</a>
-													<a href="#" class="text-decoration-none text-secondary">QA 및 테스트</a>
+													<div>
+														<h6 class="fw-bold mb-3" id="development-header">개발</h6>
+														<div class="development-submenu" style="display: none;">
+															<a href="findPro?category=itemNo&itemNo=11" class="text-decoration-none text-secondary">기획</a>
+															<a href="findPro?category=itemNo&itemNo=12" class="text-decoration-none text-secondary">웹</a>
+															<a href="findPro?category=itemNo&itemNo=13" class="text-decoration-none text-secondary">소프트웨어</a>
+															<a href="findPro?category=itemNo&itemNo=14" class="text-decoration-none text-secondary">안드로이드</a>
+															<a href="findPro?category=itemNo&itemNo=15" class="text-decoration-none text-secondary">iOS</a>
+															<a href="findPro?category=itemNo&itemNo=16" class="text-decoration-none text-secondary">게임</a>
+															<a href="findPro?category=itemNo&itemNo=17" class="text-decoration-none text-secondary">AI</a>
+															<a href="findPro?category=itemNo&itemNo=18" class="text-decoration-none text-secondary">QA 및 테스트</a>
+														</div>
+													</div>
+													<div>
+														<h6 class="fw-bold mb-3" id="data-header">데이터</h6>
+														<div class="data-submenu" style="display: none;">
+															<a href="findPro?category=itemNo&itemNo=21" class="text-decoration-none text-secondary">가공 및 라벨링</a>
+															<a href="findPro?category=itemNo&itemNo=22" class="text-decoration-none text-secondary">데이터 복구</a>
+															<a href="findPro?category=itemNo&itemNo=23" class="text-decoration-none text-secondary">크롤링</a>
+															<a href="findPro?category=itemNo&itemNo=24" class="text-decoration-none text-secondary">DB 구축</a>
+															<a href="findPro?category=itemNo&itemNo=25" class="text-decoration-none text-secondary">통계분석</a>
+														</div>
+													</div>
 												</div>
 											</div>
 											<!-- 견적 요청 서브메뉴 -->

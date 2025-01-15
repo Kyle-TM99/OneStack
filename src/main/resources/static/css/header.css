@@ -179,6 +179,15 @@
   color: #3b82f6;
 }
 
+.dropdown-item.text-manager {
+  color: #3b82f6;
+}
+
+.dropdown-item.text-manager:hover {
+  background-color: rgb(233, 241, 254);
+  color: #3b82f6;
+}
+
 .dropdown-item.text-danger:hover {
   background-color: #fff5f5;
   color: #dc3545;
@@ -201,4 +210,19 @@
   color: #3b82f6;
   transform: scale(1.1);
   transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* 개발 및 데이터 카테고리 호버 스타일 */
+#development-header,
+#data-header {
+  cursor: pointer; /* 마우스 포인터 변경 */
+}
+
+/* 개발 및 데이터 카테고리 호버 시 색상 변경 */
+#development-header:hover,
+#data-header:hover {
+  color: #007bff; /* 호버 시 색상 변경 */
+  background-color: rgba(0, 123, 255, 0.1); /* 배경색 변경 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 */
 }
