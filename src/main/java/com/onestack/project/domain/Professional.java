@@ -23,6 +23,6 @@ public class Professional {
     private int professorStatus;
     private String screeningMsg;
     private Timestamp proDate;
-    
+    private String contactableTime;
 }
 

@@ -7,7 +7,7 @@ use onestack;
 CREATE TABLE Member (
    member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(5) NOT NULL,
-   member_id VARCHAR(20) UNIQUE NOT NULL,
+   member_id VARCHAR(50) UNIQUE NOT NULL,
    pass VARCHAR(100) NOT NULL,
    nickname VARCHAR(20) UNIQUE NOT NULL,
    birth DATE NOT NULL,
@@ -43,6 +43,7 @@ CREATE TABLE Professional (
    professor_status INTEGER DEFAULT 1 NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
    screening_msg VARCHAR(100) NULL,
    pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   contactable_time VARCHAR(15) NOT NULL,
     CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

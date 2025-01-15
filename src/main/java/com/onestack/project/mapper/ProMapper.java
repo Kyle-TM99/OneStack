@@ -11,4 +11,6 @@ public interface ProMapper {
 
     public List<SurveyWithCategory> getSurvey(@Param("itemNo") int itemNo);
 
+    public List<SurveyWithCategory> getMemProAdCateInfo(@Param("itemNo") int itemNo);
+
 }

@@ -15,14 +15,24 @@
         </div>
 
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <!-- 카테고리 선택 및 초기화 -->
                 <div class="category-section mb-4">
                     <select class="form-select mb-2" id="categorySelect">
-                        <option selected value="">카테고리 선택</option>
-                        <option value="1">카테고리1</option>
-                        <option value="2">카테고리2</option>
-                        <option value="3">카테고리3</option>
+                        <option value="" th:text="'카테고리 선택'" th:selected="${itemNo == null}" ></option>
+                        <option th:value="11" th:text="'기획'" th:selected="${itemNo == 11}"></option>
+                        <option th:value="12" th:text="'웹'" th:selected="${itemNo == 12}"></option>
+                        <option th:value="13" th:text="'소프트웨어'" th:selected="${itemNo == 13}"></option>
+                        <option th:value="14" th:text="'안드로이드'" th:selected="${itemNo == 14}"></option>
+                        <option th:value="15" th:text="'iOS'" th:selected="${itemNo == 15}"></option>
+                        <option th:value="16" th:text="'게임'" th:selected="${itemNo == 16}"></option>
+                        <option th:value="17" th:text="'AI'" th:selected="${itemNo == 17}"></option>
+                        <option th:value="18" th:text="'QA 및 테스트'" th:selected="${itemNo == 18}"></option>
+                        <option th:value="21" th:text="'가공 및 라벨링'" th:selected="${itemNo == 21}"></option>
+                        <option th:value="22" th:text="'데이터 복구'" th:selected="${itemNo == 22}"></option>
+                        <option th:value="23" th:text="'크롤링'" th:selected="${itemNo == 23}"></option>
+                        <option th:value="24" th:text="'DB 구축'" th:selected="${itemNo == 24}"></option>
+                        <option th:value="25" th:text="'통계분석'" th:selected="${itemNo == 25}"></option>
                     </select>
                     <button type="button" class="btn btn-outline-secondary w-100" id="resetCategory">
                         <i class="bi bi-arrow-counterclockwise"></i> 초기화
@@ -32,24 +42,33 @@
                 <!-- 카테고리 설문조사 -->
                 <div class="category-survey p-3 border rounded">
                     <h5 class="mb-3">필터링</h5>
-                    <div class="survey-questions">
-                        <div class="mb-3">
-                            <label class="form-label">질문</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="lessonType" id="lessonType1">
-                                <label class="form-check-label" for="lessonType1">답변1</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="lessonType" id="lessonType2">
-                                <label class="form-check-label" for="lessonType2">답변2</label>
+                    <th:block th:if="${not #lists.isEmpty(surveyList)}">
+                        <div th:block th:each="survey, status: ${surveyList}">
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <!-- Survey Question -->
+                                    <div class="my-2 fw-bold" th:text="${survey.survey.surveyQuestion}"></div>
+
+                                    <!-- Radio Buttons for Options -->
+                                    <div class="form-check" th:each="option : ${#strings.arraySplit(#strings.replace(survey.survey.surveyOption, '\n', ''), ',')}">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio"
+                                                   th:name="'proAnswer' + ${survey.survey.surveyNo}"
+                                                   th:value="${option.trim()}">
+                                            <span th:text="${option.trim()}"></span>
+                                        </label>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </th:block>
+
                 </div>
             </div>
 
             <!-- 검색 및 결과 -->
-            <div class="col-9">
+            <div class="col-8">
                 <div class="row mb-4">
                     <div class="col-9">
                         <div class="input-group">
@@ -72,39 +91,41 @@
                 <div class="row" id="expertsListContainer">
                     <div class="col-md-12 mb-4">
                         <div class="card h-100 shadow-sm">
-                            <div class="row card-body">
-                                <div class="col-10">
+
+                            <div th:if="${not #lists.isEmpty(proList)}"  class="row card-body">
+                                <div th:block th:each="pro, status: ${proList}" class="col-10">
                                     <div>
-                                        <h5 class="card-title mb-2">전문가 이름</h5>
-                                        <p class="card-subtitle text-muted mb-2">카테고리명</p>
-                                        <span class="badge bg-primary me-2 mb-2">칭호</span>
-                                        <span class="badge bg-success">전문가 경력</span> <br>
-                                        <span class="card-text">전문가 자기소개</span> <br>
+                                        <h5 th:text="${pro.member.name}" class="card-title mb-2">전문가 이름</h5>
+                                        <span th:text="${pro.category.itemTitle}" class="card-subtitle text-muted mb-2">카테고리명</span> <br>
+                                        <span th:text="${pro.member.stackName}" class="badge bg-primary me-2 mb-2">칭호</span>
+                                        <span th:text="${pro.professional.carrer}" class="badge bg-success">전문가 경력</span> <br>
+                                        <span th:text="${pro.professional.selfIntroduction}" class="card-text">전문가 자기소개</span> <br>
                                         <i class="bi bi-star-fill text-warning"></i>
-                                        <span class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
+                                        <span th:text="${pro.professional.rate}" class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
                                         <div class="price">가격: <strong>(전문가 외주 평균 가격)원</strong></div>
                                     </div>
                                 </div>
                                 <div class="col-2 align-items-center">
-                                    <div class = "row ms-2 mb-4">
+                                    <div class = "row ms-1 mb-4">
                                         <img src="profile-image.jpg" class="rounded-circle"
                                              style="width: 100px; height: 100px;" alt="프로필">
                                     </div>
                                     <div class = "row">
                                         <button type="button" class="btn custom-button">견적 요청</button>
                                     </div>
-
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
-
 
             </div>
         </div>
 
     </div>
+
+<script th:src="@{/js/findPro.js}"></script>
 </div>
 
 
