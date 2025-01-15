@@ -2,8 +2,15 @@ package com.onestack.project.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,46 +48,60 @@ public class ProfessionalService {
     }
 
     // 포트폴리오 파일 저장 처리
-    public void savePortfolioFiles(Map<String, MultipartFile> portfolioFiles, Portfolio portfolio) {
-        int fileCount = 1;
-        for (Map.Entry<String, MultipartFile> entry : portfolioFiles.entrySet()) {
-            if (fileCount > 10) {
-                break; // 최대 10개 파일까지만 처리
-            }
-            
-            String filePath = saveFile(entry.getValue(), "portfolio"); // 파일 저장
-            String fieldName = "portfolioFile" + fileCount;
-
-            // 해당 필드에 파일 경로 저장
+    public void savePortfolioFiles(List<String> portfolioFilePaths, Portfolio portfolio) {
+        for (int i = 0; i < portfolioFilePaths.size() && i < 10; i++) {
+            String fieldName = "portfolioFile" + (i + 1);
             try {
                 java.lang.reflect.Field field = Portfolio.class.getDeclaredField(fieldName);
                 field.setAccessible(true);
-                field.set(portfolio, filePath);
+                field.set(portfolio, portfolioFilePaths.get(i));
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("파일 경로 저장 오류", e);
+                throw new RuntimeException("포트폴리오 파일 저장 중 오류 발생", e);
             }
-
-            fileCount++;
         }
     }
 
+
+
     // 파일 저장 메서드
-    private String saveFile(MultipartFile file, String directory) {
-        if (file == null || file.isEmpty()) {
-            return null;
-        }
+    public String saveFile(MultipartFile file, String directory) {
+
         try {
-            String baseDir = System.getProperty("user.dir") + "/uploads/" + directory;
+            // 업로드 디렉토리 생성
+            String baseDir = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + directory;
             File dir = new File(baseDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
+            if (!dir.exists() && !dir.mkdirs()) {
+                throw new IOException("디렉토리를 생성할 수 없습니다: " + baseDir);
             }
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String filePath = baseDir + "/" + uniqueFileName;
-            file.transferTo(new File(filePath));
-            return filePath;
+
+            if (!dir.canWrite()) {
+                throw new IOException("디렉토리에 쓰기 권한이 없습니다: " + baseDir);
+            }
+
+            // 고유한 파일 이름 생성
+            String sanitizedFileName = file.getOriginalFilename().replaceAll("[^a-zA-Z0-9._-]", "_");
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + sanitizedFileName;
+
+            // 파일 저장
+            try (InputStream inputStream = file.getInputStream()) {
+                Path targetPath = Paths.get(baseDir, uniqueFileName);
+                Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                log.info("파일 저장 성공: {}", targetPath);
+                return targetPath.toString();
+            }
         } catch (IOException e) {
+            log.error("파일 저장 중 오류 발생: {}", file.getOriginalFilename(), e);
             throw new RuntimeException("파일 저장 중 오류 발생: " + file.getOriginalFilename(), e);
         }
     }
+    
+    
+
+    public List<String> saveFiles(Map<String, MultipartFile> files, String directory) {
+        return files.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
+                .map(entry -> saveFile(entry.getValue(), directory))
+                .collect(Collectors.toList());
+    }
+    
 }
