@@ -1,5 +1,7 @@
 package com.onestack.project.service;
 
+import com.onestack.project.domain.MemProAdInfoCate;
+import com.onestack.project.domain.Professional;
 import com.onestack.project.domain.SurveyWithCategory;
 import com.onestack.project.mapper.ProMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +29,16 @@ public class ProService {
     }
 
     public Map<String, Object> getMemProAdCateInfo(int itemNo) {
-        List<SurveyWithCategory> proList = proMapper.getMemProAdCateInfo(itemNo);
+        List<MemProAdInfoCate> proList = proMapper.getMemProAdCateInfo(itemNo);
 
         Map<String, Object> modelMap = new HashMap<>();
         modelMap.put("proList", proList);
 
         return modelMap;
+    }
+
+    public List<MemProAdInfoCate> getFilteredPros(List<String> appType, int itemNo) {
+        return proMapper.getFilteredPros(appType, itemNo);
     }
 
 }

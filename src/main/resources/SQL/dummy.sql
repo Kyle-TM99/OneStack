@@ -1,31 +1,63 @@
--- 초보자
 INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type)
 VALUES
-    ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 0),
-    ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 0),
-    ('김구', 'user3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname3', '1992-08-30', 'male', '23456', '서울특별시 서초구', '반포대로 789', 'user3@example.com', 0, '010-5555-6666', SYSDATE(), 0),
-    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 0),
-    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 0),
-    ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 0),
-    ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 0),
-    ('김태민', 'rlaxoals97', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle', '1999-07-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals9977@gmail.com', 1, '010-5578-5037', SYSDATE(), 0),
--- 전문가
-    ('이사부', 'pro1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname1', '1980-01-01', 'male', '12345', '서울특별시 강남구', '테헤란로 321', 'pro1@example.com', 1, '010-9876-5432', SYSDATE(), 1),
-    ('김유신', 'pro2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname2', '1982-02-02', 'male', '54321', '서울특별시 종로구', '세종대로 654', 'pro2@example.com', 1, '010-8765-4321', SYSDATE(), 1),
-    ('강감찬', 'pro3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname3', '1985-03-03', 'female', '23456', '서울특별시 서초구', '반포대로 987', 'pro3@example.com', 0, '010-7654-3210', SYSDATE(), 1),
-    ('강태공', 'pro4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname4', '1990-04-04', 'male', '34567', '경기도 성남시', '분당로 321', 'pro4@example.com', 1, '010-6543-2109', SYSDATE(), 1),
-    ('정몽주', 'pro5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname5', '1988-05-05', 'female', '45678', '경기도 수원시', '영통로 654', 'pro5@example.com', 1, '010-5432-1098', SYSDATE(), 1),
-    ('한석봉', 'pro6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'proNickname6', '1987-06-06', 'male', '56789', '부산광역시 해운대구', '광안로 987', 'pro6@example.com', 0, '010-4321-0987', SYSDATE(), 1);
+    ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1),
+    ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1),
+    ('김구', 'user3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname3', '1992-08-30', 'male', '23456', '서울특별시 서초구', '반포대로 789', 'user3@example.com', 0, '010-5555-6666', SYSDATE(), 1),
+    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 1),
+    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 1),
+    ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 1),
+    ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 1),
+    ('김민태', 'rlaxoals77', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle1', '1999-06-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals77@gmail.com', 1, '010-5478-5037', SYSDATE(), 1),
+    ('김민수', 'minsu01', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minsu', '1990-05-12', 'Male', '06234', '서울특별시 강남구 테헤란로', '101호', 'minsu01@example.com', 1, '010-1244-5678', '2025-01-01', 1),
+    ('이유진', 'yujin02', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'yujin', '1995-08-20', 'Female', '07345', '서울특별시 영등포구 여의대로', '102호', 'yujin02@example.com', 1, '010-2345-6789', '2025-01-02', 1),
+    ('박준영', 'junyoung03', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'junyoung', '1988-03-15', 'Male', '04567', '서울특별시 중구 세종대로', '103호', 'junyoung03@example.com', 0, '010-3456-7890', '2025-01-03', 1),
+    ('최지은', 'jieun04', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jieun', '1992-12-10', 'Female', '12345', '경기도 성남시 분당구 정자일로', '104호', 'jieun04@example.com', 1, '010-4567-8901', '2025-01-04', 1),
+    ('정민호', 'minho05', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minho', '1985-09-25', 'Male', '54321', '부산광역시 해운대구 해운대로', '105호', 'minho05@example.com', 0, '010-5678-9012', '2025-01-05', 1),
+    ('한수연', 'sooyeon06', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'sooyeon', '1993-11-01', 'Female', '98765', '대구광역시 중구 동성로', '106호', 'sooyeon06@example.com', 1, '010-6789-0123', '2025-01-06', 1),
+    ('오지훈', 'jihoon07', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihoon', '1987-02-14', 'Male', '67890', '인천광역시 남동구 인하로', '107호', 'jihoon07@example.com', 0, '010-7890-1234', '2025-01-07', 1),
+    ('윤하나', 'hana08', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hana', '1991-04-08', 'Female', '11223', '경상남도 창원시 의창구 중앙대로', '108호', 'hana08@example.com', 1, '010-8901-2345', '2025-01-08', 1),
+    ('강태현', 'taehyun09', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'taehyun', '1994-06-25', 'Male', '22334', '대전광역시 유성구 대덕대로', '109호', 'taehyun09@example.com', 0, '010-9012-3456', '2025-01-09', 1),
+    ('이지혜', 'jihye10', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihye', '1989-01-14', 'Female', '33445', '광주광역시 서구 금호로', '110호', 'jihye10@example.com', 1, '010-0123-4567', '2025-01-10', 1),
+    ('최현우', 'hyunwoo11', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hyunwoo', '1980-03-12', 'Male', '44556', '울산광역시 남구 삼산로', '111호', 'hyunwoo11@example.com', 0, '010-1515-2222', '2025-01-11', 1),
+    ('문지수', 'jisoo12', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jisoo', '1993-07-04', 'Female', '55667', '경기도 고양시 일산동구 장항로', '112호', 'jisoo12@example.com', 1, '010-4242-4444', '2025-01-12', 1),
+    ('조성민', 'seongmin13', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'seongmin', '1990-10-01', 'Male', '66778', '충청북도 청주시 상당구 상당로', '113호', 'seongmin13@example.com', 0, '010-2425-6666', '2025-01-13', 1),
+    ('배수현', 'soohyun14', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'soohyun', '1985-12-25', 'Female', '77889', '전라북도 전주시 완산구 팔달로', '114호', 'soohyun14@example.com', 1, '010-3677-8888', '2025-01-14', 1),
+    ('홍영훈', 'younghoon15', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'younghoon', '1992-05-16', 'Male', '88990', '제주특별자치도 제주시 중앙로', '115호', 'younghoon15@example.com', 0, '010-2434-0000', '2025-01-15', 1),
+    ('김철수', 'user24', '$2a$10$knv7T7kp4jYsFGYrFXD1xeQU7U8YhM2rM9KNOyKKrG8KoLFy7Wc9O', 'nickname24', '1985-09-20', 'male', '23456', '서울특별시 송파구', '잠실로 456', 'user24@example.com', 1, '010-2512-4444', SYSDATE(), 1),
+    ('박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1),
+    ('이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1),
+    ('최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1);
 
--- 전문가 등록
-INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, student_count, rate, professor_status, screening_msg, contactable_time)
+
+INSERT INTO Professional (member_no, item_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time)
 VALUES
+    (1, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (2, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (3, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (4, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (5, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (6, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (7, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
     (8, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
-    (9, 12, '웹 개발 전문가입니다.', '5년 경력의 프론트엔드 개발자', '웹 개발 대회 1위', 50, 4, 2, NULL, '오전 8시 - 오후 9시'),
-    (10, 13, '소프트웨어 개발 전문가입니다.', '8년 경력의 소프트웨어 엔지니어', NULL, 80, 5, 2, NULL, '오전 8시 - 오후 9시'),
-    (11, 14, '안드로이드 개발자입니다.', '6년 경력의 모바일 앱 개발자', NULL, 60, 4, 2, NULL, '오전 8시 - 오후 9시'),
-    (12, 15, 'iOS 개발자입니다.', '5년 경력의 iOS 앱 개발자', NULL, 70, 5, 2, NULL, '오전 8시 - 오후 9시'),
-    (13, 16, '게임 개발 전문가입니다.', '7년 경력의 게임 개발자', '게임 개발 대회 2위', 90, 5, 2, NULL, '오전 8시 - 오후 9시');
+    (9, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (10, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (11, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (12, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (13, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (14, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (15, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (16, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (17, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (18, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (19, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (20, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (21, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (22, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (23, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (24, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (25, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (26, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시'),
+    (27, 11, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시');
 
 -- 카테고리
 INSERT INTO Category (item_no, item_title, category_no)
@@ -45,13 +77,33 @@ VALUES
     (25, '통계분석', 2);
 
 INSERT INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
-VALUES
-    (1, 11, '요구사항 명세서', '기술/IT', NULL, NULL, NULL),
-    (2, 12, '시니어(6년 이상)', '온라인 진행을 원해요', 'NULL', NULL, NULL),
-    (3, 13, 'Windows', '일반 프로그램', '시니어(6년 이상)', NULL, NULL),
-    (4, 14, '하이브리드', '시니어(6년 이상)', '온라인 진행을 원해요', NULL, NULL),
-    (5, 15, '네이티브', '미드(4~9년)', NULL, NULL, NULL),
-    (6, 16, 'PC', '미드(4~9년)', '어떤 방식이든 상관없어요', NULL, NULL);
+VALUES (1, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
+       (2, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
+       (3, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
+       (4, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
+       (5, 11, '요구사항 정의서', '요식', NULL, NULL, NULL),
+       (6, 11, '요구사항 정의서', '요식', NULL, NULL, NULL),
+       (7, 11, '요구사항 정의서', '요식', NULL, NULL, NULL),
+       (8, 11, '요구사항 정의서', '요식', NULL, NULL, NULL),
+       (9, 11, '기능 명세서', '기술/IT', NULL, NULL, NULL),
+       (10, 11, '기능 명세서', '기술/IT', NULL, NULL, NULL),
+       (11, 11, '기능 명세서', '기술/IT', NULL, NULL, NULL),
+       (12, 11, '기능 명세서', '도소매', NULL, NULL, NULL),
+       (13, 11, '기능 명세서', '도소매', NULL, NULL, NULL),
+       (14, 11, '기능 명세서', '도소매', NULL, NULL, NULL),
+       (15, 11, '기능 명세서', '도소매', NULL, NULL, NULL),
+       (16, 11, '기능 명세서', '보건/복지', NULL, NULL, NULL),
+       (17, 11, '기능 명세서', '보건/복지', NULL, NULL, NULL),
+       (18, 11, '기능 명세서', '보건/복지', NULL, NULL, NULL),
+       (19, 11, '스토리보드', '비영리', NULL, NULL, NULL),
+       (20, 11, '스토리보드', '비영리', NULL, NULL, NULL),
+       (21, 11, '스토리보드', '비영리', NULL, NULL, NULL),
+       (22, 11, '스토리보드', '기술/IT', NULL, NULL, NULL),
+       (23, 11, '스토리보드', '기술/IT', NULL, NULL, NULL),
+       (24, 11, '기타', '비영리', NULL, NULL, NULL),
+       (25, 11, '기타', '비영리', NULL, NULL, NULL),
+       (26, 11, '기타', '기타', NULL, NULL, NULL),
+       (27, 11, '기타', '기타', NULL, NULL, NULL);
 
 -- 포트폴리오
 INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,

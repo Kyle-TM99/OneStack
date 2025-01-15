@@ -40,7 +40,7 @@
                 </div>
 
                 <!-- 카테고리 설문조사 -->
-                <div class="category-survey p-3 border rounded">
+                <div class="category-survey p-3 border rounded" id = "categoryFilter">
                     <h5 class="mb-3">필터링</h5>
                     <th:block th:if="${not #lists.isEmpty(surveyList)}">
                         <div th:block th:each="survey, status: ${surveyList}">
@@ -88,34 +88,34 @@
                 </div>
 
                 <!-- 고수 목록 -->
-                <div class="row" id="expertsListContainer">
-                    <div class="col-md-12 mb-4">
-                        <div class="card h-100 shadow-sm">
-
-                            <div th:if="${not #lists.isEmpty(proList)}"  class="row card-body">
-                                <div th:block th:each="pro, status: ${proList}" class="col-10">
-                                    <div>
-                                        <h5 th:text="${pro.member.name}" class="card-title mb-2">전문가 이름</h5>
-                                        <span th:text="${pro.category.itemTitle}" class="card-subtitle text-muted mb-2">카테고리명</span> <br>
-                                        <span th:text="${pro.member.stackName}" class="badge bg-primary me-2 mb-2">칭호</span>
-                                        <span th:text="${pro.professional.carrer}" class="badge bg-success">전문가 경력</span> <br>
-                                        <span th:text="${pro.professional.selfIntroduction}" class="card-text">전문가 자기소개</span> <br>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <span th:text="${pro.professional.rate}" class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
-                                        <div class="price">가격: <strong>(전문가 외주 평균 가격)원</strong></div>
+                <div class="row" id="proListContainer">
+                    <div  th:if="${not #lists.isEmpty(proList)}">
+                        <div class="col-md-12 mb-4">
+                            <div th:block th:each="pro, status: ${proList}" class="card h-100 shadow-sm">
+                                <div class="row card-body">
+                                    <div class="col-10">
+                                        <div>
+                                            <h5 th:text="${pro.member.name}" class="card-title mb-2">전문가 이름</h5>
+                                            <span th:text="${pro.category.itemTitle}" class="card-subtitle text-muted mb-2">카테고리명</span> <br>
+                                            <span th:text="${pro.member.stackName}" class="badge bg-primary me-2 mb-2">칭호</span>
+                                            <span th:text="${pro.professional.career}" class="badge bg-success">전문가 경력</span> <br>
+                                            <span th:text="${pro.professional.selfIntroduction}" class="card-text">전문가 자기소개</span> <br>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <span th:text="${pro.professional.rate}" class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
+                                            <div class="price">평균 가격: <strong>[[ ${pro.professional.avaragePrice} ]]원</strong></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-2 align-items-center">
-                                    <div class = "row ms-1 mb-4">
-                                        <img src="profile-image.jpg" class="rounded-circle"
-                                             style="width: 100px; height: 100px;" alt="프로필">
-                                    </div>
-                                    <div class = "row">
-                                        <button type="button" class="btn custom-button">견적 요청</button>
+                                    <div class="col-2 align-items-center">
+                                        <div class = "row ms-1 mb-4">
+                                            <img src="profile-image.jpg" class="rounded-circle"
+                                                 style="width: 100px; height: 100px;" alt="프로필">
+                                        </div>
+                                        <div class = "row">
+                                            <button type="button" class="btn custom-button">견적 요청</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

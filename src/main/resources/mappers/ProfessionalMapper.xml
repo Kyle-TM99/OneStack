@@ -28,21 +28,22 @@
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
-    
-    <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
-        <id property="proNo" column="pro_no" />
-        <result property="memberNo" column="member_no" />
-        <result property="itemNo" column="item_no" />
-        <result property="selfIntroduction" column="self_introduction" />
-        <result property="carrer" column="carrer" />
-        <result property="awardCarrer" column="award_carrer" />
-        <result property="studentCount" column="student_count" />
-        <result property="rate" column="rate" />
-        <result property="professorStatus" column="professor_status" />
-        <result property="screeningMsg" column="screening_msg" />
-        <result property="proDate" column="pro_date" />
+
+	<resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
+		<id property="proNo" column="pro_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="itemNo" column="item_no" />
+		<result property="selfIntroduction" column="self_introduction" />
+		<result property="career" column="career" />
+		<result property="awardCareer" column="award_career" />
+		<result property="studentCount" column="student_count" />
+		<result property="rate" column="rate" />
+		<result property="professorStatus" column="professor_status" />
+		<result property="screeningMsg" column="screening_msg" />
+		<result property="proDate" column="pro_date" />
 		<result property="contactableTime" column="contactable_time" />
-    </resultMap>
+		<result property="avaragePrice" column="avarage_price" />
+	</resultMap>
     
     <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
         <id property="quotationNo" column="quotation_no" />
