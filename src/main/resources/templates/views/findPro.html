@@ -83,14 +83,15 @@
                             <option value="rating">평점 높은순</option>
                             <option value="price_low">가격 낮은순</option>
                             <option value="price_high">가격 높은순</option>
+                            <option value="stack_high">스택 높은순</option>
                         </select>
                     </div>
                 </div>
 
                 <!-- 고수 목록 -->
-                <div class="row" id="proListContainer">
-                    <div  th:if="${not #lists.isEmpty(proList)}">
-                        <div class="col-md-12 mb-4">
+                <div class="row">
+                    <div th:if="${not #lists.isEmpty(proList)}" >
+                        <div class="col-md-12 mb-4" id="proListContainer">
                             <div th:block th:each="pro, status: ${proList}" class="card h-100 shadow-sm">
                                 <div class="row card-body">
                                     <div class="col-10">

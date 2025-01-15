@@ -95,29 +95,27 @@
     <select id="getMemProAdCateInfo" parameterType = "int" resultMap = "MemProAdInfoCateResultMap">
         SELECT m.*, p.*, pa.*, c.*
         FROM Member m JOIN Professional p
-            ON m.member_no = p.member_no
+                ON m.member_no = p.member_no
             JOIN ProfessionalAdvancedInformation pa
-            ON p.pro_no = pa.pro_no
+                ON p.pro_no = pa.pro_no
             JOIN Category c
-            ON pa.item_no = c.item_no
+                ON pa.item_no = c.item_no
         WHERE pa.item_no = #{itemNo}
         ORDER BY p.pro_date;
     </select>
 
     <select id="getFilteredPros" parameterType="map" resultMap="MemProAdInfoCateResultMap">
         SELECT *
-        FROM Member m
-        JOIN Professional p ON m.member_no = p.member_no
-        JOIN ProfessionalAdvancedInformation pa ON p.pro_no = pa.pro_no
-        JOIN Category c ON pa.item_no = c.item_no
+        FROM Member m JOIN Professional p
+                ON m.member_no = p.member_no
+            JOIN ProfessionalAdvancedInformation pa
+                ON p.pro_no = pa.pro_no
+            JOIN Category c
+                ON pa.item_no = c.item_no
         WHERE
         (
-        <foreach collection="appType" item="type" separator=" OR ">
-            pa.pro_answer1 = #{type} OR
-            pa.pro_answer2 = #{type} OR
-            pa.pro_answer3 = #{type} OR
-            pa.pro_answer4 = #{type} OR
-            pa.pro_answer5 = #{type}
+        <foreach collection="appType" item="type" separator=" AND ">
+            ${type.field} = #{type.value}
         </foreach>
         )
         AND
