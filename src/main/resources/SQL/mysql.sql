@@ -42,7 +42,7 @@ CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                            screening_msg VARCHAR(100) NULL,
                            pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                            contactable_time VARCHAR(15) NOT NULL,
-                           average_price DECIMAL(10,2) DEFAULT 0 NOT NULL,
+                           average_price INTEGER DEFAULT 0 NOT NULL,
                            review_count INTEGER DEFAULT 0 NOT NULL,
                            CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -235,7 +235,7 @@ CREATE TABLE Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                       inquiry_content   VARCHAR(1000) NOT NULL,
                       inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                       inquiry_file VARCHAR(100) NULL,
-                      inquiry_status reports_type ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
+                      inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
                       inquiry_satisfaction TINYINT DEFAULT 0 NOT NULL, -- 1(만족) 0(불만족) --
                       CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

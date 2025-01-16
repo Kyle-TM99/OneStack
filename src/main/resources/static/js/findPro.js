@@ -11,18 +11,14 @@ $(function() {
     });
 
 
-
     /* reset 초기화 버튼*/
     $("#resetCategory").on("click", function() {
-        // 정렬 버튼 초기화
-        $("#sortSelect").val("");
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemNo = parseInt(urlParams.get('itemNo'));
 
-        // 필터 조건 초기화
-        let radios = document.querySelectorAll('input[type="radio"]');
-        radios.forEach(function(radio) {
-            radio.checked = false;
-        });
-
+        if (itemNo) {
+            window.location.href = `/findPro?itemNo=${itemNo}`;
+        }
     });
 
 
@@ -93,8 +89,8 @@ $(function() {
                 '          <span class="badge bg-success">' + pro.professional.career + '</span> <br>' +
                 '          <span class="card-text">' + pro.professional.selfIntroduction + '</span> <br>' +
                 '          <i class="bi bi-star-fill text-warning"></i>' +
-                '          <span class="ms-1 mb-1">' + pro.professional.rate + '</span> <br>' +
-                '          <div class="price">평균 가격: <strong>' + pro.professional.avaragePrice + '원</strong></div>' +
+                '          <span class="ms-1 mb-1">' + pro.professional.rate + ' (' +  pro.professional.reviewCount + ') </span> <br>' +
+                '          <div class="price">평균 가격: <strong>' + pro.professional.averagePrice + '원</strong></div>' +
                 '        </div>' +
                 '      </div>' +
                 '      <div class="col-2 align-items-center">' +

@@ -1,7 +1,6 @@
 package com.onestack.project.service;
 
 import com.onestack.project.domain.MemProAdInfoCate;
-import com.onestack.project.domain.Professional;
 import com.onestack.project.domain.SurveyWithCategory;
 import com.onestack.project.mapper.ProMapper;
 import lombok.RequiredArgsConstructor;

@@ -25,7 +25,7 @@ public class Professional {
     private String screeningMsg;
     private Timestamp proDate;
     private String contactableTime;
-    private BigDecimal averagePrice;
+    private int averagePrice;
     private int reviewCount;
 }
 

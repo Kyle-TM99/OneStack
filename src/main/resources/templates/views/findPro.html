@@ -96,8 +96,8 @@
                                             <span th:text="${pro.professional.career}" class="badge bg-success">전문가 경력</span> <br>
                                             <span th:text="${pro.professional.selfIntroduction}" class="card-text">전문가 자기소개</span> <br>
                                             <i class="bi bi-star-fill text-warning"></i>
-                                            <span th:text="${pro.professional.rate}" class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
-                                            <div class="price">평균 가격: <strong>[[ ${pro.professional.avaragePrice} ]]원</strong></div>
+                                            <span th:text="${pro.professional.rate} + ' (' + ${pro.professional.reviewCount} + ')'" class="ms-1 mb-1">전문가 별점 (리뷰 수)</span> <br>
+                                            <div class="price">평균 가격: <strong>[[ ${pro.professional.averagePrice} ]]원</strong></div>
                                         </div>
                                     </div>
                                     <div class="col-2 align-items-center">
