@@ -1,11 +1,28 @@
 $(function() {
+    /* 종목 변경 */
+    document.getElementById("categorySelect").addEventListener("change", function() {
+        const itemNo = this.value;
+
+        // 카테고리 변경 시 페이지 리로드
+        // 선택된 itemNo를 URL의 쿼리 파라미터로 추가하여 페이지를 리로드
+        if (itemNo) {
+            window.location.href = `/findPro?itemNo=${itemNo}`;
+        }
+    });
+
+
+
     /* reset 초기화 버튼*/
     $("#resetCategory").on("click", function() {
-        $('#categorySelect').val("");
+        // 정렬 버튼 초기화
+        $("#sortSelect").val("");
+
+        // 필터 조건 초기화
         let radios = document.querySelectorAll('input[type="radio"]');
         radios.forEach(function(radio) {
             radio.checked = false;
         });
+
     });
 
 
@@ -20,13 +37,22 @@ $(function() {
     /* applyFilters 함수 */
     function applyFilters() {
         const filters = getFilters();
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemNo = parseInt(urlParams.get('itemNo'));
+
+        const requestData = {
+            filters: filters.appType,
+            itemNo: itemNo,
+        };
+
+        console.log("Request Data: ", requestData);
 
         fetch("/proFilter", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(filters),
+            body: JSON.stringify(requestData),
         })
             .then((response) => response.json())
             .then((pros) => updateResults(pros)) // 결과 업데이트
@@ -53,7 +79,8 @@ $(function() {
         const resultContainer = document.getElementById("proListContainer");
         resultContainer.innerHTML = ""; // 기존 결과 초기화
 
-        pros.forEach((pro) => {
+        /* 직렬화한 데이터가 배열이 아닌 유사 배열이기에 Array.from()함수 필요 */
+        Array.from(pros).forEach((pro) => {
             const proDiv = document.createElement("div");
             proDiv.className = "card h-100 shadow-sm";
             proDiv.innerHTML =
@@ -85,6 +112,36 @@ $(function() {
             resultContainer.appendChild(proDiv);
         });
     }
+
+
+    /* filter 조건과 sort조건에 따른 리스트 반환 */
+    $("#sortSelect").on("change", function () {
+        const sortValue = $(this).val(); // 선택한 정렬 기준
+        const filters = getFilters(); // 기존 필터 조건
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemNo = parseInt(urlParams.get('itemNo'));
+
+        // 정렬 요청 데이터
+        const requestData = {
+            filters: filters.appType,
+            sort: sortValue,
+            itemNo: itemNo,
+        };
+
+        // AJAX 요청
+        fetch("/proFilterSort", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData), // 필터 및 정렬 조건 전달
+        })
+            .then((response) => response.json())
+            .then((pros) => updateResults(pros)) // 결과 업데이트
+            .catch((error) => console.error("Error fetching sorted pros:", error));
+    });
+
+
 
 
 

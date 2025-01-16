@@ -47,7 +47,7 @@
                             <div class="row mb-2">
                                 <div class="col">
                                     <!-- Survey Question -->
-                                    <div class="my-2 fw-bold" th:text="${survey.survey.surveyQuestion}"></div>
+                                    <div class="my-2 fw-bold" style="font-size: 15px;" th:text="${survey.survey.surveyQuestion}"></div>
 
                                     <!-- Radio Buttons for Options -->
                                     <div class="form-check" th:each="option : ${#strings.arraySplit(#strings.replace(survey.survey.surveyOption, '\n', ''), ',')}">
@@ -70,13 +70,7 @@
             <!-- 검색 및 결과 -->
             <div class="col-8">
                 <div class="row mb-4">
-                    <div class="col-9">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="검색어를 입력하세요">
-                            <button class="btn custom-button2" type="button">검색</button>
-                        </div>
-                    </div>
-                    <div class="col-3">
+                    <div class="col-md-3 offset-md-9">
                         <select class="form-select" id="sortSelect">
                             <option selected value="">정렬 기준</option>
                             <option value="review">리뷰 많은순</option>
