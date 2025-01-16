@@ -1,5 +1,6 @@
 package com.onestack.project.domain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class Professional {
     private String screeningMsg;
     private Timestamp proDate;
     private String contactableTime;
-    private int avaragePrice;
+    private BigDecimal averagePrice;
+    private int reviewCount;
 }
 

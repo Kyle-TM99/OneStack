@@ -56,7 +56,8 @@
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
         <result property="contactableTime" column="contactable_time" />
-        <result property="avaragePrice" column="avarage_price" />
+        <result property="averagePrice" column="average_price" />
+        <result property="reviewCount" column="review_count" />
     </resultMap>
 
     <resultMap id="ProfessionalAdvancedInformationResultMap" type="com.onestack.project.domain.ProfessionalAdvancedInformation">
