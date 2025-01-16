@@ -235,7 +235,7 @@ CREATE TABLE Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                       inquiry_content   VARCHAR(1000) NOT NULL,
                       inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                       inquiry_file VARCHAR(100) NULL,
-                      inquiry_status TINYINT DEFAULT 0 NOT NULL, -- 1(해결) 0(미해결) --,
+                      inquiry_status reports_type ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
                       inquiry_satisfaction TINYINT DEFAULT 0 NOT NULL, -- 1(만족) 0(불만족) --
                       CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
