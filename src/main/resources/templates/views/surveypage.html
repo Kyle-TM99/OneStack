@@ -30,6 +30,7 @@ body {
                 <!-- White Box for Survey -->
                 <div class="survey-box">
                     <form id="surveyForm" action="/survey/submit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="itemNo" name="itemNo" />
                         <div class="text-start fw-bold fs-5">견적 요청 설문조사</div>
                         <div class="row">
                             <div class="col progress mt-2" style="height: 2px;">
@@ -77,15 +78,15 @@ body {
                             <input type="file" class="form-control" id="thumbnailImage" name="thumbnailImage" accept="image/*">
                         </div>
                         <div id="portfolioFiles">
-                            <div class="mb-3">
-                                <label for="portfolioFile1" class="form-label">포트폴리오 이미지 1</label>
-                                <button type="button" class="btn btn-secondary btn-sm float-end" id="addFileButton">파일 추가</button>
-                            </div>
-                            <div class="file-upload-info">
-                                <i class="bi bi-exclamation-circle" style="color: #3b82f6; margin-right: 5px;"></i> 추가할 파일이 있을 경우 버튼을 클릭하세요.
-                            </div>
-                            <input type="file" class="form-control" id="portfolioFile1" name="portfolioFile1" accept="*">
-                        </div>
+					    <div class="mb-3" id="portfolioFileContainer">
+					        <label for="portfolioFile1" class="form-label">포트폴리오 이미지 1</label>
+					        <input type="file" class="form-control" id="portfolioFile1" name="portfolioFile1" accept="*" />
+					        <button type="button" class="btn btn-secondary btn-sm float-end mt-2" id="addFileButtonBtn">파일 추가</button>
+					    </div>
+					    <div id="fileInfo" class="mt-2 text-muted">
+					        <small>최대 10개의 파일을 추가할 수 있습니다.</small>
+					    </div>
+						</div>
 							<div class="row mt-4">
 							    <div class="col text-end">
 							        <button type="button" class="btn submitPortfolioBtn" id="submitPortfolioBtn">완료</button>

@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfessionalAdvancedInformation {
-	
 	private int proAdvancedNo;
 	private int proNo;
 	private int itemNo;

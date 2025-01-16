@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.onestack.project.domain.Category;
 import com.onestack.project.domain.SurveyWithCategory;
 import com.onestack.project.mapper.SurveyMapper;
 
@@ -25,6 +26,9 @@ public class SurveyService {
 	    modelMap.put("surveyList", surveyList);
 	    return modelMap;
 	}
+	
+	    public List<Category> getAllCategories() {
+	        return surveyMapper.getAllCategories();
+	    }
+	}
 
-
-}

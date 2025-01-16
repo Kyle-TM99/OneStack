@@ -16,13 +16,12 @@
              class="container d-flex justify-content-center">
             <!-- 왼쪽: 전문가 전환 신청서 -->
             <div id="applicationForm" class="col-md-6">
-                <div class="card" style="width: 100%;"> <!-- enctype="multipart/form-data" -->
-                    <form action="/proConversion/submit" method="post" >
-                    	<input type="hidden" name="memberId" th:value="${memberId}">
-                    	<input type="hidden" name="memberNo" th:value="${member.memberNo}">
-					    <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
-                        <input type="hidden" name="memberType" value="1">
-                        <input type="hidden" name="image_list"> <!-- 파일1:파일2:파일3 -->
+               <div class="card" style="width: 100%;">
+		    <div id="applicationForm">
+		        <input type="hidden" name="memberId" th:value="${memberId}">
+		        <input type="hidden" name="memberNo" th:value="${member.memberNo}">
+		        <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
+
 
                         <!-- 이름 -->
                         <div class="row">
@@ -64,7 +63,57 @@
                             <label for="selfIntroduction">자기소개 *</label>
                             <input type="text" class="form-control" id="selfIntroduction" name="selfIntroduction" required>
                             <small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
-                        </div>                       
+                        </div>           
+                        <!-- 연락 가능 시간 -->
+						<div class="form-field mt-3">
+						    <label for="contactableTimeStart">연락 가능 시간 *</label>
+						    <div class="d-flex gap-2">
+						        <!-- 시작 시간 -->
+						        <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
+						            <option value="" hidden>시작 시간</option>
+						            <option value="오전 6시">오전 6시</option>
+						            <option value="오전 7시">오전 7시</option>
+						            <option value="오전 8시">오전 8시</option>
+						            <option value="오전 9시">오전 9시</option>
+						            <option value="오전 10시">오전 10시</option>
+						            <option value="오전 11시">오전 11시</option>
+						            <option value="오후 12시">오후 12시</option>
+						            <option value="오후 1시">오후 1시</option>
+						            <option value="오후 2시">오후 2시</option>
+						            <option value="오후 3시">오후 3시</option>
+						            <option value="오후 4시">오후 4시</option>
+						            <option value="오후 5시">오후 5시</option>
+						            <option value="오후 6시">오후 6시</option>
+						            <option value="오후 7시">오후 7시</option>
+						            <option value="오후 8시">오후 8시</option>
+						            <option value="오후 9시">오후 9시</option>
+						            <option value="오후 10시">오후 10시</option>
+						        </select>
+						
+						        <!-- 종료 시간 -->
+						        <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
+						            <option value="" hidden>종료 시간</option>
+						            <option value="오전 6시">오전 6시</option>
+						            <option value="오전 7시">오전 7시</option>
+						            <option value="오전 8시">오전 8시</option>
+						            <option value="오전 9시">오전 9시</option>
+						            <option value="오전 10시">오전 10시</option>
+						            <option value="오전 11시">오전 11시</option>
+						            <option value="오후 12시">오후 12시</option>
+						            <option value="오후 1시">오후 1시</option>
+						            <option value="오후 2시">오후 2시</option>
+						            <option value="오후 3시">오후 3시</option>
+						            <option value="오후 4시">오후 4시</option>
+						            <option value="오후 5시">오후 5시</option>
+						            <option value="오후 6시">오후 6시</option>
+						            <option value="오후 7시">오후 7시</option>
+						            <option value="오후 8시">오후 8시</option>
+						            <option value="오후 9시">오후 9시</option>
+						            <option value="오후 10시">오후 10시</option>
+						        </select>
+						    </div>
+						    <small class="text-muted d-block">시작 시간과 종료 시간을 선택해주세요.</small>
+						</div>
 
                         <!-- 경력 -->
                         <div class="form-field my-5">
@@ -89,7 +138,7 @@
                         </div>
 
                         <!-- 설문조사 및 포트폴리오 -->
-                        <div class="form-field my-5">
+                          <div class="form-field my-5">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label for="portfolio">포트폴리오 *</label>
                                 <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
@@ -100,8 +149,7 @@
 		                        <textarea class="form-control mb-2" name="portfolioContent" required readonly></textarea>
 								<!-- 썸네일 이미지 표시 -->
 								<label for="thumbnailImage">썸네일 이미지</label>
-								
-								<div id="thumbnailImageDisplay" class="text-muted" >
+								<div id="thumbnailImageDisplay" class="text-muted mb-5" >
 									<div th:text="${thumbnailImage}"></div>
 								</div>
 								
@@ -111,7 +159,7 @@
 								    <!-- 서버에서 받은 파일 경로가 이곳에 반영됨 -->
 								    <li th:each="file : ${portfolioFiles}" th:text="${file}"></li>
 								</ul>
-                        </div>
+                         	</div>
 		                        <label for="proAnswer1">전문가 질문 1 *</label>
 		                        <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
 		                        <label for="proAnswer2">전문가 질문 2 *</label>
@@ -122,8 +170,8 @@
 		                        <input type="text" class="form-control mb-2" name="proAnswer4" readonly>
 		                        <label for="proAnswer5">전문가 질문 5 *</label>
 		                        <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
-                        <button type="submit" class="custom-button2 w-100 my-5">심사 요청</button>
-                    </form>
+                        <button type="submit" id="submitProConversionBtn" class="custom-button2 w-100 my-5">심사 요청</button>
+					</div>
                 </div>
             </div>
 

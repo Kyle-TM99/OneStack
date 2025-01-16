@@ -66,9 +66,10 @@
 
 <!-- 전문가 신청 -->
 <insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
-		INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer)
-        VALUES (#{memberNo}, #{itemNo}, #{selfIntroduction}, #{carrer}, #{awardCarrer})
+		INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, contactable_time)
+        VALUES (#{memberNo}, #{itemNo}, #{selfIntroduction}, #{carrer}, #{awardCarrer}, #{contactableTime})
 </insert>
+
 <!-- 회원 타입 업데이트 -->
  <update id="updateMemberType" parameterType="int">
         UPDATE Member SET member_type = 1 WHERE member_no = #{memberNo}

@@ -32,6 +32,12 @@
 	ORDER BY s.survey_no;
 </select>
 
+<select id="getAllCategories" resultType="Category">
+    SELECT *  FROM Category
+</select>
+
+
+
 
 
 
