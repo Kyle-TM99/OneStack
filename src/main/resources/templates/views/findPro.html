@@ -42,18 +42,18 @@
                 <!-- 카테고리 설문조사 -->
                 <div class="category-survey p-3 border rounded" id = "categoryFilter">
                     <h5 class="mb-3">필터링</h5>
-                    <th:block th:if="${not #lists.isEmpty(surveyList)}">
-                        <div th:block th:each="survey, status: ${surveyList}">
+                    <th:block th:if="${not #lists.isEmpty(filterList)}">
+                        <div th:block th:each="filter, status: ${filterList}">
                             <div class="row mb-2">
                                 <div class="col">
                                     <!-- Survey Question -->
-                                    <div class="my-2 fw-bold" style="font-size: 15px;" th:text="${survey.survey.surveyQuestion}"></div>
+                                    <div class="my-2 fw-bold" style="font-size: 15px;" th:text="${filter.filter.filterQuestion}"></div>
 
                                     <!-- Radio Buttons for Options -->
-                                    <div class="form-check" th:each="option : ${#strings.arraySplit(#strings.replace(survey.survey.surveyOption, '\n', ''), ',')}">
+                                    <div class="form-check" th:each="option : ${#strings.arraySplit(#strings.replace(filter.filter.filterOption, '\n', ''), ',')}">
                                         <label class="form-check-label">
                                             <input class="form-check-input" type="radio"
-                                                   th:name="'proAnswer' + ${survey.survey.surveyNo}"
+                                                   th:name="'proAnswer' + ${filter.filter.filterQuestionNo}"
                                                    th:value="${option.trim()}">
                                             <span th:text="${option.trim()}"></span>
                                         </label>

@@ -60,10 +60,16 @@ $(function() {
         const filters = {};
         const appType = document.querySelectorAll("input[type='radio']:checked");
 
-        filters.appType = Array.from(appType).map((input, index) => ({
-            field: `pro_answer${index + 1}`, // pro_answer1, pro_answer2 등으로 매핑
-            value: input.value,
-        }));
+        filters.appType = Array.from(appType).map((input) => {
+            // name 속성에서 숫자 부분을 추출 (예: proAnswer1 -> 1)
+            const surveyNo = input.name.match(/\d+/)[0];  // 숫자 부분 추출
+
+            // 'pro_answer' + surveyNo 형식으로 field를 설정하고 value를 추가
+            return {
+                field: `pro_answer${surveyNo}`,  // pro_answer1, pro_answer2 등으로 필드 이름 설정
+                value: input.value,  // 선택된 value 값
+            };
+        });
 
         console.log(filters.appType);
 

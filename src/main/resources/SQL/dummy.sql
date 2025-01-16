@@ -190,4 +190,56 @@ VALUES(26, 25, '통계분석 가능한 서비스를 선택해주세요.', '데�
 INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(27, 25, '사용 가능한 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
+-- 필터링 --
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(11, 1, '의뢰할 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타'),
+      (11, 2, '의뢰할 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(12, 1, '의뢰하려는 프로젝트의 제작 상태를 선택해주세요.', '신규 제작, 기존 웹 리뉴얼'),
+      (12, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(13, 1, '제작을 원하는 플랫폼을 선택해주세요.', 'Windows, Mac, Linux, iOS, Android, 기타'),
+      (13, 2, '제작을 원하는 개발 종류를 선택해주세요.', '일반 프로그램, 게임, 임베디드, 기타'),
+      (13, 3, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(14, 1, '개발을 원하는 앱 형태를 선택해주세요.', '네이티브, 하이브리드, 기타'),
+      (14, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(15, 1, '개발을 원하는 형태의 앱을 선택해주세요.', '네이티브, 하이브리드, 기타'),
+      (15, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)'),
+      (15, 3, '서버 개발이 필요한지 선택해주세요.', '네., 아니요.');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(16, 1, '개발을 원하는 플랫폼을 선택해주세요.', '안드로이드, PC, iOS, Mac, Linux, 기타'),
+      (16, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(17, 1, '개발을 원하는 인공지능 기반을 선택해주세요.', '텍스트, 음성, 이미지, 기타'),
+      (17, 2, '개발을 원하는 작업을 선택해주세요.', '분류, 예측, 기타'),
+      (17, 3, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(18, 1, '테스트 하고 싶은 분야를 선택해주세요.', '기능 테스트, 비기능 테스트, 성능 테스트, 테스트 자동화, 기타'),
+      (18, 2, '원하는 테스트 기간을 선택해주세요.', '1회 계약, 정기 계약, 무관');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(21, 1, '데이터 가공 및 라벨링을 원하는 형태를 선택해주세요.', '문자, 이미지, 음성, 기타');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(22, 1, '데이터 복구를 원하는 것을 선택해주세요.', '스마트기기(휴대폰/태블릿 등), 프로그램(카톡 등), 하드디스크(외장하드 등), 메모리카드(USB/SD/SSD 등), 기타');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(23, 1, '크롤링을 원하는 서비스를 선택해주세요.', '웹 크롤링, 앱 크롤링, 기타'),
+      (23, 2, '크롤링을 원하는 웹사이트/애플리케이션을 선택해주세요.', '검색 포털(네이버/구글 등), 동영상 채널(유튜브 등), 오픈마켓(쿠팡/옥션 등), 쇼핑몰, 기타'),
+      (23, 3, '크롤링 프로그램 제작이 필요한지 선택해주세요.', '네., 아니요.');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(24, 1, '데이터베이스 설계를 원하는 분야를 선택해주세요.', '식품, 도소매, 서비스업, IT, 기타');
+
+INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
+      (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');

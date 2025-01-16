@@ -18,12 +18,12 @@ public class ProService {
     private final ProMapper proMapper;
 
     /* 필터링 가져오기 */
-    public Map<String, Object> getSurvey(int itemNo) {
+    public Map<String, Object> getFilter(int itemNo) {
 
-        List<SurveyWithCategory> surveyList = proMapper.getSurvey(itemNo);
+        List<SurveyWithCategory> filterList = proMapper.getFilter(itemNo);
 
         Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("surveyList", surveyList);
+        modelMap.put("filterList", filterList);
 
         return modelMap;
     }

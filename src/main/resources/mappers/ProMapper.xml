@@ -3,11 +3,12 @@
 
 <mapper namespace="com.onestack.project.mapper.ProMapper">
 
-    <resultMap id="SurveyResultMap" type="com.onestack.project.domain.Survey">
-        <id property="surveyNo" column="survey_no" />
+    <resultMap id="FilterResultMap" type="com.onestack.project.domain.Filter">
+        <id property="filterNo" column="filter_no" />
         <result property="itemNo" column="item_no" />
-        <result property="surveyQuestion" column="survey_question" />
-        <result property="surveyOption" column="survey_option" />
+        <result property="filterQuestionNo" column="filter_question_no" />
+        <result property="filterQuestion" column="filter_question" />
+        <result property="filterOption" column="filter_option" />
     </resultMap>
 
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
@@ -72,8 +73,8 @@
     </resultMap>
 
 
-    <resultMap id="SurveyWithCategoryResultMap" type="com.onestack.project.domain.SurveyWithCategory">
-        <association property="survey" resultMap="SurveyResultMap" />
+    <resultMap id="FilterWithCategoryResultMap" type="com.onestack.project.domain.FilterWithCategory">
+        <association property="filter" resultMap="FilterResultMap" />
         <association property="category" resultMap="CategoryResultMap" />
     </resultMap>
 
@@ -85,12 +86,12 @@
     </resultMap>
 
 
-    <select id = "getSurvey" parameterType = "int" resultMap = "SurveyWithCategoryResultMap">
-        SELECT s.*, c.*
-        FROM Survey s JOIN Category c
-            ON s.item_no = c.item_no
-        WHERE s.item_no = #{itemNo}
-        ORDER BY s.survey_no;
+    <select id = "getFilter" parameterType = "int" resultMap = "FilterWithCategoryResultMap">
+        SELECT f.*, c.*
+        FROM Filter f JOIN Category c
+            ON f.item_no = c.item_no
+        WHERE f.item_no = #{itemNo}
+        ORDER BY f.filter_question_no;
     </select>
 
     <select id="getMemProAdCateInfo" parameterType = "int" resultMap = "MemProAdInfoCateResultMap">

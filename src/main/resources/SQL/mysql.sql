@@ -97,6 +97,15 @@ CREATE TABLE Survey (survey_no INTEGER PRIMARY KEY,
                      CONSTRAINT item_no_survey_fk FOREIGN KEY (item_no) REFERENCES Category(item_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+## Filter - 필터링
+CREATE TABLE Filter (filter_no INTEGER AUTO_INCREMENT KEY,
+                     item_no   INTEGER   NOT NULL,
+                     filter_question_no   INTEGER   NOT NULL,
+                     filter_question   VARCHAR(100) NULL,
+                     filter_option VARCHAR(500) NULL,
+                     CONSTRAINT item_no_filter_fk FOREIGN KEY (item_no) REFERENCES Category(item_no) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 ## ProfessionalBoard - 전문가 찾기 게시판
 CREATE TABLE ProfessionalBoard (item_no   INTEGER   NOT NULL,
                                 pro_no INTEGER NOT NULL,

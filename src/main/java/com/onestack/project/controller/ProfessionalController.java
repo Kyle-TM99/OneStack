@@ -23,7 +23,7 @@ public class ProfessionalController {
 	@GetMapping("/findPro")
 	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
 
-		Map<String, Object> surveyModelMap = proService.getSurvey(itemNo);
+		Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
 		Map<String, Object> proModelMap = proService.getMemProAdCateInfo(itemNo);
 
 		model.addAllAttributes(surveyModelMap);

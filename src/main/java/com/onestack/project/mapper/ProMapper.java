@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface ProMapper {
     /* itemNo에 따른 필터링 반환 */
-    public List<SurveyWithCategory> getSurvey(@Param("itemNo") int itemNo);
+    public List<SurveyWithCategory> getFilter(@Param("itemNo") int itemNo);
 
     /* itemNo에 따른 전문가 전체 리스트 반환 */
     public List<MemProAdInfoCate> getMemProAdCateInfo(@Param("itemNo") int itemNo);
