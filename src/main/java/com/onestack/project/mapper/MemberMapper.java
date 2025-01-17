@@ -26,6 +26,7 @@ public interface MemberMapper {
 	
 	public String findMemberId(Member member); 
 
+
 	public void savePasswordResetToken(PasswordResetToken token);
 
 	public PasswordResetToken findByToken(String token);
@@ -33,5 +34,9 @@ public interface MemberMapper {
 	public void updatePassword(@Param("memberId") String memberId, @Param("newPassword") String newPassword);
 
 	public void deletePasswordResetToken(String token);
+
+	// LHB - 아이디로 회원번호 조회
+	Integer findMemberNoByMemberId(String memberId);
+
 
 }

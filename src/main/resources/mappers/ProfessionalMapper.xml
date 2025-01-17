@@ -41,6 +41,7 @@
         <result property="professorStatus" column="professor_status" />
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
+      <result property="contactableTime" column="contactable_time" />
     </resultMap>
     
     <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
@@ -63,7 +64,16 @@
 	    <association property="quotation" resultMap="QuotationResultMap" />
 	</resultMap>
 
-	
+<!-- 전문가 신청 -->
+<insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
+		INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, contactable_time)
+        VALUES (#{memberNo}, #{itemNo}, #{selfIntroduction}, #{carrer}, #{awardCarrer}, #{contactableTime})
+</insert>
+
+<!-- 회원 타입 업데이트 -->
+ <update id="updateMemberType" parameterType="int">
+        UPDATE Member SET member_type = 1 WHERE member_no = #{memberNo}
+    </update>
 
 <!-- 전문가 정보 조회 -->
 <select id = "getPro" parameterType = "int" resultMap = "MemberWithProfessionalResultMap">
@@ -72,6 +82,12 @@
 		ON m.member_no = p.member_no
 	WHERE m.member_no = #{memberNo}
 </select>
+
+<!-- 전문가 고급 정보 추가 -->
+<insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
+	INSERT INTO ProfessionalAdvancedInformation(pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
+	VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
+</insert>
 
 <!-- 전문가의 고객 조회 -->
 <select id = "getProClient" parameterType = "int" resultMap = "MemberWithQutationResultMap">
@@ -91,19 +107,27 @@
 
 
 <!-- 포트폴리오, 이미지 조회 -->
-<select id = "getPortfolio" parameterType = "int" resultType = "PortfolioWithImages">
-	SELECT p.*, pi.*
-	FROM Portfolio p JOIN PortfolioImages pi
-		ON p.portfolio_no = pi.portfolio_no
+<select id = "getPortfolio" parameterType = "int" resultType = "Portfolio">
+	SELECT *
+	FROM Portfolio p 
 	WHERE p.pro_no = #{proNo}
-		AND p.visibility = 1
+		AND visibility = 1
 </select>
 
 <!-- 포트폴리오 추가 -->
-<insert id = "addPortfolio" parameterType = "Portfolio" useGeneratedKeys = "true" keyProperty = "portfolioNo">
-	INSERT INTO Portfolio(pro_advanced_no, portfolio_title, portfolio_content)
-	VALUES(#{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent})
+<insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
+        INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content, 
+                              thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,
+                              portfolio_file4, portfolio_file5, portfolio_file6, portfolio_file7,
+                              portfolio_file8, portfolio_file9, portfolio_file10)
+        VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, 
+                #{thumbnailImage}, #{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3},
+                #{portfolioFile4}, #{portfolioFile5}, #{portfolioFile6}, #{portfolioFile7},
+                #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
 </insert>
+
+
+
 
 <!-- 포트폴리오 수정 -->
 <update id = "updatePortfolio" parameterType = "Portfolio">
