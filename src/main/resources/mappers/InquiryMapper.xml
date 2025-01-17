@@ -7,8 +7,8 @@
         <result property="memberNo" column="member_no" />
         <result property="inquiryTitle" column="inquiry_title" />
         <result property="inquiryContent" column="inquiry_content" />
-        <result property="inquiryRegDate" column="inquiry_reg_date" />
         <result property="inquiryFile" column="inquiry_file" />
+        <result property="inquiryRegDate" column="inquiry_reg_date" />
         <result property="inquiryStatus" column="inquiry_status" />
         <result property="inquirySatisfaction" column="inquiry_satisfaction" />
     </resultMap>
@@ -59,16 +59,20 @@
     </resultMap>
     
  	<resultMap id="MemberWithInquiryResultMap" type="com.onestack.project.domain.MemberWithInquiry">
+		<result property="inquiryNo" column="inquiryNo" />
+    	<result property="inquiryTitle" column="inquiryTitle" />
+    	<result property="inquiryRegDate" column="inquiryRegDate" />
+    	<result property="inquiryStatus" column="inquiryStatus" />
 		<association property="member" resultMap="MemberResultMap" />
-	    <association property="inquiry" resultMap="InquiryResultMap" />
+		<association property="inquiry" resultMap="InquiryResultMap" />
 	</resultMap>
 	
 	<resultMap id="ManagerWithInquiryAnswerResultMap" type="com.onestack.project.domain.ManagerWithInquiryAnswer">
 		<association property="manager" resultMap="ManagerResultMap" />
 	    <association property="inquiryAnswer" resultMap="InquiryAnswerResultMap" />
 	</resultMap>
-    
-<!-- 문의글 조회 -->
+	
+<!-- 문의글 조회 (건민) --> 
 <select id = "getInquiry" parameterType = "map" resultMap = "MemberWithInquiryResultMap">
 	SELECT i.*, m.*
 	FROM Inquiry i JOIN Member m
@@ -90,6 +94,22 @@
 	ORDER BY i.inquiry_reg_date DESC
 	LIMIT #{startRow}, #{num}
 </select>
+
+<!-- 게시물 상세보기 -->
+<select id="getInquiryById" resultMap="InquiryResultMap">
+    SELECT * FROM Inquiry
+    WHERE inquiry_no = #{inquiryNo}
+</select>
+ 
+
+<!-- 문의글 조회 (건우)
+<select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
+	SELECT i.*, m.*
+    FROM Inquiry i JOIN Member m
+    ON i.member_no = m.member_no
+    ORDER BY i.inquiry_reg_date DESC
+    LIMIT #{startRow}, #{num}
+</select> -->
 
 <!-- 문의글 수 조회 -->
 <select id = "getInquiryCount" parameterType = "map" resultType = "int">
@@ -156,10 +176,6 @@
 	WHERE inquiry_no = #{inquiryNo}
 </update>
 
-
-
-
-
 <!-- 문의 답변 조회 -->
 <select id = "getInquiryAnswer" parameterType = "int" resultMap = "ManagerWithInquiryAnswerResultMap">
 	SELECT ia.*, m.*
@@ -187,10 +203,6 @@
 	DELETE FROM InquiryAnswer
 	WHERE inquiry_answer_no = #{inquiryAnswerNo}
 </delete>
-
-
-
-
 
 
 </mapper>

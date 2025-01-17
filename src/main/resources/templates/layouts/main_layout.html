@@ -37,11 +37,11 @@
 	}
 </style>
 <body>
-        <div th:replace="~{fragments/header::header}"></div>
+    <div th:replace="~{fragments/header::header}"></div>
     <div class="container">
         <div layout:fragment="content"></div>
     </div>
-        <div th:replace="~{fragments/footer::footer}"></div>
-		<th:block layout:fragment="script"></th:block>
+    <div th:replace="~{fragments/footer::footer}"></div>
+	<th:block layout:fragment="script"></th:block>
 </body>
 </html>

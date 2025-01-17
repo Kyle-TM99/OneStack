@@ -1,105 +1,85 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{layouts/main_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
 <head>
-	<style>
-	img {
-		max-height: 150px;
-		object-fit: cover;
-	}
-	.post-title {
-	    cursor: pointer;
-	    transition: color 0.2s ease;
-	}
-	.post-title:hover {
-	    color: #0d6efd;
-	    font-weight: bold;
-	}
-	</style>
+    <style>
+        img {
+            max-height: 150px;
+            object-fit: cover;
+        }
+        .post-title {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .post-title:hover {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
   <div layout:fragment="content">
     <div class="row g-0">
-      <div class="col">
-        <img src="gray.png" alt="background_image" class="img-fluid" style="width: 100%;">
-      </div>
-    </div>
-    <div class="row mt-2 g-0">
-      <div class="col-md-12 mt-3 border-bottom">
+	<div class="col-md-1"></div>
+      <div class="col-md-10 mt-3 border-bottom">
         <h1 class="fw-bold mb-4">회원 문의</h1>
       </div>
-      <div class="row g-0">
-        <div class="col-md-12">
-          <div class="breadcrumb-container mt-3 mb-3">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">고객센터</a></li>
-                <li class="breadcrumb-item active" aria-current="page">회원 문의</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div>
-
       <div class="row g-0 mt-5">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="d-flex">
-              <select class="form-select me-2" style="width: 120px;">
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="date">작성일</option>
-              </select>
-              <input type="text" class="form-control me-2" placeholder="검색어를 입력하세요" style="width: 250px;">
-              <button class="btn btn-primary">검색</button>
-            </div>
-            <div>
-              <button class="btn btn-secondary">문의하기</button>
+		<div class="col-md-1"></div>
+          <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex">
+                <select class="form-select me-2" style="width: 120px;" name="type">
+                  <option value="title">제목</option>
+                  <option value="content">내용</option>
+                  <option value="date">작성일</option>
+                </select>
+                <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
+                <button type="submit" class="btn btn-primary">검색</button>
+              </div>
+			  <div>
+		          <a th:href="@{/inquiryWriteForm}" class="btn btn-secondary">문의하기</a>
+		      </div>
             </div>
           </div>
+		  <div class="col-md-1"></div>
         </div>
-        <div class="col-md-1"></div>
-      </div>
-      
-      <!-- 회원 문의 게시판 -->
-      <div class="row g-0">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-          <table class="table">
-            <thead class="table-secondary">
-              <tr>
-                <th scope="col" style="width: 10%">번호</th>
-                <th scope="col" style="width: 55%" class="text-center">제목</th>
-                <th scope="col" style="width: 20%" class="text-center">작성일</th>
-                <th scope="col" style="width: 15%" class="text-center">답변상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>게시글 번호</td>${member.memberType}
-                <td class="post-title">게시글 제목</td>
-                <td class="text-center">작성일</td>
-                <td class="text-center"><span class="badge bg-secondary">답변 대기</span></td>
-              </tr>
-              <tr>
-                <td>게시글 번호</td>
-                <td class="post-title">게시글 제목</td>
-                <td class="text-center">작성일</td>
-                <td class="text-center"><span class="badge bg-primary">답변 중</span></td>
-              </tr>
-              <tr>
-                <td>게시글 번호</td>
-                <td class="post-title">게시글 제목</td>
-                <td class="text-center">작성일</td>
-                <td class="text-center"><span class="badge bg-success">답변 완료</span></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="row g-0">
+		<div class="col-md-1"></div>
+          <div class="col-md-10">
+            <table class="table">
+              <thead class="table-secondary">
+				<tr>
+	               <th scope="col" style="width: 10%; font-weight: bold;">번호</th>
+	               <th scope="col" style="width: 55%; font-weight: bold;" class="text-center">제목</th>
+	               <th scope="col" style="width: 20%; font-weight: bold;" class="text-center">작성일</th>
+	               <th scope="col" style="width: 15%; font-weight: bold;" class="text-center">답변상태</th>
+	           </tr>
+              </thead>
+			  <tbody>
+	          	<tr th:each="inquiry : ${inquiry}">
+	            	<td th:text="${inquiry.inquiry.inquiryNo}">번호</td>
+					<td class="post-title">
+						<a th:href="@{/memberInquiry/{inquiry.inquiry.inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}" th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+					</td>	
+			   <!-- <td class="post-title">
+						<a th:href="@{inquiryDetails}(inquiryNo=${inquiry.inquiry.inquiryNo})}" th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+					</td> -->
+	           <!-- <td class="post-title" th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</td> -->
+	                <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
+	         	   	<td class="text-center">
+	            		<span th:if="${inquiry.inquiry.inquiryStatus}" class="badge bg-success">답변 완료</span>
+	           			<span th:if="${!inquiry.inquiry.inquiryStatus}" class="badge bg-secondary">답변 대기</span>
+	            	</td>
+	            </tr>
+				
+				
+	          </tbody>
+            </table>
+			<div class="col-md-1"></div>
+          </div>
         </div>
-        <div class="col-md-1"></div>
       </div>
+	  <div class="col-md-1"></div>
     </div>
   </div>
 </body>

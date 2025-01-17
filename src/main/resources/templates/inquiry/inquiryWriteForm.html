@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
   <title>고객센터 글 작성 페이지</title>
   <style>
     img {
@@ -11,11 +10,12 @@
   </style>
 </head>
 <body>
+<div layout:fragment="content">
   <div class="container">
     <div class="row g-0">
-      <div class="col">
+      <!--<div class="col">
         <img src="gray.png" alt="background_image" class="img-fluid" style="width: 100%;">
-      </div>
+      </div>-->
     </div>
     
     <div class="row mt-2 g-0">
@@ -40,25 +40,25 @@
       <div class="row g-0 mt-4">
         <div class="col-md-2"></div>
           <div class="col-md-8">
-            <form>
+            <form th:action="@{/memberInquiry/addInquiry}" method="post" enctype="multipart/form-data">
               <div class="mb-3">
-                <label for="title" class="form-label" placeholder="제목을 입력해주세요">제목</label>
-                <textarea class="form-control" placeholder="제목을 입력해주세요" id="title" rows="1" required></textarea>
+                <label for="title" class="form-label">제목</label>
+                <input type="text" class="form-control" id="inquiryTitle" name="inquiryTitle" required>
               </div>
               
               <div class="mb-3">
                 <label for="content" class="form-label">내용</label>
-                <textarea class="form-control" placeholder="내용을 입력해주세요" id="content" rows="8" required></textarea>
+                <textarea class="form-control" id="inquiryContent" name="inquiryContent" rows="8" required></textarea>
               </div>
               
-              <div class="mb-3">
-                <label for="file" class="form-label">파일 첨부</label>
-                <input type="file" class="form-control" id="file" multiple>
-              </div>
+			  <div class="mb-3">
+		         <label for="file" class="form-label">파일 첨부</label>
+		         <input type="file" class="form-control" id="file" name="file">
+		     </div>
               
-              <div class="d-flex justify-content-center gap-2 mt-4">
+              <div class="d-flex justify-content-center gap-2 mt-4 mb-5">
                 <button type="submit" class="btn btn-primary me-2">등록</button>
-                <button type="button" class="btn btn-secondary ms-2">취소</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="window.history.back();">취소</button>
               </div>
             </form>
           </div>
@@ -66,5 +66,6 @@
       </div>
     </div>
   </div>
+</div>
 </body>
 </html>
