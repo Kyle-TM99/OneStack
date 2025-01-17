@@ -1,6 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM 로드 완료');
-
     // 경력 추가 버튼 동작
     const addCarrerBtn = document.getElementById('addCarrerBtn');
     const carrerContainer = document.getElementById('carrerContainer');
@@ -45,14 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	    // 파일 추가 버튼 처리
 	    if (event.target && event.target.id === 'addFileButtonBtn') {
 	        const portfolioFileContainer = document.getElementById('portfolioFiles');
-	        let fileCount = portfolioFileContainer ? portfolioFileContainer.children.length : 0;
-
-	        if (fileCount >= 10) {
+	        let fileCount = portfolioFileContainer.children.length + 0;
+			
+			console.log("버튼 클릭");
+	        if (fileCount >= 11) {
 	            alert('최대 10개의 파일만 추가할 수 있습니다.');
 	            return;
 	        }
 
-	        fileCount++;
 	        const newFileInput = document.createElement('div');
 	        newFileInput.className = 'mb-3';
 	        newFileInput.setAttribute('id', `portfolioFile${fileCount}Div`);
@@ -139,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	            try {
 	                // 설문조사 답변 수집
 	                const surveyAnswers = Array.from(document.querySelectorAll('[name^="answer_"]:checked')).map(input => input.value);
-
+					
 	                if (surveyAnswers.length === 0) {
 	                    alert('모든 설문 질문에 답변해주세요.');
 	                    return;
@@ -319,4 +316,3 @@ document.addEventListener('DOMContentLoaded', function () {
 		        alert('심사 요청 중 오류가 발생했습니다.');
 		    }
 		});
-});
