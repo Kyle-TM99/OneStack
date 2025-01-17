@@ -7,7 +7,7 @@ use onestack;
 CREATE TABLE Member (
    member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(5) NOT NULL,
-   member_id VARCHAR(20) UNIQUE NOT NULL,
+   member_id VARCHAR(50) UNIQUE NOT NULL,
    pass VARCHAR(100) NOT NULL,
    nickname VARCHAR(20) UNIQUE NOT NULL,
    birth DATE NOT NULL,
@@ -26,8 +26,8 @@ CREATE TABLE Member (
    withdrawal_end_date   TIMESTAMP NULL,
    ban_end_date   TIMESTAMP NULL,
    reported_count INTEGER DEFAULT 0 NOT NULL,
-   is_social TINYINT DEFAULT 0 NOT NULL, -- 0(로컬) 1(소셜) --
-   social_type INTEGER NULL -- 1(카카오) 2(구글) 3(네이버) -- 
+   is_social TINYINT(1) DEFAULT 0 NOT NULL, -- 0: 일반 계정, 1: 소셜 계정
+   social_type ENUM('none', 'kakao', 'google') DEFAULT 'none' NOT NULL -- 소셜 로그인 유형
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ## Professional - 전문가
@@ -306,4 +306,13 @@ CREATE TABLE FAQ (
    faq_type TINYINT NOT NULL, -- 1(전문가) 0(회원) -- 
    faq_question VARCHAR(100) NOT NULL,
    faq_response VARCHAR(500) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+## 비밀번호 찾기 테이블
+CREATE TABLE PasswordResetToken (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id VARCHAR(50) NOT NULL,
+    token VARCHAR(100) NOT NULL,
+    expiry_date DATETIME NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES Member(member_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

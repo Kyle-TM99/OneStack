@@ -41,6 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.webjars:sockjs-client:1.5.1'
 	implementation 'org.webjars:stomp-websocket:2.3.4'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 compileJava {
@@ -48,7 +49,7 @@ compileJava {
 	options.encoding = 'UTF-8'
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
 	options.compilerArgs << '-parameters'
 	options.encoding = 'UTF-8'
 }
