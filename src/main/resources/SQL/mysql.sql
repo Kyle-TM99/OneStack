@@ -32,7 +32,7 @@ CREATE TABLE Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 ## Professional - 전문가
 CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                            member_no INTEGER NOT NULL,
-                           item_no   INTEGER   NOT NULL,
+                           category_no   INTEGER   NOT NULL,
                            self_introduction VARCHAR(100) NOT NULL,
                            career VARCHAR(500) NOT NULL,
                            award_career VARCHAR(500) NULL,

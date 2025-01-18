@@ -47,7 +47,7 @@
     <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
         <id property="proNo" column="pro_no" />
         <result property="memberNo" column="member_no" />
-        <result property="itemNo" column="item_no" />
+        <result property="categoryNo" column="category_no" />
         <result property="selfIntroduction" column="self_introduction" />
         <result property="career" column="career" />
         <result property="awardCareer" column="award_career" />
