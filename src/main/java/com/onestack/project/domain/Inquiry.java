@@ -18,6 +18,6 @@ public class Inquiry {
 	private String inquiryContent;
 	private Timestamp inquiryRegDate;
 	private String inquiryFile;
-	private boolean inquiryStatus;
+	private String inquiryStatus;
 	private boolean inquirySatisfaction;
 }

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.ProMapper">
+
+    <resultMap id="FilterResultMap" type="com.onestack.project.domain.Filter">
+        <id property="filterNo" column="filter_no" />
+        <result property="itemNo" column="item_no" />
+        <result property="filterQuestionNo" column="filter_question_no" />
+        <result property="filterQuestion" column="filter_question" />
+        <result property="filterOption" column="filter_option" />
+    </resultMap>
+
+    <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
+        <id property="itemNo" column="item_no" />
+        <result property="itemTitle" column="item_title" />
+        <result property="categoryNo" column="category_no" />
+    </resultMap>
+
+    <resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
+        <id property="memberNo" column="member_no" />
+        <result property="name" column="name" />
+        <result property="memberId" column="member_id" />
+        <result property="kakaoId" column="kakao_id" />
+        <result property="pass" column="pass" />
+        <result property="nickname" column="nickname" />
+        <result property="birth" column="birth" />
+        <result property="gender" column="gender" />
+        <result property="zipcode" column="zipcode" />
+        <result property="address" column="address" />
+        <result property="address2" column="address2" />
+        <result property="email" column="email" />
+        <result property="emailGet" column="email_get" />
+        <result property="phone" column="phone" />
+        <result property="memberRegDate" column="member_reg_date" />
+        <result property="memberType" column="member_type" />
+        <result property="memberImage" column="member_image" />
+        <result property="stack" column="stack" />
+        <result property="stackName" column="stack_name" />
+        <result property="withdrawalEndDate" column="withdrawal_end_date" />
+        <result property="banEndDate" column="ban_end_date" />
+        <result property="reportedCount" column="reported_count" />
+        <result property="isSocial" column="is_social" />
+        <result property="socialType" column="social_type" />
+    </resultMap>
+
+    <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
+        <id property="proNo" column="pro_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="itemNo" column="item_no" />
+        <result property="selfIntroduction" column="self_introduction" />
+        <result property="career" column="career" />
+        <result property="awardCareer" column="award_career" />
+        <result property="studentCount" column="student_count" />
+        <result property="rate" column="rate" />
+        <result property="professorStatus" column="professor_status" />
+        <result property="screeningMsg" column="screening_msg" />
+        <result property="proDate" column="pro_date" />
+        <result property="contactableTime" column="contactable_time" />
+        <result property="averagePrice" column="average_price" />
+        <result property="reviewCount" column="review_count" />
+    </resultMap>
+
+    <resultMap id="ProfessionalAdvancedInformationResultMap" type="com.onestack.project.domain.ProfessionalAdvancedInformation">
+        <id property="proAdvancedNo" column="pro_advanced_no" />
+        <result property="proNo" column="pro_no" />
+        <result property="itemNo" column="item_no" />
+        <result property="proAnswer1" column="pro_answer1" />
+        <result property="proAnswer2" column="pro_answer2" />
+        <result property="proAnswer3" column="pro_answer3" />
+        <result property="proAnswer4" column="pro_answer4" />
+        <result property="proAnswer5" column="pro_answer5" />
+    </resultMap>
+
+
+    <resultMap id="FilterWithCategoryResultMap" type="com.onestack.project.domain.FilterWithCategory">
+        <association property="filter" resultMap="FilterResultMap" />
+        <association property="category" resultMap="CategoryResultMap" />
+    </resultMap>
+
+    <resultMap id="MemProAdInfoCateResultMap" type="com.onestack.project.domain.MemProAdInfoCate">
+        <association property="member" resultMap="MemberResultMap" />
+        <association property="professional" resultMap="ProfessionalResultMap" />
+        <association property="proAdInfo" resultMap="ProfessionalAdvancedInformationResultMap" />
+        <association property="category" resultMap="CategoryResultMap" />
+    </resultMap>
+
+
+    <select id = "getFilter" parameterType = "int" resultMap = "FilterWithCategoryResultMap">
+        SELECT f.*, c.*
+        FROM Filter f JOIN Category c
+            ON f.item_no = c.item_no
+        WHERE f.item_no = #{itemNo}
+        ORDER BY f.filter_question_no;
+    </select>
+
+    <select id="getMemProAdCateInfo" parameterType = "int" resultMap = "MemProAdInfoCateResultMap">
+        SELECT m.*, p.*, pa.*, c.*
+        FROM Member m JOIN Professional p
+                ON m.member_no = p.member_no
+            JOIN ProfessionalAdvancedInformation pa
+                ON p.pro_no = pa.pro_no
+            JOIN Category c
+                ON pa.item_no = c.item_no
+        WHERE pa.item_no = #{itemNo}
+        ORDER BY p.pro_date;
+    </select>
+
+    <select id="getFilteredAndSortedPros" parameterType="map" resultMap="MemProAdInfoCateResultMap">
+        SELECT *
+        FROM Member m JOIN Professional p
+        ON m.member_no = p.member_no
+        JOIN ProfessionalAdvancedInformation pa
+        ON p.pro_no = pa.pro_no
+        JOIN Category c
+        ON pa.item_no = c.item_no
+        WHERE
+        <if test="appType != null and !appType.isEmpty()">
+            <foreach collection="appType" item="type" separator=" AND ">
+                ${type.field} = #{type.value}
+            </foreach>
+        </if>
+        <if test="itemNo != null">
+            <choose>
+                <when test="appType != null and !appType.isEmpty()">
+                    AND pa.item_no = #{itemNo}
+                </when>
+                <otherwise>
+                    pa.item_no = #{itemNo}
+                </otherwise>
+            </choose>
+        </if>
+        -- 특정 카테고리 필터링
+        <if test="sort != null and !sort.isEmpty()">
+            ORDER BY
+            <choose>
+                <when test="sort == 'review'"> p.review_count DESC </when>
+                <when test="sort == 'rating'"> p.rate DESC </when>
+                <when test="sort == 'price_low'"> p.average_price ASC </when>
+                <when test="sort == 'price_high'"> p.average_price DESC </when>
+                <when test="sort == 'stack_high'"> m.stack DESC </when>
+                <otherwise> p.pro_date DESC </otherwise>
+            </choose>
+        </if>
+    </select>
+
+
+</mapper>

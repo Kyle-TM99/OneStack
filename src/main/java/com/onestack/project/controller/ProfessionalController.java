@@ -1,36 +1,50 @@
 package com.onestack.project.controller;
 
 
+import java.util.List;
 import java.util.Map;
 
 
+import com.onestack.project.domain.MemProAdInfoCate;
+import com.onestack.project.domain.Professional;
+import com.onestack.project.service.ProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.onestack.project.service.SurveyService;
-
-
 
 @Controller
 public class ProfessionalController {
 
 	@Autowired
-	private SurveyService surveyService;
+	private ProService proService;
 
-	@GetMapping("/survey")
-	public String getSurveyForm(Model model, @RequestParam(value = "itemNo", required = false, defaultValue = "11") int itemNo) {
+	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
+	@GetMapping("/findPro")
+	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
 
-		// 설문조사 질문 리스트, 제공 답변 가져오기 - 제공 답변은 split이용
-		Map<String, Object> modelMap = surveyService.getSurvey(itemNo);
+		Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
+		Map<String, Object> proModelMap = proService.getMemProAdCateInfo(itemNo);
 
-		model.addAllAttributes(modelMap);
+		List<MemProAdInfoCate> proList = (List<MemProAdInfoCate>) proModelMap.get("proList");
 
-		return "views/surveyPage";
+		double overallAveragePrice = proList.stream()  // proList에서 스트림 처리
+				.map(MemProAdInfoCate::getProfessional)  // MemProAdInfoCate에서 Professional 객체 추출
+				.mapToDouble(Professional::getAveragePrice)  // Professional 객체에서 평균 가격 추출
+				.average()  // 평균 계산
+				.orElse(0.0);
 
+		String formattedAveragePrice = String.format("%,d", (long) overallAveragePrice);
+
+		model.addAllAttributes(surveyModelMap);
+		model.addAllAttributes(proModelMap);
+		model.addAttribute("itemNo", itemNo);
+		model.addAttribute("overallAveragePrice", formattedAveragePrice);
+
+		return "views/findPro";
 	}
-
-
+	
+	
 }
