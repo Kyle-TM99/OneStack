@@ -1,5 +1,6 @@
 package com.onestack.project.domain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -16,13 +17,15 @@ public class Professional {
     private int memberNo;
     private int itemNo;
     private String selfIntroduction;
-    private String carrer;
-    private String awardCarrer;
+    private String career;
+    private String awardCareer;
     private int studentCount;
     private int rate;
     private int professorStatus;
     private String screeningMsg;
     private Timestamp proDate;
-    
+    private String contactableTime;
+    private int averagePrice;
+    private int reviewCount;
 }
 
