@@ -1,0 +1,177 @@
+/* 전체 페이지 스타일 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 카드 스타일링 */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* 프로필 이미지 스타일링 */
+.rounded-circle {
+    object-fit: cover;
+    border: 2px solid #f8f9fa;
+}
+
+/* 배지 스타일링 */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 1em;
+}
+
+.badge.bg-primary {
+    background-color: #215EA3 !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+/* 검색 필터 스타일링 */
+.form-select, .form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #215EA3;
+    box-shadow: 0 0 0 0.2rem rgba(33, 94, 163, 0.25);
+}
+
+/* 버튼 스타일링 */
+.custom-button2 {
+    background-color: #215EA3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-button2:hover {
+    background-color: #1a4b82;
+    color: white;
+}
+
+/* 페이지네이션 스타일링 */
+.pagination .page-link {
+    color: #215EA3;
+    border: 1px solid #dee2e6;
+    margin: 0 3px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #215EA3;
+    border-color: #215EA3;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #215EA3;
+}
+
+/* 별점 스타일링 */
+.ratings .bi-star-fill {
+    color: #ffc107;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .container {
+        padding: 0 15px;
+    }
+}
+
+/* 초기화 버튼 스타일링 */
+.btn-outline-secondary {
+    border-color: #dee2e6;
+    color: #6c757d;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #215EA3;
+    color: #215EA3;
+}
+
+.btn-outline-secondary i {
+    margin-right: 5px;
+}
+
+/* 정렬 선택 스타일링 */
+#sortSelect {
+    background-color: #fff;
+}
+
+#sortSelect:focus {
+    border-color: #215EA3;
+    box-shadow: 0 0 0 0.2rem rgba(33, 94, 163, 0.25);
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+    .col-md-2 {
+        padding-left: 0;
+    }
+    
+    #resetCategory {
+        margin-top: 0.5rem;
+    }
+}
+
+/* 카테고리 설문조사 스타일링 */
+.category-survey {
+    background-color: #f8f9fa;
+    border-color: #dee2e6 !important;
+}
+
+.category-survey h5 {
+    color: #215EA3;
+    font-weight: 600;
+}
+
+.survey-questions .form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.survey-questions .form-check {
+    margin-bottom: 0.5rem;
+}
+
+.survey-questions .form-check-label {
+    color: #6c757d;
+}
+
+/* 반응형 조정 */
+@media (max-width: 992px) {
+    .col-3, .col-9 {
+        width: 100%;
+    }
+    
+    .category-section {
+        margin-bottom: 2rem;
+    }
+} 

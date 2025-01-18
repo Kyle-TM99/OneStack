@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProfessionalAdvancedInformation {
 	private int proAdvancedNo;
 	private int proNo;

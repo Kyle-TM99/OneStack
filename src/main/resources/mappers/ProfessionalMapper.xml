@@ -28,21 +28,23 @@
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
-    
-    <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
-        <id property="proNo" column="pro_no" />
-        <result property="memberNo" column="member_no" />
-        <result property="itemNo" column="item_no" />
-        <result property="selfIntroduction" column="self_introduction" />
-        <result property="carrer" column="carrer" />
-        <result property="awardCarrer" column="award_carrer" />
-        <result property="studentCount" column="student_count" />
-        <result property="rate" column="rate" />
-        <result property="professorStatus" column="professor_status" />
-        <result property="screeningMsg" column="screening_msg" />
-        <result property="proDate" column="pro_date" />
-      <result property="contactableTime" column="contactable_time" />
-    </resultMap>
+
+	<resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
+		<id property="proNo" column="pro_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="categoryNo" column="category_no" />
+		<result property="selfIntroduction" column="self_introduction" />
+		<result property="career" column="career" />
+		<result property="awardCareer" column="award_career" />
+		<result property="studentCount" column="student_count" />
+		<result property="rate" column="rate" />
+		<result property="professorStatus" column="professor_status" />
+		<result property="screeningMsg" column="screening_msg" />
+		<result property="proDate" column="pro_date" />
+		<result property="contactableTime" column="contactable_time" />
+		<result property="averagePrice" column="average_price" />
+		<result property="reviewCount" column="review_count" />
+	</resultMap>
     
     <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
         <id property="quotationNo" column="quotation_no" />
@@ -109,25 +111,22 @@
 <!-- 포트폴리오, 이미지 조회 -->
 <select id = "getPortfolio" parameterType = "int" resultType = "Portfolio">
 	SELECT *
-	FROM Portfolio p 
+	FROM Portfolio p
 	WHERE p.pro_no = #{proNo}
 		AND visibility = 1
 </select>
 
 <!-- 포트폴리오 추가 -->
 <insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
-        INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content, 
+        INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,
                               thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,
                               portfolio_file4, portfolio_file5, portfolio_file6, portfolio_file7,
                               portfolio_file8, portfolio_file9, portfolio_file10)
-        VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, 
+        VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent},
                 #{thumbnailImage}, #{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3},
                 #{portfolioFile4}, #{portfolioFile5}, #{portfolioFile6}, #{portfolioFile7},
                 #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
 </insert>
-
-
-
 
 <!-- 포트폴리오 수정 -->
 <update id = "updatePortfolio" parameterType = "Portfolio">

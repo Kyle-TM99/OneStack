@@ -1,10 +1,13 @@
 package com.onestack.project.controller;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+
+import com.onestack.project.domain.MemProAdInfoCate;
+import com.onestack.project.domain.Professional;
+import com.onestack.project.service.ProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,56 +31,79 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProfessionalController {
 
-	@Autowired
-	private SurveyService surveyService;
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
+    private ProfessionalService professionalService;
 
 	@Autowired
-	private MemberService memberService;
+	private ProService proService;
 
-	@Autowired
-	private ProfessionalService professionalService;
+	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
+	@GetMapping("/findPro")
+	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
 
-	@GetMapping("/survey")
-	public String getSurveyForm(@RequestParam("itemNo") int itemNo, Model model) {
-		Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
-		model.addAllAttributes(surveyData);
-		return "views/surveypage";
+		Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
+		Map<String, Object> proModelMap = proService.getMemProAdCateInfo(itemNo);
+
+		List<MemProAdInfoCate> proList = (List<MemProAdInfoCate>) proModelMap.get("proList");
+
+		double overallAveragePrice = proList.stream()  // proList에서 스트림 처리
+				.map(MemProAdInfoCate::getProfessional)  // MemProAdInfoCate에서 Professional 객체 추출
+				.mapToDouble(Professional::getAveragePrice)  // Professional 객체에서 평균 가격 추출
+				.average()  // 평균 계산
+				.orElse(0.0);
+
+		String formattedAveragePrice = String.format("%,d", (long) overallAveragePrice);
+
+		model.addAllAttributes(surveyModelMap);
+		model.addAllAttributes(proModelMap);
+		model.addAttribute("itemNo", itemNo);
+		model.addAttribute("overallAveragePrice", formattedAveragePrice);
+
+		return "views/findPro";
 	}
 
-	@GetMapping("/proConversion")
-	public String getProConversion(HttpSession session, Model model) {
-	    String memberId = (String) session.getAttribute("memberId");
-	    if (memberId == null) {
-	        return "redirect:/login";
-	    }
-	    int memberNo = memberService.getMemberById(memberId);
-	    model.addAttribute("member", memberService.getMember(memberId));
-	    model.addAttribute("categories", surveyService.getAllCategories());
+    @GetMapping("/survey")
+    public String getSurveyForm(@RequestParam("itemNo") int itemNo, Model model) {
+        Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
+        model.addAllAttributes(surveyData);
+        return "views/surveypage";
+    }
 
-	    return "views/proConversion";
-	}
+    @GetMapping("/proConversion")
+    public String getProConversion(HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login";
+        }
+        int memberNo = memberService.getMemberById(memberId);
+        model.addAttribute("member", memberService.getMember(memberId));
+        model.addAttribute("categories", surveyService.getAllCategories());
 
-	
-	@PostMapping("/proConversion/save")
-	@ResponseBody
-	public ResponseEntity<?> saveProfessionalData(@RequestBody ProConversionRequest request) {
-	    try {
-	        log.info("수신된 데이터: {}", request);
+        return "views/proConversion";
+    }
 
-	        // 빈 Survey Answer 제거
-	        List<String> filteredAnswers = request.getSurveyAnswers().stream()
-	                .filter(answer -> answer != null && !answer.trim().isEmpty())
-	                .toList();
-	        request.setSurveyAnswers(filteredAnswers);
+    @PostMapping("/proConversion/save")
+    @ResponseBody
+    public ResponseEntity<?> saveProfessionalData(@RequestBody ProConversionRequest request) {
+        try {
+            log.info("수신된 데이터: {}", request);
 
-	        // 데이터 저장
-	        professionalService.saveProConversionData(request);
-	        return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
-	    } catch (Exception e) {
-	        log.error("전문가 데이터 저장 실패", e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                             .body(Map.of("message", "저장 실패"));
-	    }
-	}
+            // 빈 Survey Answer 제거
+            List<String> filteredAnswers = request.getSurveyAnswers().stream()
+                    .filter(answer -> answer != null && !answer.trim().isEmpty())
+                    .toList();
+            request.setSurveyAnswers(filteredAnswers);
 
+            // 데이터 저장
+            professionalService.saveProConversionData(request);
+            return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
+        } catch (Exception e) {
+            log.error("전문가 데이터 저장 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "저장 실패"));
+        }
+    }
 }
