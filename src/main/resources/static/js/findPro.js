@@ -59,7 +59,7 @@ $(function() {
             body: JSON.stringify(requestData),
         })
             .then((response) => response.json())
-            .then((pros) => updateResults(pros)) // 결과 업데이트
+            .then((response) => updateResults(response.pros, response.overallAveragePrice)) // 결과 업데이트
             .catch((error) => console.error("Error fetching pros:", error));
     }
 
@@ -85,7 +85,7 @@ $(function() {
     }
 
     /* filter 조건에 따라 리스트 업데이트*/
-    function updateResults(pros) {
+    function updateResults(pros, overallAveragePrice) {
         const resultContainer = document.getElementById("proListContainer");
         resultContainer.innerHTML = ""; // 기존 결과 초기화
 
@@ -121,6 +121,10 @@ $(function() {
 
             resultContainer.appendChild(proDiv);
         });
+
+        const averagePriceContainer = document.getElementById("overallAveragePrice");
+        averagePriceContainer.textContent = `전체 평균 가격: ${overallAveragePrice}원`;
+        console.log(textContent);
     }
 
     /* 전문가 상세보기로 이동하는 함수 */
