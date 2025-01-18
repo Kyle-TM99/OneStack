@@ -15,9 +15,6 @@ public interface ProMapper {
     /* itemNo에 따른 전문가 전체 리스트 반환 */
     public List<MemProAdInfoCate> getMemProAdCateInfo(@Param("itemNo") int itemNo);
 
-    /* 필터링 조건에 따른 전문가 리스트 반환  */
-    public List<MemProAdInfoCate> getFilteredPros(@Param("appType") List<String> appType, @Param("itemNo") int itemNo);
-
     /* 필터링 조건과 정렬 조건에 따른 전문가 리스트 반환 */
     public List<MemProAdInfoCate> getFilteredAndSortedPros(@Param("appType") List<String> appType, @Param("sort") String sort, @Param("itemNo") int itemNo);
 

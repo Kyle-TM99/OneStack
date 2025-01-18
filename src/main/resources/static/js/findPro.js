@@ -25,19 +25,27 @@ $(function() {
     /* filter 조건 상수화 */
     const filterInputs = document.querySelectorAll("#categoryFilter input");
 
+    /* 정렬 조건 상수화 */
+    const sortSelect = document.getElementById("sortSelect");
+
     /* filter가 변경될 때마다 applyFilters 함수 실행 */
     filterInputs.forEach((input) => {
         input.addEventListener("change", applyFilters);
     });
+
+    /* 정렬 조건이 변경될 때마다 applyFilters 함수 실행 */
+    sortSelect.addEventListener("change", applyFilters);
 
     /* applyFilters 함수 */
     function applyFilters() {
         const filters = getFilters();
         const urlParams = new URLSearchParams(window.location.search);
         const itemNo = parseInt(urlParams.get('itemNo'));
+        const sortValue = $("#sortSelect").val();
 
         const requestData = {
             filters: filters.appType,
+            sort: sortValue,
             itemNo: itemNo,
         };
 
@@ -114,38 +122,6 @@ $(function() {
             resultContainer.appendChild(proDiv);
         });
     }
-
-
-    /* filter 조건과 sort조건에 따른 리스트 반환 */
-    $("#sortSelect").on("change", function () {
-        const sortValue = $(this).val(); // 선택한 정렬 기준
-        const filters = getFilters(); // 기존 필터 조건
-        const urlParams = new URLSearchParams(window.location.search);
-        const itemNo = parseInt(urlParams.get('itemNo'));
-
-        // 정렬 요청 데이터
-        const requestData = {
-            filters: filters.appType,
-            sort: sortValue,
-            itemNo: itemNo,
-        };
-
-        // AJAX 요청
-        fetch("/proFilterSort", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestData), // 필터 및 정렬 조건 전달
-        })
-            .then((response) => response.json())
-            .then((pros) => updateResults(pros)) // 결과 업데이트
-            .catch((error) => console.error("Error fetching sorted pros:", error));
-    });
-
-
-
-
 
 
 

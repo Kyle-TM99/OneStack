@@ -38,11 +38,6 @@ public class ProService {
         return modelMap;
     }
 
-    /* 필터링 조건에 따른 전문가 리스트 반환  */
-    public List<MemProAdInfoCate> getFilteredPros(List<String> appType, int itemNo) {
-        return proMapper.getFilteredPros(appType, itemNo);
-    }
-
     /* 필터링 조건과 정렬 조건에 따른 전문가 리스트 반환 */
     public List<MemProAdInfoCate> getFilteredAndSortedPros(List<String> appType, String sort, int itemNo) {
         return proMapper.getFilteredAndSortedPros(appType, sort, itemNo);
