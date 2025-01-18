@@ -5,13 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.onestack.project.domain.Estimation;
 import com.onestack.project.domain.MemProAdInfoCate;
 import com.onestack.project.domain.Professional;
 import com.onestack.project.service.ProService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -45,6 +48,22 @@ public class ProfessionalController {
 
 		return "views/findPro";
 	}
+
+	@GetMapping("/estimationForm")
+	public String getEstimationForm(Model model, @RequestParam(value = "proNo") int proNo) {
+
+		model.addAttribute("proNo", proNo);
+
+		return "views/estimationForm";
+	}
 	
-	
+	@PostMapping("/submitEstimation")
+	public String submitEstimation(Estimation estimation) {
+
+		proService.submitEstimation(estimation);
+
+		return "redirect:proDetail";
+	}
+
+
 }

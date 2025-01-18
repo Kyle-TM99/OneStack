@@ -1,5 +1,6 @@
 package com.onestack.project.service;
 
+import com.onestack.project.domain.Estimation;
 import com.onestack.project.domain.MemProAdInfoCate;
 import com.onestack.project.domain.SurveyWithCategory;
 import com.onestack.project.mapper.ProMapper;
@@ -42,6 +43,12 @@ public class ProService {
     public List<MemProAdInfoCate> getFilteredAndSortedPros(List<String> appType, String sort, int itemNo) {
         return proMapper.getFilteredAndSortedPros(appType, sort, itemNo);
     }
+
+
+    public void submitEstimation(Estimation estimation) {
+        proMapper.submitEstimation(estimation);
+    }
+
 
 
 }

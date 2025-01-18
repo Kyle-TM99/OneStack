@@ -121,7 +121,7 @@ CREATE TABLE Estimation (estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                          pro_no INTEGER NOT NULL,
                          item_no   INTEGER   NOT NULL,
                          estimation_content VARCHAR(300)   NOT NULL,
-                         estimation_price DECIMAL(10,2) NOT NULL,
+                         estimation_price INTEGER NOT NULL,
                          estimation_msg VARCHAR(300)   NULL,
                          estimation_isread TINYINT DEFAULT 0 NOT NULL, -- 0(안읽음) 1(읽음) --
                          CONSTRAINT member_no_estimation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,

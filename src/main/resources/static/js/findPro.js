@@ -139,10 +139,26 @@ $(function() {
     document.addEventListener("click", function (event) {
         const target = event.target.closest(".row.card-body");
         // 클릭한 요소가 .row.card-body인지 확인
-        if (target) {
+        if (target && !event.target.closest(".btnEstimation")) {
             navigateToUrl(target);
         }
     });
+
+    /* 견적 요청 View 호출 */
+    $(document).on("click", "#btnEstimation", function (event) {
+        // 이벤트 전파 방지: 부모 카드의 클릭 이벤트 방지
+        event.stopPropagation();
+
+        // data-pro-no 값 가져오기
+        let proNo = $(this).data("pro-no");
+        let url = "estimationForm?proNo=" + proNo;
+
+        // 팝업 창 열기
+        window.open(url, "estimationForm", "toolbar=no, scrollbars=no, resizable=no, "
+            + "status=no, menubar=no, width=550, height=700");
+    });
+
+
 
 
 
