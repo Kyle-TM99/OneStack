@@ -87,7 +87,9 @@
                     <div th:if="${not #lists.isEmpty(proList)}" >
                         <div class="col-md-12 mb-4" id="proListContainer">
                             <div th:block th:each="pro, status: ${proList}" class="card h-100 shadow-sm">
-                                <div class="row card-body">
+                                <div class="row card-body"
+                                     th:attr="data-url=@{/proDetail(proNo=${pro.professional.proNo})}"
+                                     onclick="navigateToUrl(this)">
                                     <div class="col-10">
                                         <div>
                                             <h5 th:text="${pro.member.name}" class="card-title mb-2">전문가 이름</h5>

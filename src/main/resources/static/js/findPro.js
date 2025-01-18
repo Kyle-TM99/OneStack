@@ -94,7 +94,7 @@ $(function() {
             const proDiv = document.createElement("div");
             proDiv.className = "card h-100 shadow-sm";
             proDiv.innerHTML =
-                '    <div class="row card-body">' +
+                '    <div class="row card-body" data-url="/proDetail?proNo=' + pro.professional.proNo + '">' +
                 '      <div class="col-10">' +
                 '        <div>' +
                 '          <h5 class="card-title mb-2">' + pro.member.name + '</h5>' +
@@ -123,6 +123,22 @@ $(function() {
         });
     }
 
+    /* 전문가 상세보기로 이동하는 함수 */
+    function navigateToUrl(element) {
+        const url = element.getAttribute("data-url");
+        if (url) {
+            window.location.href = url;
+        }
+    }
+
+    /* 전문가 카드가 클릭 시 navigateToUrl 함수 실행 */
+    document.addEventListener("click", function (event) {
+        const target = event.target.closest(".row.card-body");
+        // 클릭한 요소가 .row.card-body인지 확인
+        if (target) {
+            navigateToUrl(target);
+        }
+    });
 
 
 
