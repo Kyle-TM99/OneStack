@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Professional {
     private int proNo;
     private int memberNo;
-    private int itemNo;
+    private int categoryNo;
     private String selfIntroduction;
     private String career;
     private String awardCareer;
