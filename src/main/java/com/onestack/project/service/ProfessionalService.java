@@ -26,10 +26,10 @@ public class ProfessionalService {
     	// 전문가 저장
         Professional professional = new Professional();
         professional.setMemberNo(request.getMemberNo());
-        professional.setItemNo(request.getItemNo());
+        professional.setCategoryNo(request.getCategoryNo());
         professional.setSelfIntroduction(request.getSelfIntroduction());
-        professional.setCarrer(String.join(",", request.getCarrer()));
-        professional.setAwardCarrer(String.join(",", request.getAwardCarrer()));
+        professional.setCareer(String.join(",", request.getCareer()));
+        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
         professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
 
         professionalMapper.addPro(professional);
@@ -74,5 +74,3 @@ public class ProfessionalService {
     }
     
 }
-
-

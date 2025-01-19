@@ -40,6 +40,9 @@ public class ProfessionalController {
 	@Autowired
 	private ProService proService;
 
+    @Autowired
+    private SurveyService surveyService;
+
 	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
 	@GetMapping("/findPro")
 	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {

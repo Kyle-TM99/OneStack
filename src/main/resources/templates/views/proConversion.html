@@ -17,10 +17,9 @@
             <!-- 왼쪽: 전문가 전환 신청서 -->
             <div id="applicationForm" class="col-md-6">
                <div class="card" style="width: 100%;">
-		    <div id="applicationForm">
-		        <input type="hidden" name="memberId" th:value="${memberId}">
-		        <input type="hidden" name="memberNo" th:value="${member.memberNo}">
-		        <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
+                    <input type="hidden" name="memberId" th:value="${memberId}">
+                    <input type="hidden" name="memberNo" th:value="${member.memberNo}">
+                    <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
 
 
                         <!-- 이름 -->
@@ -40,20 +39,21 @@
                             </div>
                         </div>
 
+                   <div class="row mt-2">
+                           <div class="form-field">
+                               <label for="categoryNo">카테고리 *</label>
+                               <select class="form-select mb-3" id="categoryNo" name="categoryNo" required>
+                                   <option value="" hidden>카테고리를 선택해주세요.</option>
+                                   <option value="1">개발</option>
+                                   <option value="2">데이터</option>
+                               </select>
+                           </div>
+                       </div>
                         <!-- 전문분야 -->
-                        <div class="row mt-3">
+                        <div class="row mt-2">
                             <div class="form-field">
                                 <label for="itemNo">전문분야 *</label>
                                 <select class="form-select mb-3" id="itemNo" name="itemNo" required>
-                                    <option value="" hidden>전문분야를 선택해주세요.</option>
-                                    <option value="11">기획</option>
-                                    <option value="12">웹</option>
-                                    <option value="13">소프트웨어</option>
-                                    <option value="14">안드로이드</option>
-                                    <option value="15">iOS</option>
-                                    <option value="16">게임</option>
-                                    <option value="17">AI</option>
-                                    <option value="18">QA 및 테스트</option>
                                 </select>
                             </div>
                         </div>
@@ -116,29 +116,29 @@
 						</div>
 
                         <!-- 경력 -->
-                        <div class="form-field my-5">
+                        <div class="form-field my-3">
                             <div class="d-flex justify-content-between align-items-center">
-                                <label for="carrer">경력 *</label>
-                                <button type="button" id="addCarrerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                                <label for="career">경력 *</label>
+                                <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
                             </div>
-                            <div id="carrerContainer">
-                                <input type="text" class="form-control mb-2" name="carrer" required>
+                            <div id="careerContainer">
+                                <input type="text" class="form-control mb-2" id="career" name="career" required>
                             </div>
                         </div>
 
                         <!-- 수상경력 -->
-                        <div class="form-field my-5">
+                        <div class="form-field my-3">
                             <div class="d-flex justify-content-between align-items-center">
-                                <label for="awardCarrer">수상경력 *</label>
-                                <button type="button" id="addAwardCarrerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                                <label for="awardCareer">수상경력 *</label>
+                                <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
                             </div>
                             <div id="awardsContainer">
-                                <input type="text" class="form-control" name="awardCarrer">
+                                <input type="text" class="form-control" id="awardCareer" name="awardCareer">
                             </div>
                         </div>
 
                         <!-- 설문조사 및 포트폴리오 -->
-                          <div class="form-field my-5">
+                          <div class="form-field my-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label for="portfolio">포트폴리오 *</label>
                                 <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
@@ -171,7 +171,6 @@
 		                        <label for="proAnswer5">전문가 질문 5 *</label>
 		                        <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
                         <button type="submit" id="submitProConversionBtn" class="custom-button2 w-100 my-5">심사 요청</button>
-					</div>
                 </div>
             </div>
 

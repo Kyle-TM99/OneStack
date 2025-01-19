@@ -1,38 +1,79 @@
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('categoryNo');
+        const itemSelect = document.getElementById('itemNo');
+
+        const options = {
+            "1": [
+                { value: "11", text: "기획" },
+                { value: "12", text: "웹" },
+                { value: "13", text: "소프트웨어" },
+                { value: "14", text: "안드로이드" },
+                { value: "15", text: "iOS" },
+                { value: "16", text: "게임" },
+                { value: "17", text: "AI" },
+                { value: "18", text: "QA 및 테스트" },
+            ],
+            "2": [
+                { value: "21", text: "가공 및 라벨링" },
+                { value: "22", text: "데이터 복구" },
+                { value: "23", text: "크롤링" },
+                { value: "24", text: "DB 구축" },
+                { value: "25", text: "통계 분석" },
+            ]
+        };
+
+        categorySelect.addEventListener('change', function () {
+            const selectedCategory = this.value;
+            // 기존 옵션 초기화
+            itemSelect.innerHTML = '<option value="" hidden>전문분야를 선택해주세요.</option>';
+
+            if (options[selectedCategory]) {
+                // 해당 카테고리의 옵션 추가
+                options[selectedCategory].forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.text;
+                    itemSelect.appendChild(opt);
+                });
+            }
+        });
+    });
+
     // 경력 추가 버튼 동작
-    const addCarrerBtn = document.getElementById('addCarrerBtn');
-    const carrerContainer = document.getElementById('carrerContainer');
-    if (addCarrerBtn) {
-        addCarrerBtn.addEventListener('click', function () {
-            const carrerCount = carrerContainer.children.length + 1;
-            const newCarrerInput = document.createElement('div');
-            newCarrerInput.className = 'mb-3';
-            newCarrerInput.setAttribute('id', `carrerDiv${carrerCount}`);
-            newCarrerInput.innerHTML = `
+    const addCareerBtn = document.getElementById('addCareerBtn');
+    const careerContainer = document.getElementById('careerContainer');
+    if (addCareerBtn) {
+        addCareerBtn.addEventListener('click', function () {
+            const careerCount = careerContainer.children.length + 1;
+            const newCareerInput = document.createElement('div');
+            newCareerInput.className = 'mb-3';
+            newCareerInput.setAttribute('id', `careerDiv${careerCount}`);
+            newCareerInput.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
-                    <label for="carrer${carrerCount}" class="form-label">경력 ${carrerCount}</label>
-                    <button type="button" class="btn btn-danger btn-sm remove-btn" data-target="carrerDiv${carrerCount}">삭제</button>
+                    <label for="career${careerCount}" class="form-label">경력 ${careerCount}</label>
+                    <button type="button" class="btn btn-danger btn-sm remove-btn" data-target="careerDiv${careerCount}">삭제</button>
                 </div>
-                <input type="text" class="form-control" id="carrer${carrerCount}" name="carrer" required>
+                <input type="text" class="form-control" id="career${careerCount}" name="career" required>
             `;
-            carrerContainer.appendChild(newCarrerInput);
+            careerContainer.appendChild(newCareerInput);
         });
     }
 
     // 수상 경력 추가 버튼 동작
-    const addAwardCarrerBtn = document.getElementById('addAwardCarrerBtn');
+    const addAwardCareerBtn = document.getElementById('addAwardCareerBtn');
     const awardsContainer = document.getElementById('awardsContainer');
-    if (addAwardCarrerBtn) {
-        addAwardCarrerBtn.addEventListener('click', function () {
+    if (addAwardCareerBtn) {
+        addAwardCareerBtn.addEventListener('click', function () {
             const awardsCount = awardsContainer.children.length + 1;
             const newAwardInput = document.createElement('div');
             newAwardInput.className = 'mb-3';
             newAwardInput.setAttribute('id', `awardDiv${awardsCount}`);
             newAwardInput.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
-                    <label for="awardCarrer${awardsCount}" class="form-label">수상경력 ${awardsCount}</label>
+                    <label for="awardCareer${awardsCount}" class="form-label">수상경력 ${awardsCount}</label>
                     <button type="button" class="btn btn-danger btn-sm remove-btn" data-target="awardDiv${awardsCount}">삭제</button>
                 </div>
-                <input type="text" class="form-control" id="awardCarrer${awardsCount}" name="awardCarrer" required>
+                <input type="text" class="form-control" id="awardCareer${awardsCount}" name="awardCareer" required>
             `;
             awardsContainer.appendChild(newAwardInput);
         });
@@ -263,31 +304,33 @@
 		document.getElementById('submitProConversionBtn').addEventListener('click', async function () {
 		    try {
 		        const memberNo = document.querySelector('[name="memberNo"]').value;
+		        const categoryNo = document.getElementById('categoryNo').value.trim();
 		        const itemNo = document.getElementById('itemNo').value.trim();
 		        const selfIntroduction = document.getElementById('selfIntroduction').value.trim();
 		        const contactableTimeStart = document.getElementById('contactableTimeStart').value.trim();
 		        const contactableTimeEnd = document.getElementById('contactableTimeEnd').value.trim();
-		        const carrer = Array.from(document.querySelectorAll('[name="carrer"]')).map(input => input.value.trim());
-		        const awardCarrer = Array.from(document.querySelectorAll('[name="awardCarrer"]')).map(input => input.value.trim());
+		        const career = Array.from(document.querySelectorAll('[name="career"]')).map(input => input.value.trim());
+		        const awardCareer = Array.from(document.querySelectorAll('[name="awardCareer"]')).map(input => input.value.trim());
 		        const proAnswers = Array.from(document.querySelectorAll('[name^="proAnswer"]')).map(input => input.value.trim()).filter(answer => answer);
 		        const portfolioTitle = document.querySelector('[name="portfolioTitle"]').value.trim();
 		        const portfolioContent = document.querySelector('[name="portfolioContent"]').value.trim();
 		        const thumbnailImagePath = document.getElementById('thumbnailImageDisplay').innerText.trim();
 		        const portfolioFilePaths = Array.from(document.querySelectorAll('#portfolioFilesDisplay li a')).map(link => link.href);
 
-		        if (!memberNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent) {
+		        if (!memberNo || !categoryNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent) {
 		            alert('모든 필수 정보를 입력해주세요.');
 		            return;
 		        }
 
 		        const requestData = {
 		            memberNo,
+		            categoryNo,
 		            itemNo,
 		            selfIntroduction,
 		            contactableTimeStart,
 		            contactableTimeEnd,
-		            carrer,
-		            awardCarrer,
+		            career,
+		            awardCareer,
 		            surveyAnswers: proAnswers,
 		            portfolioTitle,
 		            portfolioContent,

@@ -68,8 +68,8 @@
 
 <!-- 전문가 신청 -->
 <insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
-		INSERT INTO Professional (member_no, item_no, self_introduction, carrer, award_carrer, contactable_time)
-        VALUES (#{memberNo}, #{itemNo}, #{selfIntroduction}, #{carrer}, #{awardCarrer}, #{contactableTime})
+		INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, contactable_time, average_price, review_count)
+        VALUES (#{memberNo}, #{categoryNo}, #{selfIntroduction}, #{career}, #{awardCareer}, #{contactableTime}, #{averagePrice}, #{reviewCount})
 </insert>
 
 <!-- 회원 타입 업데이트 -->
