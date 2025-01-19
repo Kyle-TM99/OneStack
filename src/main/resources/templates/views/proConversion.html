@@ -1,115 +1,198 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/main_layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <link th:href="@{/css/proConversion.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
 <body>
-<div layout:fragment="content"
-	class="d-flex align-items-center justify-content-center"
-	style="min-height: 100vh;">
-	<div class="d-flex align-items-center justify-content-center vh-80">
-		<div class="container">
-			<h3 class="fw-bold mt-5 text-center">전문가 전환 신청서</h3>
-			<p class="text-muted mt-3 mb-5 text-center">쉽고 간편한 외주 서비스</p>
-			<div class="card" style="width: 800px" >
+    <div layout:fragment="content"
+         class="d-flex align-items-center justify-content-center"
+         style="min-height: 100vh;">
+        <div id="applicationFormContainer"
+             class="container d-flex justify-content-center">
+            <!-- 왼쪽: 전문가 전환 신청서 -->
+            <div id="applicationForm" class="col-md-6">
+               <div class="card" style="width: 100%;">
+                    <input type="hidden" name="memberId" th:value="${memberId}">
+                    <input type="hidden" name="memberNo" th:value="${member.memberNo}">
+                    <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
 
-				<form id="auditForm" method="post">
 
-					<div class="row">
-						<div class="form-field">
-							<label for="name">&nbsp;이름</label> 
-							<input id="name" name="name" type="text" class="form-control mb-2" maxlength="5" readonly>
-							<small id="nameMessage" class="form-text"></small>
-							<small class="text-muted d-block">최대 5자까지 입력 가능합니다.</small>
+                        <!-- 이름 -->
+                        <div class="row">
+                            <div class="form-field">
+                                <label for="name">이름</label>
+                                <input id="name" name="name" type="text" class="form-control mb-2" maxlength="5" readonly
+                                       th:value="${session.member.name}">
+                            </div>
+                        </div>
+                        <!-- 닉네임 -->
+                        <div class="row">
+                            <div class="form-field">
+                                <label for="memberId">닉네임</label>
+                                <input id="memberId" name="memberId" type="text" class="form-control" readonly
+                                       th:value="${session.member.memberId}">
+                            </div>
+                        </div>
+
+                   <div class="row mt-2">
+                           <div class="form-field">
+                               <label for="categoryNo">카테고리 *</label>
+                               <select class="form-select mb-3" id="categoryNo" name="categoryNo" required>
+                                   <option value="" hidden>카테고리를 선택해주세요.</option>
+                                   <option value="1">개발</option>
+                                   <option value="2">데이터</option>
+                               </select>
+                           </div>
+                       </div>
+                        <!-- 전문분야 -->
+                        <div class="row mt-2">
+                            <div class="form-field">
+                                <label for="itemNo">전문분야 *</label>
+                                <select class="form-select mb-3" id="itemNo" name="itemNo" required>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 자기소개 -->
+                        <div class="form-field">
+                            <label for="selfIntroduction">자기소개 *</label>
+                            <input type="text" class="form-control" id="selfIntroduction" name="selfIntroduction" required>
+                            <small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
+                        </div>           
+                        <!-- 연락 가능 시간 -->
+						<div class="form-field mt-3">
+						    <label for="contactableTimeStart">연락 가능 시간 *</label>
+						    <div class="d-flex gap-2">
+						        <!-- 시작 시간 -->
+						        <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
+						            <option value="" hidden>시작 시간</option>
+						            <option value="오전 6시">오전 6시</option>
+						            <option value="오전 7시">오전 7시</option>
+						            <option value="오전 8시">오전 8시</option>
+						            <option value="오전 9시">오전 9시</option>
+						            <option value="오전 10시">오전 10시</option>
+						            <option value="오전 11시">오전 11시</option>
+						            <option value="오후 12시">오후 12시</option>
+						            <option value="오후 1시">오후 1시</option>
+						            <option value="오후 2시">오후 2시</option>
+						            <option value="오후 3시">오후 3시</option>
+						            <option value="오후 4시">오후 4시</option>
+						            <option value="오후 5시">오후 5시</option>
+						            <option value="오후 6시">오후 6시</option>
+						            <option value="오후 7시">오후 7시</option>
+						            <option value="오후 8시">오후 8시</option>
+						            <option value="오후 9시">오후 9시</option>
+						            <option value="오후 10시">오후 10시</option>
+						        </select>
+						
+						        <!-- 종료 시간 -->
+						        <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
+						            <option value="" hidden>종료 시간</option>
+						            <option value="오전 6시">오전 6시</option>
+						            <option value="오전 7시">오전 7시</option>
+						            <option value="오전 8시">오전 8시</option>
+						            <option value="오전 9시">오전 9시</option>
+						            <option value="오전 10시">오전 10시</option>
+						            <option value="오전 11시">오전 11시</option>
+						            <option value="오후 12시">오후 12시</option>
+						            <option value="오후 1시">오후 1시</option>
+						            <option value="오후 2시">오후 2시</option>
+						            <option value="오후 3시">오후 3시</option>
+						            <option value="오후 4시">오후 4시</option>
+						            <option value="오후 5시">오후 5시</option>
+						            <option value="오후 6시">오후 6시</option>
+						            <option value="오후 7시">오후 7시</option>
+						            <option value="오후 8시">오후 8시</option>
+						            <option value="오후 9시">오후 9시</option>
+						            <option value="오후 10시">오후 10시</option>
+						        </select>
+						    </div>
+						    <small class="text-muted d-block">시작 시간과 종료 시간을 선택해주세요.</small>
 						</div>
-					</div>
 
-					<div class="row">
-						<div class="form-field">
-							<label for="memberId">&nbsp;닉네임</label>
-							<div class="input-group custom-border mb-2">
-								<input id="memberId" name="memberId" type="text"
-									class="form-control" readonly>
-							</div>
-							<small id="memberIdMessage" class="form-text"></small>
-						</div>
-					</div>
+                        <!-- 경력 -->
+                        <div class="form-field my-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="career">경력 *</label>
+                                <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                            </div>
+                            <div id="careerContainer">
+                                <input type="text" class="form-control mb-2" id="career" name="career" required>
+                            </div>
+                        </div>
 
-					<div class="row">
-						<div class="form-field mb-3">
-							<label for="phone">&nbsp;핸드폰</label> 
-							<input id="pnone" name="phone" type="text" class="form-control mb-2" readonly>
-						</div>
-					</div>
+                        <!-- 수상경력 -->
+                        <div class="form-field my-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="awardCareer">수상경력 *</label>
+                                <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                            </div>
+                            <div id="awardsContainer">
+                                <input type="text" class="form-control" id="awardCareer" name="awardCareer">
+                            </div>
+                        </div>
 
-					<div class="row">
-						<div class="form-field">
-							<label for="email">&nbsp;이메일 *</label>
-							<input id="email" type="email" class="form-control">
-						</div>
-					</div>
-					<div class="row mt-3">
-					<div class="form-field">
-						<label for="itemTitle">&nbsp;전문분야 *</label>
-						<select class="form-select mb-3" id="itemTitle" required>
-						  <option value="" hidden>전문분야를 선택해주세요.</option>
-						  <option value="11">기획</option>
-						  <option value="12">웹</option>
-						  <option value="13">소프트웨어</option>
-						  <option value="14">안드로이드</option>
-						  <option value="15">ios</option>
-						  <option value="16">게임</option>
-						  <option value="17">AI</option>
-						  <option value="18">QA 및 테스트</option>
-						  <option value="21">가공 및 라벨링</option>
-						  <option value="22">데이터 복구</option>
-						  <option value="23">크롤링</option>
-						  <option value="24">DB 구축</option>
-						  <option value="25">통계분석</option>
-						</select>
-						</div>
-					</div> 
+                        <!-- 설문조사 및 포트폴리오 -->
+                          <div class="form-field my-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="portfolio">포트폴리오 *</label>
+                                <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                            </div>
+		                        <label for="portfolioTitle">포트폴리오 제목 *</label>
+		                        <input type="text" class="form-control mb-2" name="portfolioTitle" required readonly>
+		                        <label for="portfolioContent">포트폴리오 내용 *</label>
+		                        <textarea class="form-control mb-2" name="portfolioContent" required readonly></textarea>
+								<!-- 썸네일 이미지 표시 -->
+								<label for="thumbnailImage">썸네일 이미지</label>
+								<div id="thumbnailImageDisplay" class="text-muted mb-5" >
+									<div th:text="${thumbnailImage}"></div>
+								</div>
+								
+								<!-- 포트폴리오 파일 표시 -->
+								<label for="portfolioFile1">포트폴리오 이미지</label>
+								<ul id="portfolioFilesDisplay" class="text-muted">
+								    <!-- 서버에서 받은 파일 경로가 이곳에 반영됨 -->
+								    <li th:each="file : ${portfolioFiles}" th:text="${file}"></li>
+								</ul>
+                         	</div>
+		                        <label for="proAnswer1">전문가 질문 1 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
+		                        <label for="proAnswer2">전문가 질문 2 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer2" required readonly>
+		                        <label for="proAnswer3">전문가 질문 3 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer3" readonly>
+		                        <label for="proAnswer4">전문가 질문 4 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer4" readonly>
+		                        <label for="proAnswer5">전문가 질문 5 *</label>
+		                        <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
+                        <button type="submit" id="submitProConversionBtn" class="custom-button2 w-100 my-5">심사 요청</button>
+                </div>
+            </div>
 
-				<div class="form-field">
-						<label for="SelfIntroduction">&nbsp;자기소개 *</label> <input type="text"
-							class="form-control" id="SelfIntroduction" name="SelfIntroduction" required>
-							<small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
-				</div>
-					
-				<div class="form-field my-5">
-					<div class="d-flex justify-content-between align-items-center">
-					    <label for="proHistory">경력 *</label>
-					    <button type="button" id="addProHistoryBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
-					</div>
-					<div id="proHistoryContainer">
-					    <input type="text" class="form-control" name="proHistory">
-					    </div>
-				</div>
-
-				<div class="form-field my-5">
-					<div class="d-flex justify-content-between align-items-center">
-					    <label for="awards">수상경력 *</label>
-					    <button type="button" id="addAwardsBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
-					</div>
-					<div id="awardsContainer">
-					    <input type="text" class="form-control" name="awards">
-					    </div>
-				</div>
-				<div class="form-field my-5">
-					<div class="d-flex justify-content-between align-items-center">
-					    <label for="portfolio">포트폴리오 *</label>
-					    <button type="button" id="addPortfolioBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
-					</div>
-					<div id="portfolioContainer">
-					    <input type="text" class="form-control" name="portfolio">
-					    </div>
-				</div>
-					<button type="submit" class="custom-button2 w-100 my-5">심사 요청</button>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-
+					 <!-- 설문조사 로드 -->
+            <div id="surveyContainer" class="col-md-6">
+                <div>
+                    <h5>설문조사 답변</h5>
+                    <div th:each="entry : ${surveyAnswers}">
+                        <p>질문 번호: <span th:text="${entry.key}"></span></p>
+                        <p>답변: <span th:text="${entry.value}"></span></p>
+                    </div>
+                    <h5>포트폴리오 정보</h5>
+                    <p>제목: <span th:text="${portfolioTitle}"></span></p>
+                    <p>내용: <span th:text="${portfolioContent}"></span></p>
+                    <p>썸네일: <span th:text="${thumbnailImage}"></span></p>
+                    <p>포트폴리오 이미지: <span th:text="${portfolioFile1}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+	<th:block layout:fragment="script">
+        <script th:src="@{/js/proConversion.js}" defer></script>
+    </th:block> 
 </body>
 </html>

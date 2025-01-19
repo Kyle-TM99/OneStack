@@ -47,6 +47,7 @@ public class MemberController {
 
         Member member = memberService.getMember(memberId);
         session.setAttribute("isLogin", true);
+        session.setAttribute("memberId", member.getMemberId()); // LHB 
         session.setAttribute("member", member);
         return "redirect:/main";
     }

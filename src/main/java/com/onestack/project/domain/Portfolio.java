@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Service
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Portfolio {
@@ -27,6 +28,6 @@ public class Portfolio {
 	private String portfolioFile7;
 	private String portfolioFile8;
 	private String portfolioFile9;
-	private String portfolioFile10;	
+	private String portfolioFile10;
 
 }
