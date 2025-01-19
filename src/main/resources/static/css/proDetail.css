@@ -1,0 +1,69 @@
+.menu-bar {
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1000;
+}
+
+.menu-bar h3 {
+  margin-bottom: 15px;
+}
+
+.menu-bar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.menu-bar li {
+  margin-bottom: 10px;
+}
+
+.menu-bar a {
+  text-decoration: none;
+  color: black;
+  transition: color 0.3s, transform 0.3s, font-weight 0.3s;
+  display: inline-block;
+}
+
+.menu-bar a:hover {
+  color: #215EA3;
+  transform: translateX(5px);
+  font-weight: bold;
+}
+
+.review-form {
+  margin-top: 20px;
+}
+
+.review-summary {
+  margin-top: 20px;
+}
+
+.review-textarea {
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  height: auto;
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#menu-bars {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1000;
+}
+
+.btn-custom {
+    background-color: #215EA3; /* 배경색 */
+    color: white; /* 글자색 */
+}
+
+.btn-custom:hover {
+    background-color: #1a4e7a; /* 호버 시 배경색 */
+    color: white; /* 호버 시 글자색 */
+}

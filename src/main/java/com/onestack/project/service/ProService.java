@@ -44,7 +44,7 @@ public class ProService {
         return proMapper.getFilteredAndSortedPros(appType, sort, itemNo);
     }
 
-
+    /* 견적 요청서 작성 */
     public void submitEstimation(Estimation estimation) {
         proMapper.submitEstimation(estimation);
     }
