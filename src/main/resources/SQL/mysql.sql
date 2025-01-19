@@ -31,20 +31,23 @@ CREATE TABLE Member (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ## Professional - 전문가
-CREATE TABLE Professional (
-   pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-   member_no INTEGER NOT NULL,
-   item_no   INTEGER   NOT NULL,
-   self_introduction VARCHAR(100) NOT NULL,
-   carrer VARCHAR(500) NOT NULL,
-   award_carrer VARCHAR(500) NULL,
-   student_count INTEGER DEFAULT 0 NOT NULL,
-   rate INTEGER DEFAULT 0 NOT NULL,
-   professor_status INTEGER DEFAULT 1 NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
-   screening_msg VARCHAR(100) NULL,
-   pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
+CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                           member_no INTEGER NOT NULL,
+                           category_no   INTEGER   NOT NULL,
+                           self_introduction VARCHAR(100) NOT NULL,
+                           career VARCHAR(500) NOT NULL,
+                           award_career VARCHAR(500) NULL,
+                           student_count INTEGER DEFAULT 0 NOT NULL,
+                           rate INTEGER DEFAULT 0 NOT NULL,
+                           professor_status INTEGER DEFAULT 1 NOT NULL, -- 1(심사 전) 2(승인) 3(거부) --
+                           screening_msg VARCHAR(100) NULL,
+                           pro_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                           contactable_time VARCHAR(15) NOT NULL,
+                           average_price INTEGER DEFAULT 0 NOT NULL,
+                           review_count INTEGER DEFAULT 0 NOT NULL,
+                           CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 ## Category - 카테고리
 CREATE TABLE Category (

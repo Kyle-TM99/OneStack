@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.onestack.project.domain.MemProPortCate;
 import com.onestack.project.domain.Member;
-import com.onestack.project.domain.Professional;
 
 @Mapper
 public interface ManagerMapper {
@@ -20,4 +19,6 @@ public interface ManagerMapper {
             @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
+	void updateMember(@Param("memberId") String memberId,
+					  @Param("memberType") int memberType);
 }

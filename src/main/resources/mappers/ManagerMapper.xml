@@ -72,10 +72,7 @@
         <result property="itemTitle" column="item_title" />
         <result property="categoryNo" column="category_no" />
     </resultMap>
-      
-      
-            
-            
+
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
         <association property="portfolio" resultMap="PortfolioResultMap" />
@@ -94,8 +91,6 @@
 	WHERE member_type != 2  <!-- 탈퇴회원 제외 -->
    	ORDER BY member_reg_date DESC
 </select>
-
-
 <!-- 회원 조회 -->
 <select id = "getMember" parameterType = "int" resultType = "Member">
    SELECT * 
@@ -103,8 +98,12 @@
    WHERE member_no = #{memberNo}
 </select>
 
-<!-- 회원 수 조회  -->
-
+<!-- 회원 상태 변경 -->
+<update id="updateMember" parameterType="Map">
+	UPDATE Member
+	SET member_type = #{memberType}
+	WHERE member_no = #{memberNo}
+</update>
 
 <!-- 탈퇴 회원 조회 -->
 <select id = "getWithdrawalMember" resultType = "Member">

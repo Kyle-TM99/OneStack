@@ -15,6 +15,6 @@ public interface ProfessionalMapper {
     int addProAdvancedInfo(ProfessionalAdvancedInformation professionalAdvancedInformation);
 
     // 포트폴리오 저장
-    int addPortfolio(Portfolio portfolio);  
+    int addPortfolio(Portfolio portfolio);
 
 }

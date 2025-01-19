@@ -1,5 +1,6 @@
 package com.onestack.project.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.onestack.project.domain.MemProPortCate;
@@ -29,14 +28,36 @@ public class AdminController {
 	
 	 @GetMapping("/adminPage")
 	 public String adminPage() {
-	 return "layouts/admin_layout"; // admin_layout.html을 기본 템플릿으로 사용 
+
+         return "layouts/admin_layout"; // admin_layout.html을 기본 템플릿으로 사용
 	 }
 	 
 	@GetMapping("/members")
     public String getMembersDashboard(Model model) {
-		List<Member> member = adminService.getAllMember();		
+		List<Member> member = adminService.getAllMember();
+
 		model.addAttribute("member", member);
         return "adminDashboard/membershipManagement/members";
+    }
+    
+    // 회원 유형/상태 변경
+    @PostMapping("/updateMember")
+    @ResponseBody
+    public ResponseEntity<String> updateMember(@RequestBody Map<String, String> memberData) {
+        try {
+            // 데이터를 가져옵니다.
+            String memberId = memberData.get("id");
+            int memberType = Integer.parseInt(memberData.get("type"));
+            int memberStatus = Integer.parseInt(memberData.get("status"));
+
+            // 서비스 호출
+            adminService.updateMember(memberId, memberType);
+
+            return ResponseEntity.ok("회원 정보 수정 성공");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 정보 수정 실패");
+        }
     }
 
     @GetMapping("/suspendedMembers")
