@@ -19,11 +19,7 @@ public class Inquiry {
 	private String inquiryTitle;
 	private String inquiryContent;
 	private String inquiryFile;
-<<<<<<< HEAD
 	private Timestamp inquiryRegDate;
-	private boolean inquiryStatus;
-=======
 	private String inquiryStatus;
->>>>>>> refs/heads/develop
 	private boolean inquirySatisfaction;
 }
