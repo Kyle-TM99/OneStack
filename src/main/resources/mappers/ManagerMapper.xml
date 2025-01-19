@@ -65,8 +65,8 @@
         <result property="portfolioFile9" column="portfolio_file9" />
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
-      
-    
+
+
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
         <result property="itemTitle" column="item_title" />
@@ -78,7 +78,7 @@
             
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolio" resultMap="PortfolioResultMap" />        
+        <association property="portfolio" resultMap="PortfolioResultMap" />
     </resultMap>
     
     <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">

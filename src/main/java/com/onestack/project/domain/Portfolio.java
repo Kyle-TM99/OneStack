@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -27,6 +28,6 @@ public class Portfolio {
 	private String portfolioFile7;
 	private String portfolioFile8;
 	private String portfolioFile9;
-	private String portfolioFile10;	
+	private String portfolioFile10;
 
 }
