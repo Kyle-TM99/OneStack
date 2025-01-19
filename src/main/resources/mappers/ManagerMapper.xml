@@ -32,27 +32,21 @@
 	<resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
         <id property="proNo" column="pro_no" />
         <result property="memberNo" column="member_no" />
-        <result property="itemNo" column="item_no" />
+        <result property="categoryNo" column="category_no" />
         <result property="selfIntroduction" column="self_introduction" />
-        <result property="carrer" column="carrer" />
-        <result property="awardCarrer" column="award_carrer" />
+        <result property="career" column="career" />
+        <result property="awardCareer" column="award_career" />
         <result property="studentCount" column="student_count" />
         <result property="rate" column="rate" />
         <result property="professorStatus" column="professor_status" />
         <result property="screeningMsg" column="screening_msg" />
         <result property="proDate" column="pro_date" />
+		<result property="contactableTime" column="contactable_time" />
+		<result property="averagePrice" column="average_price" />
+		<result property="reviewCount" column="review_count" />
     </resultMap>
     
     <resultMap id="PortfolioResultMap" type="com.onestack.project.domain.Portfolio">
-        <id property="portfolioNo" column="portfolio_no" />
-        <result property="proNo" column="pro_no" />
-        <result property="proAdvancedNo" column="pro_advanced_no" />
-        <result property="portfolioTitle" column="portfolio_title" />
-        <result property="portfolioContent" column="portfolio_content" />
-        <result property="visibility" column="visibility" />
-    </resultMap>
-      
-    <resultMap id="PortfolioWithImagesResultMap" type="com.onestack.project.domain.PortfolioWithImages">
         <id property="portfolioNo" column="portfolio_no" />
         <result property="proNo" column="pro_no" />
         <result property="proAdvancedNo" column="pro_advanced_no" />
@@ -71,6 +65,7 @@
         <result property="portfolioFile9" column="portfolio_file9" />
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
+      
     
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
@@ -83,7 +78,7 @@
             
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolioWithImages" resultMap="PortfolioWithImagesResultMap" />        
+        <association property="portfolio" resultMap="PortfolioResultMap" />        
     </resultMap>
     
     <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">

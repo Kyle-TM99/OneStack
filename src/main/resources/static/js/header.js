@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModalIfOutsideClick(chatModal, chatIcon);
     closeModalIfOutsideClick(notificationModal, notificationIcon);
   });
+<<<<<<< HEAD
 
   // 개발 카테고리 클릭 시 서브메뉴 토글
   const developmentHeader = document.getElementById('development-header');
@@ -96,4 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
       dataSubmenu.style.display = 'none';
     }
   });
+=======
+>>>>>>> refs/heads/develop
 });
