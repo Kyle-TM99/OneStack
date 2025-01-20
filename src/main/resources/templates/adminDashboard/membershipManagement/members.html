@@ -10,6 +10,7 @@
     <!-- 전체를 감싸는 컨테이너 추가 -->
     
     <div class="d-flex flex-column min-vh-100">
+
         <!-- 테이블을 감싸는 영역 -->
         <div class="flex-grow-1">
             <table class="table">
@@ -68,7 +69,7 @@
                         <td th:text="${member.memberId}">아이디</td>
                         <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '-')}">회원 타입</td>
                         <td th:text="${member.email}">이메일</td>
-                        <td th:text="${member.memberType == 3? '비활성화' : (member.memberType == 4 ? '정지' : '활성화')}">활성화</td>
+                        <td th:text="${member.memberStatus == 0? '활성화' : (member.memberStatus == 1 ? '비활성화' : (member.memberStatus == 2 ? '정지' : '탈퇴'))}">활성화</td>
                         <td th:text="${#dates.format(member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')}">날짜</td>
                         <td><button class="btn btn-outline-dark btn-sm member-edit-btn">정보 관리</button></td>
                     </tr>
@@ -134,9 +135,10 @@
                             <div class="col-md-6">
                                 <label class="form-label text-muted small">상태</label>
                                 <select class="form-select" id="memberStatus" name="memberStatus">
-                                    <option value="2">활성화</option>
-                                    <option value="3">비활성화</option>
-                                    <option value="4">정지</option>
+                                    <option value="0">활성화</option>
+                                    <option value="1">비활성화</option>
+                                    <option value="2">정지</option>
+                                    <option value="3">탈퇴</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -146,12 +148,16 @@
                         </div>
                     </form>
                 </div>
+                <form action="/admin/updateMember" method="post">
+                    <input type="number" name="memberNo" required>
+                    <input type="text" name="memberStatus" required>
+                    <input type="text" name="memberType" required>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-Secondary close-custom-btn" data-modal-id="memberModal">취소</button>
                     <button type="button" class="btn btn-outline-primary" id="editInformation">변경사항 저장</button>
                 </div>
+                </form>
             </div>
         </div>
-    </div>
 </body>
 </html>

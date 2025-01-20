@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.onestack.project.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,6 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	
 	 @GetMapping("/adminPage")
 	 public String adminPage() {
 
@@ -35,23 +35,24 @@ public class AdminController {
 	@GetMapping("/members")
     public String getMembersDashboard(Model model) {
 		List<Member> member = adminService.getAllMember();
+        log.info("members: {}", member);
 
 		model.addAttribute("member", member);
         return "adminDashboard/membershipManagement/members";
     }
     
     // 회원 유형/상태 변경
-    @PostMapping("/updateMember")
+    @PostMapping("/adminPage/updateMember")
     @ResponseBody
     public ResponseEntity<String> updateMember(@RequestBody Map<String, String> memberData) {
         try {
             // 데이터를 가져옵니다.
-            String memberId = memberData.get("id");
+            int memberNo = Integer.parseInt(memberData.get("memberNo"));
             int memberType = Integer.parseInt(memberData.get("type"));
             int memberStatus = Integer.parseInt(memberData.get("status"));
 
             // 서비스 호출
-            adminService.updateMember(memberId, memberType);
+            adminService.updateMember(memberNo, memberType, memberStatus);
 
             return ResponseEntity.ok("회원 정보 수정 성공");
         } catch (Exception e) {

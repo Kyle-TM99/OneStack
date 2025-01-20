@@ -30,6 +30,7 @@ public class Member {
     private String phone;
     private Timestamp memberRegDate;
     private Integer memberType;
+    private Integer memberStatus;
     private String memberImage;
     private Integer stack;
     private String stackName;

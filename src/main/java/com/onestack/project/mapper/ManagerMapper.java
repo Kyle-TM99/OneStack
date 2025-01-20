@@ -19,6 +19,7 @@ public interface ManagerMapper {
             @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
-	void updateMember(@Param("memberId") String memberId,
-					  @Param("memberType") int memberType);
+	void updateMember(@Param("memberNo") int memberNo,
+					  @Param("memberType") Integer memberType,
+					  @Param("memberStatus") Integer memberStatus);
 }

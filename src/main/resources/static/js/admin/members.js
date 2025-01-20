@@ -111,14 +111,13 @@ function initializeMemberManagement() {
 
    document.getElementById('editInformation')?.addEventListener('click', function () {
        const updatedData = {
-           id: document.getElementById('memberId').value,
-           type: document.querySelector('select[name="memberType"]').value,
-           status: document.querySelector('select[name="memberStatus"]').value
+           type: document.getElementById('memberType').value,
+           status: document.getElementById('memberStatus').value
        };
        console.log('Updated member data:', updatedData);
 
        // 서버로 데이터 전송
-       fetch('/updateMember', {
+       fetch('/adminPage/updateMember', {
            method: 'POST',
            headers: {
                'Content-Type': 'application/json',
@@ -162,9 +161,9 @@ function openMemberModal(memberData) {
         // 회원 상태 처리
         const memberStatusElement = document.getElementById('memberStatus');
         if (memberStatusElement) {
-            const memberStatusValue = memberData.status === '활성화' ? '2' :
-                                      memberData.status === '비활성화' ? '3' :
-                                      memberData.status === '정지' ? '4' : '2';
+            const memberStatusValue = memberData.status === '활성화' ? '0' :
+                                      memberData.status === '비활성화' ? '1' :
+                                      memberData.status === '정지' ? '2' : '3';
             memberStatusElement.value = memberStatusValue;
         }
 

@@ -34,8 +34,8 @@ public class AdminService {
 	}
 	
 	// 회원 유형/상태 변경
-	public void updateMember(String memberId, int memberType) {
-		managerMapper.updateMember(memberId, memberType);
+	public void updateMember(int memberNo, Integer memberType, Integer memberStatus) {
+		managerMapper.updateMember(memberNo, memberType, memberStatus);
 	}
 
 }
