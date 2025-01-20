@@ -1,6 +1,6 @@
 package com.onestack.project.domain;
 
-import org.springframework.stereotype.Service;
+import lombok.Setter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

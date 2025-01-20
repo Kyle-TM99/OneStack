@@ -2,16 +2,14 @@ package com.onestack.project.service;
 
 import java.util.List;
 
+import com.onestack.project.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.onestack.project.domain.Portfolio;
-import com.onestack.project.domain.ProConversionRequest;
-import com.onestack.project.domain.Professional;
-import com.onestack.project.domain.ProfessionalAdvancedInformation;
 import com.onestack.project.mapper.ProfessionalMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @Slf4j
@@ -71,6 +69,12 @@ public class ProfessionalService {
         portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
 
         professionalMapper.addPortfolio(portfolio);
+    }
+
+
+    /* 전문가 정보 조회 */
+    public List<MemberWithProfessional> getPro2(int proNo) {
+        return professionalMapper.getPro2(proNo);
     }
     
 }
