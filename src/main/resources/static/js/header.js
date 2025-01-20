@@ -26,14 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // 채팅 모달 관련 코드 수정
-  chatIcon.addEventListener('click', function(e) {
+  chatIcon?.addEventListener('click', function(e) {
     e.preventDefault();
     const chatModalInstance = new bootstrap.Modal(chatModal, { backdrop: false });
     chatModalInstance.show();
   });
 
   // 알림 모달 관련 코드 추가
-  notificationIcon.addEventListener('click', function(e) {
+  notificationIcon?.addEventListener('click', function(e) {
     e.preventDefault();
     const notificationModalInstance = new bootstrap.Modal(notificationModal, { backdrop: false });
     notificationModalInstance.show();

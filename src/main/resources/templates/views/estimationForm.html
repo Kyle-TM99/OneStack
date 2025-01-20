@@ -32,8 +32,6 @@
                 let regExp = /[^0-9]/g;
                 let value = $(this).val();
 
-
-
                 if(regExp.test(value)) {
                     alert("숫자만 입력 가능합니다.");
                     $(this).val(value.replace(regExp, ""));

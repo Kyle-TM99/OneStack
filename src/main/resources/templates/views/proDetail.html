@@ -151,43 +151,42 @@
                     </div>  -->
                     <div class="menu-bar mt-2 d-flex flex-column justify-content-center align-items-center">
                         <p class="mt-2">지금 견적을 요청해보세요.</p>
-                        <button id="btnEstimation2" class="btn btn-custom" th:attr="data-pro-no=${pro.professional.proNo}">견적 요청하기</button>
+                        <button type="button" style="border-color: black" class="btn custom-button" id = "btnEstimation2" th:attr="data-pro-no=${pro.professional.proNo}">견적 요청</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    document.getElementById('toggleReviewForm').addEventListener('click', function() {
-        const reviewForm = document.getElementById('reviewForm');
-        const toggleButton = document.getElementById('toggleReviewForm');
 
-        if (reviewForm.style.display === 'none') {
-            reviewForm.style.display = 'block';
-            // 애니메이션 효과를 부드럽게 주기 위해 transition 사용
-            reviewForm.style.transition = 'opacity 0.5s, transform 0.5s';
-            setTimeout(() => {
-                reviewForm.style.opacity = '1';
-                reviewForm.style.transform = 'translateY(0)';
-            }, 10);
-            toggleButton.textContent = '작성 취소';
-        } else {
-            reviewForm.style.opacity = '0';
-            reviewForm.style.transform = 'translateY(-20px)';
-            setTimeout(() => {
-                reviewForm.style.display = 'none';
-            }, 500);
-            toggleButton.textContent = '리뷰 작성';
-        }
-    });
-
-
-
-</script>
 </body>
+<th:block layout:fragment="script">
+    <script th:src="@{/js/header.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        /* 견적요청 버튼 상수화 */
+        const btnEstimation2 = document.getElementById("btnEstimation2");
+
+        /* 견적요청 버튼 클릭 시 함수 실행 */
+        btnEstimation2.addEventListener("click", estimationForm);
+
+        /* 견적요청 함수 */
+        function estimationForm() {
+            // data-* 속성 값 가져오기
+            let proNo = btnEstimation2.dataset.proNo;
+            console.log(proNo);
+
+            const url = `/estimationForm?proNo=${proNo}`;
+
+            // 새 창 열기
+            window.open(
+                url,
+                "estimationForm",
+                "toolbar=no, scrollbars=no, resizable=no, status=no, menubar=no, width=550, height=700"
+            );
+        }
+    </script>
+</th:block>
 </html>

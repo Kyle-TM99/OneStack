@@ -73,12 +73,19 @@ public class ProfessionalController {
 
     /* 견적 요청서 작성 */
 	@PostMapping("/submitEstimation")
-	public String submitEstimation(Estimation estimation) {
+	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
 
 		proService.submitEstimation(estimation);
 
-		return "redirect:proDetail";
+		return "redirect:/doneEstimation";
 	}
+
+    /* 견적 요청 완료 페이지 */
+    @GetMapping("/doneEstimation")
+    public String estimationDoneForm() {
+        return "views/estimationDoneForm";
+    }
+
 
     /* 전문가 상세보기 */
     @GetMapping("/proDetail")
