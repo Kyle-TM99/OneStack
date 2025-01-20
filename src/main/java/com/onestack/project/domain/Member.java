@@ -37,6 +37,7 @@ public class Member {
     private Timestamp withdrawalEndDate;
     private Timestamp banEndDate;
     private Integer reportedCount;
+    private boolean isAdmin;
     private boolean isSocial;
     private String socialType;
 }

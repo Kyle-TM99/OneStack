@@ -51,6 +51,7 @@
 		<result property="withdrawalEndDate" column="withdrawal_end_date" />
 		<result property="banEndDate" column="ban_end_date" />
 		<result property="reportedCount" column="reported_count" />
+		<result property="isAdmin" column="is_admin" />
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
