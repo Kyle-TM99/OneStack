@@ -34,12 +34,14 @@
         <result property="phone" column="phone" />
         <result property="memberRegDate" column="member_reg_date" />
         <result property="memberType" column="member_type" />
+        <result property="memberStatus" column="member_status" />
         <result property="memberImage" column="member_image" />
         <result property="stack" column="stack" />
         <result property="stackName" column="stack_name" />
         <result property="withdrawalEndDate" column="withdrawal_end_date" />
         <result property="banEndDate" column="ban_end_date" />
         <result property="reportedCount" column="reported_count" />
+        <result property="isAdmin" column="is_admin" />
         <result property="isSocial" column="is_social" />
         <result property="socialType" column="social_type" />
     </resultMap>
@@ -143,6 +145,11 @@
             </choose>
         </if>
     </select>
+
+    <insert id="submitEstimation" parameterType="Estimation">
+        INSERT INTO Estimation(member_no, pro_no, item_no, estimation_content, estimation_price, estimation_msg)
+        VALUES(#{memberNo}, #{proNo}, #{itemNo}, #{estimationContent}, #{estimationPrice}, #{estimationMsg})
+    </insert>
 
 
 </mapper>

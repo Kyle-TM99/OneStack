@@ -4,22 +4,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-
-import com.onestack.project.domain.MemProAdInfoCate;
-import com.onestack.project.domain.Professional;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.ProService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.onestack.project.domain.ProConversionRequest;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ProfessionalService;
 import com.onestack.project.service.SurveyService;
@@ -67,6 +61,43 @@ public class ProfessionalController {
 
 		return "views/findPro";
 	}
+
+    /* 견적 요청서 폼 */
+	@GetMapping("/estimationForm")
+	public String getEstimationForm(Model model, @RequestParam(value = "proNo") int proNo) {
+
+		model.addAttribute("proNo", proNo);
+
+		return "views/estimationForm";
+	}
+
+    /* 견적 요청서 작성 */
+	@PostMapping("/submitEstimation")
+	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+
+		proService.submitEstimation(estimation);
+
+		return "redirect:/doneEstimation";
+	}
+
+    /* 견적 요청 완료 페이지 */
+    @GetMapping("/doneEstimation")
+    public String estimationDoneForm() {
+        return "views/estimationDoneForm";
+    }
+
+
+    /* 전문가 상세보기 */
+    @GetMapping("/proDetail")
+    public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
+        List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
+
+        model.addAttribute("proList", proList);
+
+        return "views/proDetail";
+    }
+
+
 
     @GetMapping("/survey")
     public String getSurveyForm(@RequestParam("itemNo") int itemNo, Model model) {
