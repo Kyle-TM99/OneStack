@@ -39,6 +39,7 @@
 		<result property="phone" column="phone" />
 		<result property="memberRegDate" column="member_reg_date" />
 		<result property="memberType" column="member_type" />
+		<result property="memberStatus" column="member_status" />
 		<result property="memberImage" column="member_image" />
 		<result property="stack" column="stack" />
 		<result property="stackName" column="stack_name" />

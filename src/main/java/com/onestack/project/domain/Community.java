@@ -22,4 +22,5 @@ public class Community {
     private Integer communityBoardLike;
     private Integer communityBoardDislike;
     private Integer communityBoardActivation;
+    private Integer communityReplyCount;
 }
