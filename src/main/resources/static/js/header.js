@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // 모달창 외부 클릭 시 닫기 기능 추가
   document.addEventListener('click', function(e) {
     const closeModalIfOutsideClick = (modalElement, iconElement) => {
-      if (modalElement.classList.contains('show') && 
-          !e.target.closest('.modal-dialog') && 
+      if (modalElement.classList.contains('show') &&
+          !e.target.closest('.modal-dialog') &&
           !iconElement.contains(e.target)) {
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         modalInstance.hide();
@@ -72,4 +72,33 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModalIfOutsideClick(chatModal, chatIcon);
     closeModalIfOutsideClick(notificationModal, notificationIcon);
   });
+
+
+
+  // 개발 카테고리 클릭 시 서브메뉴 토글
+  const developmentHeader = document.getElementById('development-header');
+  const developmentSubmenu = document.querySelector('.development-submenu');
+
+  developmentHeader.addEventListener('click', function() {
+    if (developmentSubmenu.style.display === 'none' || developmentSubmenu.style.display === '') {
+      developmentSubmenu.style.display = 'block';
+    } else {
+      developmentSubmenu.style.display = 'none';
+    }
+  });
+
+  // 데이터 카테고리 클릭 시 서브메뉴 토글
+  const dataHeader = document.getElementById('data-header');
+  const dataSubmenu = document.querySelector('.data-submenu');
+
+  dataHeader.addEventListener('click', function() {
+    if (dataSubmenu.style.display === 'none' || dataSubmenu.style.display === '') {
+      dataSubmenu.style.display = 'block';
+    } else {
+      dataSubmenu.style.display = 'none';
+    }
+  });
+
+
+
 });

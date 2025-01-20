@@ -66,7 +66,23 @@
                     </div>
 
                     <!-- 리뷰 목록 -->
-                    <div class="review-summary border-top mt-4" id="review">
+                    <div class="review-list">
+                        <h4 class="mt-5 font-weight-bold" style="font-size: 1.3em;">리뷰 목록</h4>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-rating">⭐️⭐️⭐️⭐️⭐️</span>
+                                <span class="ml-2 pl-2 border-left text-secondary small">작성자 이름</span>
+                                <span class="review-dateml-2 pl-2 border-left text-secondary small">상세 카테고리</span>
+                                <span class="review-date float-right text-secondary small">작성일자</span>
+                            </div>
+                            <div class="review-content">
+                                <p class="mb-2 ml-1 mt-3">리뷰 내용</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 리뷰 목록 -->
+              <!--      <div class="review-summary border-top mt-4" id="review">
                         <div class="d-flex mt-3">
                             <h4 class="font-weight-bold font-size: 2.0em;">⭐️⭐️⭐️⭐️⭐️</h4>
                             <div class="mt-2">
@@ -79,10 +95,10 @@
                                 리뷰 작성
                             </button>
                         </div>
-                    </div>
+                    </div>-->
 
                     <!-- 리뷰 작성 폼 시작-->
-                    <div class="review-form" id="reviewForm"
+             <!--       <div class="review-form" id="reviewForm"
                          style="display: none; opacity: 0; transform: translateY(-20px); transition: opacity 0.5s, transform 0.5s;">
                         <div class="form-group">
                             <div class="d-flex align-items-center">
@@ -103,33 +119,8 @@
                             <textarea class="form-control review-textarea" id="reviewText" rows="5"
                                       placeholder="리뷰를 작성하세요..."></textarea>
                         </div>
-                    </div> <!-- 리뷰작성 폼 끝 -->
-                    <div class="review-list">
-                        <h4 class="mt-5 font-weight-bold" style="font-size: 1.3em;">리뷰 목록</h4>
-                        <div class="review-item">
-                            <div class="review-header">
-                                <span class="review-rating">⭐️⭐️⭐️⭐️⭐️</span>
-                                <span class="ml-2 pl-2 border-left text-secondary small">작성자 이름</span>
-                                <span class="review-dateml-2 pl-2 border-left text-secondary small">상세 카테고리</span>
-                                <span class="review-date float-right text-secondary small">작성일자</span>
-                            </div>
-                            <div class="review-content">
-                                <p class="mb-2 ml-1 mt-3">리뷰 내용</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 자주 묻는 질문 -->
-                    <div class="faq-container" id="faq">
-                        <h4 class="mt-5 font-weight-bold" style="font-size: 1.3em;">자주 묻는 질문</h4>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <p class="mb-2 mt-3">Q1. 질문 내용</p>
-                            </div>
-                            <div class="faq-answer">
-                                <p class="mb-2 mt-3">A1. 답변 내용</p>
-                            </div>
-                        </div>
-                    </div>
+                    </div>--> <!-- 리뷰작성 폼 끝 -->
+
                 </div>
             </div>
 
@@ -144,11 +135,6 @@
                             <li class="mt-4"><a href="#faq" style="color: black;">자주 묻는 질문</a></li>
                         </ul>
                     </div>
-                    <!-- <div class="menu-bar mt-2 d-flex flex-column justify-content-center align-items-center">
-                        <p>"전문가 닉네임"님과</p>
-                        <p>채팅해보세요!</p>
-                        <button class="btn btn-custom d-flex justify-content-center align-items-center">채팅하기</button>
-                    </div>  -->
                     <div class="menu-bar mt-2 d-flex flex-column justify-content-center align-items-center">
                         <p class="mt-2">지금 견적을 요청해보세요.</p>
                         <button type="button" style="border-color: black" class="btn custom-button" id = "btnEstimation2" th:attr="data-pro-no=${pro.professional.proNo}">견적 요청</button>
