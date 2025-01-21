@@ -1,10 +1,8 @@
 package com.onestack.project.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.onestack.project.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import com.onestack.project.domain.MemProPortCate;
+import com.onestack.project.domain.MemProPortPaiCate;
 import com.onestack.project.domain.Member;
 import com.onestack.project.service.AdminService;
 
@@ -71,13 +69,13 @@ public class AdminController {
     public String getWithdrawnDashboard() {
         return "adminDashboard/membershipManagement/withdrawnMembers";
     }
-    
+
     @GetMapping("/reviewPendingInquiry")
-	public String getReviewPendingInquiry(Model model) {
-    	List<MemProPortCate> pList = adminService.getMemProPortCate();
-    	model.addAttribute("pro", pList);
-		return "adminDashboard/screeningManagement/reviewPendingInquiry";
-	}
+    public String getReviewPendingInquiry(Model model) {
+        List<MemProPortPaiCate> pList = adminService.getMemProPortPaiCate();
+        model.addAttribute("pro", pList);
+        return "adminDashboard/screeningManagement/reviewPendingInquiry";
+    }
     
     @PostMapping("/reviewPro")
     public ResponseEntity<String> reviewPro(@RequestBody Map<String, Object> request) {
@@ -115,7 +113,7 @@ public class AdminController {
     
     @GetMapping("/reviewProcessingDetails")
 	public String getReviewProcessingDetails(Model model) {
-    	List<MemProPortCate> pList = adminService.getMemProPortCate();
+    	List<MemProPortPaiCate> pList = adminService.getMemProPortPaiCate();
     	model.addAttribute("pro", pList);
 		return "adminDashboard/screeningManagement/reviewProcessingDetails";
 	}

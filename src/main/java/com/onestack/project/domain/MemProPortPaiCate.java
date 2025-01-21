@@ -9,9 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemProPortCate {
+public class MemProPortPaiCate {
 	private Member member;
 	private Professional professional;
 	private Portfolio portfolio;
 	private Category category;
+	private ProfessionalAdvancedInformation professionalAdvancedInformation;
 }

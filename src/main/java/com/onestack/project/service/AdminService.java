@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.onestack.project.domain.MemProPortCate;
+import com.onestack.project.domain.MemProPortPaiCate;
 import com.onestack.project.domain.Member;
-import com.onestack.project.domain.Professional;
 import com.onestack.project.mapper.ManagerMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,8 @@ public class AdminService {
 	}
 
 	// 회원/전문가/포트폴리오/카테고리 조회
-	public List<MemProPortCate> getMemProPortCate(){
-		return managerMapper.getMemProPortCate();
+	public List<MemProPortPaiCate> getMemProPortPaiCate() {
+		return managerMapper.getMemProPortPaiCate();
 	}
 
 	// 전문가 심사

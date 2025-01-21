@@ -68,6 +68,16 @@
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
 
+	<resultMap id="ProfessionalAdvancedInformationResultMap" type="com.onestack.project.domain.ProfessionalAdvancedInformation">
+		<id property="proAdvancedNo" column="proAdvanced_no" />
+		<result property="proNo" column="pro_no" />
+		<result property="itemNo" column="item_no" />
+		<result property="proAnswer1" column="pro_answer1" />
+		<result property="proAnswer2" column="pro_answer2" />
+		<result property="proAnswer3" column="pro_answer3" />
+		<result property="proAnswer4" column="pro_answer4" />
+		<result property="proAnswer5" column="pro_answer5" />
+	</resultMap>
 
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
@@ -80,11 +90,12 @@
         <association property="portfolio" resultMap="PortfolioResultMap" />
     </resultMap>
     
-    <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">
+    <resultMap id="MemProPortPaiCateResultMap" type="com.onestack.project.domain.MemProPortPaiCate">
         <association property="member" resultMap="MemberResultMap" />
         <association property="professional" resultMap="ProfessionalResultMap" />
         <association property="portfolio" resultMap="PortfolioResultMap" />
-        <association property="category" resultMap="CategoryResultMap" />        
+        <association property="category" resultMap="CategoryResultMap" />
+		<association property="professionalAdvancedInformation" resultMap="ProfessionalAdvancedInformationResultMap" />
     </resultMap>
     
 <select id="getAllMember" resultType="Member">
@@ -179,14 +190,16 @@
 </update>
 
 <!-- 회원, 전문가, 포트폴리오, 카테고리 -->
-<select id = "getMemProPortCate" parameterType = "int" resultMap = "MemProPortCateResultMap">
-	SELECT m.*, p.*, pf.*, c.*
+<select id = "getMemProPortPaiCate" parameterType = "int" resultMap = "MemProPortPaiCateResultMap">
+	SELECT m.*, p.*, pf.*, c.*, pai.*
 	FROM Member m JOIN Professional p
 			ON m.member_no = p.member_no
 		JOIN Portfolio pf
 			ON p.pro_no = pf.pro_no
+	    JOIN ProfessionalAdvancedInformation pai
+	    	ON pf.pro_no = pai.pro_no
 		JOIN Category c
-			ON p.category_no = c.category_no
+			ON pai.item_no = c.item_no
     ORDER BY p.pro_date DESC
 </select>
 
