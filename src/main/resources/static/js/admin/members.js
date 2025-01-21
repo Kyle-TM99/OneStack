@@ -96,13 +96,15 @@ function initializeMemberManagement() {
     document.querySelectorAll('.member-edit-btn').forEach(button => {
         button.addEventListener('click', function () {
             const row = this.closest('tr');
+            const memberNo = row.getAttribute('data-member-no');
             const memberData = {
                 name: row.cells[1].textContent,
                 id: row.cells[2].textContent,
                 type: row.cells[3].textContent,
                 email: row.cells[4].textContent,
                 status: row.cells[5].textContent,
-                joinDate: row.cells[6].textContent
+                joinDate: row.cells[6].textContent,
+                memberNo: memberNo // memberNo 추가
             };
             console.log("memberData:", memberData);
             openMemberModal(memberData);
@@ -110,7 +112,13 @@ function initializeMemberManagement() {
     });
 
    document.getElementById('editInformation')?.addEventListener('click', function () {
+       const memberNo = window.currentMemberNo;
+       if (!memberNo) {
+           alert('회원 번호가 누락되었습니다.');
+           return;
+       }
        const updatedData = {
+           memberNo: memberNo,
            type: document.getElementById('memberType').value,
            status: document.getElementById('memberStatus').value
        };
@@ -142,11 +150,11 @@ function initializeMemberManagement() {
    }
 
 function openMemberModal(memberData) {
-    console.log('전체 데이터:', memberData);
-
+    window.currentMemberNo = memberData.memberNo;
     document.getElementById('memberName').value = memberData.name;
     document.getElementById('memberId').value = memberData.id;
     document.getElementById('memberEmail').value = memberData.email;
+    document.getElementById('joinDate').value = memberData.joinDate;
 
    console.log('memberData:', memberData);
 
@@ -154,7 +162,7 @@ function openMemberModal(memberData) {
         const memberTypeElement = document.getElementById('memberType');
         if (memberTypeElement) {
             const memberTypeValue = memberData.type === '초보자' ? '0' :
-                                    memberData.type === '전문가' ? '1' : '-';
+                                    memberData.type === '전문가' ? '1' : '2';
             memberTypeElement.value = memberTypeValue;
         }
 

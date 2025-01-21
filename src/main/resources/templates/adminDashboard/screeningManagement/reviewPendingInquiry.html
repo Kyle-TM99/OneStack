@@ -59,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="pro : ${pro}" th:if="${pro.professional.professorStatus == 1}">
+                    <tr th:each="pro : ${pro}" th:if="${pro.professional.professorStatus == 0}">
                         <td><input type="checkbox"/></td>
                         <td th:text="${pro.member.name}">이름</td>
                         <td th:text="${pro.member.memberId}">아이디</td>

@@ -35,7 +35,7 @@ public class AdminController {
 	@GetMapping("/members")
     public String getMembersDashboard(Model model) {
 		List<Member> member = adminService.getAllMember();
-        log.info("members: {}", member);
+        log.info("member: {}", member);
 
 		model.addAttribute("member", member);
         return "adminDashboard/membershipManagement/members";
@@ -54,7 +54,8 @@ public class AdminController {
             // 서비스 호출
             adminService.updateMember(memberNo, memberType, memberStatus);
 
-            return ResponseEntity.ok("회원 정보 수정 성공");
+           return ResponseEntity.ok("{\"message\": \"회원 정보 수정 성공\"}");
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 정보 수정 실패");

@@ -76,7 +76,7 @@
 
 <!-- 회원 타입 업데이트 -->
  <update id="updateMemberType" parameterType="int">
-        UPDATE Member SET member_type = 1 WHERE member_no = #{memberNo}
+        UPDATE Member SET member_type = #{memberType} WHERE member_no = #{memberNo}
     </update>
 
 <!-- 전문가 정보 조회 -->

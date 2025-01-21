@@ -20,8 +20,10 @@ public class ProfessionalService {
 
     // 심사요청 시 각각 데이터 전문가/전문가고급정보/포트폴리오 테이블에 저장
     public void saveProConversionData(ProConversionRequest request) {
-    	
-    	// 전문가 저장
+
+        professionalMapper.updateMemberType(2, request.getMemberNo());
+
+        // 전문가 저장
         Professional professional = new Professional();
         professional.setMemberNo(request.getMemberNo());
         professional.setCategoryNo(request.getCategoryNo());
@@ -70,7 +72,6 @@ public class ProfessionalService {
 
         professionalMapper.addPortfolio(portfolio);
     }
-
 
     /* 전문가 정보 조회 */
     public List<MemberWithProfessional> getPro2(int proNo) {

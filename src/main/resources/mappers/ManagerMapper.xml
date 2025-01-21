@@ -104,8 +104,8 @@
 <update id="updateMember" parameterType="Map">
 	UPDATE Member
 	SET member_type = #{memberType},
-	    member_status = #{memberStatus},
-	WHERE member_no = #{memberNo}
+	    member_status = #{memberStatus}
+	WHERE member_No = #{memberNo}
 </update>
 
 <!-- 탈퇴 회원 조회 -->

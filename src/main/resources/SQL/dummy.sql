@@ -1,4 +1,4 @@
-INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type,member_status)
+INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status)
 VALUES
     ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1, 0),
     ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1, 0),
@@ -27,38 +27,39 @@ VALUES
     ('박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1, 0),
     ('이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1, 0),
     ('최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1, 0),
-    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1, 0);
-
+    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 2, 0),
+    ('전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0),
+    ('전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0);
 INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
-    (1, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 11000, 20),
-    (2, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 2, NULL, '오전 8시 - 오후 9시', 15000, 10),
-    (3, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 2, NULL, '오전 8시 - 오후 9시', 12000, 40),
-    (4, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 2, NULL, '오전 8시 - 오후 9시', 110000, 50),
-    (5, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 9시', 10000, 200),
-    (6, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 12000, 222),
-    (7, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 15500, 15),
-    (8, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 2, NULL, '오전 8시 - 오후 9시', 9900, 24),
-    (9, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 2, NULL, '오전 8시 - 오후 9시', 12000, 13),
-    (10, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 9시', 14000, 20),
-    (11, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 22000, 22),
-    (12, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 9시', 7000, 66),
-    (13, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 2, NULL, '오전 8시 - 오후 9시', 79000, 75),
-    (14, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 2, NULL, '오전 8시 - 오후 9시', 135000, 20),
-    (15, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 2, NULL, '오전 8시 - 오후 9시', 12400, 2),
-    (16, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 2, NULL, '오전 8시 - 오후 9시', 12600, 21),
-    (17, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 17300, 12),
-    (18, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 9시', 12300, 15),
-    (19, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 53400, 17),
-    (20, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 2, NULL, '오전 8시 - 오후 9시', 15200, 212),
-    (21, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 2, NULL, '오전 8시 - 오후 9시', 63400, 13),
-    (22, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 2, NULL, '오전 8시 - 오후 9시', 121200, 20),
-    (23, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 2, NULL, '오전 8시 - 오후 9시', 66300, 6),
-    (24, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 11000, 3),
-    (25, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 9시', 15500, 2),
-    (26, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 88700, 22),
-    (27, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 2, NULL, '오전 8시 - 오후 9시', 53500, 18),
-    (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 2, NULL, '오전 8시 - 오후 10시', 11100, 25);
+    (1, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 11000, 20),
+    (2, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 15000, 10),
+    (3, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 1, NULL, '오전 8시 - 오후 9시', 12000, 40),
+    (4, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 1, NULL, '오전 8시 - 오후 9시', 110000, 50),
+    (5, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 10000, 200),
+    (6, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 12000, 222),
+    (7, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 15500, 15),
+    (8, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 1, NULL, '오전 8시 - 오후 9시', 9900, 24),
+    (9, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 12000, 13),
+    (10, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 14000, 20),
+    (11, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 22000, 22),
+    (12, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 7000, 66),
+    (13, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 1, NULL, '오전 8시 - 오후 9시', 79000, 75),
+    (14, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 1, NULL, '오전 8시 - 오후 9시', 135000, 20),
+    (15, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 12400, 2),
+    (16, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 1, NULL, '오전 8시 - 오후 9시', 12600, 21),
+    (17, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 17300, 12),
+    (18, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 12300, 15),
+    (19, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 53400, 17),
+    (20, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 2, 1, NULL, '오전 8시 - 오후 9시', 15200, 212),
+    (21, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 1, NULL, '오전 8시 - 오후 9시', 63400, 13),
+    (22, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 1, 1, NULL, '오전 8시 - 오후 9시', 121200, 20),
+    (23, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 66300, 6),
+    (24, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 11000, 3),
+    (25, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 15500, 2),
+    (26, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 88700, 22),
+    (27, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 53500, 18),
+    (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 10시', 11100, 25);
 -- 카테고리
 INSERT INTO Category (item_no, item_title, category_no)
 VALUES
@@ -125,16 +126,6 @@ VALUES
     (4, 4, '모바일 앱 프로젝트 D', 'Android 앱 개발 및 배포 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
     (5, 5, 'iOS 앱 프로젝트 E', 'iOS 앱 개발 및 사용자 경험 개선', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
     (6, 6, '게임 프로젝트 F', '다수의 인기 게임 개발 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link');
-
--- 관리자
-INSERT INTO Manager (manager_name, manager_pass, member_type, manager_image)
-VALUES
-    ('admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100'),
-    ('admin2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100'),
-    ('admin3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100'),
-    ('admin4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100'),
-    ('admin5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 4, 'https://via.placeholder.com/200x100');
-
 
 -- 설문조사 더미 데이터 --
 INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
@@ -257,3 +248,7 @@ VALUES(24, 1, '데이터베이스 설계를 원하는 분야를 선택해주세�
 INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
+
+
+SELECT * FROM Member;
+SELECT * FROM professional;

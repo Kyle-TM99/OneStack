@@ -39,5 +39,6 @@ public class Member {
     private Integer reportedCount;
     private boolean isAdmin;
     private boolean isSocial;
+    private String memberStop;
     private String socialType;
 }
