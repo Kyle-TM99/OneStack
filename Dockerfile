@@ -3,9 +3,9 @@ FROM gradle:8.12-jdk17-alpine AS build
 
 WORKDIR /app
 
-COPY /app/build.gradle .
-COPY /app/settings.gradle .
-COPY /app/src ./src
+COPY build.gradle .
+COPY settings.gradle .
+COPY src ./src
 
 RUN gradle build --no-daemon -x test
 
