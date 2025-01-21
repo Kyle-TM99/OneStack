@@ -20,7 +20,7 @@ public class Professional {
     private String awardCareer;
     private int studentCount;
     private int rate;
-    private int professorStatus;
+    private Integer professorStatus;
     private String screeningMsg;
     private Timestamp proDate;
     private String contactableTime;

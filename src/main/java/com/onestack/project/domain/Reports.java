@@ -15,7 +15,6 @@ public class Reports {
 	private int reportsNo;
     private int memberNo;
     private int reportedMemberNo;
-    private Integer managerNo;
     private String reportsType;
     private String reportsTarget;
     private String reportsReason;
