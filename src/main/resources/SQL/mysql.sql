@@ -1,4 +1,3 @@
-## DATABASE 생성 및 선택
 DROP DATABASE IF EXISTS onestack;
 CREATE DATABASE IF NOT EXISTS onestack;
 use onestack;
@@ -261,7 +260,7 @@ CREATE TABLE Inquiry (
                          inquiry_content   VARCHAR(1000) NOT NULL,
                          inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          inquiry_file VARCHAR(100) NULL,
-                         inquiry_status TINYINT DEFAULT 0 NOT NULL, -- 1(해결) 0(미해결) --,
+                         inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
                          inquiry_satisfaction TINYINT DEFAULT 0 NOT NULL, -- 1(만족) 0(불만족) --
                          CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
