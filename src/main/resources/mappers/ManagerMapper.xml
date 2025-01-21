@@ -74,10 +74,7 @@
         <result property="itemTitle" column="item_title" />
         <result property="categoryNo" column="category_no" />
     </resultMap>
-      
-      
-            
-            
+
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
         <association property="portfolio" resultMap="PortfolioResultMap" />
@@ -93,11 +90,9 @@
 <select id="getAllMember" resultType="Member">
 	SELECT * 
 	FROM Member 
-	WHERE member_type != 2  <!-- 탈퇴회원 제외 -->
+	WHERE member_status != 3  <!-- 탈퇴회원 제외 -->
    	ORDER BY member_reg_date DESC
 </select>
-
-
 <!-- 회원 조회 -->
 <select id = "getMember" parameterType = "int" resultType = "Member">
    SELECT * 
@@ -105,8 +100,13 @@
    WHERE member_no = #{memberNo}
 </select>
 
-<!-- 회원 수 조회  -->
-
+<!-- 회원 상태 변경 -->
+<update id="updateMember" parameterType="Map">
+	UPDATE Member
+	SET member_type = #{memberType},
+	    member_status = #{memberStatus}
+	WHERE member_No = #{memberNo}
+</update>
 
 <!-- 탈퇴 회원 조회 -->
 <select id = "getWithdrawalMember" resultType = "Member">
@@ -186,7 +186,7 @@
 		JOIN Portfolio pf
 			ON p.pro_no = pf.pro_no
 		JOIN Category c
-			ON p.item_no = c.item_no
+			ON p.category_no = c.category_no
     ORDER BY p.pro_date DESC
 </select>
 

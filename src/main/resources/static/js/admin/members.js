@@ -47,17 +47,18 @@ function closeModal(modalElement) {
     if (backdrop) backdrop.remove();
 }
 
-// 체크박스 초기화 함수
 function initializeCheckboxes() {
     const deleteButton = document.querySelector('#deleteButton');
     const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
     const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+    const deleteCount = document.querySelector('#deleteCount');
 
     if (!deleteButton || !headerCheckbox || rowCheckboxes.length === 0) {
         console.log('Required elements not found');
         return;
     }
 
+    // 헤더 체크박스 동작
     headerCheckbox.addEventListener('change', function () {
         rowCheckboxes.forEach(checkbox => {
             checkbox.checked = headerCheckbox.checked;
@@ -65,6 +66,7 @@ function initializeCheckboxes() {
         updateDeleteButton();
     });
 
+    // 개별 체크박스 동작
     rowCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function () {
             const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
@@ -73,55 +75,110 @@ function initializeCheckboxes() {
         });
     });
 
+    // 삭제 버튼 및 선택 항목 수 업데이트
     function updateDeleteButton() {
-        const isAnyChecked = Array.from(rowCheckboxes).some(checkbox => checkbox.checked);
+        const checkedCheckboxes = Array.from(rowCheckboxes).filter(checkbox => checkbox.checked);
+        const isAnyChecked = checkedCheckboxes.length > 0;
+
         deleteButton.style.display = isAnyChecked ? 'block' : 'none';
+        if (deleteCount) {
+            deleteCount.textContent = isAnyChecked ? `${checkedCheckboxes.length}개 선택됨` : '';
+        }
     }
 
+    // 초기 버튼 상태 업데이트
     updateDeleteButton();
 }
+
 
 // 회원 관리 초기화 함수
 function initializeMemberManagement() {
     document.querySelectorAll('.member-edit-btn').forEach(button => {
         button.addEventListener('click', function () {
             const row = this.closest('tr');
+            const memberNo = row.getAttribute('data-member-no');
             const memberData = {
                 name: row.cells[1].textContent,
                 id: row.cells[2].textContent,
                 type: row.cells[3].textContent,
                 email: row.cells[4].textContent,
                 status: row.cells[5].textContent,
-                joinDate: row.cells[6].textContent
+                joinDate: row.cells[6].textContent,
+                memberNo: memberNo // memberNo 추가
             };
+            console.log("memberData:", memberData);
             openMemberModal(memberData);
         });
     });
 
-    document.getElementById('saveChanges')?.addEventListener('click', function () {
-        const updatedData = {
-            id: document.getElementById('memberId').value,
-            type: document.getElementById('memberType').value,
-            status: document.getElementById('memberStatus').value,
-            note: document.getElementById('memberNote').value
-        };
-        console.log('Updated member data:', updatedData);
+   document.getElementById('editInformation')?.addEventListener('click', function () {
+       const memberNo = window.currentMemberNo;
+       if (!memberNo) {
+           alert('회원 번호가 누락되었습니다.');
+           return;
+       }
+       const updatedData = {
+           memberNo: memberNo,
+           type: document.getElementById('memberType').value,
+           status: document.getElementById('memberStatus').value
+       };
+       console.log('Updated member data:', updatedData);
 
-        const modalElement = document.getElementById('memberModal');
-        closeModal(modalElement);
-    });
-}
+       // 서버로 데이터 전송
+       fetch('/adminPage/updateMember', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+           },
+           body: JSON.stringify(updatedData),
+       })
+       .then(response => {
+           if (!response.ok) {
+               throw new Error('Failed to update member.');
+           }
+           return response.json();
+       })
+       .then(data => {
+           console.log('Update successful:', data);
+           alert('회원 정보가 성공적으로 수정되었습니다.');
+       })
+       .catch(error => {
+           console.error('Error updating member:', error);
+           alert('수정 중 오류가 발생했습니다.');
+       });
+   });
+   }
 
 function openMemberModal(memberData) {
-    console.log('전체 데이터:', memberData);
-
+    window.currentMemberNo = memberData.memberNo;
     document.getElementById('memberName').value = memberData.name;
     document.getElementById('memberId').value = memberData.id;
     document.getElementById('memberEmail').value = memberData.email;
+    document.getElementById('joinDate').value = memberData.joinDate;
 
-    const memberTypeValue = parseInt(memberData.type) === 1 ? 'pro' : 'beginner';
-    document.getElementById('memberType').value = memberTypeValue;
-    document.getElementById('memberStatus').value = memberData.status === '활성화' ? 'active' : 'inactive';
+   console.log('memberData:', memberData);
+
+        // 회원 유형 처리
+        const memberTypeElement = document.getElementById('memberType');
+        if (memberTypeElement) {
+            const memberTypeValue = memberData.type === '초보자' ? '0' :
+                                    memberData.type === '전문가' ? '1' : '2';
+            memberTypeElement.value = memberTypeValue;
+        }
+
+        // 회원 상태 처리
+        const memberStatusElement = document.getElementById('memberStatus');
+        if (memberStatusElement) {
+            const memberStatusValue = memberData.status === '활성화' ? '0' :
+                                      memberData.status === '비활성화' ? '1' :
+                                      memberData.status === '정지' ? '2' : '3';
+            memberStatusElement.value = memberStatusValue;
+        }
+
+        // 콘솔 출력 확인
+        console.log('회원 유형 값:', memberTypeElement ? memberTypeElement.value : '선택자 오류');
+        console.log('회원 상태 값:', memberStatusElement ? memberStatusElement.value : '선택자 오류');
+
     document.getElementById('joinDate').value = memberData.joinDate;
 
     const modalElement = document.getElementById('memberModal');

@@ -59,14 +59,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="pro : ${pro}" th:unless="${pro.professional.professorStatus == 1}">
+                    <tr th:each="pro : ${pro}" th:unless="${pro.professional.professorStatus == 0}">
                         <td><input type="checkbox"/></td>
                         <td th:text="${pro.member.name}">이름</td>
                         <td th:text="${pro.member.memberId}">아이디</td>
                         <td th:text="${pro.category.itemTitle}">전문 분야</td>
                         <td th:text="${pro.member.email}">이메일</td>
                         <td th:text="${#dates.format(pro.professional.proDate, 'yyyy-MM-dd HH:mm:ss')}">심사일</td>
-                        <td th:text="${pro.professional.professorStatus == 2 ? '승인' : '거부'}">승인 여부</td>
+                        <td th:text="${pro.professional.professorStatus == 1 ? '승인' : '거부'}">승인 여부</td>
                         <td>
 							<button class="btn btn-outline-dark btn-sm modScreening-btn" 
 							        th:data-pro-no="${pro.professional.proNo}"

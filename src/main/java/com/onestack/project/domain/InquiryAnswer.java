@@ -14,7 +14,7 @@ import lombok.Setter;
 public class InquiryAnswer {
 	private int inquiryAnswerNo;
 	private int inquiryNo;
-	private int managerNo;
+	private int memberNo;
 	private String inquiryAnswerContent;
 	private Timestamp inquiryAnswerRegDate;
 	private String inquiryAnswerFile;	
