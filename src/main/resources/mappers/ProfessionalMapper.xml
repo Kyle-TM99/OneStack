@@ -19,12 +19,14 @@
 		<result property="phone" column="phone" />
 		<result property="memberRegDate" column="member_reg_date" />
 		<result property="memberType" column="member_type" />
+		<result property="memberStatus" column="member_status" />
 		<result property="memberImage" column="member_image" />
 		<result property="stack" column="stack" />
 		<result property="stackName" column="stack_name" />
 		<result property="withdrawalEndDate" column="withdrawal_end_date" />
 		<result property="banEndDate" column="ban_end_date" />
 		<result property="reportedCount" column="reported_count" />
+		<result property="isAdmin" column="is_admin" />
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
@@ -66,7 +68,16 @@
 	    <association property="quotation" resultMap="QuotationResultMap" />
 	</resultMap>
 
-	
+<!-- 전문가 신청 -->
+<insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
+		INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, contactable_time, average_price, review_count)
+        VALUES (#{memberNo}, #{categoryNo}, #{selfIntroduction}, #{career}, #{awardCareer}, #{contactableTime}, #{averagePrice}, #{reviewCount})
+</insert>
+
+<!-- 회원 타입 업데이트 -->
+ <update id="updateMemberType" parameterType="int">
+        UPDATE Member SET member_type = 1 WHERE member_no = #{memberNo}
+    </update>
 
 <!-- 전문가 정보 조회 -->
 <select id = "getPro" parameterType = "int" resultMap = "MemberWithProfessionalResultMap">
@@ -75,6 +86,20 @@
 		ON m.member_no = p.member_no
 	WHERE m.member_no = #{memberNo}
 </select>
+
+<!-- 전문가 정보 조회2 -->
+<select id = "getPro2" parameterType = "int" resultMap = "MemberWithProfessionalResultMap">
+	SELECT m.*, p.*
+	FROM Member m JOIN Professional p
+					   ON m.member_no = p.member_no
+	WHERE p.pro_no = #{proNo}
+</select>
+
+<!-- 전문가 고급 정보 추가 -->
+<insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
+	INSERT INTO ProfessionalAdvancedInformation(pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
+	VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
+</insert>
 
 <!-- 전문가의 고객 조회 -->
 <select id = "getProClient" parameterType = "int" resultMap = "MemberWithQutationResultMap">
@@ -96,15 +121,21 @@
 <!-- 포트폴리오, 이미지 조회 -->
 <select id = "getPortfolio" parameterType = "int" resultType = "Portfolio">
 	SELECT *
-	FROM Portfolio p 
+	FROM Portfolio p
 	WHERE p.pro_no = #{proNo}
 		AND visibility = 1
 </select>
 
 <!-- 포트폴리오 추가 -->
-<insert id = "addPortfolio" parameterType = "Portfolio" useGeneratedKeys = "true" keyProperty = "portfolioNo">
-	INSERT INTO Portfolio(pro_advanced_no, portfolio_title, portfolio_content)
-	VALUES(#{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent})
+<insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
+        INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,
+                              thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,
+                              portfolio_file4, portfolio_file5, portfolio_file6, portfolio_file7,
+                              portfolio_file8, portfolio_file9, portfolio_file10)
+        VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent},
+                #{thumbnailImage}, #{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3},
+                #{portfolioFile4}, #{portfolioFile5}, #{portfolioFile6}, #{portfolioFile7},
+                #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
 </insert>
 
 <!-- 포트폴리오 수정 -->

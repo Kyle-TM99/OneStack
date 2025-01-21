@@ -21,10 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
 		// 회원가입 폼 뷰 전용 컨트롤러 설정 추가
 		registry.addViewController("/joinForm").setViewName("member/joinForm");
 
-		registry.addViewController("/proconversion").setViewName("views/proConversion");
-		
-		registry.addViewController("/inquiryWriteForm").setViewName("inquiry/inquiryWriteForm");
-		
 	}
 
 	@Override
@@ -35,9 +31,8 @@ public class WebConfig implements WebMvcConfigurer {
 		 **/
 		registry.addResourceHandler("/resources/files/**")
 				// file: 프로토콜을 사용하면 업로드한 이미지가 바로 보인다.
-				.addResourceLocations("file:./src/main/resources/static/files/")
-				.setCachePeriod(1); // 캐쉬 지속시간(초) 
-		}
+				.addResourceLocations("file:./src/main/resources/static/files/").setCachePeriod(1); // 캐쉬 지속시간(초)
+	}
 
 	  @Override 
 	  public void addInterceptors(InterceptorRegistry registry) {

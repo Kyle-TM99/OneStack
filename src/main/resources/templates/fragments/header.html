@@ -1,90 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-	<!-- Navigation-->
-	<div th:fragment="header" class="header-container">
-		<div>
-			<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
-				<div class="container">
-					<div class="row w-100 align-items-center">
-						<!-- 로고 영역 -->
-						<div class="col-2">
-							<a class="navbar-brand d-flex align-items-center"  href="/mainPage">
-								<img src="https://placehold.co/110x40" alt="Logo">
-							</a>
-						</div>
+<!-- Navigation-->
+<div th:fragment="header" class="header-container">
+	<div>
+		<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+			<div class="container">
+				<div class="row w-100 align-items-center">
+					<!-- 로고 영역 -->
+					<div class="col-2">
+						<a class="navbar-brand d-flex align-items-center"  href="/mainPage">
+							<img src="https://placehold.co/110x40" alt="Logo">
+						</a>
+					</div>
 
-						<!-- 메인 메뉴  -->
-						<div class="col-10">
-							<div class="main-menu">
-								<div class="d-flex justify-content-between align-items-center">
-									<!-- 왼쪽 메뉴 -->
-									<div class="d-flex left-menu">
-										<a href="findPro" class="nav-link px-3">고수 찾기</a>
-										<a href="#" class="nav-link px-3">견적 요청</a>
-										<a href="#" class="nav-link px-3">커뮤니티</a>
-									</div>
-						<!-- 메인 메뉴  -->
-						<div class="col-10">
-							<div class="main-menu">
-								<div class="d-flex justify-content-between align-items-center">
-									<!-- 왼쪽 메뉴 -->
-									<div class="d-flex left-menu">
-										<a href="#" class="nav-link px-3">고수 찾기</a>
-										<a href="#" class="nav-link px-3">견적 요청</a>
-										<a href="#" class="nav-link px-3">커뮤니티</a>
-									</div>
+					<!-- 메인 메뉴  -->
+					<div class="col-10">
+						<div class="main-menu">
+							<div class="d-flex justify-content-between align-items-center">
+								<!-- 왼쪽 메뉴 -->
+								<div class="d-flex left-menu">
+									<a href="#" class="nav-link px-3">고수 찾기</a>
+									<a href="#" class="nav-link px-3">커뮤니티</a>
+								</div>
 
-									<!-- 오른쪽 메뉴 -->
-									<div class="d-flex align-items-center gap-3">
+								<!-- 오른쪽 메뉴 -->
+								<div class="d-flex align-items-center gap-3">
+									<th:block th:if="${session.isLogin}">
+										<div class="right-menu">
+											<a href="#" class="nav-link px-3">
+												<i class="bi bi-chat-right"></i>
+												<span class="visually-hidden">채팅</span>
+											</a>
+											<a href="#" class="nav-link px-3">
+												<i class="bi bi-bell"></i>
+												<span class="visually-hidden">알림</span>
+											</a>
+										</div>
+									</th:block>
+									<div class="d-flex align-items-center gap-2">
+										<!-- 로그인하지 않은 경우 보이는 버튼들 -->
+										<th:block th:unless="${session.isLogin}">
+											<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
+											<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
+										</th:block>
+										<!-- 로그인한 경우에만 보이는 버튼들 -->
 										<th:block th:if="${session.isLogin}">
-											<div class="right-menu">
-												<a href="#" class="nav-link px-3">
-													<i class="bi bi-chat-right"></i>
-													<span class="visually-hidden">채팅</span>
+											<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
+											<div class="dropdown">
+												<a href="#" class="profile-link d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+													<img src="https://placehold.co/32x32" alt="프로필" class="rounded-circle">
+													<i class="fas fa-chevron-down small text-muted"></i>
 												</a>
-												<a href="#" class="nav-link px-3">
-													<i class="bi bi-bell"></i>
-													<span class="visually-hidden">알림</span>
-												</a>
+												<ul class="dropdown-menu dropdown-menu-end">
+													<li><a class="dropdown-item" href="/myPage">마이페이지</a></li>
+													<!-- 관리자 페이지 버튼 -->
+													<th:block th:if="${session.member != null&&session.member.memberType == 4}">
+														<li><a class="dropdown-item text-manager" href="#">관리자 페이지 이동</a></li>
+													</th:block>
+													<li><hr class="dropdown-divider"></li>
+													<th:block th:if="${session.member != null}">
+														<th:block th:if="${session.member.socialType == 'none'}">
+															<li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
+														</th:block>
+														<th:block th:if="${session.member.socialType == 'kakao'}">
+															<li><a class="dropdown-item text-danger" href="/oauth/kakao/logout">로그아웃</a></li>
+														</th:block>
+														<th:block th:if="${session.member.socialType == 'google'}">
+															<li><a class="dropdown-item text-danger" href="/google/logout">로그아웃</a></li>
+														</th:block>
+													</th:block>
+												</ul>
 											</div>
 										</th:block>
-										<div class="d-flex align-items-center gap-2">
-											<!-- 로그인하지 않은 경우 보이는 버튼들 -->
-											<th:block th:unless="${session.isLogin}">
-						                    	<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
-						                    	<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
-							                </th:block>
-						                    <!-- 로그인한 경우에만 보이는 버튼들 -->
-						                    <th:block th:if="${session.isLogin}">
-						                    	<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
-							                    <div class="dropdown">
-													<a href="#" class="profile-link d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-														<img src="https://placehold.co/32x32" alt="프로필" class="rounded-circle">
-														<i class="fas fa-chevron-down small text-muted"></i>
-													</a>
-													<ul class="dropdown-menu dropdown-menu-end">
-														<li><a class="dropdown-item" href="/myPage">마이페이지</a></li>
-														<!-- 관리자 페이지 버튼 -->
-														<th:block th:if="${session.member != null&&session.member.memberType == 4}">
-															<li><a class="dropdown-item text-manager" href="#">관리자 페이지 이동</a></li>
-														</th:block>
-														<li><hr class="dropdown-divider"></li>														
-								                    	<th:block th:if="${session.member != null}">
-															<th:block th:if="${session.member.socialType == 'none'}">
-								                           		<li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
-								                        	</th:block> 
-								                        	<th:block th:if="${session.member.socialType == 'kakao'}">
-								                           		<li><a class="dropdown-item text-danger" href="/oauth/kakao/logout">로그아웃</a></li>
-								                        	</th:block>
-								                        	<th:block th:if="${session.member.socialType == 'google'}">
-								                           		<li><a class="dropdown-item text-danger" href="/google/logout">로그아웃</a></li>
-								                        	</th:block>
-								                     	</th:block>
-													</ul>
-												</div>
-						                  	</th:block>
-						               	</div>
-						            </div>
+									</div>
+								</div>
 
 								<!-- 통합 서브메뉴 -->
 								<div class="submenu-container bg-white shadow-sm">
@@ -119,7 +108,7 @@
 													</div>
 												</div>
 											</div>
-											<!-- 견적 요청 서브메뉴 -->
+										<!--	 견적 요청 서브메뉴
 											<div class="col-md-4">
 												<h6 class="fw-bold mb-3">견적 요청</h6>
 												<div class="d-flex flex-column gap-2">
@@ -127,7 +116,7 @@
 													<a href="#" class="text-decoration-none text-secondary">견적 내역보기</a>
 													<a href="#" class="text-decoration-none text-secondary">견적 가이드</a>
 												</div>
-											</div>
+											</div>-->
 											<!-- 커뮤니티 서브메뉴 -->
 											<div class="col-md-4">
 												<h6 class="fw-bold mb-3">커뮤니티</h6>
@@ -143,66 +132,64 @@
 						</div>
 					</div>
 				</div>
-			</nav>
-		</div>
+		</nav>
+	</div>
 
-		<!-- 채팅 모달 -->
-		<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-scrollable">
-				<div class="modal-content">
-					<div class="modal-header border-0 pb-0">
-						<h5 class="modal-title" id="chatModalLabel">채팅 목록</h5>
-					</div>
-					<div class="modal-body pt-2">
-						<!-- 채팅 목록 -->
-						<div class="chat-list">
-							<div class="chat-item d-flex align-items-center p-3 border-bottom">
-								<div class="position-relative">
-									<img src="https://placehold.co/40x40" alt="프로필" class="rounded-circle">
-								</div>
-								<div class="ms-3 flex-grow-1">
-									<div class="d-flex justify-content-between align-items-center">
-										<h6 class="mb-0 fw-bold">보낸 사람</h6>
-										<small class="text-muted opacity-75">보낸 시간</small>
-									</div>
-									<p class="text-muted small mb-0 text-truncate">보낸 내용</p>
-								</div>
-								<div class="ms-2">
-									<span class="badge bg-primary rounded-pill">메세지 갯수</span>
-								</div>
-							</div>         
-						</div>
-					</div>
+	<!-- 채팅 모달 -->
+	<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header border-0 pb-0">
+					<h5 class="modal-title" id="chatModalLabel">채팅 목록</h5>
 				</div>
-			</div>
-		</div>
-
-		<!-- 알림 모달 -->
-		<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-scrollable">
-				<div class="modal-content">
-					<div class="modal-header border-0 pb-0">
-						<h5 class="modal-title" id="notificationModalLabel">알림 목록</h5>
-					</div>
-					<div class="modal-body pt-2">
-						<!-- 알림 목록 -->
-						<div class="notification-list">
-							<div class="notification-item d-flex p-3 border-bottom">
-								<div class="flex-grow-1">
-									<div class="d-flex justify-content-between align-items-center mb-1">
-										<span class="badge bg-secondary">카테고리</span>
-										<small class="text-muted opacity-75">알림 발생 시간</small>
-									</div>
-									<p class="text-muted small mb-0 text-truncate">알림 내용</p>
+				<div class="modal-body pt-2">
+					<!-- 채팅 목록 -->
+					<div class="chat-list">
+						<div class="chat-item d-flex align-items-center p-3 border-bottom">
+							<div class="position-relative">
+								<img src="https://placehold.co/40x40" alt="프로필" class="rounded-circle">
+							</div>
+							<div class="ms-3 flex-grow-1">
+								<div class="d-flex justify-content-between align-items-center">
+									<h6 class="mb-0 fw-bold">보낸 사람</h6>
+									<small class="text-muted opacity-75">보낸 시간</small>
 								</div>
+								<p class="text-muted small mb-0 text-truncate">보낸 내용</p>
+							</div>
+							<div class="ms-2">
+								<span class="badge bg-primary rounded-pill">메세지 갯수</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<th:block layout:fragment="script">
-    		<script th:src="@{/js/header.js}"></script>
-		</th:block>
 	</div>
+
+	<!-- 알림 모달 -->
+	<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header border-0 pb-0">
+					<h5 class="modal-title" id="notificationModalLabel">알림 목록</h5>
+				</div>
+				<div class="modal-body pt-2">
+					<!-- 알림 목록 -->
+					<div class="notification-list">
+						<div class="notification-item d-flex p-3 border-bottom">
+							<div class="flex-grow-1">
+								<div class="d-flex justify-content-between align-items-center mb-1">
+									<span class="badge bg-secondary">카테고리</span>
+									<small class="text-muted opacity-75">알림 발생 시간</small>
+								</div>
+								<p class="text-muted small mb-0 text-truncate">알림 내용</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:src="@{/js/header.js}"></script>
+</div>
 </html>

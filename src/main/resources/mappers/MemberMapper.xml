@@ -84,11 +84,12 @@
 	WHERE member_no = #{memberNo}
 </delete>
 
-
-
-
-
-
+<!-- LHB - 회원ID로 회원번호 조회 -->
+<select id="findMemberNoByMemberId" parameterType="string" resultType="int">
+    SELECT member_no
+    FROM Member
+    WHERE member_id = #{memberId}
+</select>
 
 <!-- 자신이 작성한 커뮤니티 조회 -->
 <select id = "findMyCommunity" parameterType = "int" resultType = "Community">

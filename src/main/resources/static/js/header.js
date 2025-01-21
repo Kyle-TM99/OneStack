@@ -26,14 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // 채팅 모달 관련 코드 수정
-  chatIcon.addEventListener('click', function(e) {
+  chatIcon?.addEventListener('click', function(e) {
     e.preventDefault();
     const chatModalInstance = new bootstrap.Modal(chatModal, { backdrop: false });
     chatModalInstance.show();
   });
 
   // 알림 모달 관련 코드 추가
-  notificationIcon.addEventListener('click', function(e) {
+  notificationIcon?.addEventListener('click', function(e) {
     e.preventDefault();
     const notificationModalInstance = new bootstrap.Modal(notificationModal, { backdrop: false });
     notificationModalInstance.show();
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // 모달창 외부 클릭 시 닫기 기능 추가
   document.addEventListener('click', function(e) {
     const closeModalIfOutsideClick = (modalElement, iconElement) => {
-      if (modalElement.classList.contains('show') && 
-          !e.target.closest('.modal-dialog') && 
+      if (modalElement.classList.contains('show') &&
+          !e.target.closest('.modal-dialog') &&
           !iconElement.contains(e.target)) {
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         modalInstance.hide();
@@ -72,7 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModalIfOutsideClick(chatModal, chatIcon);
     closeModalIfOutsideClick(notificationModal, notificationIcon);
   });
-<<<<<<< HEAD
+
+
 
   // 개발 카테고리 클릭 시 서브메뉴 토글
   const developmentHeader = document.getElementById('development-header');
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
       dataSubmenu.style.display = 'none';
     }
   });
-=======
->>>>>>> refs/heads/develop
+
+
+
 });
