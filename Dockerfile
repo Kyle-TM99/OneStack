@@ -14,6 +14,10 @@ FROM amazoncorretto:17-alpine
 
 WORKDIR /app
 
+# 여기에 이미지 디렉토리 생성 명령어 추가
+RUN mkdir -p /var/www/images && \
+    chmod 755 /var/www/images
+
 COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV JAVA_OPTS="-Xms512m -Xmx512m"
