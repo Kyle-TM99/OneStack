@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class ImageService {
 
-    private final String IMAGE_DIRECTORY = "/var/www/images/";
+    private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
     private final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
 
     public String uploadImage(MultipartFile file) throws IOException {
