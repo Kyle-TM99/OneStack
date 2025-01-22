@@ -24,75 +24,32 @@ public class ImageService {
     private final String IMAGE_DIRECTORY = "/var/www/images/";
     private final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
 
-    // 이미지 업로드
     public String uploadImage(MultipartFile file) throws IOException {
+        // 파일명 생성 (UUID 사용)
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileName = UUID.randomUUID().toString() + extension;
 
+        // 파일 저장 경로
         Path filePath = Paths.get(IMAGE_DIRECTORY + fileName);
+
+        // 파일 저장
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return IMAGE_BASE_URL + fileName;
     }
 
-    // 이미지 삭제
     public void deleteImage(String fileName) throws IOException {
         Path filePath = Paths.get(IMAGE_DIRECTORY + fileName);
-
-        if (!Files.exists(filePath)) {
-            throw new FileNotFoundException("파일을 찾을 수 없습니다: " + fileName);
-        }
-
         Files.delete(filePath);
     }
 
-    // 모든 이미지 목록 조회
-    public List<ImageDto> getAllImages() throws IOException {
+    public List<String> getAllImages() throws IOException {
         try (Stream<Path> paths = Files.walk(Paths.get(IMAGE_DIRECTORY))) {
             return paths
                     .filter(Files::isRegularFile)
-                    .filter(path -> isImageFile(path.toString()))
-                    .map(this::createImageDto)
+                    .map(path -> IMAGE_BASE_URL + path.getFileName().toString())
                     .collect(Collectors.toList());
         }
-    }
-
-    // 특정 이미지 정보 조회
-    public ImageDto getImageInfo(String fileName) throws IOException {
-        Path filePath = Paths.get(IMAGE_DIRECTORY + fileName);
-
-        if (!Files.exists(filePath)) {
-            throw new FileNotFoundException("파일을 찾을 수 없습니다: " + fileName);
-        }
-
-        return createImageDto(filePath);
-    }
-
-    private ImageDto createImageDto(Path path) {
-        try {
-            BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-            String fileName = path.getFileName().toString();
-
-            return ImageDto.builder()
-                    .fileName(fileName)
-                    .url(IMAGE_BASE_URL + fileName)
-                    .size(Files.size(path))
-                    .createdAt(attrs.creationTime().toInstant())
-                    .modifiedAt(attrs.lastModifiedTime().toInstant())
-                    .build();
-        } catch (IOException e) {
-            log.error("이미지 정보 읽기 실패: {}", path, e);
-            return null;
-        }
-    }
-
-    private boolean isImageFile(String path) {
-        String lowercasePath = path.toLowerCase();
-        return lowercasePath.endsWith(".jpg") ||
-                lowercasePath.endsWith(".jpeg") ||
-                lowercasePath.endsWith(".png") ||
-                lowercasePath.endsWith(".gif") ||
-                lowercasePath.endsWith(".webp");
     }
 }
