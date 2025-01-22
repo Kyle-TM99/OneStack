@@ -1,8 +1,3 @@
-## DATABASE 생성 및 선택
-DROP DATABASE IF EXISTS onestack;
-CREATE DATABASE IF NOT EXISTS onestack;
-use onestack;
-
 ## Member - 회원
 CREATE TABLE Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                      name VARCHAR(5) NOT NULL,
@@ -48,7 +43,7 @@ CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                            contactable_time VARCHAR(15) NOT NULL,
                            average_price INTEGER DEFAULT 0 NOT NULL,
                            review_count INTEGER DEFAULT 0 NOT NULL,
-                           CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES member(member_no) ON DELETE CASCADE
+                           CONSTRAINT member_no_pro_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ## Category - 카테고리
