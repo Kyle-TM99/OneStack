@@ -24,6 +24,15 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+    @GetMapping("/delete")
+    public String deleteButton(Model model, @RequestParam int id) {
+        Member member = adminService.getMember();
+        System.out.println("Member ID: " + member.getMemberId());
+        System.out.println("isAdmin: " + member.isAdmin());
+        model.addAttribute("isAdmin", member.isAdmin());
+        return "views/deleteButton";
+    }
+
 	 @GetMapping("/adminPage")
 	 public String adminPage() {
 
@@ -61,13 +70,19 @@ public class AdminController {
     }
 
     @GetMapping("/suspendedMembers")
-    public String getSuspendedDashboard() {
-        return "adminDashboard/membershipManagement/suspendedMembers";
+    public String getSuspendedDashboard(Model model) {
+        List<Member> member = adminService.getAllMember();
+
+        model.addAttribute("member", member);
+         return "adminDashboard/membershipManagement/suspendedMembers";
     }
 
     @GetMapping("/withdrawnMembers")
-    public String getWithdrawnDashboard() {
-        return "adminDashboard/membershipManagement/withdrawnMembers";
+    public String getWithdrawnDashboard(Model model) {
+        Member member = adminService.getWithdrawalMember();
+
+        model.addAttribute("member", member);
+         return "adminDashboard/membershipManagement/withdrawnMembers";
     }
 
     @GetMapping("/reviewPendingInquiry")

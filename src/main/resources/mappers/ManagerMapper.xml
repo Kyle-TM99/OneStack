@@ -108,7 +108,7 @@
 <select id = "getMember" parameterType = "int" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_no = #{memberNo}
+   WHERE member_id  = #{memberNo}
 </select>
 
 <!-- 회원 상태 변경 -->
@@ -123,20 +123,22 @@
 <select id = "getWithdrawalMember" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_type = 2
+   WHERE member_status = 3
 </select>
+
+
 
 <!-- 정지 회원 조회 -->
 <select id = "getBanMember" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_type = 3
+   WHERE member_type = 2 and member_type = 1
 </select>
 
 <!-- 회원 정지 -->
 <update id = "banMember" parameterType = "map">
 	Update Member
-	SET member_type = 3,
+	SET member_type = 2,
 		ban_end_date = #{date}
 	WHERE member_no = #{memberNo}
 </update>

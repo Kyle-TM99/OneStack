@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>버튼 표시</title>
+  <style>
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      background-color: blue;
+      color: white;
+      border: none;
+    }
+    .report-btn {
+      background-color: red;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <!-- 관리자인 경우 -->
+  <div th:if="${isAdmin}">
+    <button class="delete-btn">삭제</button>
+  </div>
+
+  <!-- 회원인 경우 -->
+  <div th:unless="${isAdmin}">
+    <button class="report-btn">신고</button>
+  </div>
+</div>
+</body>
+</html>

@@ -51,7 +51,7 @@
                     </i>
                 </th>
                 <th scope="col" class="sortable" data-sort="date">
-                    가입일
+                    정지일
                     <i class="sort-icon">
                         <span class="sort-up active">▲</span>
                         <span class="sort-down">▼</span>
@@ -61,18 +61,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="member : ${member}" th:attr="data-member-no=${member.memberNo}">
+            <tr th:each="member : ${member}" th:if="${member.memberStatus == 1 or member.memberStatus == 2}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${member.name}">이름</td>
                 <td th:text="${member.memberId}">아이디</td>
                 <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
                 <td th:text="${member.reportedCount}">신고 횟수</td>
-                <td th:text="${member.memberStatus == 0 ? '활성화' : (member.memberStatus == 1 ? '비활성화' : (member.memberStatus == 2 ? '정지' : '탈퇴'))}">활성화</td>
-                <td th:text="${#dates.format(member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')}">날짜</td>
+                <td th:text="${member.memberStatus == 1 ? '비활성화' : '정지'}">활성화</td>
+                <td th:text="${#dates.format(member.banEndDate, 'yyyy-MM-dd HH:mm:ss')}">날짜</td>
                 <td>
                     <button
                             class="btn btn-outline-dark btn-sm member-edit-btn">
-                        정보 관리
+                        정지 사유
                     </button>
                 </td>
             </tr>
@@ -134,7 +134,7 @@
                     <div class="row mb-3">
                           <div class="col-md-6">
                               <label class="form-label text-muted small">정지 사유</label>
-                              <input type="text" class="form-control" id="member_stop" readonly>
+                              <input type="text" class="form-control" id="memberStop" readonly>
                           </div>
 
                     </div>

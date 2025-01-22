@@ -37,4 +37,12 @@ public class AdminService {
 		managerMapper.updateMember(memberNo, memberType, memberStatus);
 	}
 
+	public Member getWithdrawalMember(){
+		return managerMapper.getWithdrawalMember();
+	}
+
+	public Member getMember(){
+		return managerMapper.getMember();
+	}
+
 }

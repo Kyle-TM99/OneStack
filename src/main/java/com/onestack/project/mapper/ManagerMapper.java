@@ -22,4 +22,8 @@ public interface ManagerMapper {
 	void updateMember(@Param("memberNo") int memberNo,
 					  @Param("memberType") Integer memberType,
 					  @Param("memberStatus") Integer memberStatus);
+
+	public Member getWithdrawalMember();
+
+	public Member getMember();
 }
