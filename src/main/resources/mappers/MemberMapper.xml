@@ -5,84 +5,394 @@
 <mapper namespace="com.onestack.project.mapper.MemberMapper">
 
 
-<!-- 회원 조회 -->
-<select id="getMember" parameterType = "String" resultType="Member">
-    SELECT *
-    FROM Member
-    WHERE member_id = #{memberId}
-</select>
+	<resultMap id="memberWithProfessional" type="MemberWithProfessional">
+		<association property="member" javaType="Member">
+			<id property="memberNo" column="member_no"/>
+			<result property="name" column="name"/>
+			<result property="memberId" column="member_id"/>
+			<result property="pass" column="pass"/>
+			<result property="nickname" column="nickname"/>
+			<result property="birth" column="birth"/>
+			<result property="gender" column="gender"/>
+			<result property="zipcode" column="zipcode"/>
+			<result property="address" column="address"/>
+			<result property="address2" column="address2"/>
+			<result property="email" column="email"/>
+			<result property="emailGet" column="email_get"/>
+			<result property="phone" column="phone"/>
+			<result property="memberRegDate" column="member_reg_date"/>
+			<result property="memberType" column="member_type"/>
+			<result property="memberImage" column="member_image"/>
+			<result property="stack" column="stack"/>
+			<result property="stackName" column="stack_name"/>
+			<result property="withdrawalEndDate" column="withdrawal_end_date"/>
+			<result property="banEndDate" column="ban_end_date"/>
+			<result property="reportedCount" column="reported_count"/>
+			<result property="isSocial" column="is_social"/>
+			<result property="socialType" column="social_type"/>
+		</association>
+		<association property="professional" javaType="Professional">
+			<id property="proNo" column="pro_no"/>
+			<result property="memberNo" column="member_no"/>
+			<result property="itemNo" column="item_no"/>
+			<result property="selfIntroduction" column="self_introduction"/>
+			<result property="career" column="career"/>
+			<result property="awardCareer" column="award_career"/>
+			<result property="studentCount" column="student_count"/>
+			<result property="rate" column="rate"/>
+			<result property="professorStatus" column="professor_status"/>
+			<result property="screeningMsg" column="screening_msg"/>
+			<result property="proDate" column="pro_date"/>
+			<result property="contactableTime" column="contactable_time"/>
+			<result property="averagePrice" column="average_price"/>
+			<result property="reviewCount" column="review_count"/>
+		</association>
+	</resultMap>
+
+	<!-- ResultMap 정의 추가 -->
+	<resultMap id="memberWithCommunityMap" type="MemberWithCommunity">
+		<association property="member" javaType="Member">
+			<id property="memberNo" column="member_no"/>
+			<result property="name" column="name"/>
+		</association>
+		<association property="community" javaType="Community">
+			<id property="communityBoardNo" column="community_board_no"/>
+			<result property="communityBoardTitle" column="community_board_title"/>
+			<result property="communityBoardContent" column="community_board_content"/>
+			<result property="communityBoardRegDate" column="community_board_reg_date"/>
+			<result property="communityView" column="community_view"/>
+			<result property="communityBoardLike" column="community_board_like"/>
+		</association>
+	</resultMap>
+
+	<!-- QnA ResultMap -->
+	<resultMap id="memberWithQnAMap" type="MemberWithQnA">
+		<association property="member" javaType="Member">
+			<id property="memberNo" column="member_no"/>
+			<result property="name" column="name"/>
+		</association>
+		<association property="qna" javaType="QnA">
+			<id property="qnaBoardNo" column="qna_board_no"/>
+			<result property="qnaBoardTitle" column="qna_board_title"/>
+			<result property="qnaBoardContent" column="qna_board_content"/>
+			<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
+			<result property="qnaView" column="qna_view"/>
+			<result property="qnaBoardLike" column="qna_board_like"/>
+			<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
+		</association>
+	</resultMap>
+
+	<!-- community With CommunityReply -->
+	<resultMap id="ComWithComReply" type="ComWithComReply">
+		<association property="community" javaType="Community">
+			<id property="communityBoardNo" column="community_board_no"/>
+			<result property="memberNo" column="member_no"/>
+			<result property="communityBoardTitle" column="community_board_title"/>
+			<result property="communityBoardContent" column="community_board_content"/>
+			<result property="communityBoardRegDate" column="community_board_reg_date"/>
+			<result property="communityView" column="community_view"/>
+			<result property="communityBoardLike" column="community_board_like"/>
+			<result property="communityBoardDislike" column="community_board_dislike"/>
+			<result property="communityBoardActivation" column="community_board_activation"/>
+		</association>
+		<association property="communityReply" javaType="CommunityReply">
+			<id property="communityReplyNo" column="community_reply_no"/>
+			<result property="communityReplyContent" column="community_reply_content"/>
+			<result property="communityReplyRegDate" column="community_reply_reg_date"/>
+			<result property="communityReplyLike" column="community_reply_like"/>
+			<result property="communityReplyDislike" column="community_reply_dislike"/>
+			<result property="communityReplyActivation" column="community_reply_activation"/>
+		</association>
+	</resultMap>
+
+	<!-- QnA With QnAReply -->
+	<!-- QnA ResultMap -->
+	<resultMap id="QnAWithReply" type="QnAWithReply">
+		<association property="qna" javaType="QnA">
+			<id property="qnaBoardNo" column="qna_board_no"/>
+			<result property="memberNo" column="member_no"/>
+			<result property="qnaBoardTitle" column="qna_board_title"/>
+			<result property="qnaBoardContent" column="qna_board_content"/>
+			<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
+			<result property="qnaView" column="qna_view"/>
+			<result property="qnaFile" column="qna_file"/>
+			<result property="qnaBoardLike" column="qna_board_like"/>
+			<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
+			<result property="qnaBoardActivation" column="qna_board_activation"/>
+		</association>
+		<association property="qnaReply" javaType="QnAReply">
+			<id property="qnaReplyNo" column="qna_reply_no"/>
+			<result property="qnaBoardNo" column="qna_board_no"/>
+			<result property="memberNo" column="member_no"/>
+			<result property="qnaBoardTitle" column="qna_board_title"/>
+			<result property="qnaReplyContent" column="qna_reply_content"/>
+			<result property="qnaReplyRegDate" column="qna_reply_reg_date"/>
+			<result property="qnaReplyAdoption" column="qna_reply_adoption"/>
+			<result property="qnaReplyLike" column="qna_reply_like"/>
+			<result property="qnaReplyActivation" column="qna_reply_activation"/>
+			<result property="writerName" column="writer_name"/>
+		</association>
+	</resultMap>
+
+	<!-- 내역 조회를 위한 memberWithProfessional -->
+	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
+		SELECT m.*, p.*
+		FROM Member m
+				 JOIN Professional p ON m.member_no = p.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 리뷰 조회 -->
+	<select id="findMyReview" parameterType="int" resultType="Review">
+		SELECT *
+		FROM Review
+		WHERE member_no = #{memberNo}
+	</select>
+
+	<!-- 자신이 작성한 리뷰 수 조회 -->
+	<select id="findMyReviewCount" parameterType="int" resultType="int">
+		SELECT COUNT(review_no)
+		FROM Review
+		WHERE member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 게시글 조회 -->
+	<select id="memberMyPageCommunity" parameterType="int" resultMap="memberWithCommunityMap">
+		SELECT
+			m.*, c.*
+		FROM Member m
+				 JOIN Community c ON m.member_no = c.member_no
+		WHERE m.member_no = #{memberNo}
+		ORDER BY c.community_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 게시글 수 조회 -->
+	<select id="memberMyPageCommunityCount" parameterType="int" resultType="int">
+		SELECT COUNT(c.community_board_no)
+		FROM Member m
+				 JOIN Community c ON m.member_no = c.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 질문글 조회 -->
+	<select id="memberMyPageQnA" parameterType="int" resultMap="memberWithQnAMap">
+		SELECT
+			m.*, q.*
+		FROM Member m
+				 JOIN QnA q ON m.member_no = q.member_no
+		WHERE m.member_no = #{memberNo}
+		ORDER BY q.qna_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 질문글 수 조회 -->
+	<select id="memberMyPageQnACount" parameterType="int" resultType="int">
+		SELECT COUNT(q.qna_board_no)
+		FROM Member m
+				 JOIN QnA q ON m.member_no = q.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 댓글 조회 -->
+	<select id="comWithComReply" parameterType="int" resultMap="ComWithComReply">
+		SELECT
+			c.*, cr.*
+		FROM Community c
+				 LEFT JOIN CommunityReply cr ON c.community_board_no = cr.community_board_no
+		WHERE c.member_no = #{memberNo}
+		ORDER BY c.community_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 댓글 수 조회 -->
+	<select id="memberMyPageComReplyCount" parameterType="int" resultType="int">
+		SELECT COUNT(c.community_reply_no)
+		FROM CommunityReply c
+				 JOIN Member m ON c.member_no = m.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 답글 조회 -->
+	<select id="qnaWithReply" parameterType="int" resultMap="QnAWithReply">
+		SELECT q.*, qr.*
+		FROM QnA q
+				 LEFT JOIN QnAReply qr ON q.qna_board_no = qr.qna_board_no
+		WHERE q.member_no = #{memberNo}
+		ORDER BY q.qna_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 답글 수 조회 -->
+	<select id="memberMyPageQnAReplyCount" parameterType="int" resultType="int">
+		SELECT COUNT(q.qna_reply_no)
+		FROM QnAReply q
+				 JOIN Member m ON q.member_no = m.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 게시글 공감 조회 -->
+	<select id="memberMyPageCommunityLike" resultType="Community">
+		SELECT *
+		FROM community
+		WHERE member_no = #{memberNo}
+		  AND community_board_like > 0
+	</select>
+
+	<!-- 질문글 공감 조회 -->
+	<select id="memberMyPageQnALike" resultType="QnA">
+		SELECT *
+		FROM qna
+		WHERE member_no = #{memberNo}
+		  AND qna_board_like > 0
+	</select>
+
+	<!-- 댓글 공감 조회 -->
+	<select id="memberMyPageComReplyLike" resultType="CommunityReply">
+		SELECT cr.*, c.community_board_title
+		FROM CommunityReply cr
+				 JOIN community c ON cr.community_board_no = c.community_board_no
+		WHERE cr.member_no = #{memberNo}
+		  AND cr.community_reply_like > 0
+	</select>
+
+	<!-- 답변 공감 조회 -->
+	<select id="memberMyPageQnAReplyLike" resultType="QnAReply">
+		SELECT qr.*, q.qna_board_title
+		FROM QnAReply qr
+				 JOIN qna q ON qr.qna_board_no = q.qna_board_no
+		WHERE qr.member_no = #{memberNo}
+		  AND qr.qna_reply_like > 0
+	</select>
+	<!-- 회원 수정 -->
+	<update id="updateMember" parameterType="Member" >
+		UPDATE Member
+		SET
+		name = #{name},
+		email = #{email},
+		phone = #{phone},
+		email_get = #{emailGet},
+		zipcode = #{zipcode},
+		address = #{address},
+		address2 = #{address2}
+		<if test="memberImage != null and memberImage != ''">
+			, member_image = #{memberImage}
+		</if>
+		WHERE member_no = #{memberNo}
+	</update>
+
+	<!-- 회원 정보 비밀번호 수정 (하는 중) -->
+	<update id="updateMemberMyPagePass" parameterType="Member">
+		UPDATE Member
+		SET
+			pass = #{pass}
+		WHERE member_no = #{memberNo}
+	</update>
 
 
-<!-- 회원 가입 -->
-<insert id="insertMember" parameterType="Member" useGeneratedKeys = "true" keyProperty = "memberNo">
-    INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, is_social, social_type ) 
-    VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW(), #{isSocial}, #{socialType})
-</insert>
+
+	<!-- 회원 조회 -->
+	<select id="getMember" parameterType="String" resultType="Member">
+		SELECT *
+		FROM Member
+		WHERE member_id = #{memberId}
+	</select>
+
+	<!-- 회원 가입 -->
+	<insert id="insertMember" parameterType="Member" useGeneratedKeys="true" keyProperty="memberNo">
+		INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date)
+		VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW())
+	</insert>
+
+	<!-- ID 중복 체크 -->
+	<select id="checkMemberId" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE member_id = #{memberId}
+	</select>
+
+	<!-- 닉네임 중복 체크 -->
+	<select id="checkNickname" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE nickname = #{nickname}
+	</select>
+
+	<!-- 이메일 중복 체크 -->
+	<select id="checkEmail" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE email = #{email}
+	</select>
+
+	<!-- 전화번호 중복 체크 -->
+	<select id="checkPhone" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE phone = #{phone}
+	</select>
+
+	<!-- 아이디 찾기 -->
+	<select id="findMemberId" parameterType="Member" resultType="String">
+		SELECT member_id
+		FROM Member
+		WHERE name = #{name}
+		  AND phone = #{phone}
+	</select>
 
 
-<!-- ID 중복 체크 -->
-<select id="checkMemberId" parameterType="String" resultType="int">
-    SELECT COUNT(*) 
-    FROM Member 
-    WHERE member_id = #{memberId}
-</select>
 
-<!-- 닉네임 중복 체크 -->
-<select id="checkNickname" parameterType="String" resultType="int">
-    SELECT COUNT(*) 
-    FROM Member 
-    WHERE nickname = #{nickname}
-</select>
+	<update id="updatePasswordMember" parameterType="Member">
+		UPDATE Member
+		SET pass = #{pass}
+		WHERE member_no = #{memberNo}
+	</update>
 
-<!-- 이메일 중복 체크 -->
-<select id="checkEmail" parameterType="String" resultType="int">
-    SELECT COUNT(*) 
-    FROM Member 
-    WHERE email = #{email}
-</select>
+	<!-- 회원 탈퇴 -->
+	<update id="withdrawalMember" parameterType="int">
+		UPDATE Member
+		SET member_type = 2,
+			withdrawal_end_date = DATE_ADD(NOW(), INTERVAL 30 DAY)
+		WHERE member_no = #{memberNo}
+	</update>
 
-<!-- 전화번호 중복 체크 -->
-<select id="checkPhone" parameterType="String" resultType="int">
-    SELECT COUNT(*) 
-    FROM Member 
-    WHERE phone = #{phone}
-</select>
+	<!-- 탈퇴 만료 회원 삭제 처리 -->
+	<delete id="withdrawalExpiredMember">
+		DELETE FROM Member
+		WHERE member_type = 2
+		  AND withdrawal_end_date &lt; NOW()
+	</delete>
 
-<!-- 아이디 찾기 -->
-<select id="findMemberId" parameterType="Member" resultType="String">
-    SELECT member_id 
-    FROM Member 
-    WHERE name = #{name} 
-    AND phone = #{phone}
-</select>
-    
-<!-- 회원 수정 -->
-<update id = "updateMember" parameterType = "Member">
-	Update Member
-	SET name = #{name}, pass = #{pass}, zipcode = #{zipcode}, address = #{address}, address2 = #{address2}, email = #{email}, email_get = #{emailGet}, phone = #{phone}
-	WHERE member_no = #{memberNo}
-</update>
+	<!-- 회원 삭제 -->
+	<delete id="deleteMember" parameterType="int">
+		DELETE FROM Member
+		WHERE member_no = #{memberNo}
+	</delete>
 
-<!-- 회원 탈퇴 -->
-<update id = "withdrawalMember" parameterType = "int">
-	Update Member
-	SET member_type = 2,
-		withdrawal_end_date = DATE_ADD(NOW(), INTERVAL 30 DAY)
-	WHERE member_no = #{memberNo}
-</update>
+	<!-- 비밀번호 확인 -->
+	<select id="memberPassCheck" parameterType="String" resultType="String">
+		SELECT pass
+		FROM Member
+		WHERE member_id = #{memberId}
+	</select>
 
-<!-- 탈퇴 만료 회원 삭제 처리 -->
-<delete id = "withdrawalExpiredMember">
-	DELETE FROM Member
-	WHERE member_type = 2
-		AND withdrawal_end_date &lt; NOW();
-</delete>
+	<!-- 결제 내역 조회 -->
+	<select id="getMemberPayments" resultType="map">
+		SELECT p.*, m.name as member_name
+		FROM Payment p
+				 JOIN Member m ON p.member_no = m.member_no
+		WHERE p.member_no = #{memberNo}
+		ORDER BY p.payment_date DESC
+	</select>
 
-<!-- 회원 삭제 -->
-<delete id = "deleteMember" parameterType = "int">
-	DELETE FROM Member
-	WHERE member_no = #{memberNo}
-</delete>
+
+	<!-- 삭제 쿼리들 -->
+	<update id="deleteReview">
+		UPDATE Review
+		SET review_activation = 0
+		WHERE review_no = #{reviewId}
+	</update>
+
+	<delete id="deletePayment">
+		DELETE FROM Payment
+		WHERE payment_no = #{paymentId}
+	</delete>
 
 <!-- LHB - 회원ID로 회원번호 조회 -->
 <select id="findMemberNoByMemberId" parameterType="string" resultType="int">
@@ -91,80 +401,6 @@
     WHERE member_id = #{memberId}
 </select>
 
-<!-- 자신이 작성한 커뮤니티 조회 -->
-<select id = "findMyCommunity" parameterType = "int" resultType = "Community">
-	SELECT *
-	FROM Community
-	WHERE member_no = #{memberNo}
-	ORDER BY community_board_reg_date DESC
-</select>
-
-<!-- 자신이 작성한 커뮤니티 수 조회 -->
-<select id = "findMyCommunityCount" parameterType = "int" resultType = "int">
-	SELECT COUNT(community_board_no)
-	FROM Community
-	WHERE member_no = #{memberNo}
-</select>
-
-<!-- 자신이 작성한 커뮤니티 댓글 조회 -->
-<select id = "findMyCommunityReply" parameterType = "int" resultType = "CommunityReply">
-	SELECT * 
-	FROM CommunityReply 
-	WHERE member_no = #{memberNo}
-	ORDER BY community_reply_reg_date DESC
-</select>
-
-<!-- 자신이 작성한 커뮤니티 댓글 수 조회 -->
-<select id = "findMyCommunityReplyCount" parameterType = "int" resultType = "int">
-	SELECT COUNT(community_reply_no)
-	FROM CommunityReply 
-	WHERE member_no = #{memberNo}
-</select>
-
-<!-- 자신이 작성한 QnA 조회 -->
-<select id = "findMyQnA" parameterType = "int" resultType = "QnA">
-	SELECT * 
-	FROM QnA
-	WHERE member_no = #{memberNo}
-	ORDER BY qna_board_reg_date DESC
-</select>
-
-<!-- 자신이 작성한 QnQ 수 조회 -->
-<select id = "findMyQnACount" parameterType = "int" resultType = "int">
-	SELECT COUNT(qna_board_no) 
-	FROM QnA
-	WHERE member_no = #{memberNo}
-</select>
-
-<!-- 자신이 작성한 QnA 댓글 조회 -->
-<select id = "findMyQnAReply" parameterType = "int" resultType = "QnAReply">
-	SELECT * 
-	FROM QnAReply
-	WHERE member_no = #{memberNo}
-	ORDER BY qna_reply_reg_date DESC
-</select>
-
-<!-- 자신이 작성한 QnA 댓글 수 조회 -->
-<select id = "findMyQnAReplyCount" parameterType = "int" resultType = "int">
-	SELECT COUNT(qna_reply_no) 
-	FROM QnAReply
-	WHERE member_no = #{memberNo}
-</select>
-
-<!-- 자신이 작성한 리뷰 조회 -->
-<select id = "findMyReview" parameterType = "int" resultType = "Review">
-	SELECT * 
-	FROM Review
-	WHERE member_no = #{memberNo}
-	ORDER BY review_date DESC
-</select>
-
-<!-- 자신이 작성한 리뷰 수 조회 -->
-<select id = "findMyReviewCount" parameterType = "int" resultType = "int">
-	SELECT COUNT(review_no) 
-	FROM Review
-	WHERE member_no = #{memberNo}
-</select>
 
 <!-- 비밀번호 재설정 토큰 저장 -->
 <insert id="savePasswordResetToken" parameterType="PasswordResetToken">
