@@ -39,12 +39,14 @@
 		<result property="phone" column="phone" />
 		<result property="memberRegDate" column="member_reg_date" />
 		<result property="memberType" column="member_type" />
+		<result property="memberStatus" column="member_status" />
 		<result property="memberImage" column="member_image" />
 		<result property="stack" column="stack" />
 		<result property="stackName" column="stack_name" />
 		<result property="withdrawalEndDate" column="withdrawal_end_date" />
 		<result property="banEndDate" column="ban_end_date" />
 		<result property="reportedCount" column="reported_count" />
+		<result property="isAdmin" column="is_admin" />
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
@@ -95,13 +97,6 @@
 	LIMIT #{startRow}, #{num}
 </select>
 
-<!-- 게시물 상세보기 -->
-<select id="getInquiryById" resultMap="InquiryResultMap">
-    SELECT * FROM Inquiry
-    WHERE inquiry_no = #{inquiryNo}
-</select>
- 
-
 <!-- 문의글 조회 (건우)
 <select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
 	SELECT i.*, m.*
@@ -119,9 +114,6 @@
 	<where>	
 		<if test = "type == 'title'">
 			i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
-		</if>
-		<if test = "type == 'memberNickname'">
-			m.member_nickname LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 		<if test = "type == 'content'">
 			i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')

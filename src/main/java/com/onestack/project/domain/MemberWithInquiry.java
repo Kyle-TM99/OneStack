@@ -12,11 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberWithInquiry {
-	private int inquiryNo;
-	private String inquiryTitle;
-	private Timestamp inquiryRegDate;
-	private boolean inquiryStatus;
-
 	private Member member;
 	private Inquiry inquiry;
 }

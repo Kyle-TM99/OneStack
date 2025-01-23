@@ -65,7 +65,7 @@
                         <td th:text="${pro.member.memberId}">아이디</td>
                         <td th:text="${pro.category.itemTitle}">전문 분야</td>
                         <td th:text="${pro.member.email}">이메일</td>
-                        <td th:text="${pro.portfolio.portfolioTitle}">포트폴리오</td>
+                        <td><a class="text-dark text-decoration-none" th:href="${pro.portfolio.portfolioFile1}">[[${pro.portfolio.portfolioTitle}]]</a></td>
                         <td th:text="${#dates.format(pro.member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')}">회원 가입일</td>
                         <td>
 							<button class="btn btn-outline-dark btn-sm screening-btn" 

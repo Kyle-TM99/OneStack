@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Inquiry {
 	private int inquiryNo;
-	private int memberNo; 
+	private int memberNo;
 	private String inquiryTitle;
 	private String inquiryContent;
 	private String inquiryFile;

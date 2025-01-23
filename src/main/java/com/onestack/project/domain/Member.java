@@ -30,12 +30,14 @@ public class Member {
     private String phone;
     private Timestamp memberRegDate;
     private Integer memberType;
+    private Integer memberStatus;
     private String memberImage;
     private Integer stack;
     private String stackName;
     private Timestamp withdrawalEndDate;
     private Timestamp banEndDate;
     private Integer reportedCount;
+    private boolean isAdmin;
     private boolean isSocial;
     private String socialType;
 }

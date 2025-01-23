@@ -72,6 +72,7 @@ public class MemberService {
         return memberMapper.findMemberId(member);
     }
 
+
     public void sendPasswordResetEmail(String memberId, String email) {
         log.info("비밀번호 재설정 요청 - memberId: {}, email: {}", memberId, email);
         
@@ -126,6 +127,13 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         memberMapper.updatePassword(resetToken.getMemberId(), encodedPassword);
         memberMapper.deletePasswordResetToken(token);
+    }
+
+
+    
+    public Integer getMemberById(String memberId) {
+        int memberNo = memberMapper.findMemberNoByMemberId(memberId);
+        return memberNo;
     }
 
 }

@@ -1,33 +1,33 @@
-INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type)
+INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type,member_status)
 VALUES
-    ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1),
-    ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1),
-    ('김구', 'user3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname3', '1992-08-30', 'male', '23456', '서울특별시 서초구', '반포대로 789', 'user3@example.com', 0, '010-5555-6666', SYSDATE(), 1),
-    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 1),
-    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 1),
-    ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 1),
-    ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 1),
-    ('김민태', 'rlaxoals77', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle1', '1999-06-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals77@gmail.com', 1, '010-5478-5037', SYSDATE(), 1),
-    ('김민수', 'minsu01', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minsu', '1990-05-12', 'Male', '06234', '서울특별시 강남구 테헤란로', '101호', 'minsu01@example.com', 1, '010-1244-5678', '2025-01-01', 1),
-    ('이유진', 'yujin02', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'yujin', '1995-08-20', 'Female', '07345', '서울특별시 영등포구 여의대로', '102호', 'yujin02@example.com', 1, '010-2345-6789', '2025-01-02', 1),
-    ('박준영', 'junyoung03', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'junyoung', '1988-03-15', 'Male', '04567', '서울특별시 중구 세종대로', '103호', 'junyoung03@example.com', 0, '010-3456-7890', '2025-01-03', 1),
-    ('최지은', 'jieun04', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jieun', '1992-12-10', 'Female', '12345', '경기도 성남시 분당구 정자일로', '104호', 'jieun04@example.com', 1, '010-4567-8901', '2025-01-04', 1),
-    ('정민호', 'minho05', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minho', '1985-09-25', 'Male', '54321', '부산광역시 해운대구 해운대로', '105호', 'minho05@example.com', 0, '010-5678-9012', '2025-01-05', 1),
-    ('한수연', 'sooyeon06', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'sooyeon', '1993-11-01', 'Female', '98765', '대구광역시 중구 동성로', '106호', 'sooyeon06@example.com', 1, '010-6789-0123', '2025-01-06', 1),
-    ('오지훈', 'jihoon07', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihoon', '1987-02-14', 'Male', '67890', '인천광역시 남동구 인하로', '107호', 'jihoon07@example.com', 0, '010-7890-1234', '2025-01-07', 1),
-    ('윤하나', 'hana08', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hana', '1991-04-08', 'Female', '11223', '경상남도 창원시 의창구 중앙대로', '108호', 'hana08@example.com', 1, '010-8901-2345', '2025-01-08', 1),
-    ('강태현', 'taehyun09', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'taehyun', '1994-06-25', 'Male', '22334', '대전광역시 유성구 대덕대로', '109호', 'taehyun09@example.com', 0, '010-9012-3456', '2025-01-09', 1),
-    ('이지혜', 'jihye10', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihye', '1989-01-14', 'Female', '33445', '광주광역시 서구 금호로', '110호', 'jihye10@example.com', 1, '010-0123-4567', '2025-01-10', 1),
-    ('최현우', 'hyunwoo11', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hyunwoo', '1980-03-12', 'Male', '44556', '울산광역시 남구 삼산로', '111호', 'hyunwoo11@example.com', 0, '010-1515-2222', '2025-01-11', 1),
-    ('문지수', 'jisoo12', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jisoo', '1993-07-04', 'Female', '55667', '경기도 고양시 일산동구 장항로', '112호', 'jisoo12@example.com', 1, '010-4242-4444', '2025-01-12', 1),
-    ('조성민', 'seongmin13', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'seongmin', '1990-10-01', 'Male', '66778', '충청북도 청주시 상당구 상당로', '113호', 'seongmin13@example.com', 0, '010-2425-6666', '2025-01-13', 1),
-    ('배수현', 'soohyun14', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'soohyun', '1985-12-25', 'Female', '77889', '전라북도 전주시 완산구 팔달로', '114호', 'soohyun14@example.com', 1, '010-3677-8888', '2025-01-14', 1),
-    ('홍영훈', 'younghoon15', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'younghoon', '1992-05-16', 'Male', '88990', '제주특별자치도 제주시 중앙로', '115호', 'younghoon15@example.com', 0, '010-2434-0000', '2025-01-15', 1),
-    ('김철수', 'user24', '$2a$10$knv7T7kp4jYsFGYrFXD1xeQU7U8YhM2rM9KNOyKKrG8KoLFy7Wc9O', 'nickname24', '1985-09-20', 'male', '23456', '서울특별시 송파구', '잠실로 456', 'user24@example.com', 1, '010-2512-4444', SYSDATE(), 1),
-    ('박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1),
-    ('이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1),
-    ('최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1),
-    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1);
+    ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1, 0),
+    ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1, 0),
+    ('김구', 'user3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname3', '1992-08-30', 'male', '23456', '서울특별시 서초구', '반포대로 789', 'user3@example.com', 0, '010-5555-6666', SYSDATE(), 1, 0),
+    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 1, 0),
+    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 1, 0),
+    ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 1, 0),
+    ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 1, 0),
+    ('김민태', 'rlaxoals77', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle1', '1999-06-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals77@gmail.com', 1, '010-5478-5037', SYSDATE(), 1, 0),
+    ('김민수', 'minsu01', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minsu', '1990-05-12', 'Male', '06234', '서울특별시 강남구 테헤란로', '101호', 'minsu01@example.com', 1, '010-1244-5678', '2025-01-01', 1, 0),
+    ('이유진', 'yujin02', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'yujin', '1995-08-20', 'Female', '07345', '서울특별시 영등포구 여의대로', '102호', 'yujin02@example.com', 1, '010-2345-6789', '2025-01-02', 1, 0),
+    ('박준영', 'junyoung03', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'junyoung', '1988-03-15', 'Male', '04567', '서울특별시 중구 세종대로', '103호', 'junyoung03@example.com', 0, '010-3456-7890', '2025-01-03', 1, 0),
+    ('최지은', 'jieun04', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jieun', '1992-12-10', 'Female', '12345', '경기도 성남시 분당구 정자일로', '104호', 'jieun04@example.com', 1, '010-4567-8901', '2025-01-04', 1, 0),
+    ('정민호', 'minho05', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'minho', '1985-09-25', 'Male', '54321', '부산광역시 해운대구 해운대로', '105호', 'minho05@example.com', 0, '010-5678-9012', '2025-01-05', 1, 0),
+    ('한수연', 'sooyeon06', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'sooyeon', '1993-11-01', 'Female', '98765', '대구광역시 중구 동성로', '106호', 'sooyeon06@example.com', 1, '010-6789-0123', '2025-01-06', 1, 0),
+    ('오지훈', 'jihoon07', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihoon', '1987-02-14', 'Male', '67890', '인천광역시 남동구 인하로', '107호', 'jihoon07@example.com', 0, '010-7890-1234', '2025-01-07', 1, 0),
+    ('윤하나', 'hana08', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hana', '1991-04-08', 'Female', '11223', '경상남도 창원시 의창구 중앙대로', '108호', 'hana08@example.com', 1, '010-8901-2345', '2025-01-08', 1, 0),
+    ('강태현', 'taehyun09', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'taehyun', '1994-06-25', 'Male', '22334', '대전광역시 유성구 대덕대로', '109호', 'taehyun09@example.com', 0, '010-9012-3456', '2025-01-09', 1, 0),
+    ('이지혜', 'jihye10', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jihye', '1989-01-14', 'Female', '33445', '광주광역시 서구 금호로', '110호', 'jihye10@example.com', 1, '010-0123-4567', '2025-01-10', 1, 0),
+    ('최현우', 'hyunwoo11', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'hyunwoo', '1980-03-12', 'Male', '44556', '울산광역시 남구 삼산로', '111호', 'hyunwoo11@example.com', 0, '010-1515-2222', '2025-01-11', 1, 0),
+    ('문지수', 'jisoo12', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'jisoo', '1993-07-04', 'Female', '55667', '경기도 고양시 일산동구 장항로', '112호', 'jisoo12@example.com', 1, '010-4242-4444', '2025-01-12', 1, 0),
+    ('조성민', 'seongmin13', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'seongmin', '1990-10-01', 'Male', '66778', '충청북도 청주시 상당구 상당로', '113호', 'seongmin13@example.com', 0, '010-2425-6666', '2025-01-13', 1, 0),
+    ('배수현', 'soohyun14', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'soohyun', '1985-12-25', 'Female', '77889', '전라북도 전주시 완산구 팔달로', '114호', 'soohyun14@example.com', 1, '010-3677-8888', '2025-01-14', 1, 0),
+    ('홍영훈', 'younghoon15', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'younghoon', '1992-05-16', 'Male', '88990', '제주특별자치도 제주시 중앙로', '115호', 'younghoon15@example.com', 0, '010-2434-0000', '2025-01-15', 1, 0),
+    ('김철수', 'user24', '$2a$10$knv7T7kp4jYsFGYrFXD1xeQU7U8YhM2rM9KNOyKKrG8KoLFy7Wc9O', 'nickname24', '1985-09-20', 'male', '23456', '서울특별시 송파구', '잠실로 456', 'user24@example.com', 1, '010-2512-4444', SYSDATE(), 1, 0),
+    ('박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1, 0),
+    ('이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1, 0),
+    ('최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1, 0),
+    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1, 0);
 
 INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
@@ -243,3 +243,29 @@ VALUES(24, 1, '데이터베이스 설계를 원하는 분야를 선택해주세�
 INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
+
+select * FROM MEMBER;
+select * from inquiry;
+-- 회원 문의글 더미 데이터 --
+INSERT INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_status, inquiry_satisfaction)
+VALUES (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 되지 않습니다.', NOW(),'답변 대기', false),
+(1, '결제 문의드립니다', '결제 후 포인트가 적립되지 않았어요', DATE_SUB(NOW(), INTERVAL 1 DAY), '답변 중', true),
+(2, '회원 정보 변경 문의', '프로필 사진을 변경하고 싶은데 방법을 모르겠어요', DATE_SUB(NOW(), INTERVAL 2 DAY), '답변 완료', true),
+(2, '게시글 작성 오류', '게시글 작성 시 에러가 발생합니다', DATE_SUB(NOW(), INTERVAL 3 DAY), '답변 대기', false),
+(3, '환불 요청드립니다', '잘못 결제했는데 환불 가능할까요?', DATE_SUB(NOW(), INTERVAL 4 DAY), '답변 중', false),
+(3, '사이트 이용 문의', '사이트 이용 방법을 알고 싶습니다', DATE_SUB(NOW(), INTERVAL 5 DAY), '답변 완료', false),
+(1, '계정 보안 문의', '계정 보안 설정은 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 6 DAY), '답변 대기', true),
+(2, '포인트 사용 문의', '포인트는 어떻게 사용하나요?', DATE_SUB(NOW(), INTERVAL 7 DAY), '답변 중', true),
+(3, '회원 탈퇴 문의', '회원 탈퇴는 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 8 DAY), '답변 완료', false),
+(1, '오류 신고드립니다', '페이지 로딩이 안되는 오류가 있습니다', DATE_SUB(NOW(), INTERVAL 9 DAY), '답변 대기', false);
+
+INSERT INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
+VALUES (1, '로그인이 안돼요', '비밀번호를 입력했는데 로그인이 되지 않습니다.', NOW(), NULL, '답변 대기', 0),
+(2, '회원 정보 수정', '전화번호 변경을 요청합니다.', NOW(), NULL, '답변 중', 0),
+(3, '결제 오류', '결제가 완료되지 않고 오류가 발생했습니다.', NOW(), NULL, '답변 완료', 1),
+(4, '상품 문의', '해당 상품의 배송 일정이 궁금합니다.', NOW(), NULL, '답변 대기', 0),
+(5, '쿠폰 사용법', '프로모션 쿠폰은 어디에서 사용할 수 있나요?', NOW(), NULL, '답변 대기', 0),
+(6, '계정 해킹 의심', '다른 사람이 제 계정을 사용한 흔적이 있습니다.', NOW(), NULL, '답변 중', 0),
+(7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
+(8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
+

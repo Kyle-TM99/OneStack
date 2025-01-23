@@ -19,12 +19,14 @@
 		<result property="phone" column="phone" />
 		<result property="memberRegDate" column="member_reg_date" />
 		<result property="memberType" column="member_type" />
+		<result property="memberStatus" column="member_status" />
 		<result property="memberImage" column="member_image" />
 		<result property="stack" column="stack" />
 		<result property="stackName" column="stack_name" />
 		<result property="withdrawalEndDate" column="withdrawal_end_date" />
 		<result property="banEndDate" column="ban_end_date" />
 		<result property="reportedCount" column="reported_count" />
+		<result property="isAdmin" column="is_admin" />
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
     </resultMap>
@@ -65,8 +67,8 @@
         <result property="portfolioFile9" column="portfolio_file9" />
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
-      
-    
+
+
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
         <result property="itemTitle" column="item_title" />
@@ -78,7 +80,7 @@
             
 	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
         <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolio" resultMap="PortfolioResultMap" />        
+        <association property="portfolio" resultMap="PortfolioResultMap" />
     </resultMap>
     
     <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">

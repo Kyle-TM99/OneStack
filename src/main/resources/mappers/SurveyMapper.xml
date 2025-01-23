@@ -26,11 +26,17 @@
 <!-- 설문조사 질문, 제공답변 -->
 <select id = "getSurvey" parameterType = "int" resultMap = "SurveyWithCategoryResultMap">
 	SELECT s.*, c.*
-	FROM Survey s JOIN Category c
-		ON s.item_no = c.item_no
+	FROM Survey s 
+	JOIN Category c	ON s.item_no = c.item_no
 	WHERE s.item_no = #{itemNo}
 	ORDER BY s.survey_no;
 </select>
+
+<select id="getAllCategories" resultType="Category">
+    SELECT *  FROM Category
+</select>
+
+
 
 
 

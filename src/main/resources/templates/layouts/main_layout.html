@@ -20,6 +20,7 @@
     <link th:href="@{/css/mainStyle.css}" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
+    
 
     
     <!-- jQuery -->
@@ -41,7 +42,7 @@
     <div class="container">
         <div layout:fragment="content"></div>
     </div>
-    <div th:replace="~{fragments/footer::footer}"></div>
-	<th:block layout:fragment="script"></th:block>
+        <div th:replace="~{fragments/footer::footer}"></div>
+        <th:block layout:fragment="script"></th:block>
 </body>
 </html>
