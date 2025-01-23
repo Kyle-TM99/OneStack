@@ -248,7 +248,3 @@ VALUES(24, 1, '데이터베이스 설계를 원하는 분야를 선택해주세�
 INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
-
-
-SELECT * FROM Member;
-SELECT * FROM professional;

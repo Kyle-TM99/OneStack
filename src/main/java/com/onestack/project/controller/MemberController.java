@@ -69,6 +69,9 @@ public class MemberController {
             
             // 비밀번호 암호화
             member.setPass(passwordEncoder.encode(member.getPass()));
+
+            member.setSocial(false);
+            member.setSocialType("none");
             
             // 회원 등록
             int result = memberService.insertMember(member);
