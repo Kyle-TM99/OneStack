@@ -1,0 +1,491 @@
+/* 통계 개요 섹션 */
+.stats-overview {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* 통계 박스 */
+.stat-box {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.stat-box:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+/* 통계 링크 */
+.stat-content {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+/* 아이콘 */
+.stat-box i {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.stat-box i.fa-star { color: #ffc107; }
+.stat-box i.fa-pen-to-square { color: #0d6efd; }
+.stat-box i.fa-question-circle { color: #17a2b8; }
+.stat-box i.fa-comments { color: #28a745; }
+.stat-box i.fa-reply { color: #6c757d; }
+
+/* 숫자 */
+.stat-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+/* 텍스트 */
+.stat-text {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .stats-overview .row {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .stats-overview .col {
+        flex: 0 0 50%;
+        margin-bottom: 10px;
+    }
+}
+
+
+.checkPDF {
+	text-decoration: none;
+}
+
+.badge {
+	color: #000;
+}
+
+.rankName {
+	background-color: #ffffff;
+    color: #215EA3;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.stepper-wrapper {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  
+}
+.stepper-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+}
+
+.stepper-item::before {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #215EA3;
+  width: 100%;
+  top: 20px;
+  left: -50%;
+  z-index: 2;
+}
+
+.stepper-item::after {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #215EA3;
+  width: 100%;
+  top: 20px;
+  left: 50%;
+  z-index: 2;
+}
+
+.stepper-item .step-counter {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #215EA3;
+  color: #215EA3;
+  background: #fff;
+  margin-bottom: 6px;
+}
+
+.stepper-item.active {
+  font-weight: bold;
+}
+
+.stepper-item.completed .step-counter {
+  background-color: #215EA3;
+  color: #fff;
+}
+
+.stepper-item.completed::after {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #215EA3;
+  width: 100%;
+  top: 20px;
+  left: 50%;
+  z-index: 3;
+}
+
+.stepper-item:first-child::before {
+  content: none;
+}
+.stepper-item:last-child::after {
+  content: none;
+}
+
+/* 프로필 이미지 영역 수정 */
+.profile-image-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 3px solid #215EA3;
+}
+
+.btn-edit-profile {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #215EA3;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 활동 요약 카드 */
+.activity-summary {
+    margin-top: 20px;
+}
+
+/* 활동 카드에 커서 포인터 추가 */
+.activity-card {
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.activity-card:hover {
+    transform: translateY(-5px);
+}
+
+.activity-card i {
+    font-size: 1rem;
+    margin-right: 5px;
+}
+
+.activity-card h5 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.activity-card .count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #215EA3;
+    margin: 0;
+}
+
+.activity-card span {
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.2s;
+}
+
+.activity-card span:hover {
+    color: #215EA3;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* 사이드바 네비게이션 */
+.sidebar {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.sidebar .nav-link {
+    padding: 15px 20px;
+    color: #495057;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #f8f9fa;
+}
+
+.sidebar .nav-link.active {
+    background-color: #f8f9fa;
+    color: #215EA3;
+    border-left-color: #215EA3;
+}
+
+/* 컨텐츠 컨테이너 */
+.content-container {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-height: 500px;
+}
+
+/* 결제 관리 스타일 */
+.payment-status-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.expert-list-item {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.expert-info {
+    display: flex;
+    gap: 20px;
+}
+
+.expert-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* 리뷰 스타일 */
+.review-item {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.rating {
+    color: #ffc107;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 992px) {
+    .profile-image-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .activity-card {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .col-3, .col-9 {
+        width: 100%;
+    }
+    
+    .sidebar {
+        margin-bottom: 20px;
+    }
+    
+    .profile-image-container {
+        margin-bottom: 20px;
+    }
+    
+    .rankName {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    h4 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex.align-items-center.gap-3 {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    
+    .custom-button {
+        margin-top: 10px;
+    }
+}
+
+/* 내 정보 수정 폼 스타일 */
+.profile-form .row {
+    margin-bottom: 1rem;
+}
+
+.profile-form .form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.profile-form .form-control {
+    padding: 0.75rem 1rem;
+}
+
+.profile-form .input-group {
+    width: 100%;
+}
+
+/* 리뷰 리스트 스타일 개선 */
+.review-list .review-item {
+    transition: all 0.2s;
+}
+
+.review-list .review-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.review-header .rating i {
+    color: #ffd700;
+}
+
+h4 {
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.password-check-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.password-check-container .card {
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+}
+
+#passwordError {
+    margin-top: 0.5rem;
+}
+
+.profile-form-container {
+    transition: all 0.3s ease;
+}
+
+/* 프로필 이미지 관련 스타일 추가 */
+.profile-image-wrapper {
+    margin-bottom: 2rem;
+}
+
+.profile-edit-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #215EA3;
+    box-shadow: 0 4px 8px rgba(33, 94, 163, 0.2);
+}
+
+.btn-edit-profile {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #215EA3;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-edit-profile:hover {
+    background-color: #1a4b82;
+    color: white;
+}
+
+/* readonly 입력 필드 스타일 */
+input[readonly], input[disabled] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* 필수 입력 필드 라벨 스타일 */
+label:has(+ input[required])::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.myPage-model-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 수평 중앙 정렬 추가 */
+    min-height: 100vh; /* calc 대신 100vh 사용 */
+}
+
+.modal-dialog.myPage-model-dialog {
+    margin: 1.75rem auto; /* Bootstrap 기본 마진 추가 */
+    max-width: 500px; /* 모달의 최대 너비 설정 */
+}
+
+/* 내 정보 수정 폼 초기 숨김 */
+.profile-form-container {
+    display: none;
+}
