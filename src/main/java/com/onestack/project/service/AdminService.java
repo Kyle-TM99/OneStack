@@ -2,6 +2,7 @@ package com.onestack.project.service;
 
 import java.util.List;
 
+import com.onestack.project.domain.Reports;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,4 +46,7 @@ public class AdminService {
 		return managerMapper.getMember();
 	}
 
+	public void addReports(Reports reports){
+		managerMapper.addReports(reports);
+	}
 }

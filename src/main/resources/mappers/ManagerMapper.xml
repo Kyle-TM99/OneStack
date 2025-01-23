@@ -126,8 +126,6 @@
    WHERE member_status = 3
 </select>
 
-
-
 <!-- 정지 회원 조회 -->
 <select id = "getBanMember" resultType = "Member">
    SELECT * 
@@ -303,13 +301,10 @@
 	WHERE review_no = #{reviewNo}
 </update>
 
-
-
-
 <!-- 신고 -->
-<insert id = "reports" parameterType = "Reports" useGeneratedKeys = "true" keyProperty = "reportsNo">
-	INSERT INTO REPORTS(member_no, reports_type, reports_target, reports_reason)
-	VALUES (#{memberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason})
+<insert id = "addReports" parameterType = "Reports" useGeneratedKeys = "true" keyProperty = "reportsNo">
+	INSERT INTO REPORTS(member_no, reports_type, reports_target, reports_reason, reports_target_link)
+	VALUES (#{memberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsLink})
 </insert>
 
 <!-- 신고 횟수 증가 -->

@@ -54,8 +54,8 @@
 												<ul class="dropdown-menu dropdown-menu-end">
 													<li><a class="dropdown-item" href="/myPage">마이페이지</a></li>
 													<!-- 관리자 페이지 버튼 -->
-													<th:block th:if="${session.member != null&&session.member.memberType == 4}">
-														<li><a class="dropdown-item text-manager" href="#">관리자 페이지 이동</a></li>
+													<th:block th:if="${session.member.isAdmin}">
+														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
 													</th:block>
 													<li><hr class="dropdown-divider"></li>
 													<th:block th:if="${session.member != null}">

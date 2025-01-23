@@ -3,11 +3,15 @@ package com.onestack.project.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.onestack.project.domain.Reports;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,16 +28,44 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+
     @GetMapping("/delete")
-    public String deleteButton(Model model, @RequestParam int id) {
-        Member member = adminService.getMember();
-        System.out.println("Member ID: " + member.getMemberId());
-        System.out.println("isAdmin: " + member.isAdmin());
-        model.addAttribute("isAdmin", member.isAdmin());
+    public String delete() {
         return "views/deleteButton";
     }
 
-	 @GetMapping("/adminPage")
+/*    @PostMapping("/report")
+    @ResponseBody
+    public ResponseEntity<Void> submitReport(@RequestBody Reports reports, BindingResult result) {
+
+        List<String> valuidTypes = List.of("community", "qna", "reply", "review");
+
+        adminService.addReports(reports);
+        return ResponseEntity.ok().build();
+    }*/
+
+    @PostMapping("/report")
+    public String submitReport(@ModelAttribute Reports reports, BindingResult result) {
+        // 허용된 ENUM 값 리스트
+        List<String> validTypes = List.of("member", "community", "reply", "review");
+
+        if (reports.getReportsTarget() == null) {
+            result.rejectValue("reportsTarget", "invalid", "신고 항목은 필수입니다.");
+            return "views/deleteButton";
+        }
+
+        // 입력 값 검증
+        if (!validTypes.contains(reports.getReportsType())) {
+            result.rejectValue("reportType", "invalid", "유효하지 않은 신고 유형입니다.");
+            return "views/deleteButton";
+        }
+
+        // 서비스 호출
+        adminService.addReports(reports);
+        return "redirect:views/deleteButton"; // 성공 페이지로 리다이렉트
+    }
+
+    @GetMapping("/adminPage")
 	 public String adminPage() {
 
          return "layouts/admin_layout"; // admin_layout.html을 기본 템플릿으로 사용
@@ -125,7 +157,7 @@ public class AdminController {
     }
 
 
-    
+
     @GetMapping("/reviewProcessingDetails")
 	public String getReviewProcessingDetails(Model model) {
     	List<MemProPortPaiCate> pList = adminService.getMemProPortPaiCate();
