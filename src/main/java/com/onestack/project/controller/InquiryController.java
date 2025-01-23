@@ -89,17 +89,6 @@ public class InquiryController {
             @RequestParam(value = "file", required = false) MultipartFile file,
             HttpSession session) throws IOException {
 
-        // 세션에서 회원 번호 가져오기
-        Integer memberNo = (Integer) session.getAttribute("memberNo");
-        log.info("세션의 memberNo: {}", memberNo);
-
-        // 로그인 체크
-        if (memberNo == null) {
-            return "redirect:/login";
-        }
-        // 세션의 memberNo를 inquiry 객체에 설정
-        inquiry.setMemberNo(memberNo);
-
         // 파일 유무에 따른 서비스 메서드 호출
         if (file != null && !file.isEmpty()) {
             inquiryService.addInquiry(inquiry, file);  // 파일이 있는 경우
@@ -109,4 +98,12 @@ public class InquiryController {
         // 성공시 목록 페이지로 리다이렉트
         return "redirect:/memberInquiry";
     }
+
+    @GetMapping("/InquiryDetail")
+    public String getInquiryDetail(@PathVariable int inquiryNo, Model model) {
+        Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
+        model.addAttribute("inquiry", inquiry);
+        return "inquiry/inquiryDetails"; // 상세보기 페이지로 이동
+    }
+
 }

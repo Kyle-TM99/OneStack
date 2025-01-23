@@ -94,4 +94,9 @@ public class InquiryService {
     public void addInquiry(Inquiry inquiry) {
         inquiryMapper.addInquiry(inquiry);
     }
+
+    // 문의글 상세보기
+    public Inquiry getInquiryDetail(int inquiryNo) {
+        return inquiryMapper.getInquiryDetail(inquiryNo);
+    }
 }

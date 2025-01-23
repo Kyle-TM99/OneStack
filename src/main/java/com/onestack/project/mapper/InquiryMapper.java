@@ -21,6 +21,9 @@ public interface InquiryMapper {
     // 문의글 작성
     void addInquiry(Inquiry inquiry);
 
+    // 문의글 상세보기
+    public Inquiry getInquiryDetail(int inquiryNo);
+
     // 문의글 수정
     void updateInquiry(Inquiry inquiry);
 
