@@ -6,6 +6,6 @@ services:
     ports:
       - "1234:8080"
     volumes:
-      - /var/www/images:/var/www/images
+      - /usr/share/nginx/html/images:/var/www/images
     environment:
       - SPRING_PROFILES_ACTIVE=prod
