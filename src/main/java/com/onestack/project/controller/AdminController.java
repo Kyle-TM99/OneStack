@@ -34,36 +34,32 @@ public class AdminController {
         return "views/deleteButton";
     }
 
-/*    @PostMapping("/report")
-    @ResponseBody
-    public ResponseEntity<Void> submitReport(@RequestBody Reports reports, BindingResult result) {
-
-        List<String> valuidTypes = List.of("community", "qna", "reply", "review");
-
-        adminService.addReports(reports);
-        return ResponseEntity.ok().build();
-    }*/
-
     @PostMapping("/report")
-    public String submitReport(@ModelAttribute Reports reports, BindingResult result) {
+    @ResponseBody
+    public ResponseEntity<?> submitReport(@RequestBody Reports reports) {
+        System.out.println("Reports Data: " + reports);
+
         // 허용된 ENUM 값 리스트
         List<String> validTypes = List.of("member", "community", "reply", "review");
 
         if (reports.getReportsTarget() == null) {
-            result.rejectValue("reportsTarget", "invalid", "신고 항목은 필수입니다.");
-            return "views/deleteButton";
+            return ResponseEntity.badRequest().body("신고 항목은 필수입니다.");
         }
 
-        // 입력 값 검증
         if (!validTypes.contains(reports.getReportsType())) {
-            result.rejectValue("reportType", "invalid", "유효하지 않은 신고 유형입니다.");
-            return "views/deleteButton";
+            return ResponseEntity.badRequest().body("유효하지 않은 신고 유형입니다.");
         }
 
-        // 서비스 호출
-        adminService.addReports(reports);
-        return "redirect:views/deleteButton"; // 성공 페이지로 리다이렉트
+        try {
+            adminService.addReports(reports);
+            return ResponseEntity.ok("신고가 성공적으로 접수되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("신고 접수 중 오류가 발생했습니다.");
+        }
     }
+
 
     @GetMapping("/adminPage")
 	 public String adminPage() {
@@ -167,12 +163,13 @@ public class AdminController {
     
     @GetMapping("/reportApplicationInquiry")
     public String getReviewCompletedInquiry() {
+
         return "adminDashboard/reportManagement/reportApplicationInquiry";
     }
     
     @GetMapping("/manageReportdPosts")
-    public String getmanageReportdPosts() {
-    	return "adminDashboard/reportManagement/manageReportdPosts";
+    public String getManageReportdPosts() {
+        return "adminDashboard/reportManagement/manageReportdPosts";
     }
     
     @GetMapping("/reportProcessingDetails")

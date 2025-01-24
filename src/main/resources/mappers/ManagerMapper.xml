@@ -303,11 +303,12 @@
 
 <!-- 신고 -->
 <insert id = "addReports" parameterType = "Reports" useGeneratedKeys = "true" keyProperty = "reportsNo">
-	INSERT INTO REPORTS(member_no, reports_type, reports_target, reports_reason, reports_target_link)
-	VALUES (#{memberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsLink})
+	INSERT INTO Reports(member_no,reported_member_no, reports_type, reports_target, reports_reason, reports_target_link)
+	VALUES (#{memberNo}, #{reportedMemberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsLink})
 </insert>
 
-<!-- 신고 횟수 증가 -->
+
+	<!-- 신고 횟수 증가 -->
 <select id = "incrementReportedCount" parameterType = "int">
 	UPDATE Member
 	SET reported_count = reported_count + 1

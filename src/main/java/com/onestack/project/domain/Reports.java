@@ -18,7 +18,7 @@ public class Reports {
     private String reportsType;
     private Integer reportsTarget;
     private String reportsReason;
-    private boolean reportsStatus;
+    private int reportsStatus;
     private Timestamp reportsDate;
     private String reportsLink;
 }

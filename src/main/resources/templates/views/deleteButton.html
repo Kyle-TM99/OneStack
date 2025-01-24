@@ -79,8 +79,7 @@
 </div>
 
 <div th:if="${session.member.isAdmin}">
-  <button class="delete-btn btn btn-warning" data-bs-toggle="modal" data-bs-target="#deleteModal">
-  </button>
+  <button class="delete-btn btn btn-warning" data-bs-toggle="modal" data-bs-target="#deleteModal">삭제</button>
 </div>
 <script>
   document.getElementById("submitReport").addEventListener("click", function () {
@@ -93,13 +92,12 @@
 
     // 데이터 객체 생성
     const reportData = {
-      reportedMemberNo,
       memberNo,
+      reportedMemberNo,
       reportsType,
       reportsTarget,
       reportsReason,
       reportsLink,
-      reportDate: new Date().toISOString(), // 신고 날짜
     };
 
     // 데이터 검증 (필요한 경우)
@@ -107,7 +105,6 @@
       alert("모든 필드를 입력해주세요.");
       return;
     }
-
     // AJAX 요청
     fetch("/report", {
       method: "POST",
@@ -118,13 +115,20 @@
     })
             .then((response) => {
               if (response.ok) {
-                alert("신고가 접수되었습니다.");
-                location.reload();
+                return response.text().then((message) => {
+                  alert(message);
+                  location.reload();
+                });
               } else {
-                response.text().then((text) => alert(`신고 접수 실패: ${text}`));
+                return response.text().then((error) => {
+                  alert(`신고 접수 실패: ${error}`);
+                });
               }
             })
-            .catch((error) => console.error("Error:", error));
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("서버와의 통신 중 오류가 발생했습니다.");
+            });
   });
 
 </script>

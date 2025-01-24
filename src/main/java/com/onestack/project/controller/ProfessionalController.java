@@ -140,4 +140,9 @@ public class ProfessionalController {
                     .body(Map.of("message", "저장 실패"));
         }
     }
+
+    @GetMapping("/portfolio")
+    public String getPortfolio(){
+        return "views/portfolio";
+    }
 }
