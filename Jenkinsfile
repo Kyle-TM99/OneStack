@@ -2,10 +2,22 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_COMPOSE = 'docker-compose'
+        DOCKER_COMPOSE = '/usr/local/bin/docker-compose'
     }
     
     stages {
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    # docker-compose 설치 (없는 경우에만)
+                    if ! command -v docker-compose &> /dev/null; then
+                        sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                        sudo chmod +x /usr/local/bin/docker-compose
+                    fi
+                '''
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 checkout scm
@@ -46,7 +58,11 @@ pipeline {
     
     post {
         failure {
-            sh '${DOCKER_COMPOSE} logs'
+            sh '''
+                if command -v ${DOCKER_COMPOSE} &> /dev/null; then
+                    ${DOCKER_COMPOSE} logs
+                fi
+            '''
         }
         always {
             sh 'docker system prune -f --volumes=false'
