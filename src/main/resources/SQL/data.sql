@@ -130,12 +130,12 @@ VALUES
 -- 설문조사 더미 데이터 --
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(1, 11, '의뢰 받을 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(2, 11, '의뢰 받을 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(3, 12, '의뢰받으려는 프로젝트의 제작 상태를 선택해주세요.', '신규 제작, 기존 웹 리뉴얼');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(4, 12, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
