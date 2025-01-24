@@ -1,6 +1,7 @@
 package com.onestack.project.ajax;
 
 
+import com.onestack.project.domain.MemProWithPortPortImage;
 import com.onestack.project.domain.Member;
 import com.onestack.project.domain.MemberWithProfessional;
 import com.onestack.project.domain.Review;
@@ -22,6 +23,29 @@ import java.util.Map;
 public class AjaxMemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/myPagePortfolio")
+    @ResponseBody
+    public Map<String, Object> getMyPagePortfolio(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 세션에서 현재 로그인한 회원 정보 가져오기
+        Member member = (Member) session.getAttribute("member");
+
+        try {
+            // 회원 번호로 리뷰 조회
+            List<MemProWithPortPortImage> reviews = memberService.memProWithPortPortImage(member.getMemberNo());
+
+            response.put("success", true);
+            response.put("data", reviews);
+        } catch (Exception e) {
+            log.error("리뷰 조회 중 오류 발생", e);
+            response.put("success", false);
+            response.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
+        }
+
+        return response;
+    }
 
 
     @GetMapping("/myPageActivity")
@@ -171,11 +195,9 @@ public class AjaxMemberController {
         return response;
     }
 
-
-
-
     @PostMapping("/updatePassword")
     public Map<String, Object> updatePasswordMember(
+            @RequestParam("pass") String pass,
             @RequestParam("currentPassword") String currentPassword,
             @RequestParam("newPassword") String newPassword,
             HttpSession session) {
@@ -183,30 +205,32 @@ public class AjaxMemberController {
         Map<String, Object> response = new HashMap<>();
         Member member = (Member) session.getAttribute("member");
 
-        // 현재 비밀번호 확인
-        boolean isValidPassword = memberService.memberPassCheck(member.getMemberId(), currentPassword);
+        if (member != null) {
+            // 현재 비밀번호 확인
+            boolean isValidPassword = memberService.memberPassCheck(member.getMemberId(), currentPassword);
 
-        if (!isValidPassword) {
-            response.put("success", false);
-            response.put("message", "현재 비밀번호가 일치하지 않습니다.");
-            return response;
-        }
+            if (!isValidPassword) {
+                response.put("success", false);
+                response.put("message", "현재 비밀번호가 일치하지 않습니다.");
+                return response;
+            }
 
-        // 새 비밀번호로 업데이트
-        member.setPass(newPassword);  // 서비스에서 암호화 처리
-        int result = memberService.updatePasswordMember(member);
+            // 새 비밀번호로 업데이트
+            member.setPass(newPassword);  // 서비스에서 암호화 처리
+            int result = memberService.updatePasswordMember(member);
 
-        if (result > 0) {
-            response.put("success", true);
-            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            if (result > 0) {
+                response.put("success", true);
+                response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            } else {
+                response.put("success", false);
+                response.put("message", "비밀번호 변경에 실패했습니다.");
+            }
         } else {
-            response.put("success", false);
-            response.put("message", "비밀번호 변경에 실패했습니다.");
+            response.put("valid", false);
         }
-
 
         return response;
     }
-
 
 }

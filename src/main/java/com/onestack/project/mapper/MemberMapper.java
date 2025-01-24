@@ -10,6 +10,9 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
+	// 전문가 myPage에서 포트폴리오 관리
+	public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo);
+
 	// myPage에서 내역 조회
 	public List<MemberWithProfessional> memberWithProfessional(int memberNo);
 

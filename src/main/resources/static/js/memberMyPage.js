@@ -1,80 +1,101 @@
 $(document).ready(function() {
 
 	// 각 필드의 유효성 상태 추적
-	    const validationState = {
-	        name: false,
-	        memberId: false,
-	        pass: false,
-	        passwordMatch: false,
-	        nickname: false,
-	        email: false,
-	        phone: false,
-	        birth: false,
-	        gender: false,
-	        address: false
-	    };
+	const validationState = {
+		name: false,
+		memberId: false,
+		pass: false,
+		passwordMatch: false,
+		nickname: false,
+		email: false,
+		phone: false,
+		birth: false,
+		gender: false,
+		address: false
+	};
 
 
-		// 사이드바 네비게이션 클릭 이벤트 수정
-			$('.sidebar .nav-link').click(function(e) {
-					e.preventDefault();
-					$('.sidebar .nav-link').removeClass('active');
-					$(this).addClass('active');
+	const patterns = {
+		password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/
+	};
 
-					const contentType = $(this).data('content');
+	const validators = {
+		validateInput: function(value, pattern, fieldName) {
+			if (!pattern.test(value)) {
+				return `${fieldName}의 형식이 올바르지 않습니다.`;
+			}
+			return null;
+		}
+	};
 
-					// 내 활동 클릭시 post 타입으로 시작하도록 수정
-					if (contentType === 'activity') {
-							loadContent(contentType, 'post');  // post 타입을 기본값으로 전달
-					} else {
-							loadContent(contentType);
-					}
-			});
+	// 사이드바 네비게이션 클릭 이벤트 수정
+	$('.sidebar .nav-link').click(function(e) {
+		e.preventDefault();
+		$('.sidebar .nav-link').removeClass('active');
+		$(this).addClass('active');
 
-			// 활동 카드의 각 항목 클릭 이벤트
-			$('.activity-card span .stats-overview .stat-content').click(function() {
-					const type = $(this).data('type');
-					$('.sidebar .nav-link').removeClass('active');
+		const contentType = $(this).data('content');
 
-					switch (type) {
-							case 'profile':
-									$('.sidebar .nav-link .stats-overview .stat-content[data-content="profile"]').addClass('active');
-									loadContent('profile');
-									break;
-							case 'Request':
-									$('.sidebar .nav-link .stats-overview .stat-content[data-content="Request"]').addClass('active');
-									loadContent('Request');
-									break;
-							case 'review':
-									$('.sidebar .nav-link .stats-overview .stat-content[data-content="review"]').addClass('active');
-									loadContent('review');
-									break;
-							case 'post':
-							case 'postComment':
-									$('.sidebar .nav-link .stats-overview .stat-content[data-content="activity"]').addClass('active');
-									loadContent('activity', 'post');
-									break;
-							case 'question':
-							case 'questionComment':
-									$('.sidebar .nav-link .stats-overview .stat-content[data-content="activity"]').addClass('active');
-									loadContent('activity', 'question');
-									break;
-							case 'Empathy':
-									$('.sidebar .nav-link[data-content="activity"]').addClass('active');
-									loadContent('activity', 'likes');
-									break;
-					}
-			});
+		// 내 활동 클릭시 post 타입으로 시작하도록 수정
+		if (contentType === 'activity') {
+			loadContent(contentType, 'post');  // post 타입을 기본값으로 전달
+		} else {
+			loadContent(contentType);
+		}
+	});
 
-			// 컨텐츠 로드 함수
-			function loadContent(contentType, subType = null) {
-					if (contentType === 'profile') {
-							$.ajax({
-									url: '/ajax/member/getMemberInfo',
-									type: 'GET',
-									success: function(memberData) {
-											const contentMap = {
-													payment: `
+	// 활동 카드의 각 항목 클릭 이벤트
+	$('.activity-card span .stats-overview .stat-content').click(function() {
+		const type = $(this).data('type');
+		$('.sidebar .nav-link').removeClass('active');
+
+		switch (type) {
+			case 'profile':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="profile"]').addClass('active');
+				loadContent('profile');
+				break;
+			case 'Request':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="Request"]').addClass('active');
+				loadContent('Request');
+				break;
+			case 'portfolio':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="portfolio"]').addClass('active');
+				loadContent('portfolio');
+				break;
+			case 'studentManagement':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="studentManagement"]').addClass('active');
+				loadContent('studentManagement');
+				break;
+			case 'review':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="review"]').addClass('active');
+				loadContent('review');
+				break;
+			case 'post':
+			case 'postComment':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="activity"]').addClass('active');
+				loadContent('activity', 'post');
+				break;
+			case 'question':
+			case 'questionComment':
+				$('.sidebar .nav-link .stats-overview .stat-content[data-content="activity"]').addClass('active');
+				loadContent('activity', 'question');
+				break;
+			case 'Empathy':
+				$('.sidebar .nav-link[data-content="activity"]').addClass('active');
+				loadContent('activity', 'likes');
+				break;
+		}
+	});
+
+	// 컨텐츠 로드 함수
+	function loadContent(contentType, subType = null) {
+		if (contentType === 'profile') {
+			$.ajax({
+				url: '/ajax/member/getMemberInfo',
+				type: 'GET',
+				success: function(memberData) {
+					const contentMap = {
+						payment: `
 															<div class="mb-4">
 																	<div class="expert-list">
 																			<div class="expert-list-item">
@@ -114,22 +135,22 @@ $(document).ready(function() {
 																	</div>
 															</div>
 													`,
-											};
-											$('.content-container').html(contentMap[contentType]);
-									},
-									error: function() {
-											alert('회원정보를 불러오는데 실패했습니다.');
-									}
-							});
-					}
+					};
+					$('.content-container').html(contentMap[contentType]);
+				},
+				error: function() {
+					alert('회원정보를 불러오는데 실패했습니다.');
+				}
+			});
+		}
 
-				if (contentType === 'Request') {
-					$.ajax({
-						url: '/ajax/member/getMemberRequest',
-						type: 'GET',
-						success: function(memberData) {
-							const contentMap = {
-								Request: `
+		if (contentType === 'Request') {
+			$.ajax({
+				url: '/ajax/member/getMemberRequest',
+				type: 'GET',
+				success: function(memberData) {
+					const contentMap = {
+						Request: `
 								<div class="mb-4">
 									<div class="expert-list">
 										<div class="expert-list-item">
@@ -153,27 +174,84 @@ $(document).ready(function() {
 									</div>
 								</div>
 								`,
-							};
-							$('.content-container').html(contentMap[contentType]);
+					};
+					$('.content-container').html(contentMap[contentType]);
+				},
+				error: function() {
+					alert('회원정보를 불러오는데 실패했습니다.');
+				}
+			});
+		} else if (contentType === 'portfolio') {
+			// 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
+			$.ajax({
+				url: '/ajax/member/getMemberInfo',
+				type: 'GET',
+				success: function(memberData) {
+					// 회원 번호로 리뷰 조회
+					$.ajax({
+						url: '/ajax/member/myPagePortfolio',
+						type: 'GET',
+						success: function(response) {
+							if (response.success) {
+								let portfolioHtml = response.data.map(portfolio => `
+													<div class="row d-flex justify-content-end"><i class="bi bi-plus-lg"></i></div>
+													<div class="portfolio-list">
+														<div class="card" style="width: 18rem;">
+														<div class="dropdown">
+														  <button class="btn btn-secondary dropdown-toggle d-flex justify-content-end" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+															<i class="bi bi-three-dots-vertical"></i>
+														  </button>
+														  <ul class="dropdown-menu">
+															<li><a class="dropdown-item" href="#">공개</a> / <a class="dropdown-item" href="#">비공개</a></li>
+															<li><a class="dropdown-item" href="#">수정</a></li>
+															<li><a class="dropdown-item" href="#">삭제</a></li>
+														  </ul>
+														</div>
+														  <img src="..." class="card-img-top" alt="...">
+														  <div class="card-body">
+															<p class="card-text">${portfolio.portfolioTitle}</p>
+														  </div>
+														</div>
+													</div>
+												`).join('');
+
+								// 리뷰가 없는 경우 처리
+								if (response.data.length === 0) {
+									reviewHtml = `
+						                                <div class="text-center py-5">
+						                                    <p class="text-muted">작성된 리뷰가 없습니다.</p>
+						                                </div>
+						                            `;
+								}
+
+								// 컨테이너에 리뷰 HTML 추가
+								$('.content-container').html(reviewHtml);
+							} else {
+								alert(response.message || '리뷰를 불러오는 데 실패했습니다.');
+							}
 						},
 						error: function() {
-							alert('회원정보를 불러오는데 실패했습니다.');
+							alert('리뷰를 불러오는 데 실패했습니다.');
 						}
 					});
+				},
+				error: function() {
+					alert('회원 정보를 불러오는 데 실패했습니다.');
 				}
-				else if (contentType === 'review') {
-						    // 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
-						    $.ajax({
-						        url: '/ajax/member/getMemberInfo',
-						        type: 'GET',
-						        success: function(memberData) {
-						            // 회원 번호로 리뷰 조회
-						            $.ajax({
-						                url: '/ajax/member/myPageReview',
-						                type: 'GET',
-										success: function(response) {
-											if (response.success) {
-												let reviewHtml = response.data.map(review => `
+			});
+		} else if (contentType === 'review') {
+			// 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
+			$.ajax({
+				url: '/ajax/member/getMemberInfo',
+				type: 'GET',
+				success: function(memberData) {
+					// 회원 번호로 리뷰 조회
+					$.ajax({
+						url: '/ajax/member/myPageReview',
+						type: 'GET',
+						success: function(response) {
+							if (response.success) {
+								let reviewHtml = response.data.map(review => `
 													<div class="review-list">
 														<div class="card" style="width: 100%; max-width: 100%;">
 															<div class="list-item mx-5 my-3">
@@ -203,45 +281,45 @@ $(document).ready(function() {
 													</div>
 												`).join('');
 
-						                        // 리뷰가 없는 경우 처리
-						                        if (response.data.length === 0) {
-						                            reviewHtml = `
+								// 리뷰가 없는 경우 처리
+								if (response.data.length === 0) {
+									reviewHtml = `
 						                                <div class="text-center py-5">
 						                                    <p class="text-muted">작성된 리뷰가 없습니다.</p>
 						                                </div>
 						                            `;
-						                        }
+								}
 
-						                        // 컨테이너에 리뷰 HTML 추가
-						                        $('.content-container').html(reviewHtml);
-						                    } else {
-						                        alert(response.message || '리뷰를 불러오는 데 실패했습니다.');
-						                    }
-						                },
-						                error: function() {
-						                    alert('리뷰를 불러오는 데 실패했습니다.');
-						                }
-						            });
-						        },
-						        error: function() {
-						            alert('회원 정보를 불러오는 데 실패했습니다.');
-						        }
-						    });
-						    } else if (contentType === 'activity') {
-					fetch(`/ajax/member/myPageActivity?type=${subType || 'post'}`)
-						.then(response => {
-							if (!response.ok) {
-								throw new Error('Network response was not ok');
+								// 컨테이너에 리뷰 HTML 추가
+								$('.content-container').html(reviewHtml);
+							} else {
+								alert(response.message || '리뷰를 불러오는 데 실패했습니다.');
 							}
-							return response.json();
-						})
-						.then(response => {
-							console.log('서버 응답:', response); // 응답 데이터 확인
-							if (response.success) {
-								let html = '';
+						},
+						error: function() {
+							alert('리뷰를 불러오는 데 실패했습니다.');
+						}
+					});
+				},
+				error: function() {
+					alert('회원 정보를 불러오는 데 실패했습니다.');
+				}
+			});
+		} else if (contentType === 'activity') {
+			fetch(`/ajax/member/myPageActivity?type=${subType || 'post'}`)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(response => {
+					console.log('서버 응답:', response); // 응답 데이터 확인
+					if (response.success) {
+						let html = '';
 
-								// 탭 메뉴 생성
-								html += `
+						// 탭 메뉴 생성
+						html += `
                     <div class="row d-flex mb-5">
                         <div class="nav justify-content-around">
                             <a href="#" class="nav-link" data-content="activity" data-subtype="post">자유글</a>
@@ -253,62 +331,62 @@ $(document).ready(function() {
                     </div>
                 `;
 
-								// 컨텐츠 생성
-								html += '<div class="activity-content">';
+						// 컨텐츠 생성
+						html += '<div class="activity-content">';
 
-								if (!response.data || response.data.length === 0) {
-									html += '<p class="text-center my-5">활동 내역이 없습니다.</p>';
-								} else {
-									if (subType === 'likes') {
-										html += generateLikesHTML(response.data);
-									} else {
-										response.data.forEach(item => {
-											switch(subType) {
-												case 'post':
-													html += generatePostHTML(item);
-													break;
-												case 'question':
-													html += generateQuestionHTML(item);
-													break;
-												case 'postComment':
-													html += generateCommentHTML(item);
-													break;
-												case 'questionComment':
-													html += generateReplyHTML(item);
-													break;
-											}
-										});
-									}
-								}
-
-								html += '</div>';
-								document.querySelector('.content-container').innerHTML = html;
-
-								// 탭 클릭 이벤트 리스너 추가
-								document.querySelectorAll('.nav-link').forEach(link => {
-									link.addEventListener('click', function(e) {
-										e.preventDefault();
-										const content = this.getAttribute('data-content');
-										const subType = this.getAttribute('data-subtype') || 'post';
-
-										if (content === 'activity') {
-											loadContent(content, subType);
-										}
-									});
-								});
+						if (!response.data || response.data.length === 0) {
+							html += '<p class="text-center my-5">활동 내역이 없습니다.</p>';
+						} else {
+							if (subType === 'likes') {
+								html += generateLikesHTML(response.data);
 							} else {
-								console.error('서버 응답 실패:', response.message);
-								alert(response.message || '데이터를 불러오는데 실패했습니다.');
+								response.data.forEach(item => {
+									switch(subType) {
+										case 'post':
+											html += generatePostHTML(item);
+											break;
+										case 'question':
+											html += generateQuestionHTML(item);
+											break;
+										case 'postComment':
+											html += generateCommentHTML(item);
+											break;
+										case 'questionComment':
+											html += generateReplyHTML(item);
+											break;
+									}
+								});
 							}
-						})
-						.catch(error => {
-							console.error('서버 통신 오류:', error);
-							alert('서버 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-						});
+						}
 
-							} else if (contentType === 'payment') {
-								// payment 템플릿 렌더링
-								const paymentTemplate = `
+						html += '</div>';
+						document.querySelector('.content-container').innerHTML = html;
+
+						// 탭 클릭 이벤트 리스너 추가
+						document.querySelectorAll('.nav-link').forEach(link => {
+							link.addEventListener('click', function(e) {
+								e.preventDefault();
+								const content = this.getAttribute('data-content');
+								const subType = this.getAttribute('data-subtype') || 'post';
+
+								if (content === 'activity') {
+									loadContent(content, subType);
+								}
+							});
+						});
+					} else {
+						console.error('서버 응답 실패:', response.message);
+						alert(response.message || '데이터를 불러오는데 실패했습니다.');
+					}
+				})
+				.catch(error => {
+					console.error('서버 통신 오류:', error);
+					alert('서버 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+				});
+
+		} else if (contentType === 'payment') {
+			// payment 템플릿 렌더링
+			const paymentTemplate = `
 									<div class="mb-4">
 											<div class="expert-list">
 													<div class="expert-list-item">
@@ -344,49 +422,49 @@ $(document).ready(function() {
 											</div>
 									</div>
 								`;
-								$('.content-container').html(paymentTemplate);
-							}
-			}
+			$('.content-container').html(paymentTemplate);
+		}
+	}
 
-			// 별점 생성 헬퍼 함수
-			function generateStarRating(rating) {
-			    const fullStars = Math.floor(rating);
-			    const halfStar = rating % 1 >= 0.5 ? 1 : 0;
-			    const emptyStars = 5 - fullStars - halfStar;
+	// 별점 생성 헬퍼 함수
+	function generateStarRating(rating) {
+		const fullStars = Math.floor(rating);
+		const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+		const emptyStars = 5 - fullStars - halfStar;
 
-			    let starHtml = '';
+		let starHtml = '';
 
-			    // 꽉 찬 별
-			    for (let i = 0; i < fullStars; i++) {
-			        starHtml += '<i class="bi bi-star-fill"></i>';
-			    }
+		// 꽉 찬 별
+		for (let i = 0; i < fullStars; i++) {
+			starHtml += '<i class="bi bi-star-fill"></i>';
+		}
 
-			    // 반 별
-			    if (halfStar) {
-			        starHtml += '<i class="bi bi-star-half"></i>';
-			    }
+		// 반 별
+		if (halfStar) {
+			starHtml += '<i class="bi bi-star-half"></i>';
+		}
 
-			    // 빈 별
-			    for (let i = 0; i < emptyStars; i++) {
-			        starHtml += '<i class="bi bi-star"></i>';
-			    }
+		// 빈 별
+		for (let i = 0; i < emptyStars; i++) {
+			starHtml += '<i class="bi bi-star"></i>';
+		}
 
-			    return starHtml;
-			}
+		return starHtml;
+	}
 
-			// 날짜 포맷팅 헬퍼 함수
-			function formatDate(dateString) {
-			    const date = new Date(dateString);
-			    return date.toLocaleDateString('ko-KR', {
-			        year: 'numeric',
-			        month: '2-digit',
-			        day: '2-digit'
-			    });
-			}
+	// 날짜 포맷팅 헬퍼 함수
+	function formatDate(dateString) {
+		const date = new Date(dateString);
+		return date.toLocaleDateString('ko-KR', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit'
+		});
+	}
 
-			// HTML 생성 헬퍼 함수들
-			function generatePostHTML(memberMyPageCommunity) {
-				return `
+	// HTML 생성 헬퍼 함수들
+	function generatePostHTML(memberMyPageCommunity) {
+		return `
 					<div class="card mb-3">
 						<div class="card-body">
 							<h5 class="card-title">${memberMyPageCommunity.community.communityBoardTitle}</h5>
@@ -402,10 +480,10 @@ $(document).ready(function() {
 						</div>
 					</div>
 				`;
-			}
+	}
 
-			function generateQuestionHTML(memberWithQnA) {
-				return `
+	function generateQuestionHTML(memberWithQnA) {
+		return `
 					<div class="card mb-3">
 						<div class="card-body">
 							<div class="d-flex justify-content-between">
@@ -425,10 +503,10 @@ $(document).ready(function() {
 						</div>
 					</div>
 				`;
-			}
+	}
 
-			function generateCommentHTML(comWithComReply) {
-				return `
+	function generateCommentHTML(comWithComReply) {
+		return `
 					<div class="card mb-3">
 						<div class="card-body">
 							<h6 class="card-subtitle mb-2 text-muted">${comWithComReply.community.communityBoardTitle}</h6>
@@ -443,10 +521,10 @@ $(document).ready(function() {
 						</div>
 					</div>
 				`;
-			}
+	}
 
-			function generateReplyHTML(memberWithQnAReply) {
-				return `
+	function generateReplyHTML(memberWithQnAReply) {
+		return `
 					<div class="card mb-3">
 						<div class="card-body">
 							<h6 class="card-subtitle mb-2 text-muted">${memberWithQnAReply.qnaReply.qnaBoardTitle}</h6>
@@ -460,7 +538,7 @@ $(document).ready(function() {
 						</div>
 					</div>
 				`;
-			}
+	}
 
 
 	function generateLikesHTML(items) {
@@ -569,29 +647,29 @@ $(document).ready(function() {
 		return hasLikes ? html : '<p class="text-center my-5">공감한 내역이 없습니다.</p>';
 	}
 
-		// 초기 컨텐츠 로드
-			loadContent('payment');
+	// 초기 컨텐츠 로드
+	loadContent('payment');
 
-			// 탭 클릭 이벤트 처리
-			$('.nav-link').click(function() {
-				const content = $(this).data('content');
-				if (content === 'profile') {
-					// 다른 탭의 active 상태 제거
-					$('.sidebar .nav-link').removeClass('active');
-					// profile 탭 active 상태로 변경
-					$(this).addClass('active');
-					// 프로필 페이지를 빈 상태로 표시
-					$('.content-container').empty();
-					// 비밀번호 확인 모달 표시
-					$('#passwordCheckModal').modal('show');
-					return false;
-				}
-				loadContent(content);
-			});
+	// 탭 클릭 이벤트 처리
+	$('.nav-link').click(function() {
+		const content = $(this).data('content');
+		if (content === 'profile') {
+			// 다른 탭의 active 상태 제거
+			$('.sidebar .nav-link').removeClass('active');
+			// profile 탭 active 상태로 변경
+			$(this).addClass('active');
+			// 프로필 페이지를 빈 상태로 표시
+			$('.content-container').empty();
+			// 비밀번호 확인 모달 표시
+			$('#passwordCheckModal').modal('show');
+			return false;
+		}
+		loadContent(content);
+	});
 
 	// 프로필 HTML 생성 함수
 	function generateProfileHTML(memberData) {
-			return `
+		return `
 					<div class="profile-form-container">
 							<div class="container d-flex justify-content-center">
 									<div style="width: 100%; max-width: 500px;">
@@ -761,154 +839,136 @@ $(document).ready(function() {
 	});
 
 
-			// 다음 지도 API
-			$(document).on('click', '#addressSearchBtn2', function() {
-			    console.log('주소 찾기 버튼 클릭됨');  // 버튼 클릭 로그
+	// 다음 지도 API
+	$(document).on('click', '#addressSearchBtn2', function() {
+		console.log('주소 찾기 버튼 클릭됨');  // 버튼 클릭 로그
 
-			    if (typeof daum === 'undefined') {
-			        console.error('Daum 우편번호 서비스 로드 실패');
-			        alert('주소 검색 서비스를 불러오는데 실패했습니다.');
-			        return;
-			    }
+		if (typeof daum === 'undefined') {
+			console.error('Daum 우편번호 서비스 로드 실패');
+			alert('주소 검색 서비스를 불러오는데 실패했습니다.');
+			return;
+		}
 
-			    new daum.Postcode({
-			        oncomplete: function(data) {
-			            console.log('주소 선택 완료:', data); // API 호출 로그
-			            $("#zipcode").val(data.zonecode);
-			            $("#address").val(data.roadAddress);
-			            $("#address2").focus(); 
-			            validationState.address = true;
-			        },
-			        width: '100%',
-			        height: '100%'
-			    }).open();
-			});
-			
-			$(document).on('input', '#address2', function() {
-			    console.log('상세주소 입력됨:', $(this).val()); 
-			    validationState.address = $(this).val().trim() !== "";
-			});
+		new daum.Postcode({
+			oncomplete: function(data) {
+				console.log('주소 선택 완료:', data); // API 호출 로그
+				$("#zipcode").val(data.zonecode);
+				$("#address").val(data.roadAddress);
+				$("#address2").focus();
+				validationState.address = true;
+			},
+			width: '100%',
+			height: '100%'
+		}).open();
+	});
 
-	
+	$(document).on('input', '#address2', function() {
+		console.log('상세주소 입력됨:', $(this).val());
+		validationState.address = $(this).val().trim() !== "";
+	});
 
-	// 비밀번호 변경 버튼 클릭 이벤트 (폼 제출 이벤트 밖으로 이동)
+	// 비밀번호 변경 버튼 클릭 이벤트
 	$(document).on('click', '#changePasswordBtn', function() {
 		$('#changePasswordModal').modal('show');
 	});
 
-// 비밀번호 유효성 검사 패턴
-	const patterns = {
-		password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/ // 최소 8자, 문자와 숫자 포함
-	};
-
-// validators 객체 정의
-	const validators = {
-		validateInput: function(value, pattern, fieldName) {
-			if (!pattern.test(value)) {
-				return `${fieldName}의 형식이 올바르지 않습니다.`;
-			}
-			return null;
-		}
-	};
-
-// 새 비밀번호 유효성 검사
-	// 비밀번호 유효성 검사
-	document.getElementById("newPassword").addEventListener("input", function() {
-		const password = this.value;
-		let message = "";
-		let isValid = false;
-
-		if (!password) {
-			message = "비밀번호를 입력해주세요.";
-		} else if (password.length < 8) { //patterns의 조건과 일치해야 함.
-			message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
-
+	$('#newPassword').on('input', function() {
+		const password = $(this).val();
+		const errorMsg = validators.validateInput(password, patterns.password, "비밀번호");
+		if (errorMsg) {
+			$(this).addClass('is-invalid');
+			$('#newPasswordError').text(errorMsg);
 		} else {
-			const hasLetter = /[A-Za-z]/.test(password);
-			const hasNumber = /[0-9]/.test(password);
-			const hasSpecial = /[@$!%*#?&]/.test(password);
-
-			if (!hasLetter || !hasNumber || !hasSpecial) {
-				message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
-			} else {
-				message = "안전한 비밀번호입니다.";
-				isValid = true;
-			}
-		}
-
-		// 유효성 검사 결과에 따라 클래스 및 메시지 업데이트
-		if (isValid) {
-			this.classList.remove('is-invalid');
-			this.classList.add('is-valid');
-			document.getElementById('newPasswordError').textContent = message;
-		} else {
-			this.classList.add('is-invalid');
-			this.classList.remove('is-valid');
-			document.getElementById('newPasswordError').textContent = message;
+			$(this).removeClass('is-invalid').addClass('is-valid');
+			$('#newPasswordError').text('');
 		}
 	});
 
-	// 비밀번호 확인 일치 검사
-	$(document).on('input', '#confirmPassword', function() {
+	$('#confirmPassword').on('input', function() {
 		const confirmPassword = $(this).val();
 		const newPassword = $('#newPassword').val();
-		
 		if (confirmPassword !== newPassword) {
 			$(this).addClass('is-invalid');
-			$('#confirmPasswordError').text('비밀번호가 일치하지 않습니다.');
+			$('#confirmPasswordError').text('비밀번호가 일치하지 않습니다.'); // Passwords do not match
 		} else {
 			$(this).removeClass('is-invalid').addClass('is-valid');
 			$('#confirmPasswordError').text('');
 		}
 	});
 
-	// 비밀번호 변경 버튼 클릭 시
-	$(document).on('click', '#savePasswordBtn', function() {
-		const currentPassword = $('#currentPassword').val();
+
+// 비밀번호 변경 폼 제출 이벤트 핸들러
+	$('#passwordChangeForm').on('submit', function(e) {
+		e.preventDefault(); // 폼의 기본 제출 동작 중단
+
+		const currentPassword2 = $('#currentPassword2').val();
 		const newPassword = $('#newPassword').val();
-		const confirmPassword = $('#confirmPassword').val();
 
-		// 유효성 검사
-		if (!currentPassword || !newPassword || !confirmPassword) {
-			alert('모든 필드를 입력해주세요.');
+		// 현재 비밀번호 입력 확인
+		if (!currentPassword2) {
+			alert('현재 비밀번호를 입력해주세요.');
 			return;
 		}
 
-		if (newPassword !== confirmPassword) {
-			alert('새 비밀번호가 일치하지 않습니다.');
+		// 비밀번호 유효성 검사
+		if (!validationState.newPassword) {
+			alert('새 비밀번호가 유효하지 않습니다. 비밀번호는 8자 이상 16자 이하이며, 영문, 숫자, 특수문자가 모두 포함되어야 합니다.');
 			return;
 		}
 
-		// 현재 비밀번호 확인 및 새 비밀번호 저장
+		// 비밀번호 확인 일치 검사
+		if (!validationState.passwordMatch) {
+			alert('비밀번호 확인이 일치하지 않습니다.');
+			return;
+		}
+
+		// 현재 비밀번호 확인 AJAX 요청
 		$.ajax({
-			url: '/ajax/member/updatePassword',
+			url: '/ajax/member/checkPassword',
 			type: 'POST',
-			data: {
-				currentPassword: currentPassword,
-				newPassword: newPassword
-			},
+			data: { pass: currentPassword }, // 현재 비밀번호를 전송
 			success: function(response) {
-				if (response.success) {
-					alert('비밀번호가 성공적으로 변경되었습니다.');
-					$('#changePasswordModal').modal('hide');
-					$('#passwordChangeForm')[0].reset();
+				if (response.valid) {
+					// 현재 비밀번호가 유효한 경우 비밀번호 변경 요청
+					$.ajax({
+						url: '/ajax/member/updatePassword',
+						type: 'POST',
+						data: {
+							currentPassword: currentPassword,
+							newPassword: newPassword // 새 비밀번호 전달
+						},
+						success: function (response) {
+							if (response.success) {
+								alert('비밀번호가 성공적으로 변경되었습니다.');
+								$('#changePasswordModal').modal('hide');
+								$('#passwordChangeForm')[0].reset();
+							} else {
+								alert(response.message || '현재 비밀번호가 일치하지 않습니다.');
+							}
+						},
+						error: function () {
+							alert('서버 오류가 발생했습니다.');
+						}
+					});
 				} else {
-					alert(response.message || '현재 비밀번호가 일치하지 않습니다.');
+					$('#passwordError').text('비밀번호가 일치하지 않습니다.');
 				}
 			},
 			error: function() {
-				alert('서버 오류가 발생했습니다.');
+				$('#passwordError').text('서버 오류가 발생했습니다.');
 			}
 		});
 	});
 
-	// 비밀번호 변경 모달이 닫힐 때 초기화
-	$('#changePasswordModal').on('hidden.bs.modal', function() {
-		$('#passwordChangeForm')[0].reset();
-		$('.is-invalid').removeClass('is-invalid');
-		$('.is-valid').removeClass('is-valid');
-		$('.invalid-feedback').text('');
+// 변경하기 버튼 클릭 이벤트
+	$('#savePasswordBtn').on('click', function() {
+		$('#passwordChangeForm').submit(); // 폼 제출
 	});
 
-
-}); 
+// 모달 닫힐 때 초기화
+	$('#changePasswordModal').on('hidden.bs.modal', function() {
+		$('#passwordChangeForm')[0].reset();
+		$('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
+		$('.invalid-feedback').text('');
+	});
+});

@@ -28,6 +28,13 @@ public class MemberService {
 
 	private final JavaMailSender mailSender;
 
+
+// 전문가 마이페이지에서 포트폴리오 조회
+public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
+    List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
+    return result;
+}
+
     // myPage 내역 조회
     public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
         List<MemberWithProfessional> result = memberMapper.memberWithProfessional(memberNo);
@@ -164,14 +171,6 @@ public class MemberService {
             throw e;
         }
     }
-
-
-/*    // 선택적 필드 업데이트 메서드 추가
-    public void updateMemberSelective(Member member) {
-        memberMapper.updateMemberSelective(member);
-    }
-    */
-
 
 
     public List<Map<String, Object>> myPageLikedCommunity(int memberNo) {
