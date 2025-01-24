@@ -108,9 +108,11 @@ public class ProfessionalController {
 
     @GetMapping("/proConversion")
     public String getProConversion(HttpSession session, Model model) {
-        String memberId = (String) session.getAttribute("memberId");
+        Member member = (Member) session.getAttribute("member");
+        String memberId = member.getMemberId();
+
         if (memberId == null) {
-            return "redirect:/login";
+            return "redirect:/loginForm";
         }
         int memberNo = memberService.getMemberById(memberId);
         model.addAttribute("member", memberService.getMember(memberId));
@@ -141,10 +143,6 @@ public class ProfessionalController {
         }
     }
 
-    @GetMapping("/portfolio")
-    public String getPortfolio(){
-        return "views/portfolio";
-    }
 
     @GetMapping("/portfolio")
     public String getPortfolio(@RequestParam(value="itemNo" , required = false, defaultValue="11") int itemNo, Model model){
