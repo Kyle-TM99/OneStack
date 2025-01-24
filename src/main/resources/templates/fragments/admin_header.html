@@ -56,10 +56,15 @@
                 <i class="bi bi-filter-right fs-5"></i>
             </button>
             <div class="dropdown-menu p-3" style="width: 250px;" id="dynamicFilterContent">
-                <!-- 여기에 동적으로 필터 내용이 들어갑니다 -->
+                <!-- 동적으로 필터 내용 표시-->
             </div>
         </div>
-        <button class="btn btn-outline-dark btn-sm h-25" id="deleteButton" style="display: none;">삭제</button>
+
+       <div class="d-flex justify-content-end align-items-center">
+           <span class="me-3" id="deleteCount"></span>
+           <button class="btn btn-outline-dark btn-sm" id="deleteButton" style="display: none;">삭제</button>
+       </div>
+
     </div>
     
     <!-- 콘텐츠 영역 -->

@@ -146,6 +146,7 @@ $(function() {
 
         // 폼 데이터 전송
         $.ajax({
+
             url: "/addJoin",
             type: "POST",
             data: $(this).serialize(),
