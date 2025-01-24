@@ -146,8 +146,9 @@
 		<association property="qna" javaType="QnA" resultMap="qnaMap" />
 		<association property="qnaReply" javaType="QnAReply" resultMap="qnaReplyMap" />
 	</resultMap>
+<!--
 
-	<!-- myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage)-->
+	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage)&ndash;&gt;
 	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
 		SELECT
 			m.*, p.*, pi.*, pr.*
@@ -162,6 +163,7 @@
 		WHERE
 			m.member_type = 2;
 	</select>
+-->
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
