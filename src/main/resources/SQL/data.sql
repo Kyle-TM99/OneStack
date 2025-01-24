@@ -1,4 +1,4 @@
-INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status)
+INSERT IGNORE INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status)
 VALUES
     ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1, 0),
     ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1, 0),
@@ -30,7 +30,7 @@ VALUES
     ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 2, 0),
     ('전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0),
     ('전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0);
-INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
+INSERT IGNORE INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
     (1, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 11000, 20),
     (2, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 15000, 10),
@@ -61,7 +61,7 @@ VALUES
     (27, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 53500, 18),
     (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 10시', 11100, 25);
 -- 카테고리
-INSERT INTO Category (item_no, item_title, category_no)
+INSERT IGNORE INTO Category (item_no, item_title, category_no)
 VALUES
     (11, '기획', 1),
     (12, '웹', 1),
@@ -77,7 +77,7 @@ VALUES
     (24, 'DB 구축', 2),
     (25, '통계분석', 2);
 
-INSERT INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
+INSERT IGNORE INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
 VALUES (1, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
        (2, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
        (3, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
@@ -107,18 +107,18 @@ VALUES (1, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
        (27, 11, '기타', '기타', NULL, NULL, NULL),
        (28, 12, '신규 제작', '미드(4~9년)', NULL, NULL, NULL);
 -- 포트폴리오
-INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
+INSERT IGNORE INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
                       thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
                       portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
 VALUES (1, 1, '포트폴리오 제목', '포트폴리오 내용', 1, 'thumbnail image', 'image1', 'image2', 'image3', 'image4', 'image5', null, null, null, null, null);
 
 
-INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
+INSERT IGNORE INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
                       thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
                       portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
 VALUES (1, 1, '포트폴리오 제목', '포트폴리오 내용', 1, 'thumbnail image', 'image1', 'image2', 'image3', 'image4', 'image5', null, null, null, null, null);
 
-INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content,thumbnail_image,portfolio_file1)
+INSERT IGNORE INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content,thumbnail_image,portfolio_file1)
 VALUES
     (1, 1, '기획 프로젝트 A', '대규모 프로젝트 기획 및 실행 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
     (2, 2, '웹 프로젝트 B', '고객 웹사이트 제작 및 유지 보수 경험', 'https://via.placeholder.com/200x100','portfolio_file1 link'),
@@ -128,123 +128,123 @@ VALUES
     (6, 6, '게임 프로젝트 F', '다수의 인기 게임 개발 사례', 'https://via.placeholder.com/200x100','portfolio_file1 link');
 
 -- 설문조사 더미 데이터 --
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(1, 11, '의뢰 받을 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(2, 11, '의뢰 받을 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(3, 12, '의뢰받으려는 프로젝트의 제작 상태를 선택해주세요.', '신규 제작, 기존 웹 리뉴얼');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(4, 12, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(5, 13, '제작 가능한 플랫폼을 선택해주세요.', 'Windows, Mac, Linux, iOS, Android, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(6, 13, '제작 가능한 개발 종류를 선택해주세요.', '일반 프로그램, 게임, 임베디드, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(7, 13, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(8, 14, '개발 가능한 앱 형태를 선택해주세요.', '네이티브, 하이브리드, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(9, 14, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(10, 15, '개발 가능한 형태의 앱을 선택해주세요.', '네이티브, 하이브리드, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(11, 15, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(12, 15, '서버 개발이 가능하신지 선택해주세요.', '네., 아니요.');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(13, 16, '개발 가능한 플랫폼을 선택해주세요.', '안드로이드, PC, iOS, Mac, Linux, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(14, 16, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(15, 17, '개발 가능한 인공지능 기반을 선택해주세요.', '텍스트, 음성, 이미지, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(16, 17, '개발 가능한 작업을 선택해주세요.', '분류, 예측, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(17, 17, '개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(18, 18, '테스트 가능한 분야를 선택해주세요.', '기능 테스트, 비기능 테스트, 성능 테스트, 테스트 자동화, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(19, 18, '원하는 테스트 기간을 선택해주세요.', '1회 계약, 정기 계약, 무관');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(20, 21, '데이터 가공 및 라벨링이 가능한 형태를 선택해주세요.', '문자, 이미지, 음성, 기타');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(21, 22, '데이터 복구 가능한 것을 선택해주세요.', '스마트기기(휴대폰/태블릿 등), 프로그램(카톡 등), 하드디스크(외장하드 등), 메모리카드(USB/SD/SSD 등), 기타');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(22, 23, '크롤링 가능한 서비스를 선택해주세요.', '웹 크롤링, 앱 크롤링, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(23, 23, '크롤링 가능한 웹사이트/애플리케이션을 선택해주세요.', '검색 포털(네이버/구글 등), 동영상 채널(유튜브 등), 오픈마켓(쿠팡/옥션 등), 쇼핑몰, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(24, 23, '크롤링 프로그램 제작이 가능한지 선택해주세요.', '네., 아니요.');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(25, 24, '데이터베이스 설계가 가능한 분야를 선택해주세요.', '식품, 도소매, 서비스업, IT, 기타');
 
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(26, 25, '통계분석 가능한 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타');
-INSERT INTO Survey(survey_no, item_no, survey_question, survey_option)
+INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(27, 25, '사용 가능한 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
 -- 필터링 --
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(11, 1, '의뢰할 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타'),
       (11, 2, '의뢰할 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(12, 1, '의뢰하려는 프로젝트의 제작 상태를 선택해주세요.', '신규 제작, 기존 웹 리뉴얼'),
       (12, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(13, 1, '제작을 원하는 플랫폼을 선택해주세요.', 'Windows, Mac, Linux, iOS, Android, 기타'),
       (13, 2, '제작을 원하는 개발 종류를 선택해주세요.', '일반 프로그램, 게임, 임베디드, 기타'),
       (13, 3, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(14, 1, '개발을 원하는 앱 형태를 선택해주세요.', '네이티브, 하이브리드, 기타'),
       (14, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(15, 1, '개발을 원하는 형태의 앱을 선택해주세요.', '네이티브, 하이브리드, 기타'),
       (15, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)'),
       (15, 3, '서버 개발이 필요한지 선택해주세요.', '네., 아니요.');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(16, 1, '개발을 원하는 플랫폼을 선택해주세요.', '안드로이드, PC, iOS, Mac, Linux, 기타'),
       (16, 2, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(17, 1, '개발을 원하는 인공지능 기반을 선택해주세요.', '텍스트, 음성, 이미지, 기타'),
       (17, 2, '개발을 원하는 작업을 선택해주세요.', '분류, 예측, 기타'),
       (17, 3, '원하는 개발자 경력을 선택해주세요.', '주니어(3년 이하), 미드(4~9년), 시니어(10년 이상)');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(18, 1, '테스트 하고 싶은 분야를 선택해주세요.', '기능 테스트, 비기능 테스트, 성능 테스트, 테스트 자동화, 기타'),
       (18, 2, '원하는 테스트 기간을 선택해주세요.', '1회 계약, 정기 계약, 무관');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(21, 1, '데이터 가공 및 라벨링을 원하는 형태를 선택해주세요.', '문자, 이미지, 음성, 기타');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(22, 1, '데이터 복구를 원하는 것을 선택해주세요.', '스마트기기(휴대폰/태블릿 등), 프로그램(카톡 등), 하드디스크(외장하드 등), 메모리카드(USB/SD/SSD 등), 기타');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(23, 1, '크롤링을 원하는 서비스를 선택해주세요.', '웹 크롤링, 앱 크롤링, 기타'),
       (23, 2, '크롤링을 원하는 웹사이트/애플리케이션을 선택해주세요.', '검색 포털(네이버/구글 등), 동영상 채널(유튜브 등), 오픈마켓(쿠팡/옥션 등), 쇼핑몰, 기타'),
       (23, 3, '크롤링 프로그램 제작이 필요한지 선택해주세요.', '네., 아니요.');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(24, 1, '데이터베이스 설계를 원하는 분야를 선택해주세요.', '식품, 도소매, 서비스업, IT, 기타');
 
-INSERT INTO Filter(item_no, filter_question_no, filter_question, filter_option)
+INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
