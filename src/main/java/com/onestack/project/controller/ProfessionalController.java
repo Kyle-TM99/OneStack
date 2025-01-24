@@ -145,4 +145,11 @@ public class ProfessionalController {
     public String getPortfolio(){
         return "views/portfolio";
     }
+
+    @GetMapping("/portfolio")
+    public String getPortfolio(@RequestParam(value="itemNo" , required = false, defaultValue="11") int itemNo, Model model){
+        Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
+        model.addAllAttributes(surveyData);
+        return "views/portfolioManagement";
+    }
 }
