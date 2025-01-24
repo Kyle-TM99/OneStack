@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @Slf4j
@@ -31,9 +32,57 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
+    @PostMapping("/updateMember")
+    public String updateMember(HttpSession session, Member member, MultipartFile profileImage) {
+
+        Member sessionMember = (Member) session.getAttribute("member");
+        member.setMemberNo(sessionMember.getMemberNo());
+
+        // 회원 정보 업데이트
+        memberService.updateMember(member);
+
+        // 세션 정보 업데이트
+        sessionMember.setName(member.getName());
+        sessionMember.setEmail(member.getEmail());
+        sessionMember.setPhone(member.getPhone());
+        sessionMember.setZipcode(member.getZipcode());
+        sessionMember.setAddress(member.getAddress());
+        sessionMember.setAddress2(member.getAddress2());
+        sessionMember.setEmailGet(member.isEmailGet());
+
+
+        return "board/memberMyPage";
+    }
+
+    @GetMapping("/myPage")
+    public String myPage(Model model, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+
+        // 세션의 member 객체에서 memberNo 직접 사용
+        int memberNo = member.getMemberNo();
+
+        // 데이터 조회
+        int communityCount = memberService.memberMyPageCommunityCount(memberNo);
+        int communityReplyCount = memberService.memberMyPageComReplyCount(memberNo);
+        int qnaCount = memberService.memberMyPageQnACount(memberNo);
+        int qnaReplyCount = memberService.memberMyPageQnAReplyCount(memberNo);
+        int reviewCount = memberService.findMyReviewCount(memberNo);
+
+        // 모델에 데이터 추가
+        model.addAttribute("communityCount", communityCount);
+        model.addAttribute("communityReplyCount", communityReplyCount);
+        model.addAttribute("qnaCount", qnaCount);
+        model.addAttribute("qnaReplyCount", qnaReplyCount);
+        model.addAttribute("reviewCount", reviewCount);
+        model.addAttribute("member", member);
+
+        return "board/memberMyPage";
+    }
+
+
     @PostMapping("/login")
     public String login(Model model, @RequestParam("memberId") String memberId, @RequestParam("pass") String pass, HttpSession session, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         int result = memberService.login(memberId, pass);
         if(result == -1 || result == 0) { // 회원 아이디가 존재하지 않으면
             response.setContentType("text/html; charset=utf-8");
@@ -47,7 +96,6 @@ public class MemberController {
 
         Member member = memberService.getMember(memberId);
         session.setAttribute("isLogin", true);
-        session.setAttribute("memberId", member.getMemberId()); // LHB 
         session.setAttribute("member", member);
         return "redirect:/main";
     }
@@ -63,17 +111,23 @@ public class MemberController {
     @ResponseBody
     public Map<String, Object> join(@RequestBody Member member) {
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             log.info("받은 회원 데이터: {}", member);
-            
+
             // 비밀번호 암호화
             member.setPass(passwordEncoder.encode(member.getPass()));
-            
+
+            member.setSocial(false);
+            member.setSocialType("none");
+            member.setMemberImage("/images/defaultProfile.png");
+
+
+
             // 회원 등록
             int result = memberService.insertMember(member);
             log.info("회원가입 결과: {}", result);
-            
+
             if (result > 0) {
                 response.put("status", "success");
                 response.put("message", "회원가입이 완료되었습니다.");
@@ -92,19 +146,11 @@ public class MemberController {
             response.put("status", "error");
             response.put("message", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
-        
+
         return response;
-        
-		/*
-		 * memberId: $("#memberId").val(), @RequestParam("memberId") String memberId,
-		 * pass: $("#memberPw").val(), name: $("#name").val(), nickname:
-		 * $("#nickname").val(), email: $("#email").val(), phone: $("#phone").val(),
-		 * zipcode: $("#zipcode").val(), address: $("#address").val(), address2:
-		 * $("#address2").val(), emailGet: $("#emailConsent").is(":checked") ? 1 : 0,
-		 * gender: $("input[name='gender']:checked").val(), birth: $("#birth").val()
-		 */
+
     }
-    
+
 
     @PostMapping("/checkId")
     @ResponseBody
@@ -141,27 +187,22 @@ public class MemberController {
         response.put("available", count == 0);
         return response;
     }
-    
-    
+
+
     @GetMapping("/findId")
     public String findIdForm() {
         return "member/findId";  // findId.html을 보여줌
     }
-    
-    @GetMapping("/findPass")
-    public String findPassForm() {
-    	return "member/findPass";
-    }
-    
-    
-   
+
+
+
 
     @PostMapping("/findId")
     public String findId(
-        @RequestParam(name = "name") String name, 
-        @RequestParam(name = "phone") String phone,
-        Model model) {
-        
+            @RequestParam(name = "name") String name,
+            @RequestParam(name = "phone") String phone,
+            Model model) {
+
         try {
             Member member = new Member();
             member.setName(name);
@@ -179,7 +220,7 @@ public class MemberController {
         } catch (Exception e) {
             model.addAttribute("found", false);
         }
-        
+
         return "member/findId";
     }
 
