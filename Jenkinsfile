@@ -25,9 +25,9 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 sh '''
-                    mkdir -p /usr/share/nginx/html/images
+                    sudo mkdir -p /usr/share/nginx/html/images
                     sudo chown -R $(id -u):$(id -g) /usr/share/nginx/html/images
-                    chmod -R 755 /usr/share/nginx/html/images
+                    sudo chmod -R 755 /usr/share/nginx/html/images
                 '''
             }
         }
