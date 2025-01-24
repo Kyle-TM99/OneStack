@@ -47,8 +47,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    # 이전 컨테이너 중지
                     ${DOCKER_COMPOSE} down --volumes=false || true
-                    ${DOCKER_COMPOSE} up -d --build
+                    
+                    # 빌드 캐시를 활용하여 이미지 빌드
+                    ${DOCKER_COMPOSE} build --parallel --no-rm
+                    
+                    # 컨테이너 시작
+                    ${DOCKER_COMPOSE} up -d
                 '''
             }
         }
