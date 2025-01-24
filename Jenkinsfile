@@ -50,11 +50,8 @@ pipeline {
                     # 이전 컨테이너 중지
                     ${DOCKER_COMPOSE} down --volumes=false || true
                     
-                    # 빌드 캐시를 활용하여 이미지 빌드
-                    ${DOCKER_COMPOSE} build --parallel --no-rm
-                    
                     # 컨테이너 시작
-                    ${DOCKER_COMPOSE} up -d
+                    ${DOCKER_COMPOSE} up -d --build
                 '''
             }
         }
