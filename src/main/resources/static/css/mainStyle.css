@@ -22,38 +22,59 @@
     border-color: #ffffff;
 }
 
+/* 버튼 스타일 */
+.custom-button {
+	background-color: #ffffff;
+	color: #215EA3;
+	border: 2px solid #215EA3;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	transition: all 0.3s ease;
+}
+
+.custom-button:hover {
+	background-color: #215EA3;
+	color: #ffffff;
+	border-color: #ffffff;
+}
+
+.custom-button:checked {
+	background-color: #215EA3;
+	color: #ffffff;
+	border-color: #ffffff;
+}
+
 /* 나머지 버튼 스타일 */
 .custom-button2 {
-    background-color: #215EA3;
-    color: white;
-    border: 2px solid #215EA3;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s ease;
+	background-color: #215EA3;
+	color: white;
+	border: 2px solid #215EA3;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	transition: all 0.3s ease;
 }
 
 .custom-button2:hover {
-    background-color: #ffffff;
-    color: #215EA3;
-    border-color: #215EA3;
+	background-color: #ffffff;
+	color: #215EA3;
+	border-color: #215EA3;
 }
 
 
 .custom-button2 :checked {
-    background-color: #ffffff;
-    color: #215EA3;
-    border-color: #215EA3;
+	background-color: #ffffff;
+	color: #215EA3;
+	border-color: #215EA3;
 }
 
 .spacing {
     margin-top: 50px;
     margin-bottom: 50px;
 }
-
-
-
 
 .carousel-item {
 	display: flex;
