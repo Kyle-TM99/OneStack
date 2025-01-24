@@ -1,5 +1,5 @@
 -- Member - 회원
-CREATE TABLE Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                      name VARCHAR(5) NOT NULL,
                      member_id VARCHAR(50) UNIQUE NOT NULL,
                      pass VARCHAR(100) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 
 
 -- Professional - 전문가
-CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                            member_no INTEGER NOT NULL,
                            category_no   INTEGER   NOT NULL,
                            self_introduction VARCHAR(100) NOT NULL,
@@ -47,13 +47,13 @@ CREATE TABLE Professional (pro_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Category - 카테고리
-CREATE TABLE Category (item_no   INTEGER   NOT NULL PRIMARY KEY, -- 11(기획) 12(웹) 13(소프트웨어) 14(안드로이드) 15(iOS) 16(게임) 17(AI) 18(QA 및 테스트) / 21(가공 및 라벨링) 22 (데이터 복구) 23(크롤링) 24(DB 구축) 25(통계분석) --
+CREATE TABLE IF NOT EXISTS Category (item_no   INTEGER   NOT NULL PRIMARY KEY, -- 11(기획) 12(웹) 13(소프트웨어) 14(안드로이드) 15(iOS) 16(게임) 17(AI) 18(QA 및 테스트) / 21(가공 및 라벨링) 22 (데이터 복구) 23(크롤링) 24(DB 구축) 25(통계분석) --
                        item_title   VARCHAR(20) NOT   NULL,
                        category_no   INTEGER   NOT NULL -- 1(개발) 2(데이터) --
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ProfessionalAdvancedInformation - 전문가 고급정보
-CREATE TABLE ProfessionalAdvancedInformation (pro_advanced_no   INTEGER   AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS ProfessionalAdvancedInformation (pro_advanced_no   INTEGER   AUTO_INCREMENT PRIMARY KEY,
                                               pro_no INTEGER   NOT NULL,
                                               item_no INTEGER   NOT NULL,
                                               pro_answer1 VARCHAR(200) NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE ProfessionalAdvancedInformation (pro_advanced_no   INTEGER   AUTO_I
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Portfolio - 포트폴리오
-CREATE TABLE Portfolio (portfolio_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Portfolio (portfolio_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                         pro_no INTEGER NOT NULL,
                         pro_advanced_no   INTEGER   NOT NULL,
                         portfolio_title   VARCHAR(20)   NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE Portfolio (portfolio_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 
 
 -- Survey - 설문조사
-CREATE TABLE Survey (survey_no INTEGER PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Survey (survey_no INTEGER PRIMARY KEY,
                      item_no   INTEGER   NOT NULL,
                      survey_question   VARCHAR(100) NULL,
                      survey_option VARCHAR(500) NULL,
@@ -97,7 +97,7 @@ CREATE TABLE Survey (survey_no INTEGER PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Filter - 필터링
-CREATE TABLE Filter (filter_no INTEGER AUTO_INCREMENT KEY,
+CREATE TABLE IF NOT EXISTS Filter (filter_no INTEGER AUTO_INCREMENT KEY,
                      item_no   INTEGER   NOT NULL,
                      filter_question_no   INTEGER   NOT NULL,
                      filter_question   VARCHAR(100) NULL,
@@ -106,7 +106,7 @@ CREATE TABLE Filter (filter_no INTEGER AUTO_INCREMENT KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ProfessionalBoard - 전문가 찾기 게시판
-CREATE TABLE ProfessionalBoard (item_no   INTEGER   NOT NULL,
+CREATE TABLE IF NOT EXISTS ProfessionalBoard (item_no   INTEGER   NOT NULL,
                                 pro_no INTEGER NOT NULL,
                                 survey_no INTEGER NOT NULL,
                                 CONSTRAINT item_no_professionalBoard_fk FOREIGN KEY (item_no) REFERENCES Category(item_no) ON DELETE CASCADE,
@@ -115,7 +115,7 @@ CREATE TABLE ProfessionalBoard (item_no   INTEGER   NOT NULL,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Estimation - 견적
-CREATE TABLE Estimation (estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Estimation (estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                          member_no INTEGER NOT NULL,
                          pro_no INTEGER NOT NULL,
                          item_no   INTEGER   NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE Estimation (estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Matching - 매칭
-CREATE TABLE Matching (matching_no   INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Matching (matching_no   INTEGER AUTO_INCREMENT PRIMARY KEY,
                        estimation_no INTEGER NOT NULL,
                        member_no INTEGER NOT NULL,
                        pro_no INTEGER NOT NULL,
@@ -138,7 +138,7 @@ CREATE TABLE Matching (matching_no   INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Quotation - 견적서
-CREATE TABLE Quotation (quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Quotation (quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                         matching_no INTEGER   NOT NULL,
                         member_no INTEGER NOT NULL,
                         pro_no INTEGER NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE Quotation (quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Review - 리뷰
-CREATE TABLE Review (review_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Review (review_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                      pro_no INTEGER NOT NULL,
                      member_no INTEGER NOT NULL,
                      review_content VARCHAR(200)   NOT NULL,
@@ -163,7 +163,7 @@ CREATE TABLE Review (review_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Community - 커뮤니티
-CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                         member_no INTEGER NOT NULL,
                         community_board_title VARCHAR(30) NOT NULL,
                         community_board_content   VARCHAR(1000) NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CommunityReply - 커뮤니티 댓글
-CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                              community_board_no INTEGER NOT NULL,
                              member_no INTEGER NOT NULL,
                              community_reply_content   VARCHAR(500) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY K
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- QnA - 질문 게시판
-CREATE TABLE QnA (qna_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS QnA (qna_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                   member_no INTEGER NOT NULL,
                   qna_board_title   VARCHAR(30)   NOT NULL,
                   qna_board_content VARCHAR(1000)   NOT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE QnA (qna_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- QnAReply - 질문 게시판 댓글
-CREATE TABLE QnAReply (qna_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS QnAReply (qna_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                        qna_board_no INTEGER NOT NULL,
                        member_no INTEGER NOT NULL,
                        qna_reply_content VARCHAR(500) NOT NULL,
@@ -217,7 +217,7 @@ CREATE TABLE QnAReply (qna_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Notice - 공지사항
-CREATE TABLE Notice (notice_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Notice (notice_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                      member_no INTEGER NOT NULL,
                      notice_title VARCHAR(30) NOT NULL,
                      notice_content VARCHAR(1000) NOT NULL,
@@ -228,7 +228,7 @@ CREATE TABLE Notice (notice_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Inquiry - 고객문의
-CREATE TABLE Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                       member_no INTEGER NOT NULL,
                       inquiry_title VARCHAR(30) NOT NULL,
                       inquiry_content   VARCHAR(1000) NOT NULL,
@@ -240,7 +240,7 @@ CREATE TABLE Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- InquiryAnswer - 고객문의 답변
-CREATE TABLE InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                             inquiry_no INTEGER NOT NULL,
                             member_no INTEGER NOT NULL,
                             inquiry_answer_content VARCHAR(500)   NOT NULL,
@@ -251,7 +251,7 @@ CREATE TABLE InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREMENT PRIMARY KEY
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ManagerLog - 관리자 로그
-CREATE TABLE ManagerLog (log_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS ManagerLog (log_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                          member_no INTEGER NOT NULL,
                          log_type INTEGER NOT NULL,
                          log_content   VARCHAR(50)   NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE ManagerLog (log_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Reports - 신고
-CREATE TABLE Reports (reports_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Reports (reports_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                       member_no INTEGER NOT NULL,
                       reported_member_no INTEGER NOT NULL,
                       reports_type ENUM('community', 'qna', 'reply', 'review') NOT NULL,
@@ -273,14 +273,14 @@ CREATE TABLE Reports (reports_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- FAQ - 자주 묻는 질문
-CREATE TABLE FAQ (faq_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS FAQ (faq_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                   faq_type TINYINT NOT NULL, -- 1(전문가) 0(회원) --
                   faq_question VARCHAR(100) NOT NULL,
                   faq_response VARCHAR(500) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 비밀번호 찾기 테이블
-CREATE TABLE PasswordResetToken (id BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS PasswordResetToken (id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                  member_id VARCHAR(50) NOT NULL,
                                  token VARCHAR(100) NOT NULL,
                                  expiry_date DATETIME NOT NULL,

@@ -118,6 +118,12 @@ public class MemberController {
             // 비밀번호 암호화
             member.setPass(passwordEncoder.encode(member.getPass()));
 
+            member.setSocial(false);
+            member.setSocialType("none");
+            member.setMemberImage("/images/defaultProfile.png");
+
+
+
             // 회원 등록
             int result = memberService.insertMember(member);
             log.info("회원가입 결과: {}", result);
@@ -201,7 +207,7 @@ public class MemberController {
             Member member = new Member();
             member.setName(name);
             member.setPhone(phone);
-
+            
             String memberId = memberService.findMemberId(member);
             if (memberId != null) {
                 // 회원정보가 일치하는 경우
@@ -217,12 +223,6 @@ public class MemberController {
 
         return "member/findId";
     }
-    
-    @GetMapping("/findPass")
-    public String findPassForm() {
-    	return "member/findPass";
-    }
-
 
     @PostMapping("/findPass")
     @ResponseBody
