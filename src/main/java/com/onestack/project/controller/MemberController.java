@@ -72,7 +72,10 @@ public class MemberController {
 
             member.setSocial(false);
             member.setSocialType("none");
-            
+            member.setMemberImage("/images/defaultProfile.png");
+
+
+
             // 회원 등록
             int result = memberService.insertMember(member);
             log.info("회원가입 결과: {}", result);
