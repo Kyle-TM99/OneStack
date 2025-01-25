@@ -1,10 +1,7 @@
 package com.onestack.project.ajax;
 
 
-import com.onestack.project.domain.MemProWithPortPortImage;
-import com.onestack.project.domain.Member;
-import com.onestack.project.domain.MemberWithProfessional;
-import com.onestack.project.domain.Review;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -118,10 +115,13 @@ public class AjaxMemberController {
 
         // 세션에서 현재 로그인한 회원 정보 가져오기
         Member member = (Member) session.getAttribute("member");
+        Professional professional = (Professional) session.getAttribute("pro");
 
         try {
             // 회원 번호로 리뷰 조회
             List<Review> reviews = memberService.findMyReview(member.getMemberNo());
+            // 전문가 번호로 리뷰 조회
+            List<Review> proReview = memberService.proReview(professional.getProNo());
 
             response.put("success", true);
             response.put("data", reviews);

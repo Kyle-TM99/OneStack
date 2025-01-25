@@ -47,6 +47,20 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return result;
     }
 
+    // 회원별 review 리스트 조회
+    public List<Review> proReview(int proNo) {
+        List<Review> result = memberMapper.proReview(proNo);
+        return result;
+    }
+
+    public int proReviewCount(int proNo) {
+        return memberMapper.proReviewCount(proNo);
+    }
+
+    public int findMyReviewCount(int memberNo) {
+        return memberMapper.findMyReviewCount(memberNo);
+    }
+
     // 회원별 게시글 리스트 조회
     public List<MemberWithCommunity> memberMyPageCommunity(int memberNo) {
         List<MemberWithCommunity> result = memberMapper.memberMyPageCommunity(memberNo);
@@ -235,14 +249,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 
         // 아이디 찾기 실행
         return memberMapper.findMemberId(member);
-    }
-
-    public List<Review> myPageReview(int memberNo) {
-        return memberMapper.findMyReview(memberNo);
-    }
-
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
     }
 
 

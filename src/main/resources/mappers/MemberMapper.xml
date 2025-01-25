@@ -146,9 +146,9 @@
 		<association property="qna" javaType="QnA" resultMap="qnaMap" />
 		<association property="qnaReply" javaType="QnAReply" resultMap="qnaReplyMap" />
 	</resultMap>
-<!--
 
-	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage)&ndash;&gt;
+
+	<!-- myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) -->
 	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
 		SELECT
 			m.*, p.*, pi.*, pr.*
@@ -163,7 +163,7 @@
 		WHERE
 			m.member_type = 2;
 	</select>
--->
+
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
@@ -180,12 +180,29 @@
 		WHERE member_no = #{memberNo}
 	</select>
 
+	<!-- 전문가가 받은 총합 리뷰 (pro_no) -->
+	<select id="proReview" parameterType="int" resultMap="review">
+		SELECT *
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+
 	<!-- 자신이 작성한 리뷰 수 조회 -->
 	<select id="findMyReviewCount" parameterType="int" resultType="int">
 		SELECT COUNT(review_no)
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
+
+	<!-- 전문가가 받은 총합 리뷰 수(pro_no) -->
+	<select id="proReviewCount" parameterType="int" resultMap="int">
+		SELECT COUNT(review_no)
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+
 
 	<!-- 회원별 작성한 게시글 조회 -->
 	<select id="memberMyPageCommunity" parameterType="int" resultMap="memberWithCommunityMap">

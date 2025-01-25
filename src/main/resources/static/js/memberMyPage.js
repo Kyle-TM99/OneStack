@@ -219,7 +219,7 @@ $(document).ready(function() {
 								if (response.data.length === 0) {
 									reviewHtml = `
 						                                <div class="text-center py-5">
-						                                    <p class="text-muted">작성된 리뷰가 없습니다.</p>
+						                                    <p class="text-muted">생성된 포트폴리오가 없습니다.</p>
 						                                </div>
 						                            `;
 								}

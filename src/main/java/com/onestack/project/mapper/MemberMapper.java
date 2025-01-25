@@ -18,8 +18,10 @@ public interface MemberMapper {
 
 	// 회원별 작성 리뷰 조회
 	public List<Review> findMyReview(int memberNo);
+	public List<Review> proReview(int proNo);
 	// 회원별 작성 리뷰 수 조회
 	public int findMyReviewCount(int memberNo);
+	public int proReviewCount(int proNo);
 
 	// 회원별 작성 게시글 조회
 	public List<MemberWithCommunity> memberMyPageCommunity(int memberNo);
