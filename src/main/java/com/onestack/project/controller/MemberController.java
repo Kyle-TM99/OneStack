@@ -224,6 +224,11 @@ public class MemberController {
         return "member/findId";
     }
 
+    @GetMapping("/findPass")
+    public String showFindPassForm() {
+        return "member/findPass";
+    }
+
     @PostMapping("/findPass")
     @ResponseBody
     public Map<String, Object> findPass(
