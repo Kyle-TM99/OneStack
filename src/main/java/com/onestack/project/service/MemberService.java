@@ -271,7 +271,7 @@ public class MemberService {
         
         Member member = memberMapper.getMember(memberId);
         log.info("조회된 회원 정보: {}", member);
-        
+
         if (member == null) {
             log.error("회원 정보가 없음 - memberId: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
@@ -279,6 +279,11 @@ public class MemberService {
         
         if (!email.equals(member.getEmail())) {
             log.error("이메일 불일치 - 입력: {}, DB: {}", email, member.getEmail());
+            throw new RuntimeException("일치하는 회원 정보가 없습니다.");
+        }
+
+        if (member.isSocial()) {
+            log.error("소셜계정은 비밀번호 변경할 수 없습니다. - 소셜 여부: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
         

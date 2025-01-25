@@ -30,11 +30,11 @@ VALUES
     ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 2, 0),
     ('전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0),
     ('전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0);
-INSERT IGNORE INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
-    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1, 0),
-    ('관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1);
 
-INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
+INSERT IGNORE INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin)
+   VALUES('관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1);
+
+INSERT IGNORE INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
     (1, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 11000, 20),
     (2, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 3, 1, NULL, '오전 8시 - 오후 9시', 15000, 10),
@@ -64,6 +64,7 @@ VALUES
     (26, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 88700, 22),
     (27, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 53500, 18),
     (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 10시', 11100, 25);
+
 -- 카테고리
 INSERT IGNORE INTO Category (item_no, item_title, category_no)
 VALUES
@@ -110,6 +111,7 @@ VALUES (1, 11, '요구사항 정의서', '기술/IT', NULL, NULL, NULL),
        (26, 11, '기타', '기타', NULL, NULL, NULL),
        (27, 11, '기타', '기타', NULL, NULL, NULL),
        (28, 12, '신규 제작', '미드(4~9년)', NULL, NULL, NULL);
+
 -- 포트폴리오
 INSERT IGNORE INTO Portfolio(pro_no, pro_advanced_no, portfolio_title , portfolio_content , visibility,
                       thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
@@ -134,6 +136,7 @@ VALUES
 -- 설문조사 더미 데이터 --
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(1, 11, '의뢰 받을 기획서 종류를 선택해주세요.', '요구사항 정의서, 기능 명세서, 스토리보드, 기타');
+
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(2, 11, '의뢰 받을 사업 분야를 알려주세요.', '기술/IT, 제조, 도소매, 요식, 교육, 보건/복지, 비영리, 기타');
 
@@ -253,10 +256,8 @@ INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_o
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
-select * FROM MEMBER;
-select * from inquiry;
 -- 회원 문의글 더미 데이터 --
-INSERT INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_status, inquiry_satisfaction)
+INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
 VALUES (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 되지 않습니다.', NOW(),'답변 대기', false),
 (1, '결제 문의드립니다', '결제 후 포인트가 적립되지 않았어요', DATE_SUB(NOW(), INTERVAL 1 DAY), '답변 중', true),
 (2, '회원 정보 변경 문의', '프로필 사진을 변경하고 싶은데 방법을 모르겠어요', DATE_SUB(NOW(), INTERVAL 2 DAY), '답변 완료', true),
@@ -268,7 +269,7 @@ VALUES (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 
 (3, '회원 탈퇴 문의', '회원 탈퇴는 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 8 DAY), '답변 완료', false),
 (1, '오류 신고드립니다', '페이지 로딩이 안되는 오류가 있습니다', DATE_SUB(NOW(), INTERVAL 9 DAY), '답변 대기', false);
 
-INSERT INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
+INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
 VALUES (1, '로그인이 안돼요', '비밀번호를 입력했는데 로그인이 되지 않습니다.', NOW(), NULL, '답변 대기', 0),
 (2, '회원 정보 수정', '전화번호 변경을 요청합니다.', NOW(), NULL, '답변 중', 0),
 (3, '결제 오류', '결제가 완료되지 않고 오류가 발생했습니다.', NOW(), NULL, '답변 완료', 1),
