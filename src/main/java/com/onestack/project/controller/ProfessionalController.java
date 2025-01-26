@@ -114,7 +114,7 @@ public class ProfessionalController {
         if (memberId == null) {
             return "redirect:/loginForm";
         }
-        int memberNo = memberService.getMemberById(memberId);
+
         model.addAttribute("member", memberService.getMember(memberId));
         model.addAttribute("categories", surveyService.getAllCategories());
 

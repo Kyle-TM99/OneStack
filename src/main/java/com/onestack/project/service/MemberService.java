@@ -322,11 +322,4 @@ public class MemberService {
         memberMapper.deletePasswordResetToken(token);
     }
 
-
-    
-    public Integer getMemberById(String memberId) {
-        int memberNo = memberMapper.findMemberNoByMemberId(memberId);
-        return memberNo;
-    }
-
 }

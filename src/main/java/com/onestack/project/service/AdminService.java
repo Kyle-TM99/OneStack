@@ -46,7 +46,56 @@ public class AdminService {
 		return managerMapper.getMember();
 	}
 
-	public void addReports(Reports reports){
+	// 신고 대상의 타입 자동 식별
+	public String identifyReportType(int targetId) {
+		if (managerMapper.existsInCommunity(targetId)) {
+			return "community";
+		} else if (managerMapper.existsInQna(targetId)) {
+			return "qna";
+		} else if (managerMapper.existsInReply(targetId)) {
+			return "reply";
+		} else if (managerMapper.existsInReview(targetId)) {
+			return "review";
+		}
+		return null; // 대상이 어느 테이블에도 없을 경우
+	}
+
+	// 신고 정보 저장
+	public void addReports(Reports reports) {
 		managerMapper.addReports(reports);
 	}
+
+	public boolean disableContent(String type, int no) {
+		int rowsAffected = 0;
+
+		switch (type) {
+			case "post": // 커뮤니티 게시글 비활성화
+				rowsAffected = managerMapper.updatePostActivation(no, 0); // 0: 비활성화
+				break;
+			case "qna": // QnA 게시글 비활성화
+				rowsAffected = managerMapper.updateQnAStatus(no, 0); // 0: 비활성화
+				break;
+			case "comment": // 댓글 비활성화
+				rowsAffected = managerMapper.updateCommentActivation(no, 0); // 0: 비활성화
+				break;
+			case "review": // 리뷰 비활성화
+				rowsAffected = managerMapper.updateReviewActivation(no, 0); // 0: 비활성화
+				break;
+			default:
+				throw new IllegalArgumentException("유효하지 않은 유형입니다: " + type);
+		}
+
+		return rowsAffected > 0; // 비활성화 성공 여부 반환
+	}
+
+	// 신고 대상의 신고 횟수 증가
+	public boolean incrementReportedCount(int memberNo) {
+		int rowsAffected = managerMapper.incrementReportedCount(memberNo);
+		return rowsAffected > 0;
+	}
+
+	public List<Reports> getReportsMember() {
+		return managerMapper.getReportedMember();
+	}
+
 }

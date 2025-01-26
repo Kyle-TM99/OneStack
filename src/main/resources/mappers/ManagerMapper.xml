@@ -118,6 +118,79 @@
 	    member_status = #{memberStatus}
 	WHERE member_No = #{memberNo}
 </update>
+<!-- 커뮤니티에 대상 존재 여부 확인 -->
+<select id="existsInCommunity" parameterType="int" resultType="boolean">
+	SELECT EXISTS (
+	SELECT 1
+	FROM Community
+	WHERE community_board_no = #{targetId}
+	)
+</select>
+
+<!-- QnA에 대상 존재 여부 확인 -->
+<select id="existsInQna" parameterType="int" resultType="boolean">
+	SELECT EXISTS (
+	SELECT 1
+	FROM QnA
+	WHERE qna_board_no = #{targetId}
+	)
+</select>
+
+<!-- 댓글에 대상 존재 여부 확인 -->
+<select id="existsInReply" parameterType="int" resultType="boolean">
+	SELECT EXISTS (
+	SELECT 1
+	FROM CommunityReply
+	WHERE community_reply_no = #{targetId}
+	)
+</select>
+
+<!-- 리뷰에 대상 존재 여부 확인 -->
+<select id="existsInReview" parameterType="int" resultType="boolean">
+	SELECT EXISTS (
+	SELECT 1
+	FROM Review
+	WHERE review_no = #{targetId}
+	)
+</select>
+
+<!-- 신고 정보 저장 -->
+<insert id="addReports" parameterType="Reports">
+	INSERT INTO Reports (member_no, reported_member_no, reports_type, reports_target, reports_reason, reports_status, reports_target_link)
+	VALUES (#{memberNo}, #{reportedMemberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsStatus}, #{reportsTargetLink})
+</insert>
+
+<!-- 신고 대상 신고 횟수 증가 -->
+<update id="incrementReportedCount" parameterType="int">
+	UPDATE Member
+	SET reported_count = reported_count + 1
+	WHERE member_no = #{memberNo}
+</update>
+
+<!-- 신고qna 비활성화 -->
+<update id="updateqnaActivation" parameterType="map">
+	UPDATE QnA
+	SET qna_board_activation = #{status}
+	WHERE qna_board_no = #{no}
+</update>
+<!-- 신고게시글 비활성화-->
+<update id="updatePostActivation" parameterType="map">
+	UPDATE Community
+	SET community_board_activation = #{status}
+	WHERE community_board_no = #{no}
+</update>
+<!--신고 댓글 비활성화 -->
+<update id="updateCommentActivation" parameterType="map">
+	UPDATE CommunityReply
+	SET community_reply_activation = #{status}
+	WHERE community_reply_no = #{no}
+</update>
+<!-- 신고 리뷰 비활성화 -->
+<update id="updateReviewActivation" parameterType="map">
+	UPDATE Review
+	SET review_activation = #{status}
+	WHERE review_no = #{no}
+</update>
 
 <!-- 탈퇴 회원 조회 -->
 <select id = "getWithdrawalMember" resultType = "Member">
@@ -132,6 +205,12 @@
    FROM Member 
    WHERE member_type = 2 and member_type = 1
 </select>
+
+<select id="getReportedMember" resultType="Reports">
+	SELECT *
+	FROM Reports
+</select>
+
 
 <!-- 회원 정지 -->
 <update id = "banMember" parameterType = "map">
@@ -293,29 +372,6 @@
 	SET qna_reply_activation = #{status}
 	WHERE qna_reply_no = #{qnaReplyNo}
 </update>
-
-<!-- 리뷰 활성화/비활성화 -->
-<update id = "updateReviewActivation" parameterType ="map">
-	UPDATE Review
-	SET review_activation = #{status}
-	WHERE review_no = #{reviewNo}
-</update>
-
-<!-- 신고 -->
-<insert id = "addReports" parameterType = "Reports" useGeneratedKeys = "true" keyProperty = "reportsNo">
-	INSERT INTO Reports(member_no,reported_member_no, reports_type, reports_target, reports_reason, reports_target_link)
-	VALUES (#{memberNo}, #{reportedMemberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsLink})
-</insert>
-
-
-	<!-- 신고 횟수 증가 -->
-<select id = "incrementReportedCount" parameterType = "int">
-	UPDATE Member
-	SET reported_count = reported_count + 1
-	WHERE member_no = #{memberNo}
-</select>
-
-
 
 
 

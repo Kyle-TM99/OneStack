@@ -28,5 +28,26 @@ public interface ManagerMapper {
 
 	public Member getMember();
 
+	boolean existsInCommunity(@Param("typeId") int typeId);
+	boolean existsInQna(@Param("typeId") int typeId);
+	boolean existsInReply(@Param("typeId") int typeId);
+	boolean existsInReview(@Param("typeId") int typeId);
+
+	// 신고 정보 저장
 	void addReports(Reports reports);
+
+	// 신고 대상 신고 횟수 증가
+	int incrementReportedCount(@Param("memberNo") int memberNo);
+
+
+	int updateQnAStatus(@Param("no") int no, @Param("status") int status);
+
+	int updatePostActivation(@Param("no") int no, @Param("status") int status);
+
+	int updateCommentActivation(@Param("no") int no, @Param("status") int status);
+
+	int updateReviewActivation(@Param("no") int no, @Param("status") int status);
+
+	List<Reports> getReportedMember();
+
 }

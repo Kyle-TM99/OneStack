@@ -16,9 +16,9 @@ public class Reports {
     private int memberNo;
     private int reportedMemberNo;
     private String reportsType;
-    private Integer reportsTarget;
+    private String reportsTarget;
     private String reportsReason;
     private int reportsStatus;
     private Timestamp reportsDate;
-    private String reportsLink;
+    private String reportsTargetLink;
 }

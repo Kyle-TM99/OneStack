@@ -101,8 +101,4 @@ public interface MemberMapper {
 
 	public void deletePasswordResetToken(String token);
 
-	// LHB - 아이디로 회원번호 조회
-	Integer findMemberNoByMemberId(String memberId);
-
-
 }
