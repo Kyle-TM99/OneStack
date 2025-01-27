@@ -92,7 +92,7 @@
 </select>
 
 <!-- 문의글 상세 조회 -->
-<select id="getInquiryDetail" resultType="inquiry">
+<select id="getInquiryDetail" resultMap="InquiryResultMap">
 	SELECT * FROM Inquiry
 	WHERE inquiry_no = #{inquiryNo}
 </select>
@@ -143,7 +143,7 @@
 </select>
 
 <!-- 문의글 작성 -->
-<insert id = "addInquiry" parameterType = "Inquiry" useGeneratedKeys = "true" keyProperty = "inquiryNo">
+<insert id="addInquiry" parameterType="Inquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
 	INSERT INTO Inquiry(member_no, inquiry_title, inquiry_content, inquiry_file)
 	VALUES (#{memberNo}, #{inquiryTitle}, #{inquiryContent}, #{inquiryFile})
 </insert>

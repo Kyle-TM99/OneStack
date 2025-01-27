@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
 <head>
-    <style>
-
-    </style>
 </head>
 <body>
   <div layout:fragment="content">
@@ -17,9 +16,8 @@
 		    <div class="col-md-1"></div>
         <div class="col-md-10">
           <h2 class="fw-bold" th:text="${inquiry.inquiryTitle}">문의 제목</h2>
-          <p th:text="${inquiry.inquiryContent}">문의 내용이 여기에 표시됩니다.</p>
-          <p>작성자: <span th:text="${inquiry.memberName}">사용자 이름</span></p>
-          <p>작성일: <span th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd')}">2023-10-01</span></p>
+          <p th:text="${inquiry.inquiryContent}">문의 내용</p>
+          <p>작성일 : <span th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}"></span></p>
         </div>
 		    <div class="col-md-1"></div>
       </div>
@@ -28,7 +26,7 @@
 		    <div class="col-md-1"></div>
         <div class="col-md-10">
           <h3 class="fw-bold">답변</h3>
-          <p th:text="${inquiry.answerContent}">답변 내용이 여기에 표시됩니다.</p>
+<!--          <p th:text="${inquiry.answerContent}">답변 내용이 여기에 표시됩니다.</p>-->
         </div>
 		    <div class="col-md-1"></div>
       </div>

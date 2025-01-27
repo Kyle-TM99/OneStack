@@ -99,11 +99,10 @@ public class InquiryController {
         return "redirect:/memberInquiry";
     }
 
-    @GetMapping("/InquiryDetail")
+    @GetMapping("/{inquiryNo}")
     public String getInquiryDetail(@PathVariable int inquiryNo, Model model) {
         Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
         model.addAttribute("inquiry", inquiry);
-        return "inquiry/inquiryDetails"; // 상세보기 페이지로 이동
+        return "inquiry/inquiryDetail";
     }
-
 }
