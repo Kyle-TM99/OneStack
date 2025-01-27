@@ -21,4 +21,7 @@ public class Reports {
     private int reportsStatus;
     private Timestamp reportsDate;
     private String reportsTargetLink;
+
+    private String reporterNickname;
+    private String reportedNickname;
 }

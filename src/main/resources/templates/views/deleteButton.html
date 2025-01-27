@@ -2,32 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>버튼 표시</title>
+  <title>비활성화 관리</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/adminPage.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .delete-btn {
-      background-color: blue;
-      color: white;
-      border: none;
-    }
-    .report-btn {
-      background-color: red;
-      color: white;
-      border: none;
-    }
-  </style>
 </head>
 <body>
 <!-- 회원인 경우 -->
 <div th:unless="${session.member.isAdmin}">
-  <button class="report-btn btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">신고</button>
+  <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">신고</button>
 </div>
 
 <!-- 신고 모달 -->
@@ -38,12 +20,10 @@
         <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="reportForm">
+      <form th:action="@{/report}" method="post">
         <div class="modal-body">
-          <input type="hidden" id="memberNo" th:value="${session.member.memberNo}" />
-          <input type="hidden" id="reportedMemberNo"
-                 th:value="${member != null && member.memberNo != null ? member.memberNo : 3}" />
-
+          <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+          <input type="hidden" name="reportedMemberNo" th:value="${member?.memberNo ?: 3}" />
 
           <div class="mb-3">
             <label for="reportsType" class="form-label">신고 유형</label>
@@ -63,140 +43,114 @@
               <option value="스팸">스팸</option>
               <option value="기타">기타</option>
             </select>
-
           </div>
 
           <div class="mb-3">
             <label for="reportsReason" class="form-label">신고 사유</label>
-            <textarea id="reportsReason" name="reportReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
+            <textarea id="reportsReason" name="reportsReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          <button type="button" class="btn btn-primary" id="submitReport">신고 접수</button>
+          <button type="submit" class="btn btn-primary">신고 접수</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
+<!-- 관리자 비활성화 관리 -->
 <div th:if="${session.member.isAdmin}">
+  <!-- 질문 게시글 비활성화 -->
+  <form th:action="@{/disable}" method="post">
+    <input type="hidden" name="type" value="qna"> <!-- 유형 -->
+    <input type="hidden" name="no" th:value="${QnA.qnaBoardNo}">
+    <button type="submit" class="btn btn-warning">질문 게시글 비활성화</button>
+  </form>
 
-  <!-- 게시글 비활성화 버튼 -->
-  <button
-          class="disable-btn btn btn-warning"
-          data-type="post"
-          data-id="2"> // 실제 적용 시 ${Community.communityBoardNo} 로 수정 사용 게시글 비활성화
-  </button>
+  <!-- 전체 게시글 비활성화 -->
+  <form th:action="@{/disable}" method="post">
+    <input type="hidden" name="type" value="post"> <!-- 유형 -->
+    <input type="hidden" name="no" th:value="${Community.communityBoardNo}">
+    <button type="submit" class="btn btn-warning">전체 게시글 비활성화</button>
+  </form>
 
-  <!-- 회원 비활성화 버튼 -->
-  <button
-          class="disable-btn btn btn-warning"
-          data-type="qna"
-          data-id="1"> // 실제 적용시 ${QnA.qnaBoardNo}로 수정
-    회원 비활성화
-  </button>
+  <!-- 전체 게시글 댓글 비활성화 -->
+  <form th:action="@{/disable}" method="post">
+    <input type="hidden" name="type" value="comment"> <!-- 유형 -->
+    <input type="hidden" name="no" th:value="${CommunityReply.communityReplyNo}">
+    <button type="submit" class="btn btn-warning">댓글 비활성화</button>
+  </form>
 
-  <!-- 댓글 비활성화 버튼 -->
-  <button
-          class="disable-btn btn btn-warning"
-          data-type="comment"
-          data-id="1"> // 실제 적용시 ${CommunityReply.communityReplyNo}로 수정
-    댓글 비활성화
-  </button>
+  <!-- QnA 댓글 비활성화 -->
+  <form th:action="@{/disable}" method="post">
+    <input type="hidden" name="type" value="qnaComment"> <!-- 유형 -->
+    <input type="hidden" name="no" th:value="${QnAReply.qnaReplyNo}">
+    <button type="submit" class="btn btn-warning">QnA 댓글 비활성화</button>
+  </form>
 
-  <!-- 리뷰 비활성화 버튼 -->
-  <button
-          class="disable-btn btn btn-warning"
-          data-type="review"
-          data-id="1"> // 실제 적용시 ${Review.reviewNo}로 수정
-    리뷰 비활성화
-  </button>
-
+  <!-- 리뷰 비활성화 -->
+  <form th:action="@{/disable}" method="post">
+    <input type="hidden" name="type" value="review"> <!-- 유형 -->
+    <input type="hidden" name="no" th:value="${Review.reviewNo}">
+    <button type="submit" class="btn btn-warning">리뷰 비활성화</button>
+  </form>
 </div>
-<script>
-<!--회원 신고 접수 -->
-  document.getElementById("submitReport").addEventListener("click", function () {
-    const reportedMemberNo = parseInt(document.getElementById("reportedMemberNo").value, 10); // 신고자 ID
-    const memberNo = parseInt(document.getElementById("memberNo").value, 10); // 신고 대상 ID
-    const reportsType = document.getElementById("reportsType").value; // 신고 유형
-    const reportsTarget = document.getElementById("reportsTarget").value; // 신고 항목
-    const reportsReason = document.getElementById("reportsReason").value; // 신고 사유
-    const reportsLink = window.location.href; // 현재 페이지 URL
 
-    // 데이터 객체 생성
-    const reportData = {
-      memberNo,
-      reportedMemberNo,
-      reportsType,
-      reportsTarget,
-      reportsReason,
-      reportsLink,
-    };
 
-    // 데이터 검증 (필요한 경우)
-    if (!reportedMemberNo || !memberNo || !reportsType || !reportsTarget || !reportsReason) {
-      alert("모든 필드를 입력해주세요.");
-      return;
-    }
-    // AJAX 요청
-    fetch("/report", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reportData),
-    })
-            .then((response) => {
-              if (response.ok) {
-                return response.text().then((message) => {
-                  alert(message);
-                  location.reload();
-                });
-              } else {
-                    return response.text().then((error) => {
-                      console.error("Error Response:", error);
-                      console.log("Report Data:", reportData);
-                      alert(`신고 접수 실패: ${error}`);
-                });
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              alert("서버와의 통신 중 오류가 발생했습니다.");
-            });
-  });
+<!--<script>-->
+<!--&lt;!&ndash;회원 신고 접수 &ndash;&gt;-->
+<!--  document.getElementById("submitReport").addEventListener("click", function () {-->
+<!--    const reportedMemberNo = parseInt(document.getElementById("reportedMemberNo").value, 10); // 신고자 ID-->
+<!--    const memberNo = parseInt(document.getElementById("memberNo").value, 10); // 신고 대상 ID-->
+<!--    const reportsType = document.getElementById("reportsType").value; // 신고 유형-->
+<!--    const reportsTarget = document.getElementById("reportsTarget").value; // 신고 항목-->
+<!--    const reportsReason = document.getElementById("reportsReason").value; // 신고 사유-->
+<!--    const reportsLink = window.location.href; // 현재 페이지 URL-->
 
-<!-- 관리자 비활성화 -->
-  document.querySelectorAll(".disable-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-        const type = this.getAttribute("data-type"); // 유형: post, qna, comment, review
-        const no = this.getAttribute("data-id"); // 대상 ID
+<!--    // 데이터 객체 생성-->
+<!--    const reportData = {-->
+<!--      memberNo,-->
+<!--      reportedMemberNo,-->
+<!--      reportsType,-->
+<!--      reportsTarget,-->
+<!--      reportsTargetLink: reportsLink,-->
+<!--      reportsReason,-->
+<!--      reportsLink,-->
+<!--    };-->
 
-        if (!confirm(`${type}을(를) 비활성화하시겠습니까?`)) {
-            return;
-        }
-
-        // 서버로 비활성화 요청 전송
-        fetch(`/disable/${type}/${no}`, {
-            method: "POST",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    alert(`${type}이(가) 비활성화되었습니다.`);
-                    location.reload(); // 페이지 새로고침
-                } else {
-                    response.text().then((message) => {
-                        alert(`비활성화 실패: ${message}`);
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("서버와의 통신 중 오류가 발생했습니다.");
-            });
-    });
-});
-</script>
+<!--    // 데이터 검증 (필요한 경우)-->
+<!--    if (!reportedMemberNo || !memberNo || !reportsType || !reportsTarget || !reportsReason) {-->
+<!--      alert("모든 필드를 입력해주세요.");-->
+<!--      return;-->
+<!--    }-->
+<!--    // AJAX 요청-->
+<!--    fetch("/report", {-->
+<!--      method: "POST",-->
+<!--      headers: {-->
+<!--        "Content-Type": "application/json",-->
+<!--      },-->
+<!--      body: JSON.stringify(reportData),-->
+<!--    })-->
+<!--            .then((response) => {-->
+<!--              if (response.ok) {-->
+<!--                return response.text().then((message) => {-->
+<!--                  alert(message);-->
+<!--                  location.reload();-->
+<!--                });-->
+<!--              } else {-->
+<!--                    return response.text().then((error) => {-->
+<!--                      console.error("Error Response:", error);-->
+<!--                      console.log("Report Data:", reportData);-->
+<!--                      alert(`신고 접수 실패: ${error}`);-->
+<!--                });-->
+<!--              }-->
+<!--            })-->
+<!--            .catch((error) => {-->
+<!--              console.error("Error:", error);-->
+<!--              alert("서버와의 통신 중 오류가 발생했습니다.");-->
+<!--            });-->
+<!--  });-->
+<!--</script>-->
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.onestack.project.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.onestack.project.domain.QnA;
 import com.onestack.project.domain.Reports;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class AdminController {
 
     @GetMapping("/delete")
     public String delete(HttpSession session, Model model) {
+
         Member member = (Member) session.getAttribute("member");
         String memberId = member.getMemberId();
 
@@ -67,13 +69,11 @@ public class AdminController {
         }
     }
 
-
-    @PostMapping("/disable/{type}/{id}")
+    @PostMapping("/disable")
     public ResponseEntity<String> disableContent(
-            @PathVariable String type, // 대상 유형: post, qna, comment, review
-            @PathVariable int no,      // 대상 ID
-            HttpSession session
-    ) { System.out.println("Disable request received: type=" + type + ", no=" + no);
+            @PathVariable String type,
+            @PathVariable int no,
+            HttpSession session) {
 
         // 현재 로그인한 사용자가 관리자 권한을 가지고 있는지 확인
         Member currentMember = (Member) session.getAttribute("member");

@@ -2,11 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>신고 요청 조회</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/adminPage.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body>
 <div class="d-flex flex-column min-vh-100">
-
     <!-- 테이블을 감싸는 영역 -->
     <div class="flex-grow-1">
         <table class="table">
@@ -28,8 +30,8 @@
             <tr th:each="report : ${reportsList}" th:attr="data-report-no=${report.reportsNo}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${report.reportsNo}">신고 번호</td>
-                <td th:text="${report.memberNo}">신고자</td>
-                <td th:text="${report.reportedMemberNo}">신고 대상</td>
+                <td th:text="${report.reporterNickname}">신고자</td>
+                <td th:text="${report.reportedNickname}">신고 대상</td>
                 <td th:text="${report.reportsType}">신고 타입</td>
                 <td th:text="${report.reportsReason}">신고 사유</td>
                 <td>
@@ -75,6 +77,7 @@
 </div>
 
 <!-- 신고 상세 정보 모달 -->
+<!-- 신고 상세 정보 모달 -->
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -91,13 +94,13 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-muted small">신고자</label>
-                            <input type="text" class="form-control" name="memberNo" id="memberNo" readonly>
+                            <input type="text" class="form-control" name="reporterNickname" id="reporterNickname" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label text-muted small">신고 대상</label>
-                            <input type="text" class="form-control" name="reportedMemberNo" id="reportedMemberNo" readonly>
+                            <input type="text" class="form-control" name="reportedNickname" id="reportedNickname" readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-muted small">신고 타입</label>
@@ -123,8 +126,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-primary" id="resolveReport">처리 완료</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
             </div>
         </div>
     </div>

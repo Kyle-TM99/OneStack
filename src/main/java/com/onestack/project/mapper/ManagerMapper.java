@@ -1,6 +1,7 @@
 package com.onestack.project.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.onestack.project.domain.Reports;
 import org.apache.ibatis.annotations.Mapper;
@@ -40,13 +41,21 @@ public interface ManagerMapper {
 	int incrementReportedCount(@Param("memberNo") int memberNo);
 
 
-	int updateQnAStatus(@Param("no") int no, @Param("status") int status);
+	// QnA 게시글 비활성화
+	int updateQnaActivation(Map<String, Object> params);
 
-	int updatePostActivation(@Param("no") int no, @Param("status") int status);
+	// Community 게시글 비활성화
+	int updatePostActivation(Map<String, Object> params);
 
-	int updateCommentActivation(@Param("no") int no, @Param("status") int status);
+	// Community 댓글 비활성화
+	int updateCommentActivation(Map<String, Object> params);
 
-	int updateReviewActivation(@Param("no") int no, @Param("status") int status);
+	// QnA 댓글 비활성화
+	int updateQnaReplyActivation(Map<String, Object> params);
+
+	// 리뷰 비활성화
+	int updateReviewActivation(Map<String, Object> params);
+
 
 	List<Reports> getReportedMember();
 

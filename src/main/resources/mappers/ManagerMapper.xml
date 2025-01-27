@@ -167,30 +167,41 @@
 	WHERE member_no = #{memberNo}
 </update>
 
-<!-- 신고qna 비활성화 -->
-<update id="updateqnaActivation" parameterType="map">
-	UPDATE QnA
-	SET qna_board_activation = #{status}
-	WHERE qna_board_no = #{no}
-</update>
-<!-- 신고게시글 비활성화-->
-<update id="updatePostActivation" parameterType="map">
-	UPDATE Community
-	SET community_board_activation = #{status}
-	WHERE community_board_no = #{no}
-</update>
-<!--신고 댓글 비활성화 -->
-<update id="updateCommentActivation" parameterType="map">
-	UPDATE CommunityReply
-	SET community_reply_activation = #{status}
-	WHERE community_reply_no = #{no}
-</update>
-<!-- 신고 리뷰 비활성화 -->
-<update id="updateReviewActivation" parameterType="map">
-	UPDATE Review
-	SET review_activation = #{status}
-	WHERE review_no = #{no}
-</update>
+	<!-- 질문 게시글 비활성화 -->
+	<update id="updateQnaActivation" parameterType="map">
+		UPDATE QnA
+		SET qna_board_activation = #{qnaBoardActivation}
+		WHERE qna_board_no = #{qnaBoardNo}
+	</update>
+
+	<!-- 전체 게시글 비활성화 -->
+	<update id="updatePostActivation" parameterType="map">
+		UPDATE Community
+		SET community_board_activation = #{communityBoardActivation}
+		WHERE community_board_no = #{communityBoardNo}
+	</update>
+
+	<!-- 전체 게시글 댓글 비활성화 -->
+	<update id="updateCommentActivation" parameterType="map">
+		UPDATE CommunityReply
+		SET community_reply_activation = #{communityReplyActivation}
+		WHERE community_reply_no = #{communityReplyNo}
+	</update>
+
+	<!-- 질문 게시글 댓글 비활성화 -->
+	<update id="updateQnaReplyActivation" parameterType="map">
+		UPDATE QnAReply
+		SET qna_reply_activation = #{qnaReplyActivation}
+		WHERE qna_reply_no = #{qnaReplyNo}
+	</update>
+
+	<!-- 리뷰 비활성화 -->
+	<update id="updateReviewActivation" parameterType="map">
+		UPDATE Review
+		SET review_activation = #{reviewActivation}
+		WHERE review_no = #{reviewNo}
+	</update>
+
 
 <!-- 탈퇴 회원 조회 -->
 <select id = "getWithdrawalMember" resultType = "Member">
@@ -206,11 +217,24 @@
    WHERE member_type = 2 and member_type = 1
 </select>
 
+<!-- ReportsMapper.xml -->
 <select id="getReportedMember" resultType="Reports">
-	SELECT *
-	FROM Reports
+	SELECT
+	r.reports_no,
+	r.member_no,
+	m.nickname AS reporterNickname,
+	r.reported_member_no,
+	rm.nickname AS reportedNickname,
+	r.reports_type,
+	r.reports_reason,
+	r.reports_target,
+	r.reports_status,
+	r.reports_date,
+	r.reports_target_link
+	FROM Reports r
+	JOIN Member m ON r.member_no = m.member_no
+	JOIN Member rm ON r.reported_member_no = rm.member_no
 </select>
-
 
 <!-- 회원 정지 -->
 <update id = "banMember" parameterType = "map">

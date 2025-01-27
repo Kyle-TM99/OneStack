@@ -1,6 +1,8 @@
 package com.onestack.project.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.onestack.project.domain.Reports;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,24 +71,30 @@ public class AdminService {
 		int rowsAffected = 0;
 
 		switch (type) {
-			case "post": // 커뮤니티 게시글 비활성화
-				rowsAffected = managerMapper.updatePostActivation(no, 0); // 0: 비활성화
+			case "post": // 전체 게시글 비활성화
+				rowsAffected = managerMapper.updatePostActivation(Map.of("communityBoardNo", no, "communityBoardActivation", 0));
 				break;
-			case "qna": // QnA 게시글 비활성화
-				rowsAffected = managerMapper.updateQnAStatus(no, 0); // 0: 비활성화
+			case "qna": // 질문 게시글 비활성화
+				rowsAffected = managerMapper.updateQnaActivation(Map.of("qnaBoardNo", no, "qnaBoardActivation", 0));
 				break;
-			case "comment": // 댓글 비활성화
-				rowsAffected = managerMapper.updateCommentActivation(no, 0); // 0: 비활성화
+			case "comment": // 전체 게시글 댓글 비활성화
+				rowsAffected = managerMapper.updateCommentActivation(Map.of("communityReplyNo", no, "communityReplyActivation", 0));
+				break;
+			case "qnaComment": // 질문 게시글 댓글 비활성화
+				rowsAffected = managerMapper.updateQnaReplyActivation(Map.of("qnaReplyNo", no, "qnaReplyActivation", 0));
 				break;
 			case "review": // 리뷰 비활성화
-				rowsAffected = managerMapper.updateReviewActivation(no, 0); // 0: 비활성화
+				rowsAffected = managerMapper.updateReviewActivation(Map.of("reviewNo", no, "reviewActivation", 0));
 				break;
 			default:
 				throw new IllegalArgumentException("유효하지 않은 유형입니다: " + type);
 		}
 
-		return rowsAffected > 0; // 비활성화 성공 여부 반환
+		return rowsAffected > 0; // 쿼리 수행 성공 여부 반환
 	}
+
+
+
 
 	// 신고 대상의 신고 횟수 증가
 	public boolean incrementReportedCount(int memberNo) {
