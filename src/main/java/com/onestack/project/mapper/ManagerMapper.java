@@ -3,12 +3,9 @@ package com.onestack.project.mapper;
 import java.util.List;
 import java.util.Map;
 
-import com.onestack.project.domain.Reports;
+import com.onestack.project.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import com.onestack.project.domain.MemProPortPaiCate;
-import com.onestack.project.domain.Member;
 
 @Mapper
 public interface ManagerMapper {
@@ -29,34 +26,23 @@ public interface ManagerMapper {
 
 	public Member getMember();
 
-	boolean existsInCommunity(@Param("typeId") int typeId);
-	boolean existsInQna(@Param("typeId") int typeId);
-	boolean existsInReply(@Param("typeId") int typeId);
-	boolean existsInReview(@Param("typeId") int typeId);
-
-	// 신고 정보 저장
 	void addReports(Reports reports);
 
 	// 신고 대상 신고 횟수 증가
-	int incrementReportedCount(@Param("memberNo") int memberNo);
+	int incrementReportedCount(int memberNo);
 
+	// 신고 리스트 조회
+	List<Reports> getReports();
 
-	// QnA 게시글 비활성화
-	int updateQnaActivation(Map<String, Object> params);
+	// 게시물 비활성화 처리
+	int disableTarget(@Param("type") String type, @Param("targetId") int targetId);
 
-	// Community 게시글 비활성화
-	int updatePostActivation(Map<String, Object> params);
+	void disableCommunity(@Param("communityBoardNo") int communityBoardNo);
+	void disableCommunityReply(@Param("communityReplyNo") int communityReplyNo);
+	void disableQna(@Param("qnaBoardNo") int qnaBoardNo);
+	void disableQnaReply(@Param("qnaReplyNo") int qnaReplyNo);
+	void disableReview(@Param("reviewNo") int reviewNo);
 
-	// Community 댓글 비활성화
-	int updateCommentActivation(Map<String, Object> params);
-
-	// QnA 댓글 비활성화
-	int updateQnaReplyActivation(Map<String, Object> params);
-
-	// 리뷰 비활성화
-	int updateReviewActivation(Map<String, Object> params);
-
-
-	List<Reports> getReportedMember();
-
+	// 신고 처리 상태 업데이트
+	void updateReportsStatus(@Param("reportsNo") int reportsNo, @Param("status") int status);
 }

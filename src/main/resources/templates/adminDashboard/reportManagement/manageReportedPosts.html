@@ -19,7 +19,7 @@
                 <th scope="col">신고자</th>
                 <th scope="col">신고 대상</th>
                 <th scope="col">신고 타입</th>
-                <th scope="col">신고 사유</th>
+                <th scope="col">신고 횟수</th>
                 <th scope="col">링크</th>
                 <th scope="col">신고일</th>
                 <th scope="col">활성화 여부</th>
@@ -27,17 +27,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="report : ${reportsList}" th:attr="data-report-no=${report.reportsNo}">
+            <tr th:each="report : ${reportsList}" th:if="${report.reportsStatus == 0}" th:attr="data-report-no=${report.reportsNo},data-target-id=${report.reportedMemberNo}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${report.reportsNo}">신고 번호</td>
                 <td th:text="${report.reporterNickname}">신고자</td>
                 <td th:text="${report.reportedNickname}">신고 대상</td>
                 <td th:text="${report.reportsType}">신고 타입</td>
-                <td th:text="${report.reportsReason}">신고 사유</td>
+                <!-- 신고 횟수 표시 -->
+                <td th:text="${report.reportedCount}">신고 횟수</td>
                 <td>
                     <a class="text-decoration-none text-muted" th:href="${report.reportsTargetLink}">바로가기</a>
                 </td>
-
                 <td th:text="${#dates.format(report.reportsDate, 'yyyy-MM-dd HH:mm:ss')}">2024-01-03</td>
                 <td th:text="${report.reportsStatus == 1 ? '처리 완료' : '미처리'}">미처리</td>
                 <td>
@@ -45,12 +45,13 @@
                             class="btn btn-outline-dark btn-sm report-edit-btn"
                             data-bs-toggle="modal"
                             data-bs-target="#reportModal"
-                            th:attr="data-report-id=${report.reportsNo}">
+                            th:attr="data-report-id=${report.reportsNo}, data-reports-reason=${report.reportsReason}">
                         상세 보기
                     </button>
                 </td>
             </tr>
             </tbody>
+
         </table>
     </div>
 
@@ -127,6 +128,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+                <button type="button" class="btn btn-outline-dark btn-disable">
+                    비활성화
+                </button>
             </div>
         </div>
     </div>

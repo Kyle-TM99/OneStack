@@ -118,46 +118,27 @@
 	    member_status = #{memberStatus}
 	WHERE member_No = #{memberNo}
 </update>
-<!-- 커뮤니티에 대상 존재 여부 확인 -->
-<select id="existsInCommunity" parameterType="int" resultType="boolean">
-	SELECT EXISTS (
-	SELECT 1
-	FROM Community
-	WHERE community_board_no = #{targetId}
-	)
-</select>
 
-<!-- QnA에 대상 존재 여부 확인 -->
-<select id="existsInQna" parameterType="int" resultType="boolean">
-	SELECT EXISTS (
-	SELECT 1
-	FROM QnA
-	WHERE qna_board_no = #{targetId}
-	)
-</select>
-
-<!-- 댓글에 대상 존재 여부 확인 -->
-<select id="existsInReply" parameterType="int" resultType="boolean">
-	SELECT EXISTS (
-	SELECT 1
-	FROM CommunityReply
-	WHERE community_reply_no = #{targetId}
-	)
-</select>
-
-<!-- 리뷰에 대상 존재 여부 확인 -->
-<select id="existsInReview" parameterType="int" resultType="boolean">
-	SELECT EXISTS (
-	SELECT 1
-	FROM Review
-	WHERE review_no = #{targetId}
-	)
-</select>
 
 <!-- 신고 정보 저장 -->
 <insert id="addReports" parameterType="Reports">
-	INSERT INTO Reports (member_no, reported_member_no, reports_type, reports_target, reports_reason, reports_status, reports_target_link)
-	VALUES (#{memberNo}, #{reportedMemberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason}, #{reportsStatus}, #{reportsTargetLink})
+	INSERT INTO Reports (
+	member_no,
+	reported_member_no,
+	reports_type,
+	reports_target,
+	reports_reason,
+	reports_status,
+	reports_target_link
+	) VALUES (
+	#{memberNo},
+	#{reportedMemberNo},
+	#{reportsType},
+	#{reportsTarget},
+	#{reportsReason},
+	#{reportsStatus},
+	#{reportsTargetLink}
+	)
 </insert>
 
 <!-- 신고 대상 신고 횟수 증가 -->
@@ -167,41 +148,43 @@
 	WHERE member_no = #{memberNo}
 </update>
 
-	<!-- 질문 게시글 비활성화 -->
-	<update id="updateQnaActivation" parameterType="map">
-		UPDATE QnA
-		SET qna_board_activation = #{qnaBoardActivation}
-		WHERE qna_board_no = #{qnaBoardNo}
-	</update>
+<!-- 신고 리스트 조회 -->
+<select id="getReports" resultType="Reports">
+	SELECT r.*,
+	m.nickname AS reporterNickname,
+	rm.nickname AS reportedNickname,
+	rm.reported_count AS reportedCount
+	FROM Reports r
+	JOIN Member m ON r.member_no = m.member_no
+	JOIN Member rm ON r.reported_member_no = rm.member_no
+	ORDER BY reports_date DESC
+</select>
 
-	<!-- 전체 게시글 비활성화 -->
-	<update id="updatePostActivation" parameterType="map">
-		UPDATE Community
-		SET community_board_activation = #{communityBoardActivation}
-		WHERE community_board_no = #{communityBoardNo}
-	</update>
-
-	<!-- 전체 게시글 댓글 비활성화 -->
-	<update id="updateCommentActivation" parameterType="map">
-		UPDATE CommunityReply
-		SET community_reply_activation = #{communityReplyActivation}
-		WHERE community_reply_no = #{communityReplyNo}
-	</update>
-
-	<!-- 질문 게시글 댓글 비활성화 -->
-	<update id="updateQnaReplyActivation" parameterType="map">
-		UPDATE QnAReply
-		SET qna_reply_activation = #{qnaReplyActivation}
-		WHERE qna_reply_no = #{qnaReplyNo}
-	</update>
-
-	<!-- 리뷰 비활성화 -->
-	<update id="updateReviewActivation" parameterType="map">
-		UPDATE Review
-		SET review_activation = #{reviewActivation}
-		WHERE review_no = #{reviewNo}
-	</update>
-
+<!-- 게시물 비활성화 -->
+<update id="disableTarget" parameterType="map">
+	<choose>
+		<when test="type == 'community'">
+			UPDATE Community
+			SET community_board_activation = 0
+			WHERE community_board_no = #{targetId}
+		</when>
+		<when test="type == 'qna'">
+			UPDATE QnA
+			SET qna_board_activation = 0
+			WHERE qna_board_no = #{targetId}
+		</when>
+		<when test="type == 'reply'">
+			UPDATE CommunityReply
+			SET community_reply_activation = 0
+			WHERE community_reply_no = #{targetId}
+		</when>
+		<when test="type == 'review'">
+			UPDATE Review
+			SET review_activation = 0
+			WHERE review_no = #{targetId}
+		</when>
+	</choose>
+</update>
 
 <!-- 탈퇴 회원 조회 -->
 <select id = "getWithdrawalMember" resultType = "Member">
@@ -215,25 +198,6 @@
    SELECT * 
    FROM Member 
    WHERE member_type = 2 and member_type = 1
-</select>
-
-<!-- ReportsMapper.xml -->
-<select id="getReportedMember" resultType="Reports">
-	SELECT
-	r.reports_no,
-	r.member_no,
-	m.nickname AS reporterNickname,
-	r.reported_member_no,
-	rm.nickname AS reportedNickname,
-	r.reports_type,
-	r.reports_reason,
-	r.reports_target,
-	r.reports_status,
-	r.reports_date,
-	r.reports_target_link
-	FROM Reports r
-	JOIN Member m ON r.member_no = m.member_no
-	JOIN Member rm ON r.reported_member_no = rm.member_no
 </select>
 
 <!-- 회원 정지 -->
@@ -280,11 +244,6 @@
 	WHERE member_no = #{memberNo}
 </update>
 
-
-
-
-
-
 <!-- 전문가 심사 처리 -->
 <update id="updateProStatus" parameterType="map">
     UPDATE Professional 
@@ -308,29 +267,47 @@
 
 
 
-
-
-
-<!-- 신고 내역 조회 -->
-<select id = "getReports" resultType = "Reports">
-	SELECT *
-	FROM Reports
-	<where>	
-		<if test = "type == 'before'">
-			reports_status = 0
-		</if>
-		<if test = "type == 'after'">
-			reports_status = 1
-		</if>
-	</where>
-</select>
-
 <!-- 신고 처리 전환 -->
 <update id = "updateReportsStatus" parameterType ="map">
 	UPDATE Reports
 	SET reports_status = #{status}
 	WHERE reports_no = #{reportsNo}
 </update>
+
+<update id="disableQna">
+	UPDATE QnA
+	SET  qna_board_activation = 0
+	WHERE qna_board_no = #{qnaBoardNo}
+</update>
+
+<!-- 커뮤니티 게시글 비활성화 -->
+<update id="disableCommunity">
+	UPDATE Community
+	SET community_board_activation = 0
+	WHERE community_board_no = #{communityBoardNo}
+</update>
+
+<!-- 커뮤니티 댓글 비활성화 -->
+<update id="disableCommunityReply">
+	UPDATE CommunityReply
+	SET community_reply_activation = 0
+	WHERE community_reply_no = #{communityReplyNo}
+</update>
+
+<!-- QnA 댓글 비활성화 -->
+<update id="disableQnaReply">
+	UPDATE QnAReply
+	SET qna_reply_activation = 0
+	WHERE qna_reply_no = #{qnaReplyNo}
+</update>
+
+<!-- 리뷰 비활성화 -->
+<update id="disableReview">
+	UPDATE Review
+	SET review_activation = 0
+	WHERE review_no = #{reviewNo}
+</update>
+
 
 
 <!-- 비활성화인 커뮤니티 조회 -->

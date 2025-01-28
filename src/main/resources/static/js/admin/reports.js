@@ -1,34 +1,62 @@
-// 이벤트 위임 방식으로 수정
 document.addEventListener("click", function (e) {
+    // 신고 상세 보기 버튼 클릭 시
     if (e.target.classList.contains("report-edit-btn")) {
-
         // 버튼에서 신고 번호 가져오기
         const reportId = e.target.getAttribute("data-report-id");
+        console.log(`신고 상세 보기 클릭: reportId=${reportId}`);
 
         // 신고 데이터를 포함한 테이블 행 찾기
         const reportRow = document.querySelector(`tr[data-report-no="${reportId}"]`);
-
         if (reportRow) {
+            // 테이블 데이터 가져와 모달에 채우기
             document.getElementById("reportsNo").value = reportRow.querySelector("td:nth-child(2)").textContent.trim();
             document.getElementById("reporterNickname").value = reportRow.querySelector("td:nth-child(3)").textContent.trim();
             document.getElementById("reportedNickname").value = reportRow.querySelector("td:nth-child(4)").textContent.trim();
             document.getElementById("reportsType").value = reportRow.querySelector("td:nth-child(5)").textContent.trim();
-            document.getElementById("reportsReason").value = reportRow.querySelector("td:nth-child(6)").textContent.trim();
-            document.getElementById("reportsDate").value = reportRow.querySelector("td:nth-child(8)").textContent.trim();
             document.getElementById("reportsDate").value = reportRow.querySelector("td:nth-child(8)").textContent.trim();
 
-            // 처리 상태 업데이트
+            // 신고사유는 버튼의 data-attribute에서 가져옴
+            const reportsReason = e.target.getAttribute("data-reports-reason");
+            document.getElementById("reportsReason").value = reportsReason ? reportsReason.trim() : "내용 없음";
+
+            // 활성화 여부 업데이트
             const statusText = reportRow.querySelector("td:nth-child(9)").textContent.trim();
-            const statusInput = document.getElementById("reportsStatus");
-            if (statusText === "처리 완료") {
-                statusInput.value = "비활성화"; // 처리 완료를 비활성화로 표시
-            } else {
-                statusInput.value = statusText; // 미처리 등 기존 상태 유지
-            }
+            document.getElementById("reportsStatus").value = statusText === "처리 완료" ? "비활성화" : statusText;
 
             console.log("모달 데이터 업데이트 완료");
         } else {
             console.error(`신고 번호 ${reportId}에 해당하는 데이터를 찾을 수 없습니다.`);
         }
     }
+
+    // 비활성화 버튼 클릭 시
+        if (e.target.classList.contains("btn-disable")) {
+            const reportsNo = document.getElementById("reportsNo").value;
+            const targetId = document.querySelector(`tr[data-report-no="${reportsNo}"]`).getAttribute("data-target-id");
+            const reportsType = document.getElementById("reportsType").value;
+
+            console.log(`비활성화 요청: reportsNo=${reportsNo}, targetId=${targetId}, reportsType=${reportsType}`);
+
+            // 비활성화 요청 서버 전송
+            fetch(`/disable?type=${reportsType}&targetId=${targetId}&reportsNo=${reportsNo}`, {
+                method: "POST",
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("비활성화 요청 실패");
+                    }
+                    return response.text();
+                })
+                .then((data) => {
+                    alert(data);
+                    location.reload();
+                })
+                .catch((error) => console.error("비활성화 요청 중 오류 발생:", error));
+        }
+      });
+
+// 모달 닫기 이벤트 (모달 초기화)
+document.getElementById("reportModal").addEventListener("hidden.bs.modal", function () {
+    document.getElementById("reportForm").reset();
+    console.log("모달 초기화 완료");
 });

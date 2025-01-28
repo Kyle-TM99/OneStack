@@ -5,6 +5,7 @@
   <title>비활성화 관리</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/adminPage.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <!-- 회원인 경우 -->
@@ -20,7 +21,7 @@
         <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form th:action="@{/report}" method="post">
+      <form th:action="@{/reports}" method="post">
         <div class="modal-body">
           <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
           <input type="hidden" name="reportedMemberNo" th:value="${member?.memberNo ?: 3}" />
@@ -52,7 +53,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          <button type="submit" class="btn btn-primary">신고 접수</button>
+          <button type="button" class="btn btn-primary" onclick="submitReport()">신고 접수</button>
         </div>
       </form>
     </div>
@@ -64,93 +65,92 @@
   <!-- 질문 게시글 비활성화 -->
   <form th:action="@{/disable}" method="post">
     <input type="hidden" name="type" value="qna"> <!-- 유형 -->
-    <input type="hidden" name="no" th:value="${QnA.qnaBoardNo}">
+    <input type="hidden" name="targetId" th:value="${qna != null ? qna.qnaBoardNo : 0}">
+    <input type="hidden" name="reportsNo" th:value="${report != null ? report.reportsNo : 0}">
     <button type="submit" class="btn btn-warning">질문 게시글 비활성화</button>
   </form>
 
   <!-- 전체 게시글 비활성화 -->
   <form th:action="@{/disable}" method="post">
-    <input type="hidden" name="type" value="post"> <!-- 유형 -->
-    <input type="hidden" name="no" th:value="${Community.communityBoardNo}">
+    <input type="hidden" name="type" value="community"> <!-- 유형 -->
+    <input type="hidden" name="targetId" th:value="${community != null ? community.communityBoardNo : 0}">
+    <input type="hidden" name="reportsNo" th:value="${report != null ? report.reportsNo : 0}">
     <button type="submit" class="btn btn-warning">전체 게시글 비활성화</button>
   </form>
 
-  <!-- 전체 게시글 댓글 비활성화 -->
+  <!-- 댓글 비활성화 -->
   <form th:action="@{/disable}" method="post">
-    <input type="hidden" name="type" value="comment"> <!-- 유형 -->
-    <input type="hidden" name="no" th:value="${CommunityReply.communityReplyNo}">
+    <input type="hidden" name="type" value="reply"> <!-- 유형 -->
+    <input type="hidden" name="targetId" th:value="${communityReply != null ? communityReply.communityReplyNo : 0}">
+    <input type="hidden" name="reportsNo" th:value="${report != null ? report.reportsNo : 0}">
     <button type="submit" class="btn btn-warning">댓글 비활성화</button>
   </form>
 
   <!-- QnA 댓글 비활성화 -->
   <form th:action="@{/disable}" method="post">
-    <input type="hidden" name="type" value="qnaComment"> <!-- 유형 -->
-    <input type="hidden" name="no" th:value="${QnAReply.qnaReplyNo}">
+    <input type="hidden" name="type" value="qnaReply"> <!-- 유형 -->
+    <input type="hidden" name="targetId" th:value="${qnaReply != null ? qnaReply.qnaReplyNo : 0}">
+    <input type="hidden" name="reportsNo" th:value="${report != null ? report.reportsNo : 0}">
     <button type="submit" class="btn btn-warning">QnA 댓글 비활성화</button>
   </form>
 
   <!-- 리뷰 비활성화 -->
   <form th:action="@{/disable}" method="post">
     <input type="hidden" name="type" value="review"> <!-- 유형 -->
-    <input type="hidden" name="no" th:value="${Review.reviewNo}">
+    <input type="hidden" name="targetId" th:value="${review != null ? review.reviewNo : 0}">
+    <input type="hidden" name="reportsNo" th:value="${report != null ? report.reportsNo : 0}">
     <button type="submit" class="btn btn-warning">리뷰 비활성화</button>
   </form>
 </div>
 
+<script>
+  function submitReport() {
+    // HTML 요소에서 값 가져오기
+    const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
+    const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
+    const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
+    const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
+    const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+    const reportsTargetLink = window.location.pathname; // 현재 페이지 URL 사용
 
-<!--<script>-->
-<!--&lt;!&ndash;회원 신고 접수 &ndash;&gt;-->
-<!--  document.getElementById("submitReport").addEventListener("click", function () {-->
-<!--    const reportedMemberNo = parseInt(document.getElementById("reportedMemberNo").value, 10); // 신고자 ID-->
-<!--    const memberNo = parseInt(document.getElementById("memberNo").value, 10); // 신고 대상 ID-->
-<!--    const reportsType = document.getElementById("reportsType").value; // 신고 유형-->
-<!--    const reportsTarget = document.getElementById("reportsTarget").value; // 신고 항목-->
-<!--    const reportsReason = document.getElementById("reportsReason").value; // 신고 사유-->
-<!--    const reportsLink = window.location.href; // 현재 페이지 URL-->
+    // report 객체 생성
+    const report = {
+        memberNo: parseInt(memberNo), // 숫자로 변환
+        reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+        reportsType: reportsType,
+        reportsTarget: reportsTarget,
+        reportsReason: reportsReason,
+        reportsStatus: 0, // 초기값
+        reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+    };
 
-<!--    // 데이터 객체 생성-->
-<!--    const reportData = {-->
-<!--      memberNo,-->
-<!--      reportedMemberNo,-->
-<!--      reportsType,-->
-<!--      reportsTarget,-->
-<!--      reportsTargetLink: reportsLink,-->
-<!--      reportsReason,-->
-<!--      reportsLink,-->
-<!--    };-->
+    // 데이터 전송
+    fetch('/reports', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(report)
+    })
+             .then(response => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw new Error("신고 처리 중 오류 발생");
+        }
+      })
 
-<!--    // 데이터 검증 (필요한 경우)-->
-<!--    if (!reportedMemberNo || !memberNo || !reportsType || !reportsTarget || !reportsReason) {-->
-<!--      alert("모든 필드를 입력해주세요.");-->
-<!--      return;-->
-<!--    }-->
-<!--    // AJAX 요청-->
-<!--    fetch("/report", {-->
-<!--      method: "POST",-->
-<!--      headers: {-->
-<!--        "Content-Type": "application/json",-->
-<!--      },-->
-<!--      body: JSON.stringify(reportData),-->
-<!--    })-->
-<!--            .then((response) => {-->
-<!--              if (response.ok) {-->
-<!--                return response.text().then((message) => {-->
-<!--                  alert(message);-->
-<!--                  location.reload();-->
-<!--                });-->
-<!--              } else {-->
-<!--                    return response.text().then((error) => {-->
-<!--                      console.error("Error Response:", error);-->
-<!--                      console.log("Report Data:", reportData);-->
-<!--                      alert(`신고 접수 실패: ${error}`);-->
-<!--                });-->
-<!--              }-->
-<!--            })-->
-<!--            .catch((error) => {-->
-<!--              console.error("Error:", error);-->
-<!--              alert("서버와의 통신 중 오류가 발생했습니다.");-->
-<!--            });-->
-<!--  });-->
-<!--</script>-->
+      .then(data => {
+        alert("신고가 완료되었습니다."); // 성공 메시지 알림
+        const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+        modal.hide(); // 모달 창 닫기
+      })
+        .catch(error => {
+            console.error(error);
+            alert('신고 처리 중 오류가 발생했습니다.');
+        });
+}
+
+</script>
 </body>
 </html>

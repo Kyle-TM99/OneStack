@@ -24,4 +24,5 @@ public class Reports {
 
     private String reporterNickname;
     private String reportedNickname;
+    private int reportedCount;
 }

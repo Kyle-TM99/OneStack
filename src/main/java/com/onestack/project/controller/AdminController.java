@@ -32,65 +32,14 @@ public class AdminController {
 
     @GetMapping("/delete")
     public String delete(HttpSession session, Model model) {
-
         Member member = (Member) session.getAttribute("member");
         String memberId = member.getMemberId();
-
         if(member == null) {
             return "redirect:/loginForm";
         }
         model.addAttribute("member",member);
         return "views/deleteButton";
     }
-
-    @PostMapping("/report")
-    @ResponseBody
-    public ResponseEntity<?> submitReport(@RequestBody Reports reports) {
-        System.out.println("Reports Data: " + reports);
-
-        // 허용된 ENUM 값 리스트
-        List<String> validTypes = List.of("community", "qna", "reply", "review");
-
-        if (reports.getReportsTarget() == null) {
-            return ResponseEntity.badRequest().body("신고 항목은 필수입니다.");
-        }
-
-        if (!validTypes.contains(reports.getReportsType())) {
-            return ResponseEntity.badRequest().body("유효하지 않은 신고 유형입니다.");
-        }
-
-        try {
-            adminService.addReports(reports);
-            return ResponseEntity.ok("신고가 성공적으로 접수되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("신고 접수 중 오류가 발생했습니다.");
-        }
-    }
-
-    @PostMapping("/disable")
-    public ResponseEntity<String> disableContent(
-            @PathVariable String type,
-            @PathVariable int no,
-            HttpSession session) {
-
-        // 현재 로그인한 사용자가 관리자 권한을 가지고 있는지 확인
-        Member currentMember = (Member) session.getAttribute("member");
-        if (currentMember == null || !currentMember.isAdmin()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("관리자 권한이 필요합니다.");
-        }
-
-        // 비활성화 처리
-        boolean isDisabled = adminService.disableContent(type, no);
-
-        if (isDisabled) {
-            return ResponseEntity.ok(type + "이(가) 비활성화되었습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(type + " 비활성화에 실패했습니다.");
-        }
-    }
-
 
     @GetMapping("/adminPage")
 	 public String adminPage() {
@@ -183,8 +132,6 @@ public class AdminController {
         }
     }
 
-
-
     @GetMapping("/reviewProcessingDetails")
 	public String getReviewProcessingDetails(Model model) {
     	List<MemProPortPaiCate> pList = adminService.getMemProPortPaiCate();
@@ -198,16 +145,36 @@ public class AdminController {
         return "adminDashboard/reportManagement/reportApplicationInquiry";
     }
 
-    @GetMapping("/manageReportdPosts")
-    public String getManageReportdPosts(Model model) {
-        List<Reports> reportsList = adminService.getReportsMember();
+    @GetMapping("/manageReportedPosts")
+    public String getManageReportedPosts(Model model) {
+        List<Reports> reportsList = adminService.getReports();
+        System.out.println("reportsList: " + reportsList); // 데이터를 출력해 실제로 값이 있는지 확인
 
         model.addAttribute("reportsList", reportsList);
-        return "adminDashboard/reportManagement/manageReportdPosts";
+        return "adminDashboard/reportManagement/manageReportedPosts";
     }
     
     @GetMapping("/reportProcessingDetails")
     public String getReportProcessingDetails() {
     	return "adminDashboard/reportManagement/reportProcessingDetails";
+    }
+
+    // 신고 접수
+    @PostMapping("/reports")
+    public ResponseEntity<String> report(@RequestBody Reports report) {
+        adminService.saveReport(report);
+        return ResponseEntity.ok("신고가 접수되었습니다.");
+    }
+
+    @PostMapping("/disable")
+    public ResponseEntity<String> disableTarget(
+            @RequestParam("type") String type,
+            @RequestParam("targetId") int targetId) {
+        try {
+            adminService.disableTarget(type, targetId);
+            return ResponseEntity.ok("비활성화 처리 완료");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("비활성화 처리 중 오류 발생: " + e.getMessage());
+        }
     }
 }

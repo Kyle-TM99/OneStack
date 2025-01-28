@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.onestack.project.domain.Reports;
+import com.onestack.project.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.onestack.project.domain.MemProPortPaiCate;
-import com.onestack.project.domain.Member;
 import com.onestack.project.mapper.ManagerMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,62 +46,42 @@ public class AdminService {
 		return managerMapper.getMember();
 	}
 
-	// 신고 대상의 타입 자동 식별
-	public String identifyReportType(int targetId) {
-		if (managerMapper.existsInCommunity(targetId)) {
-			return "community";
-		} else if (managerMapper.existsInQna(targetId)) {
-			return "qna";
-		} else if (managerMapper.existsInReply(targetId)) {
-			return "reply";
-		} else if (managerMapper.existsInReview(targetId)) {
-			return "review";
-		}
-		return null; // 대상이 어느 테이블에도 없을 경우
+	// 신고 접수 처리
+	public void saveReport(Reports report) {
+		managerMapper.addReports(report);
+		managerMapper.incrementReportedCount(report.getReportedMemberNo());
 	}
 
-	// 신고 정보 저장
-	public void addReports(Reports reports) {
-		managerMapper.addReports(reports);
+	// 신고 리스트 조회
+	public List<Reports> getReports() {
+		return managerMapper.getReports();
+	}
+	// 신고 횟수 증가
+	public int incrementReportedCount(int memberNo) {
+		return managerMapper.incrementReportedCount(memberNo);
 	}
 
-	public boolean disableContent(String type, int no) {
-		int rowsAffected = 0;
 
+	public void disableTarget(String type, int targetId) {
 		switch (type) {
-			case "post": // 전체 게시글 비활성화
-				rowsAffected = managerMapper.updatePostActivation(Map.of("communityBoardNo", no, "communityBoardActivation", 0));
+			case "community":
+				managerMapper.disableCommunity(targetId);
 				break;
-			case "qna": // 질문 게시글 비활성화
-				rowsAffected = managerMapper.updateQnaActivation(Map.of("qnaBoardNo", no, "qnaBoardActivation", 0));
+			case "communityReply":
+				managerMapper.disableCommunityReply(targetId);
 				break;
-			case "comment": // 전체 게시글 댓글 비활성화
-				rowsAffected = managerMapper.updateCommentActivation(Map.of("communityReplyNo", no, "communityReplyActivation", 0));
+			case "qna":
+				managerMapper.disableQna(targetId);
 				break;
-			case "qnaComment": // 질문 게시글 댓글 비활성화
-				rowsAffected = managerMapper.updateQnaReplyActivation(Map.of("qnaReplyNo", no, "qnaReplyActivation", 0));
+			case "qnaReply":
+				managerMapper.disableQnaReply(targetId);
 				break;
-			case "review": // 리뷰 비활성화
-				rowsAffected = managerMapper.updateReviewActivation(Map.of("reviewNo", no, "reviewActivation", 0));
+			case "review":
+				managerMapper.disableReview(targetId);
 				break;
 			default:
-				throw new IllegalArgumentException("유효하지 않은 유형입니다: " + type);
+				throw new IllegalArgumentException("지원되지 않는 타입입니다: " + type);
 		}
-
-		return rowsAffected > 0; // 쿼리 수행 성공 여부 반환
-	}
-
-
-
-
-	// 신고 대상의 신고 횟수 증가
-	public boolean incrementReportedCount(int memberNo) {
-		int rowsAffected = managerMapper.incrementReportedCount(memberNo);
-		return rowsAffected > 0;
-	}
-
-	public List<Reports> getReportsMember() {
-		return managerMapper.getReportedMember();
 	}
 
 }
