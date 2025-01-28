@@ -15,19 +15,6 @@ $(document).ready(function() {
 	};
 
 
-	const patterns = {
-		password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/
-	};
-
-	const validators = {
-		validateInput: function(value, pattern, fieldName) {
-			if (!pattern.test(value)) {
-				return `${fieldName}의 형식이 올바르지 않습니다.`;
-			}
-			return null;
-		}
-	};
-
 	// 사이드바 네비게이션 클릭 이벤트 수정
 	$('.sidebar .nav-link').click(function(e) {
 		e.preventDefault();
@@ -57,14 +44,6 @@ $(document).ready(function() {
 			case 'Request':
 				$('.sidebar .nav-link .stats-overview .stat-content[data-content="Request"]').addClass('active');
 				loadContent('Request');
-				break;
-			case 'portfolio':
-				$('.sidebar .nav-link .stats-overview .stat-content[data-content="portfolio"]').addClass('active');
-				loadContent('portfolio');
-				break;
-			case 'studentManagement':
-				$('.sidebar .nav-link .stats-overview .stat-content[data-content="studentManagement"]').addClass('active');
-				loadContent('studentManagement');
 				break;
 			case 'review':
 				$('.sidebar .nav-link .stats-overview .stat-content[data-content="review"]').addClass('active');
@@ -96,45 +75,45 @@ $(document).ready(function() {
 				success: function(memberData) {
 					const contentMap = {
 						payment: `
-															<div class="mb-4">
-																	<div class="expert-list">
-																			<div class="expert-list-item">
-																					<div class="stepper-wrapper mb-4">
-																							<div class="stepper-item completed">
-																									<div class="step-counter">1</div>
-																									<div class="step-name">매칭</div>
-																							</div>
-																							<div class="stepper-item completed">
-																									<div class="step-counter">2</div>
-																									<div class="step-name">진행</div>
-																							</div>
-																							<div class="stepper-item active">
-																									<div class="step-counter">3</div>
-																									<div class="step-name">확정</div>
-																							</div>
-																							<div class="stepper-item">
-																									<div class="step-counter">4</div>
-																									<div class="step-name">결제</div>
-																							</div>
-																					</div>
-																					<div class="expert-info d-flex align-items-center">
-																							<img src="/images/default-profile.png" alt="전문가 이미지" class="expert-image">
-																							<div class="expert-details flex-grow-1 mx-4">
-																									<div class="d-flex align-items-center gap-2 mb-2">
-																											<span class="badge">카테고리</span>
-																											<span class="badge bg-light text-dark">상세 카테고리</span>
-																									</div>
-																									<h5 class="mb-2">전문가 이름</h5>
-																									<p class="text-muted mb-0">전문가 한 줄 소개</p>
-																							</div>
-																							<div class="expert-action">
-																									<a href="#" class="custom-button checkPDF">조율 내용 확인</a>
-																							</div>
-																					</div>
-																			</div>
-																	</div>
-															</div>
-													`,
+                                             <div class="mb-4">
+                                                   <div class="expert-list">
+                                                         <div class="expert-list-item">
+                                                               <div class="stepper-wrapper mb-4">
+                                                                     <div class="stepper-item completed">
+                                                                           <div class="step-counter">1</div>
+                                                                           <div class="step-name">매칭</div>
+                                                                     </div>
+                                                                     <div class="stepper-item completed">
+                                                                           <div class="step-counter">2</div>
+                                                                           <div class="step-name">진행</div>
+                                                                     </div>
+                                                                     <div class="stepper-item active">
+                                                                           <div class="step-counter">3</div>
+                                                                           <div class="step-name">확정</div>
+                                                                     </div>
+                                                                     <div class="stepper-item">
+                                                                           <div class="step-counter">4</div>
+                                                                           <div class="step-name">결제</div>
+                                                                     </div>
+                                                               </div>
+                                                               <div class="expert-info d-flex align-items-center">
+                                                                     <img src="/images/default-profile.png" alt="전문가 이미지" class="expert-image">
+                                                                     <div class="expert-details flex-grow-1 mx-4">
+                                                                           <div class="d-flex align-items-center gap-2 mb-2">
+                                                                                 <span class="badge">카테고리</span>
+                                                                                 <span class="badge bg-light text-dark">상세 카테고리</span>
+                                                                           </div>
+                                                                           <h5 class="mb-2">전문가 이름</h5>
+                                                                           <p class="text-muted mb-0">전문가 한 줄 소개</p>
+                                                                     </div>
+                                                                     <div class="expert-action">
+                                                                           <a href="#" class="custom-button checkPDF">조율 내용 확인</a>
+                                                                     </div>
+                                                               </div>
+                                                         </div>
+                                                   </div>
+                                             </div>
+                                       `,
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
@@ -151,29 +130,32 @@ $(document).ready(function() {
 				success: function(memberData) {
 					const contentMap = {
 						Request: `
-								<div class="mb-4">
-									<div class="expert-list">
-										<div class="expert-list-item">
-											<div class="quote-details mt-4">
-												<ul class="list-unstyled">
-													<li><strong>회원 이름:</strong> 김철수</li>
-													<li><strong>전문가 이름:</strong> 박지훈</li>
-													<li><strong>종목 번호:</strong> 123456</li>
-													<li><strong>견적 내용:</strong> 모바일 앱 개발</li>
-													<li><strong>희망 금액:</strong> 8,000,000원</li>
-													<li><strong>기타 건의사항:</strong> UI/UX 디자인에 신경 써 주세요.</li>
-													<li><strong>견적 확인 여부:</strong> <span class="badge bg-warning text-dark">대기중</span></li>
-												</ul>
-											</div>
-								
-											<!-- 매칭 버튼 -->
-											<div class="expert-action text-center mt-3">
-												<a href="#" class="custom-button checkPDF">매칭</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								`,
+                        <div class="mb-4">
+<div class="expert-list">
+    <div class="expert-list-item">
+        <div class="quote-details mt-4">
+            <div class="row">
+                <div class="col-9">
+                    <ul class="list-unstyled">
+                        <li><strong>회원 이름:</strong> 김철수</li>
+                        <li><strong>전문가 이름:</strong> 박지훈</li>
+                        <li><strong>종목 번호:</strong> 123456</li>
+                        <li><strong>견적 내용:</strong> 모바일 앱 개발</li>
+                        <li><strong>희망 금액:</strong> 8,000,000원</li>
+                        <li><strong>기타 건의사항:</strong> UI/UX 디자인에 신경 써 주세요.</li>
+                        <li><strong>견적 확인 여부:</strong> 대기 중</li>
+                    </ul>
+                </div>
+                <div class="col-3 d-flex align-items-center"> 
+                    <div class="expert-action text-center w-100">
+                        <a href="#" class="btn custom-button checkPDF w-100">매칭</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                        `,
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
@@ -182,127 +164,87 @@ $(document).ready(function() {
 				}
 			});
 		} else if (contentType === 'portfolio') {
-			// 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
-			$.ajax({
-				url: '/ajax/member/getMemberInfo',
-				type: 'GET',
-				success: function(memberData) {
-					// 회원 번호로 리뷰 조회
 					$.ajax({
-						url: '/ajax/member/myPagePortfolio',
+						url: '/ajax/member/portfolio',
 						type: 'GET',
-						success: function(response) {
-							if (response.success) {
-								let portfolioHtml = response.data.map(portfolio => `
-													<div class="row d-flex justify-content-end"><i class="bi bi-plus-lg"></i></div>
-													<div class="portfolio-list">
-														<div class="card" style="width: 18rem;">
-														<div class="dropdown">
-														  <button class="btn btn-secondary dropdown-toggle d-flex justify-content-end" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-															<i class="bi bi-three-dots-vertical"></i>
-														  </button>
-														  <ul class="dropdown-menu">
-															<li><a class="dropdown-item" href="#">공개</a> / <a class="dropdown-item" href="#">비공개</a></li>
-															<li><a class="dropdown-item" href="#">수정</a></li>
-															<li><a class="dropdown-item" href="#">삭제</a></li>
-														  </ul>
-														</div>
-														  <img src="..." class="card-img-top" alt="...">
-														  <div class="card-body">
-															<p class="card-text">${portfolio.portfolioTitle}</p>
-														  </div>
-														</div>
-													</div>
-												`).join('');
-
-								// 리뷰가 없는 경우 처리
-								if (response.data.length === 0) {
-									reviewHtml = `
-						                                <div class="text-center py-5">
-						                                    <p class="text-muted">생성된 포트폴리오가 없습니다.</p>
-						                                </div>
-						                            `;
-								}
-
-								// 컨테이너에 리뷰 HTML 추가
-								$('.content-container').html(reviewHtml);
-							} else {
-								alert(response.message || '리뷰를 불러오는 데 실패했습니다.');
-							}
+						success: function (portfolio) {
+							const contentMap = {
+								portfolioHtml: `
+                                       <div class="portfolio-list">
+                                          <div class="card" style="width: 18rem;">
+										  <img src="..." class="card-img-top" alt="전문가 포트폴리오 썸네일">
+										  <div class="card-body">
+											<h5 class="card-title">포트폴리오 제목</h5>
+											<p class="card-text">포트폴리오 내용</p>
+											<input type="checkbox" class="btn-check" id="btn-check-2" checked autocomplete="off">
+											<label class="btn custom-button2" for="btn-check-2">Checked</label>
+										  </div>
+										</div>
+                                    `,
+							};
+							$('.content-container').html(contentMap[contentType]);
 						},
 						error: function() {
-							alert('리뷰를 불러오는 데 실패했습니다.');
+							alert('회원정보를 불러오는데 실패했습니다.');
 						}
 					});
-				},
-				error: function() {
-					alert('회원 정보를 불러오는 데 실패했습니다.');
-				}
-			});
 		} else if (contentType === 'review') {
 			// 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
 			$.ajax({
 				url: '/ajax/member/getMemberInfo',
 				type: 'GET',
 				success: function(memberData) {
-					// 회원 번호로 리뷰 조회
 					$.ajax({
 						url: '/ajax/member/myPageReview',
 						type: 'GET',
 						success: function(response) {
 							if (response.success) {
 								let reviewHtml = response.data.map(review => `
-													<div class="review-list">
-														<div class="card" style="width: 100%; max-width: 100%;">
-															<div class="list-item mx-5 my-3">
-															<div class="row mb-2">
-						                                            <div class="col-4 category-tags">
-						                                                <span class="badge bg-light text-dark"></span>
-						                                            </div>
-						                                        </div>
-																<div class="row mb-3">
-																	<div class="col-12 rating mb-2">
-																	${generateStarRating(review.reviewRate)}
-																		<span class="ms-2" style="color:#1a1a1a">${review.reviewRate}</span>
-																	</div>
-																</div>
-																<div class="row mb-3">
-																	<div class="col-12">
-																		<p class="content">${review.reviewContent || '리뷰 내용 없음'}</p>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-12 text-end">
-																		<small class="text-muted">${formatDate(review.reviewDate)}</small>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												`).join('');
+                                       <div class="review-list">
+                                          <div class="card" style="width: 100%; max-width: 100%;">
+                                             <div class="list-item mx-5 my-3">
+                                             <div class="row mb-2">
+                                                              <div class="col-4 category-tags">
+                                                                  <span class="badge bg-light text-dark"></span>
+                                                              </div>
+                                                          </div>
+                                                <div class="row mb-3">
+                                                   <div class="col-12 rating mb-2">
+                                                   ${generateStarRating(review.reviewRate)}
+                                                      <span class="ms-2" style="color:#1a1a1a">${review.reviewRate}</span>
+                                                   </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                   <div class="col-12">
+                                                      <p class="content">${review.reviewContent || '리뷰 내용 없음'}</p>
+                                                   </div>
+                                                </div>
+                                                <div class="row">
+                                                   <div class="col-12 text-end">
+                                                      <small class="text-muted">${formatDate(review.reviewDate)}</small>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    `).join('');
 
 								// 리뷰가 없는 경우 처리
 								if (response.data.length === 0) {
 									reviewHtml = `
-						                                <div class="text-center py-5">
-						                                    <p class="text-muted">작성된 리뷰가 없습니다.</p>
-						                                </div>
-						                            `;
+                                                  <div class="text-center py-5">
+                                                      <p class="text-muted">작성된 리뷰가 없습니다.</p>
+                                                  </div>
+                                              `;
 								}
 
-								// 컨테이너에 리뷰 HTML 추가
 								$('.content-container').html(reviewHtml);
-							} else {
-								alert(response.message || '리뷰를 불러오는 데 실패했습니다.');
 							}
 						},
 						error: function() {
 							alert('리뷰를 불러오는 데 실패했습니다.');
 						}
 					});
-				},
-				error: function() {
-					alert('회원 정보를 불러오는 데 실패했습니다.');
 				}
 			});
 		} else if (contentType === 'activity') {
@@ -314,7 +256,7 @@ $(document).ready(function() {
 					return response.json();
 				})
 				.then(response => {
-					console.log('서버 응답:', response); // 응답 데이터 확인
+					console.log('서버 응답:', response);
 					if (response.success) {
 						let html = '';
 
@@ -385,43 +327,42 @@ $(document).ready(function() {
 				});
 
 		} else if (contentType === 'payment') {
-			// payment 템플릿 렌더링
 			const paymentTemplate = `
-									<div class="mb-4">
-											<div class="expert-list">
-													<div class="expert-list-item">
-															<div class="stepper-wrapper mb-4">
-																	<div class="stepper-item completed">
-																			<div class="step-counter">1</div>
-																			<div class="step-name">매칭</div>
-																	</div>
-																	<div class="stepper-item completed">
-																			<div class="step-counter">2</div>
-																			<div class="step-name">진행</div>
-																	</div>
-																	<div class="stepper-item active">
-																			<div class="step-counter">3</div>
-																			<div class="step-name">확정</div>
-																	</div>
-																	<div class="stepper-item">
-																			<div class="step-counter">4</div>
-																			<div class="step-name">결제</div>
-																	</div>
-															</div>
-															<div class="expert-info d-flex align-items-center">
-																	<img src="/images/default-profile.png" alt="전문가 이미지" class="expert-image">
-																	<div class="expert-details flex-grow-1 mx-4">
-																			<h5 class="mb-2">전문가 이름</h5>
-																			<p class="text-muted mb-0">전문가 한 줄 소개</p>
-																		</div>
-																		<div class="expert-action">
-																				<a href="#" class="custom-button checkPDF">조율 내용 확인</a>
-																		</div>
-															</div>
-													</div>
-											</div>
-									</div>
-								`;
+                           <div class="mb-4">
+                                 <div class="expert-list">
+                                       <div class="expert-list-item">
+                                             <div class="stepper-wrapper mb-4">
+                                                   <div class="stepper-item completed">
+                                                         <div class="step-counter">1</div>
+                                                         <div class="step-name">매칭</div>
+                                                   </div>
+                                                   <div class="stepper-item completed">
+                                                         <div class="step-counter">2</div>
+                                                         <div class="step-name">진행</div>
+                                                   </div>
+                                                   <div class="stepper-item active">
+                                                         <div class="step-counter">3</div>
+                                                         <div class="step-name">확정</div>
+                                                   </div>
+                                                   <div class="stepper-item">
+                                                         <div class="step-counter">4</div>
+                                                         <div class="step-name">결제</div>
+                                                   </div>
+                                             </div>
+                                             <div class="expert-info d-flex align-items-center">
+                                                   <img src="/images/default-profile.png" alt="전문가 이미지" class="expert-image">
+                                                   <div class="expert-details flex-grow-1 mx-4">
+                                                         <h5 class="mb-2">전문가 이름</h5>
+                                                         <p class="text-muted mb-0">전문가 한 줄 소개</p>
+                                                      </div>
+                                                      <div class="expert-action">
+                                                            <a href="#" class="custom-button checkPDF">조율 내용 확인</a>
+                                                      </div>
+                                             </div>
+                                       </div>
+                                 </div>
+                           </div>
+                        `;
 			$('.content-container').html(paymentTemplate);
 		}
 	}
@@ -465,88 +406,85 @@ $(document).ready(function() {
 	// HTML 생성 헬퍼 함수들
 	function generatePostHTML(memberMyPageCommunity) {
 		return `
-					<div class="card mb-3">
-						<div class="card-body">
-							<h5 class="card-title">${memberMyPageCommunity.community.communityBoardTitle}</h5>
-							<p class="card-text">${memberMyPageCommunity.community.communityBoardContent}</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<span class="me-2"><i class="bi bi-eye"></i> ${memberMyPageCommunity.community.communityView}</span>
-									<span class="me-2"><i class="bi bi-heart"></i> ${memberMyPageCommunity.community.communityBoardLike}</span>
-									<span class="me-2"><i class="bi bi-hand-thumbs-down"></i> ${memberMyPageCommunity.community.communityBoardDislike}</span>
-								</div>
-								<small class="text-muted">${formatDate(memberMyPageCommunity.community.communityBoardRegDate)}</small>
-							</div>
-						</div>
-					</div>
-				`;
+               <div class="card mb-3">
+                  <div class="card-body">
+                     <h5 class="card-title">${memberMyPageCommunity.community.communityBoardTitle}</h5>
+                     <p class="card-text">${memberMyPageCommunity.community.communityBoardContent}</p>
+                     <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                           <span class="me-2"><i class="bi bi-eye"></i> ${memberMyPageCommunity.community.communityView}</span>
+                           <span class="me-2"><i class="bi bi-heart"></i> ${memberMyPageCommunity.community.communityBoardLike}</span>
+                           <span class="me-2"><i class="bi bi-hand-thumbs-down"></i> ${memberMyPageCommunity.community.communityBoardDislike}</span>
+                        </div>
+                        <small class="text-muted">${formatDate(memberMyPageCommunity.community.communityBoardRegDate)}</small>
+                     </div>
+                  </div>
+               </div>
+            `;
 	}
 
 	function generateQuestionHTML(memberWithQnA) {
 		return `
-					<div class="card mb-3">
-						<div class="card-body">
-							<div class="d-flex justify-content-between">
-								<h5 class="card-title">${memberWithQnA.qna.qnaBoardTitle}</h5>
-								<span class="badge ${memberWithQnA.qna.qnaAdoptionStatus ? 'bg-success' : 'bg-secondary'}">
-									${memberWithQnA.qna.qnaAdoptionStatus ? '채택완료' : '채택대기'}
-								</span>
-							</div>
-							<p class="card-text">${memberWithQnA.qna.qnaBoardContent}</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<span class="me-2"><i class="bi bi-eye"></i> ${memberWithQnA.qna.qnaView}</span>
-									<span class="me-2"><i class="bi bi-heart"></i> ${memberWithQnA.qna.qnaBoardLike}</span>
-								</div>
-								<small class="text-muted">${formatDate(memberWithQnA.qna.qnaBoardRegDate)}</small>
-							</div>
-						</div>
-					</div>
-				`;
+               <div class="card mb-3">
+                  <div class="card-body">
+                     <div class="d-flex justify-content-between">
+                        <h5 class="card-title">${memberWithQnA.qna.qnaBoardTitle}</h5>
+                        <span class="badge ${memberWithQnA.qna.qnaAdoptionStatus ? 'bg-success' : 'bg-secondary'}">
+                           ${memberWithQnA.qna.qnaAdoptionStatus ? '채택완료' : '채택대기'}
+                        </span>
+                     </div>
+                     <p class="card-text">${memberWithQnA.qna.qnaBoardContent}</p>
+                     <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                           <span class="me-2"><i class="bi bi-eye"></i> ${memberWithQnA.qna.qnaView}</span>
+                           <span class="me-2"><i class="bi bi-heart"></i> ${memberWithQnA.qna.qnaBoardLike}</span>
+                        </div>
+                        <small class="text-muted">${formatDate(memberWithQnA.qna.qnaBoardRegDate)}</small>
+                     </div>
+                  </div>
+               </div>
+            `;
 	}
 
 	function generateCommentHTML(comWithComReply) {
 		return `
-					<div class="card mb-3">
-						<div class="card-body">
-							<h6 class="card-subtitle mb-2 text-muted">${comWithComReply.community.communityBoardTitle}</h6>
-							<p class="card-text">${comWithComReply.communityReply.communityReplyContent}</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<span class="me-2"><i class="bi bi-heart"></i> ${comWithComReply.communityReply.communityReplyLike}</span>
-									<span><i class="bi bi-hand-thumbs-down"></i> ${comWithComReply.communityReply.communityReplyDislike}</span>
-								</div>
-								<small class="text-muted">${formatDate(comWithComReply.communityReply.communityReplyRegDate)}</small>
-							</div>
-						</div>
-					</div>
-				`;
+               <div class="card mb-3">
+                  <div class="card-body">
+                     <h6 class="card-subtitle mb-2 text-muted">${comWithComReply.community.communityBoardTitle}</h6>
+                     <p class="card-text">${comWithComReply.communityReply.communityReplyContent}</p>
+                     <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                           <span class="me-2"><i class="bi bi-heart"></i> ${comWithComReply.communityReply.communityReplyLike}</span>
+                           <span><i class="bi bi-hand-thumbs-down"></i> ${comWithComReply.communityReply.communityReplyDislike}</span>
+                        </div>
+                        <small class="text-muted">${formatDate(comWithComReply.communityReply.communityReplyRegDate)}</small>
+                     </div>
+                  </div>
+               </div>
+            `;
 	}
 
 	function generateReplyHTML(memberWithQnAReply) {
 		return `
-					<div class="card mb-3">
-						<div class="card-body">
-							<h6 class="card-subtitle mb-2 text-muted">${memberWithQnAReply.qnaReply.qnaBoardTitle}</h6>
-							<p class="card-text">${memberWithQnAReply.qnaReply.qnaReplyContent}</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<div>
-									<span class="me-2"><i class="bi bi-heart"></i> ${memberWithQnAReply.qnaReply.qnaReplyLike}</span>
-								</div>
-								<small class="text-muted">${formatDate(memberWithQnAReply.qnaReply.qnaReplyRegDate)}</small>
-							</div>
-						</div>
-					</div>
-				`;
+               <div class="card mb-3">
+                  <div class="card-body">
+                     <h6 class="card-subtitle mb-2 text-muted">${memberWithQnAReply.qnaReply.qnaBoardTitle}</h6>
+                     <p class="card-text">${memberWithQnAReply.qnaReply.qnaReplyContent}</p>
+                     <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                           <span class="me-2"><i class="bi bi-heart"></i> ${memberWithQnAReply.qnaReply.qnaReplyLike}</span>
+                        </div>
+                        <small class="text-muted">${formatDate(memberWithQnAReply.qnaReply.qnaReplyRegDate)}</small>
+                     </div>
+                  </div>
+               </div>
+            `;
 	}
 
 
 	function generateLikesHTML(items) {
 		let html = '';
 		let hasLikes = false;
-
-		// 데이터 구조 확인
-		console.log('공감 데이터:', items);
 
 		// 데이터를 타입별로 분류
 		const communityLikes = items.filter(item => item.communityBoardNo);
@@ -658,6 +596,7 @@ $(document).ready(function() {
 			$('.sidebar .nav-link').removeClass('active');
 			// profile 탭 active 상태로 변경
 			$(this).addClass('active');
+
 			// 프로필 페이지를 빈 상태로 표시
 			$('.content-container').empty();
 			// 비밀번호 확인 모달 표시
@@ -670,125 +609,125 @@ $(document).ready(function() {
 	// 프로필 HTML 생성 함수
 	function generateProfileHTML(memberData) {
 		return `
-					<div class="profile-form-container">
-							<div class="container d-flex justify-content-center">
-									<div style="width: 100%; max-width: 500px;">
-											<form id="memberUpdateForm" enctype="multipart/form-data" class="profile-form" method="post" action="/updateMember">
+               <div class="profile-form-container">
+                     <div class="container d-flex justify-content-center">
+                           <div style="width: 100%; max-width: 500px;">
+                                 <form id="memberUpdateForm" enctype="multipart/form-data" class="profile-form" method="post" action="/updateMember">
 
-													<div class="row mb-4">
-															<div class="col-12">
-																	<div class="profile-image-wrapper text-center">
-																			<div class="position-relative d-inline-block">
-																					<img src="${memberData.memberImage ? '/resources/files/' + memberData.memberImage : '/images/default-profile.png'}" 
-																					 alt="프로필" 
-																					 class="profile-image-container"
-																					 style="width: 150px; height: 150px; border-radius: 15px; object-fit: cover;">
-																			<input type="file" id="profileImage" name="profileImage" class="d-none" accept="image/*">
-																			<button type="button" class="btn btn-sm btn-edit-profile" 
-																							onclick="$('#profileImage').click()"
-																							style="position: absolute; bottom: 0; right: 0;">
-																					<i class="bi bi-pencil-fill"></i>
-																			</button>
-																		</div>
-															</div>
-													</div>
+                                       <div class="row mb-4">
+                                             <div class="col-12">
+                                                   <div class="profile-image-wrapper text-center">
+                                                         <div class="position-relative d-inline-block">
+                                                               <img src="${memberData.memberImage ? '/resources/files/' + memberData.memberImage : '/images/default-profile.png'}" 
+                                                                alt="프로필" 
+                                                                class="profile-image-container"
+                                                                style="width: 150px; height: 150px; border-radius: 15px; object-fit: cover;">
+                                                         <input type="file" id="profileImage" name="profileImage" class="d-none" accept="image/*">
+                                                         <button type="button" class="btn btn-sm btn-edit-profile" 
+                                                                     onclick="$('#profileImage').click()"
+                                                                     style="position: absolute; bottom: 0; right: 0;">
+                                                               <i class="bi bi-pencil-fill"></i>
+                                                         </button>
+                                                      </div>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="name">&nbsp;이름 *</label> 
-																	<input id="name" name="name" type="text" class="form-control mb-2" value="${memberData.name}" maxlength="5" required>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="name">&nbsp;이름 *</label> 
+                                                   <input id="name" name="name" type="text" class="form-control mb-2" value="${memberData.name}" maxlength="5" required>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="memberId">&nbsp;아이디</label>
-																	<input id="memberId" name="memberId" type="text" class="form-control" value="${memberData.memberId}" readonly>
-															</div>
-													</div>
-													
-													
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="memberId">&nbsp;아이디</label>
+                                                   <input id="memberId" name="memberId" type="text" class="form-control" value="${memberData.memberId}" readonly>
+                                             </div>
+                                       </div>
+                                       
+                                       
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="nickname">&nbsp;닉네임</label>
-																	<input type="text" class="form-control" id="nickname" name="nickname" value="${memberData.nickname}" readonly>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="nickname">&nbsp;닉네임</label>
+                                                   <input type="text" class="form-control" id="nickname" name="nickname" value="${memberData.nickname}" readonly>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="birth">&nbsp;생년월일</label>
-																	<input id="birth" name="birth" type="date" class="form-control" value="${memberData.birth}" readonly>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="birth">&nbsp;생년월일</label>
+                                                   <input id="birth" name="birth" type="date" class="form-control" value="${memberData.birth}" readonly>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label>&nbsp;성별</label>
-																	<div class="d-flex mb-2">
-																			<div class="form-check me-4">
-																					<input class="form-check-input" type="radio" name="gender" id="male" value="male" ${memberData.gender === 'male' ? 'checked' : ''} disabled>
-																					<label class="form-check-label" for="male">남성</label>
-																			</div>
-																			<div class="form-check">
-																					<input class="form-check-input" type="radio" name="gender" id="female" value="female" ${memberData.gender === 'female' ? 'checked' : ''} disabled>
-																					<label class="form-check-label" for="female">여성</label>
-																			</div>
-																	</div>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label>&nbsp;성별</label>
+                                                   <div class="d-flex mb-2">
+                                                         <div class="form-check me-4">
+                                                               <input class="form-check-input" type="radio" name="gender" id="male" value="male" ${memberData.gender === 'male' ? 'checked' : ''} disabled>
+                                                               <label class="form-check-label" for="male">남성</label>
+                                                         </div>
+                                                         <div class="form-check">
+                                                               <input class="form-check-input" type="radio" name="gender" id="female" value="female" ${memberData.gender === 'female' ? 'checked' : ''} disabled>
+                                                               <label class="form-check-label" for="female">여성</label>
+                                                         </div>
+                                                   </div>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="email">&nbsp;이메일 *</label>
-																	<input type="email" class="form-control mb-2" id="email" name="email" value="${memberData.email}" required>
-																	<div class="form-check">
-																		<input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent" ${memberData.emailGet ? 'checked' : ''}>
-																		<label class="form-check-label" for="emailConsent">이메일 수신에 동의합니다.</label>
-																	</div>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="email">&nbsp;이메일 *</label>
+                                                   <input type="email" class="form-control mb-2" id="email" name="email" value="${memberData.email}" required>
+                                                   <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent" ${memberData.emailGet ? 'checked' : ''}>
+                                                      <label class="form-check-label" for="emailConsent">이메일 수신에 동의합니다.</label>
+                                                   </div>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="phone">&nbsp;전화번호 *</label>
-																	<input type="tel" class="form-control mb-2" id="phone" name="phone" value="${memberData.phone}" required>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="phone">&nbsp;전화번호 *</label>
+                                                   <input type="tel" class="form-control mb-2" id="phone" name="phone" value="${memberData.phone}" required>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="zipcode">&nbsp;우편번호 *</label>
-																	<div class="input-group mb-2">
-																		<input type="text" class="form-control" id="zipcode" name="zipcode" value="${memberData.zipcode}" readonly required>
-																		<button type="button" class="btn custom-button" id="addressSearchBtn2">주소찾기</button>
-																	</div>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="zipcode">&nbsp;우편번호 *</label>
+                                                   <div class="input-group mb-2">
+                                                      <input type="text" class="form-control" id="zipcode" name="zipcode" value="${memberData.zipcode}" readonly required>
+                                                      <button type="button" class="btn custom-button" id="addressSearchBtn2">주소찾기</button>
+                                                   </div>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="address">&nbsp;주소 *</label>
-																	<input type="text" class="form-control mb-2" id="address" name="address" value="${memberData.address}" readonly required>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="address">&nbsp;주소 *</label>
+                                                   <input type="text" class="form-control mb-2" id="address" name="address" value="${memberData.address}" readonly required>
+                                             </div>
+                                       </div>
 
-													<div class="row mb-3">
-															<div class="form-field">
-																	<label for="address2">&nbsp;상세주소 *</label>
-																	<input type="text" class="form-control mb-2" id="address2" name="address2" value="${memberData.address2}" required>
-															</div>
-													</div>
+                                       <div class="row mb-3">
+                                             <div class="form-field">
+                                                   <label for="address2">&nbsp;상세주소 *</label>
+                                                   <input type="text" class="form-control mb-2" id="address2" name="address2" value="${memberData.address2}" required>
+                                             </div>
+                                       </div>
 
-													<button type="button" class="btn custom-button w-100" id="changePasswordBtn">비밀번호 변경</button>
-													
-													<input type="submit" value="정보 수정" class="btn custom-button2 w-100 mt-4">
-											</form>
-									</div>
-							</div>
-					</div>
-			`;
+                                       <button type="button" class="btn custom-button w-100" id="changePasswordBtn">비밀번호 변경</button>
+                                       
+                                       <input type="submit" value="정보 수정" class="btn custom-button2 w-100 mt-4">
+                                 </form>
+                           </div>
+                     </div>
+               </div>
+         `;
 	}
 
 	// 비밀번호 확인 폼 제출 시
@@ -851,14 +790,12 @@ $(document).ready(function() {
 
 		new daum.Postcode({
 			oncomplete: function(data) {
-				console.log('주소 선택 완료:', data); // API 호출 로그
+				console.log('주소 선택 완료:', data);
 				$("#zipcode").val(data.zonecode);
 				$("#address").val(data.roadAddress);
 				$("#address2").focus();
 				validationState.address = true;
-			},
-			width: '100%',
-			height: '100%'
+			}
 		}).open();
 	});
 
@@ -867,108 +804,111 @@ $(document).ready(function() {
 		validationState.address = $(this).val().trim() !== "";
 	});
 
-	// 비밀번호 변경 버튼 클릭 이벤트
+
+
+	// 비밀번호 변경 버튼 클릭 이벤트 (폼 제출 이벤트 밖으로 이동)
 	$(document).on('click', '#changePasswordBtn', function() {
 		$('#changePasswordModal').modal('show');
 	});
 
-	$('#newPassword').on('input', function() {
-		const password = $(this).val();
-		const errorMsg = validators.validateInput(password, patterns.password, "비밀번호");
-		if (errorMsg) {
-			$(this).addClass('is-invalid');
-			$('#newPasswordError').text(errorMsg);
+	// 새 비밀번호 유효성 검사
+	// 비밀번호 유효성 검사
+	document.getElementById("newPassword").addEventListener("input", function() {
+		const password = this.value;
+		let message = "";
+		let isValid = false;
+
+		if (!password) {
+			message = "비밀번호를 입력해주세요.";
+		} else if (password.length < 8) { //patterns의 조건과 일치해야 함.
+			message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
+
 		} else {
-			$(this).removeClass('is-invalid').addClass('is-valid');
-			$('#newPasswordError').text('');
+			const hasLetter = /[A-Za-z]/.test(password);
+			const hasNumber = /[0-9]/.test(password);
+			const hasSpecial = /[@$!%*#?&]/.test(password);
+
+			if (!hasLetter || !hasNumber || !hasSpecial) {
+				message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
+			} else {
+				message = "안전한 비밀번호입니다.";
+				isValid = true;
+			}
+		}
+
+		// 유효성 검사 결과에 따라 클래스 및 메시지 업데이트
+		if (isValid) {
+			this.classList.remove('is-invalid');
+			this.classList.add('is-valid');
+			document.getElementById('newPasswordError').textContent = message;
+		} else {
+			this.classList.add('is-invalid');
+			this.classList.remove('is-valid');
+			document.getElementById('newPasswordError').textContent = message;
 		}
 	});
 
-	$('#confirmPassword').on('input', function() {
+	// 비밀번호 확인 일치 검사
+	$(document).on('input', '#confirmPassword', function() {
 		const confirmPassword = $(this).val();
 		const newPassword = $('#newPassword').val();
+
 		if (confirmPassword !== newPassword) {
 			$(this).addClass('is-invalid');
-			$('#confirmPasswordError').text('비밀번호가 일치하지 않습니다.'); // Passwords do not match
+			$('#confirmPasswordError').text('비밀번호가 일치하지 않습니다.');
 		} else {
 			$(this).removeClass('is-invalid').addClass('is-valid');
 			$('#confirmPasswordError').text('');
 		}
 	});
 
-
-// 비밀번호 변경 폼 제출 이벤트 핸들러
-	$('#passwordChangeForm').on('submit', function(e) {
-		e.preventDefault(); // 폼의 기본 제출 동작 중단
-
-		const currentPassword2 = $('#currentPassword2').val();
+	// 비밀번호 변경 버튼 클릭 시
+	$(document).on('click', '#savePasswordBtn', function() {
+		const currentPassword = $('#currentPassword').val();
 		const newPassword = $('#newPassword').val();
+		const confirmPassword = $('#confirmPassword').val();
 
-		// 현재 비밀번호 입력 확인
-		if (!currentPassword2) {
-			alert('현재 비밀번호를 입력해주세요.');
+		// 유효성 검사
+		if (!currentPassword || !newPassword || !confirmPassword) {
+			alert('모든 필드를 입력해주세요.');
 			return;
 		}
 
-		// 비밀번호 유효성 검사
-		if (!validationState.newPassword) {
-			alert('새 비밀번호가 유효하지 않습니다. 비밀번호는 8자 이상 16자 이하이며, 영문, 숫자, 특수문자가 모두 포함되어야 합니다.');
+		if (newPassword !== confirmPassword) {
+			alert('새 비밀번호가 일치하지 않습니다.');
 			return;
 		}
 
-		// 비밀번호 확인 일치 검사
-		if (!validationState.passwordMatch) {
-			alert('비밀번호 확인이 일치하지 않습니다.');
-			return;
-		}
-
-		// 현재 비밀번호 확인 AJAX 요청
+		// 현재 비밀번호 확인 및 새 비밀번호 저장
 		$.ajax({
-			url: '/ajax/member/checkPassword',
+			url: '/ajax/member/updatePassword',
 			type: 'POST',
-			data: { pass: currentPassword }, // 현재 비밀번호를 전송
+			data: {
+				currentPassword: currentPassword,
+				newPassword: newPassword
+			},
 			success: function(response) {
-				if (response.valid) {
-					// 현재 비밀번호가 유효한 경우 비밀번호 변경 요청
-					$.ajax({
-						url: '/ajax/member/updatePassword',
-						type: 'POST',
-						data: {
-							currentPassword: currentPassword,
-							newPassword: newPassword // 새 비밀번호 전달
-						},
-						success: function (response) {
-							if (response.success) {
-								alert('비밀번호가 성공적으로 변경되었습니다.');
-								$('#changePasswordModal').modal('hide');
-								$('#passwordChangeForm')[0].reset();
-							} else {
-								alert(response.message || '현재 비밀번호가 일치하지 않습니다.');
-							}
-						},
-						error: function () {
-							alert('서버 오류가 발생했습니다.');
-						}
-					});
+				if (response.success) {
+					alert('비밀번호가 성공적으로 변경되었습니다.');
+					$('#changePasswordModal').modal('hide');
+					$('#passwordChangeForm')[0].reset();
 				} else {
-					$('#passwordError').text('비밀번호가 일치하지 않습니다.');
+					alert(response.message || '현재 비밀번호가 일치하지 않습니다.');
 				}
 			},
 			error: function() {
-				$('#passwordError').text('서버 오류가 발생했습니다.');
+				alert('서버 오류가 발생했습니다.');
 			}
 		});
 	});
 
-// 변경하기 버튼 클릭 이벤트
-	$('#savePasswordBtn').on('click', function() {
-		$('#passwordChangeForm').submit(); // 폼 제출
-	});
-
-// 모달 닫힐 때 초기화
+	// 비밀번호 변경 모달이 닫힐 때 초기화
 	$('#changePasswordModal').on('hidden.bs.modal', function() {
 		$('#passwordChangeForm')[0].reset();
-		$('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
+		$('.is-invalid').removeClass('is-invalid');
+		$('.is-valid').removeClass('is-valid');
 		$('.invalid-feedback').text('');
 	});
+
+
 });

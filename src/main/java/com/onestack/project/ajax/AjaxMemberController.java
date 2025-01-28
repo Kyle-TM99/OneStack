@@ -31,10 +31,10 @@ public class AjaxMemberController {
 
         try {
             // 회원 번호로 리뷰 조회
-            List<MemProWithPortPortImage> reviews = memberService.memProWithPortPortImage(member.getMemberNo());
+           // List<MemProWithPortPortImage> reviews = memberService.memProWithPortPortImage(member.getMemberNo());
 
             response.put("success", true);
-            response.put("data", reviews);
+            //response.put("data", reviews);
         } catch (Exception e) {
             log.error("리뷰 조회 중 오류 발생", e);
             response.put("success", false);
@@ -107,6 +107,35 @@ public class AjaxMemberController {
         return response;
     }
 
+    @GetMapping("/portfolio")
+    @ResponseBody
+    public Map<String, Object> portfolio(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Member member = (Member) session.getAttribute("member");
+        Professional professional = (Professional) session.getAttribute("professional");
+
+        try {
+            if (member == null) {
+                log.warn("Member is null in session.");
+                response.put("success", false);
+                response.put("message", "회원 정보가 세션에 없습니다.");
+                return response; // 조기 반환
+            }
+
+            if (professional != null) {
+                int proNo = professional.getProNo(); // proNo 가져오기
+                List<Portfolio> portfolio = memberService.portfolio(proNo);
+                response.put("portfolio", portfolio);
+            }
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "서버 오류가 발생했습니다: " + e.getMessage());
+        }
+
+        return response;
+    }
+
 
     @GetMapping("/myPageReview")
     @ResponseBody
@@ -121,7 +150,7 @@ public class AjaxMemberController {
             // 회원 번호로 리뷰 조회
             List<Review> reviews = memberService.findMyReview(member.getMemberNo());
             // 전문가 번호로 리뷰 조회
-            List<Review> proReview = memberService.proReview(professional.getProNo());
+            //List<Review> proReview = memberService.proReview(professional.getProNo());
 
             response.put("success", true);
             response.put("data", reviews);
@@ -151,18 +180,31 @@ public class AjaxMemberController {
 
 
 
+
     @GetMapping("/getMemberRequest")
     @ResponseBody
     public Map<String, Object> getMemberRequest(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-
-        // 세션에서 현재 로그인한 회원 정보 가져오기
         Member member = (Member) session.getAttribute("member");
+        Professional professional = (Professional) session.getAttribute("professional");
 
         try {
-            // 회원 정보를 반환
+            // member가 null인지 확인
+            if (member == null) {
+                log.warn("Member is null in session.");
+                response.put("success", false);
+                response.put("message", "회원 정보가 세션에 없습니다.");
+                return response; // 조기 반환
+            }
+
+            if (professional != null) {
+                List<Estimation> proEstimations = memberService.proEstimation(professional.getProNo());
+                response.put("proEstimations", proEstimations);
+            }
+
+            List<Estimation> memberEstimations = memberService.memberEstimation(member.getMemberNo());
+            response.put("memberEstimations", memberEstimations);
             response.put("success", true);
-            response.put("data", member);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "서버 오류가 발생했습니다: " + e.getMessage());

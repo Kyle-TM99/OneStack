@@ -28,12 +28,25 @@ public class MemberService {
 
 	private final JavaMailSender mailSender;
 
+/*
 
 // 전문가 마이페이지에서 포트폴리오 조회
 public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
     return result;
 }
+*/
+    // 전문가가 받은 견적 요청 리스트 Estimation
+    public List<Estimation> proEstimation(int proNo) {
+       List<Estimation> result = memberMapper.proEstimation(proNo);
+       return result;
+    }
+
+    // 회원이 요청한 견적 리스트 Estimation
+    public List<Estimation> memberEstimation(int memberNo) {
+        List<Estimation> result = memberMapper.memberEstimation(memberNo);
+        return result;
+    }
 
     // myPage 내역 조회
     public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
@@ -46,17 +59,17 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         List<Review> result = memberMapper.findMyReview(memberNo);
         return result;
     }
-
+/*
     // 회원별 review 리스트 조회
     public List<Review> proReview(int proNo) {
         List<Review> result = memberMapper.proReview(proNo);
         return result;
-    }
+    }*/
 
-    public int proReviewCount(int proNo) {
+   /* public int proReviewCount(int proNo) {
         return memberMapper.proReviewCount(proNo);
     }
-
+*/
     public int findMyReviewCount(int memberNo) {
         return memberMapper.findMyReviewCount(memberNo);
     }
@@ -246,9 +259,21 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     }
 
     public String findMemberId(Member member) {
+        // 먼저 소셜 로그인 회원인지 확인
+        String socialType = findSocialMemberId(member);
 
-        // 아이디 찾기 실행
+        if (socialType != null) {
+            // 소셜 로그인 회원이면 null 반환
+            return null;
+        }
+
+        // 소셜 로그인 회원이 아니면 아이디 찾기
         return memberMapper.findMemberId(member);
+    }
+
+    // 소셜 로그인 회원 확인 메서드 추가
+    public String findSocialMemberId(Member member) {
+        return memberMapper.findSocialMemberId(member);
     }
 
 
@@ -339,4 +364,8 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberNo;
     }
 
+    public List<Portfolio> portfolio(int proNo) {
+        List<Portfolio> result = memberMapper.portfolio(proNo);
+        return result;
+    }
 }

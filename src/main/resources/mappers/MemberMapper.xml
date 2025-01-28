@@ -112,6 +112,27 @@
 		<result property="portfolioFile10" column="portfolio_file10"/>
 	</resultMap>
 
+	<resultMap id="review" type="com.onestack.project.domain.Review">
+		<id property="reviewNo" column="review_no"/>
+		<result property="proNo" column="pro_no"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="reviewContent" column="review_content"/>
+		<result property="reviewRate" column="review_rate"/>
+		<result property="reviewDate" column="review_date"/>
+		<result property="reviewActivation" column="review_activation"/>
+	</resultMap>
+
+	<resultMap id="Estimation" type="com.onestack.project.domain.Estimation">
+		<id property="estimationNo" column="estimation_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="proNo" column="pro_no" />
+		<result property="itemNo" column="item_no" />
+		<result property="estimationContent" column="estimation_content" />
+		<result property="estimationPrice" column="estimation_price" />
+		<result property="estimationMsg" column="estimation_msg" />
+		<result property="estimationIsRead" column="estimation_isread" />
+	</resultMap>
+
 	<resultMap id="memProWithPortPortImage" type="MemProWithPortPortImage">
 		<association property="portfolioWithportfolioImage" javaType="PortfolioWithportfolioImage" resultMap="portfolioWithportfolioImage" />
 		<association property="memberWithProfessional" javaType="MemberWithProfessional" resultMap="memberWithProfessional" />
@@ -148,7 +169,41 @@
 	</resultMap>
 
 
-	<!-- myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) -->
+	<resultMap id="memberEstimation" type="MemberEstimation">
+		<association property="member" javaType="Member" resultMap="memberMap"/>
+		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
+	</resultMap>
+
+	<resultMap id="proEstimation" type="ProEstimation">
+		<association property="professional" javaType="Professional" resultMap="professionalMap"/>
+		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
+	</resultMap>
+
+	<!-- 회원이 요청한 견적 리스트 Estimation-->
+	<select id="memberEstimation" parameterType="int" resultMap="Estimation">
+		SELECT e.*, m.*
+		FROM Estimation e
+				 JOIN Member m ON e.member_no = m.member_no
+		WHERE e.member_no = #{memberNo}
+	</select>
+
+	<!-- 전문가가 받은 견적 요청 리스트 Estimation-->
+	<select id="proEstimation" parameterType="int" resultMap="Estimation">
+		SELECT e.*, p.*
+		FROM Estimation e
+				 JOIN Professional p ON e.pro_no = p.pro_no
+		WHERE e.pro_no = #{proNo}
+	</select>
+
+	<select id="portfolio" parameterType="Portfolio">
+		SELECT *
+		FROM Portfolio
+		WHERE pro_no = #{proNo}
+	</select>
+
+<!--
+
+	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
 	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
 		SELECT
 			m.*, p.*, pi.*, pr.*
@@ -164,6 +219,7 @@
 			m.member_type = 2;
 	</select>
 
+-->
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
@@ -179,14 +235,16 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
+<!--
 
-	<!-- 전문가가 받은 총합 리뷰 (pro_no) -->
-	<select id="proReview" parameterType="int" resultMap="review">
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
+	<select id="proReview" parameterType="int" resultMap="Review">
 		SELECT *
 		FROM Review
 		WHERE pro_no =#{proNo}
 		ORDER BY revire_date DESC
 	</select>
+-->
 
 	<!-- 자신이 작성한 리뷰 수 조회 -->
 	<select id="findMyReviewCount" parameterType="int" resultType="int">
@@ -194,14 +252,16 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
+<!--
 
-	<!-- 전문가가 받은 총합 리뷰 수(pro_no) -->
-	<select id="proReviewCount" parameterType="int" resultMap="int">
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
+	<select id="proReviewCount" parameterType="int" resultMap="Review">
 		SELECT COUNT(review_no)
 		FROM Review
 		WHERE pro_no =#{proNo}
 		ORDER BY revire_date DESC
 	</select>
+-->
 
 
 	<!-- 회원별 작성한 게시글 조회 -->
@@ -376,12 +436,20 @@
 		WHERE phone = #{phone}
 	</select>
 
-	<!-- 아이디 찾기 -->
 	<select id="findMemberId" parameterType="Member" resultType="String">
 		SELECT member_id
 		FROM Member
 		WHERE name = #{name}
 		  AND phone = #{phone}
+		  AND (social_type IS NULL OR social_type = 'none')
+	</select>
+
+	<select id="findSocialMemberId" parameterType="Member" resultType="String">
+		SELECT social_type
+		FROM Member
+		WHERE name = #{name}
+		  AND phone = #{phone}
+		  AND social_type IN ('google', 'kakao')
 	</select>
 
 
@@ -442,37 +510,37 @@
 		WHERE payment_no = #{paymentId}
 	</delete>
 
-<!-- LHB - 회원ID로 회원번호 조회 -->
-<select id="findMemberNoByMemberId" parameterType="string" resultType="int">
-    SELECT member_no
-    FROM Member
-    WHERE member_id = #{memberId}
-</select>
+	<!-- LHB - 회원ID로 회원번호 조회 -->
+	<select id="findMemberNoByMemberId" parameterType="string" resultType="int">
+		SELECT member_no
+		FROM Member
+		WHERE member_id = #{memberId}
+	</select>
 
 
-<!-- 비밀번호 재설정 토큰 저장 -->
-<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
-    INSERT INTO PasswordResetToken (member_id, token, expiry_date)
-    VALUES (#{memberId}, #{token}, #{expiryDate})
-</insert>
+	<!-- 비밀번호 재설정 토큰 저장 -->
+	<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
+		INSERT INTO PasswordResetToken (member_id, token, expiry_date)
+		VALUES (#{memberId}, #{token}, #{expiryDate})
+	</insert>
 
-<!-- 토큰으로 비밀번호 재설정 정보 조회 -->
-<select id="findByToken" parameterType="String" resultType="PasswordResetToken">
-    SELECT * FROM PasswordResetToken 
-    WHERE token = #{token}
-</select>
+	<!-- 토큰으로 비밀번호 재설정 정보 조회 -->
+	<select id="findByToken" parameterType="String" resultType="PasswordResetToken">
+		SELECT * FROM PasswordResetToken
+		WHERE token = #{token}
+	</select>
 
-<!-- 비밀번호 업데이트 -->
-<update id="updatePassword">
-    UPDATE member 
-    SET pass = #{newPassword} 
-    WHERE member_id = #{memberId}
-</update>
+	<!-- 비밀번호 업데이트 -->
+	<update id="updatePassword">
+		UPDATE member
+		SET pass = #{newPassword}
+		WHERE member_id = #{memberId}
+	</update>
 
-<!-- 사용된 토큰 삭제 -->
-<delete id="deletePasswordResetToken" parameterType="String">
-    DELETE FROM PasswordResetToken 
-    WHERE token = #{token}
-</delete>
+	<!-- 사용된 토큰 삭제 -->
+	<delete id="deletePasswordResetToken" parameterType="String">
+		DELETE FROM PasswordResetToken
+		WHERE token = #{token}
+	</delete>
 
 </mapper>

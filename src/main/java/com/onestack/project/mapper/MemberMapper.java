@@ -10,8 +10,14 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
+	// 전문가가 받은 견적 요청 리스트 Estimation
+	public List<Estimation> proEstimation(int proNo);
+
+	// 회원이 요청한 견적 리스트 Estimation
+	public List<Estimation> memberEstimation(int memberNo);
+
 	// 전문가 myPage에서 포트폴리오 관리
-	public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo);
+	//public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo);
 
 	// myPage에서 내역 조회
 	public List<MemberWithProfessional> memberWithProfessional(int memberNo);
@@ -89,7 +95,9 @@ public interface MemberMapper {
 
 	public int checkPhone(String phone);
 
-	public String findMemberId(Member member);
+	String findMemberId(Member member);
+
+	String findSocialMemberId(Member member);
 
 	public String memberPassCheck(String memberId);
 
@@ -110,4 +118,5 @@ public interface MemberMapper {
 	Integer findMemberNoByMemberId(String memberId);
 
 
+	List<Portfolio> portfolio(int proNo);
 }
