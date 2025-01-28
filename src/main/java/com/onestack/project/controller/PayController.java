@@ -51,13 +51,13 @@ public class PayController {
         boolean isVerified = payService.verifyPayment(request.getImpUid(), request.getQuotationNo(), request.getPaidAmount());
 
         if (isVerified) {
-            // 최종 결제 처리 - DB(결제 내역) 작업
+            // 최종 결제 처리 - DB(결제 테이블) 작업
 
             Pay pay = new Pay();
             pay.setQuotationNo(request.getQuotationNo()); // 주문 정보의 quotationNo
             pay.setMemberNo(request.getMemberNo()); // 주문 정보의 memberNo
-            pay.setPayType("카카오페이"); // 결제 타입 예시
-            pay.setPayContent(request.getPayContent()); // 결제 타입 예시
+            pay.setPayType("카카오페이"); // 결제 타입
+            pay.setPayContent(request.getPayContent()); // 결제 내용
             pay.setPayPrice(request.getPaidAmount()); // 결제 금액
             pay.setPayStatus(true); // 결제 완료 상태 (1)
 
