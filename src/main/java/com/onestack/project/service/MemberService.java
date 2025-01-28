@@ -157,45 +157,54 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     }
 
 
+    // 회원 정보 업데이트 메서드 수정
     public void updateMember(Member member) {
-        try {
-            log.info("Updating member: {}", member);
+        // 소셜 로그인 회원인 경우 특정 필드만 업데이트 가능하도록 제한
+        Member existingMember = memberMapper.getMember(member.getMemberId());
 
-            // null 체크 추가
-            if (member == null) {
-                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
-            }
+        if (existingMember.getSocialType() != null &&
+                (existingMember.getSocialType().equals("kakao") ||
+                        existingMember.getSocialType().equals("google"))) {
 
-            // 필수 필드 null 체크
-            if (member.getMemberNo() == 0) {
-                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
-            }
+            // 소셜 로그인 회원의 경우 제한된 필드만 업데이트
+            existingMember.setPhone(member.getPhone());
+            existingMember.setZipcode(member.getZipcode());
+            existingMember.setAddress(member.getAddress());
+            existingMember.setAddress2(member.getAddress2());
 
+            memberMapper.updateMemberSelective(existingMember);
+        } else {
+            // 일반 회원은 기존 로직 유지
             memberMapper.updateMember(member);
-            log.info("Member update completed for memberNo: {}", member.getMemberNo());
-        } catch (Exception e) {
-            log.error("Member update failed", e);
-            throw e;
         }
     }
 
-    public void updateMemberMyPagePass(Member member) {
+
+    // 현재 비밀번호 검증 메서드 추가
+    public boolean validateCurrentPassword(String memberId, String currentPassword) {
+        // 세션의 memberId로 회원 정보 조회 후 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+        return passwordEncoder.matches(currentPassword, member.getPass());
+    }
+
+    public boolean changePassword(String memberId, String currentPassword, String newPassword) {
+        // 현재 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+
+        // 현재 비밀번호 일치 여부 확인
+        if (!passwordEncoder.matches(currentPassword, member.getPass())) {
+            return false;
+        }
+
+        // 새 비밀번호 암호화
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
         try {
-
-            // null 체크 추가
-            if (member == null) {
-                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
-            }
-
-            // 필수 필드 null 체크
-            if (member.getMemberNo() == 0) {
-                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
-            }
-
-            memberMapper.updateMemberMyPagePass(member);
+            // 비밀번호 업데이트
+            memberMapper.updatePassword(memberId, encodedNewPassword);
+            return true;
         } catch (Exception e) {
-            log.error("Member update failed", e);
-            throw e;
+            return false;
         }
     }
 

@@ -10,6 +10,12 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
+	// 소셜 로그인 회원 선택적 업데이트
+	public void updateMemberSelective(Member member);
+
+	// 현재 비밀번호 확인
+	public int checkCurrentPassword(@Param("memberNo") int memberNo, @Param("currentPassword") String currentPassword);
+
 	// 전문가가 받은 견적 요청 리스트 Estimation
 	public List<Estimation> proEstimation(int proNo);
 

@@ -6,6 +6,8 @@ import com.onestack.project.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -237,42 +239,47 @@ public class AjaxMemberController {
         return response;
     }
 
-    @PostMapping("/updatePassword")
-    public Map<String, Object> updatePasswordMember(
-            @RequestParam("pass") String pass,
-            @RequestParam("currentPassword") String currentPassword,
-            @RequestParam("newPassword") String newPassword,
-            HttpSession session) {
-
+    @PostMapping("/changePassword")
+    public ResponseEntity<Map<String, Object>> changePassword(HttpSession session,
+            @RequestBody Map<String, String> requestBody
+    ) {
         Map<String, Object> response = new HashMap<>();
+
+        // 세션에서 memberId 가져오기
         Member member = (Member) session.getAttribute("member");
-
-        if (member != null) {
-            // 현재 비밀번호 확인
-            boolean isValidPassword = memberService.memberPassCheck(member.getMemberId(), currentPassword);
-
-            if (!isValidPassword) {
-                response.put("success", false);
-                response.put("message", "현재 비밀번호가 일치하지 않습니다.");
-                return response;
-            }
-
-            // 새 비밀번호로 업데이트
-            member.setPass(newPassword);  // 서비스에서 암호화 처리
-            int result = memberService.updatePasswordMember(member);
-
-            if (result > 0) {
-                response.put("success", true);
-                response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
-            } else {
-                response.put("success", false);
-                response.put("message", "비밀번호 변경에 실패했습니다.");
-            }
-        } else {
-            response.put("valid", false);
+        if (member == null) {
+            response.put("success", false);
+            response.put("message", "로그인 세션이 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        return response;
-    }
+        // Show 접미사가 붙은 파라미터로 변경
+        String currentPassword = requestBody.get("currentPasswordShow");
+        String newPassword = requestBody.get("newPasswordShow");
+        String confirmPassword = requestBody.get("confirmPasswordShow");
 
+        // 새 비밀번호 일치 검증
+        if (!newPassword.equals(confirmPassword)) {
+            response.put("success", false);
+            response.put("message", "새 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 비밀번호 변경 시도
+        boolean result = memberService.changePassword(
+                member.getMemberId(),
+                currentPassword,
+                newPassword
+        );
+
+        if (result) {
+            response.put("success", true);
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "현재 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }

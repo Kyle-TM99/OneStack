@@ -179,6 +179,26 @@
 		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
 	</resultMap>
 
+	<!-- 회원 정보 수정 시, 기존 비밀번호 체크-->
+	<select id="checkCurrentPassword" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE member_no = #{memberNo}
+		  AND pass = #{currentPassword}
+	</select>
+
+	<!-- 소셜 로그인 회원 선택적 업데이트 쿼리 -->
+	<update id="updateMemberSelective" parameterType="Member">
+		UPDATE Member
+		<set>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="zipcode != null">zipcode = #{zipcode},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="address2 != null">address2 = #{address2}</if>
+		</set>
+		WHERE member_id = #{memberId}
+	</update>
+
 	<!-- 회원이 요청한 견적 리스트 Estimation-->
 	<select id="memberEstimation" parameterType="int" resultMap="Estimation">
 		SELECT e.*, m.*
@@ -368,6 +388,7 @@
 		WHERE qr.member_no = #{memberNo}
 		  AND qr.qna_reply_like > 0
 	</select>
+
 	<!-- 회원 수정 -->
 	<update id="updateMember" parameterType="Member" >
 		UPDATE Member
@@ -384,16 +405,6 @@
 		</if>
 		WHERE member_no = #{memberNo}
 	</update>
-
-	<!-- 회원 정보 비밀번호 수정 (하는 중) -->
-	<update id="updateMemberMyPagePass" parameterType="Member">
-		UPDATE Member
-		SET
-			pass = #{pass}
-		WHERE member_no = #{memberNo}
-	</update>
-
-
 
 	<!-- 회원 조회 -->
 	<select id="getMember" parameterType="String" resultType="Member">
@@ -451,14 +462,6 @@
 		  AND phone = #{phone}
 		  AND social_type IN ('google', 'kakao')
 	</select>
-
-
-
-	<update id="updatePasswordMember" parameterType="Member">
-		UPDATE Member
-		SET pass = #{pass}
-		WHERE member_no = #{memberNo}
-	</update>
 
 	<!-- 회원 탈퇴 -->
 	<update id="withdrawalMember" parameterType="int">

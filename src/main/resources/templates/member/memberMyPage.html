@@ -189,42 +189,43 @@
         </div>
     </th:block>
 
-    <!-- 비밀번호 변경 모달도 content fragment 안으로 이동 -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog myPage-model-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="passwordChangeForm">
-                        <div class="mb-3">
-                            <label for="currentPassword2" class="form-label">현재 비밀번호</label>
-                            <input type="password" class="form-control" id="currentPassword2" required>
-                            <div class="invalid-feedback" id="currentPasswordError"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">새 비밀번호</label>
-                            <input type="password" class="form-control" id="newPassword" required>
-                            <small class="text-muted">8~16자의 영문, 숫자, 특수문자 조합</small>
-                            <div class="invalid-feedback" id="newPasswordError"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
-                            <input type="password" class="form-control" id="confirmPassword" required>
-                            <div class="invalid-feedback" id="confirmPasswordError"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-primary" id="savePasswordBtn">변경하기</button>
+    <!-- 비밀번호 변경 모달 -->
+    <th:block th:unless="${session.socialType == 'google' or session.socialType == 'kakao'}">
+        <div class="modal fade" id="changePasswordModalShow" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog myPage-model-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabelShow">비밀번호 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="passwordChangeFormShow">
+                            <div class="mb-3">
+                                <label for="currentPasswordShow" class="form-label">현재 비밀번호</label>
+                                <input type="password" class="form-control" id="currentPasswordShow" required>
+                                <div class="invalid-feedback" id="currentPasswordErrorShow"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPasswordShow" class="form-label">새 비밀번호</label>
+                                <input type="password" class="form-control" id="newPasswordShow" required>
+                                <small class="text-muted">8~16자의 영문, 숫자, 특수문자 조합</small>
+                                <div class="invalid-feedback" id="newPasswordErrorShow"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPasswordShow" class="form-label">새 비밀번호 확인</label>
+                                <input type="password" class="form-control" id="confirmPasswordShow" required>
+                                <div class="invalid-feedback" id="confirmPasswordErrorShow"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn custom-button2" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn custom-button" id="savePasswordBtnShow">변경하기</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </th:block>
 
 <th:block layout:fragment="script">
     <script th:src="@{/js/memberMyPage.js}"></script>

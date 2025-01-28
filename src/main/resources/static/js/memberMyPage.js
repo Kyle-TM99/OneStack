@@ -608,6 +608,7 @@ $(document).ready(function() {
 
 	// 프로필 HTML 생성 함수
 	function generateProfileHTML(memberData) {
+		const isSocialMember = memberData.socialType === 'kakao' || memberData.socialType === 'google';
 		return `
                <div class="profile-form-container">
                      <div class="container d-flex justify-content-center">
@@ -632,14 +633,16 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
-                                                   <label for="name">&nbsp;이름 *</label> 
-                                                   <input id="name" name="name" type="text" class="form-control mb-2" value="${memberData.name}" maxlength="5" required>
-                                             </div>
+                                                   <label for="name" class="form-label">이름</label>
+                    <input type="text" class="form-control" id="name" name="name" 
+                           value="${memberData.name}" 
+                           ${isSocialMember ? 'readonly' : ''}>
+                </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="memberId">&nbsp;아이디</label>
                                                    <input id="memberId" name="memberId" type="text" class="form-control" value="${memberData.memberId}" readonly>
@@ -648,21 +651,21 @@ $(document).ready(function() {
                                        
                                        
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="nickname">&nbsp;닉네임</label>
                                                    <input type="text" class="form-control" id="nickname" name="nickname" value="${memberData.nickname}" readonly>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="birth">&nbsp;생년월일</label>
                                                    <input id="birth" name="birth" type="date" class="form-control" value="${memberData.birth}" readonly>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label>&nbsp;성별</label>
                                                    <div class="d-flex mb-2">
@@ -678,25 +681,27 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
-                                                   <label for="email">&nbsp;이메일 *</label>
-                                                   <input type="email" class="form-control mb-2" id="email" name="email" value="${memberData.email}" required>
-                                                   <div class="form-check">
+                                                   <label for="email" class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           value="${memberData.email}" 
+                           ${isSocialMember ? 'readonly' : ''}>
+                           <div class="form-check">
                                                       <input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent" ${memberData.emailGet ? 'checked' : ''}>
                                                       <label class="form-check-label" for="emailConsent">이메일 수신에 동의합니다.</label>
                                                    </div>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="phone">&nbsp;전화번호 *</label>
                                                    <input type="tel" class="form-control mb-2" id="phone" name="phone" value="${memberData.phone}" required>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="zipcode">&nbsp;우편번호 *</label>
                                                    <div class="input-group mb-2">
@@ -706,21 +711,21 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="address">&nbsp;주소 *</label>
                                                    <input type="text" class="form-control mb-2" id="address" name="address" value="${memberData.address}" readonly required>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-3">
+                                       <div class="row mb-4">
                                              <div class="form-field">
                                                    <label for="address2">&nbsp;상세주소 *</label>
                                                    <input type="text" class="form-control mb-2" id="address2" name="address2" value="${memberData.address2}" required>
                                              </div>
                                        </div>
 
-                                       <button type="button" class="btn custom-button w-100" id="changePasswordBtn">비밀번호 변경</button>
+                                       <button type="button" class="btn custom-button w-100" id="changePasswordBtnShow">비밀번호 변경</button>
                                        
                                        <input type="submit" value="정보 수정" class="btn custom-button2 w-100 mt-4">
                                  </form>
@@ -805,110 +810,149 @@ $(document).ready(function() {
 	});
 
 
+	// 비밀번호 유효성 검사 패턴
+	const patterns = {
+		password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/
+	};
 
-	// 비밀번호 변경 버튼 클릭 이벤트 (폼 제출 이벤트 밖으로 이동)
-	$(document).on('click', '#changePasswordBtn', function() {
-		$('#changePasswordModal').modal('show');
+	// 비밀번호 변경 버튼 클릭 시 모달 오픈
+	$(document).on('click', '#changePasswordBtnShow', function() {
+		$('#changePasswordModalShow').modal('show');
 	});
 
 	// 새 비밀번호 유효성 검사
-	// 비밀번호 유효성 검사
-	document.getElementById("newPassword").addEventListener("input", function() {
-		const password = this.value;
-		let message = "";
-		let isValid = false;
+	$(document).on('input', '#newPasswordShow', function() {
+		const password = $(this).val().trim();
+		let isValid = patterns.password.test(password);
 
-		if (!password) {
-			message = "비밀번호를 입력해주세요.";
-		} else if (password.length < 8) { //patterns의 조건과 일치해야 함.
-			message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
-
-		} else {
-			const hasLetter = /[A-Za-z]/.test(password);
-			const hasNumber = /[0-9]/.test(password);
-			const hasSpecial = /[@$!%*#?&]/.test(password);
-
-			if (!hasLetter || !hasNumber || !hasSpecial) {
-				message = "비밀번호는 8~16자의 영문, 숫자, 특수문자 조합으로 모두 포함해야 합니다.";
-			} else {
-				message = "안전한 비밀번호입니다.";
-				isValid = true;
-			}
-		}
-
-		// 유효성 검사 결과에 따라 클래스 및 메시지 업데이트
 		if (isValid) {
-			this.classList.remove('is-invalid');
-			this.classList.add('is-valid');
-			document.getElementById('newPasswordError').textContent = message;
-		} else {
-			this.classList.add('is-invalid');
-			this.classList.remove('is-valid');
-			document.getElementById('newPasswordError').textContent = message;
-		}
-	});
-
-	// 비밀번호 확인 일치 검사
-	$(document).on('input', '#confirmPassword', function() {
-		const confirmPassword = $(this).val();
-		const newPassword = $('#newPassword').val();
-
-		if (confirmPassword !== newPassword) {
-			$(this).addClass('is-invalid');
-			$('#confirmPasswordError').text('비밀번호가 일치하지 않습니다.');
-		} else {
 			$(this).removeClass('is-invalid').addClass('is-valid');
-			$('#confirmPasswordError').text('');
+			$('#newPasswordErrorShow').text('').hide();
+		} else {
+			$(this).removeClass('is-valid').addClass('is-invalid');
+			$('#newPasswordErrorShow').text('비밀번호는 8~16자의 영문, 숫자, 특수문자를 포함해야 합니다.').show();
 		}
+
+		validatePasswordConfirmation();
 	});
 
-	// 비밀번호 변경 버튼 클릭 시
-	$(document).on('click', '#savePasswordBtn', function() {
-		const currentPassword = $('#currentPassword').val();
-		const newPassword = $('#newPassword').val();
-		const confirmPassword = $('#confirmPassword').val();
+	// 비밀번호 확인 검증
+	$(document).on('input', '#confirmPasswordShow', function() {
+		validatePasswordConfirmation();
+	});
 
-		// 유효성 검사
+	function validatePasswordConfirmation() {
+		const currentPassword = $('#currentPasswordShow').val().trim();
+		const newPassword = $('#newPasswordShow').val().trim();
+		const confirmPassword = $('#confirmPasswordShow').val().trim();
+
+		const isCurrentPasswordFilled = currentPassword.length > 0;
+		const isNewPasswordValid = patterns.password.test(newPassword);
+		const isPasswordMatching = newPassword === confirmPassword;
+
+		// 모든 조건 확인
+		if (isCurrentPasswordFilled && isNewPasswordValid && isPasswordMatching) {
+			$('#currentPasswordShow').removeClass('is-invalid').addClass('is-valid');
+			$('#newPasswordShow').removeClass('is-invalid').addClass('is-valid');
+			$('#confirmPasswordShow').removeClass('is-invalid').addClass('is-valid');
+
+			$('#currentPasswordErrorShow, #newPasswordErrorShow, #confirmPasswordErrorShow')
+				.text('').hide();
+
+			$('#savePasswordBtnShow').prop('disabled', false);
+		} else {
+			// 각 입력 필드에 대한 개별 검증
+			if (!isCurrentPasswordFilled) {
+				$('#currentPasswordShow').addClass('is-invalid');
+				$('#currentPasswordErrorShow').text('현재 비밀번호를 입력해주세요.').show();
+			}
+
+			if (!isNewPasswordValid) {
+				$('#newPasswordShow').addClass('is-invalid');
+				$('#newPasswordErrorShow').text('비밀번호는 8~16자의 영문, 숫자, 특수문자를 포함해야 합니다.').show();
+			}
+
+			if (!isPasswordMatching) {
+				$('#confirmPasswordShow').addClass('is-invalid');
+				$('#confirmPasswordErrorShow').text('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.').show();
+			}
+
+			$('#savePasswordBtnShow').prop('disabled', true);
+		}
+	}
+
+// 각 입력 필드에 이벤트 리스너 추가
+	$(document).on('input', '#currentPasswordShow, #newPasswordShow, #confirmPasswordShow', function() {
+		validatePasswordConfirmation();
+	});
+
+	// 비밀번호 변경 버튼 클릭 이벤트
+	$(document).on('click', '#savePasswordBtnShow', function(e) {
+		e.preventDefault();
+
+		const currentPassword = $('#currentPasswordShow').val().trim();
+		const newPassword = $('#newPasswordShow').val().trim();
+		const confirmPassword = $('#confirmPasswordShow').val().trim();
+
+		// 모든 필드 검증
 		if (!currentPassword || !newPassword || !confirmPassword) {
 			alert('모든 필드를 입력해주세요.');
 			return;
 		}
 
-		if (newPassword !== confirmPassword) {
-			alert('새 비밀번호가 일치하지 않습니다.');
+		// 새 비밀번호 유효성 검사
+		if (!patterns.password.test(newPassword)) {
+			alert('새 비밀번호는 8~16자의 영문, 숫자, 특수문자를 포함해야 합니다.');
 			return;
 		}
 
-		// 현재 비밀번호 확인 및 새 비밀번호 저장
+		// 새 비밀번호 확인 검사
+		if (newPassword !== confirmPassword) {
+			alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
+			return;
+		}
+
+		// 서버에 비밀번호 변경 요청
 		$.ajax({
-			url: '/ajax/member/updatePassword',
+			url: '/ajax/member/changePassword',
 			type: 'POST',
-			data: {
-				currentPassword: currentPassword,
-				newPassword: newPassword
-			},
+			contentType: 'application/json',
+			data: JSON.stringify({
+				currentPasswordShow: currentPassword,
+				newPasswordShow: newPassword,
+				confirmPasswordShow: confirmPassword
+			}),
 			success: function(response) {
-				if (response.success) {
-					alert('비밀번호가 성공적으로 변경되었습니다.');
-					$('#changePasswordModal').modal('hide');
-					$('#passwordChangeForm')[0].reset();
-				} else {
-					alert(response.message || '현재 비밀번호가 일치하지 않습니다.');
-				}
+				alert(response.message);
+				$('#changePasswordModalShow').modal('hide');
+				// 모달 초기화
+				$('#currentPasswordShow, #newPasswordShow, #confirmPasswordShow').val('');
+				$('#currentPasswordShow, #newPasswordShow, #confirmPasswordShow')
+					.removeClass('is-valid is-invalid');
+				$('#newPasswordErrorShow, #confirmPasswordErrorShow').text('').hide();
 			},
-			error: function() {
-				alert('서버 오류가 발생했습니다.');
+			error: function(xhr) {
+				const errorMessage = xhr.responseJSON ?
+					xhr.responseJSON.message :
+					'비밀번호 변경 중 오류가 발생했습니다.';
+				alert(errorMessage);
 			}
 		});
 	});
 
-	// 비밀번호 변경 모달이 닫힐 때 초기화
-	$('#changePasswordModal').on('hidden.bs.modal', function() {
-		$('#passwordChangeForm')[0].reset();
-		$('.is-invalid').removeClass('is-invalid');
-		$('.is-valid').removeClass('is-valid');
-		$('.invalid-feedback').text('');
+	// 모달 닫힐 때 초기화
+	$('#changePasswordModalShow').on('hidden.bs.modal', function() {
+		// 입력 필드 초기화
+		$('#currentPasswordShow, #newPasswordShow, #confirmPasswordShow').val('');
+
+		// 유효성 검사 클래스 제거
+		$('#currentPasswordShow, #newPasswordShow, #confirmPasswordShow')
+			.removeClass('is-valid is-invalid');
+
+		// 에러 메시지 숨기기
+		$('#newPasswordErrorShow, #confirmPasswordErrorShow').text('').hide();
+
+		// 저장 버튼 비활성화
+		$('#savePasswordBtnShow').prop('disabled', true);
 	});
-
-
 });
