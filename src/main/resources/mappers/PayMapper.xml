@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.PayMapper">
+
+    <resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
+        <id property="memberNo" column="member_no" />
+        <result property="name" column="name" />
+        <result property="memberId" column="member_id" />
+        <result property="kakaoId" column="kakao_id" />
+        <result property="pass" column="pass" />
+        <result property="nickname" column="nickname" />
+        <result property="birth" column="birth" />
+        <result property="gender" column="gender" />
+        <result property="zipcode" column="zipcode" />
+        <result property="address" column="address" />
+        <result property="address2" column="address2" />
+        <result property="email" column="email" />
+        <result property="emailGet" column="email_get" />
+        <result property="phone" column="phone" />
+        <result property="memberRegDate" column="member_reg_date" />
+        <result property="memberType" column="member_type" />
+        <result property="memberStatus" column="member_status" />
+        <result property="memberImage" column="member_image" />
+        <result property="stack" column="stack" />
+        <result property="stackName" column="stack_name" />
+        <result property="withdrawalEndDate" column="withdrawal_end_date" />
+        <result property="banEndDate" column="ban_end_date" />
+        <result property="reportedCount" column="reported_count" />
+        <result property="isAdmin" column="is_admin" />
+        <result property="isSocial" column="is_social" />
+        <result property="socialType" column="social_type" />
+    </resultMap>
+
+    <resultMap id="ProfessionalResultMap" type="com.onestack.project.domain.Professional">
+        <id property="proNo" column="pro_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="categoryNo" column="category_no" />
+        <result property="selfIntroduction" column="self_introduction" />
+        <result property="career" column="career" />
+        <result property="awardCareer" column="award_career" />
+        <result property="studentCount" column="student_count" />
+        <result property="rate" column="rate" />
+        <result property="professorStatus" column="professor_status" />
+        <result property="screeningMsg" column="screening_msg" />
+        <result property="proDate" column="pro_date" />
+        <result property="contactableTime" column="contactable_time" />
+        <result property="averagePrice" column="average_price" />
+        <result property="reviewCount" column="review_count" />
+    </resultMap>
+
+    <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
+        <id property="quotationNo" column="quotation_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="proNo" column="pro_no" />
+        <result property="quotationContent" column="quotation_content" />
+        <result property="quotationPrice" column="quotation_price" />
+        <result property="quotationRegDate" column="quotation_reg_date" />
+    </resultMap>
+
+    <resultMap id="PayResultMap" type="com.onestack.project.domain.Pay">
+        <id property="payNo" column="pay_no" />
+        <result property="quotationNo" column="quotation_no" />
+        <result property="memberNo" column="member_no" />
+        <result property="payType" column="pay_type" />
+        <result property="payContent" column="pay_content" />
+        <result property="payPrice" column="pay_price" />
+        <result property="payStatus" column="pay_status" />
+        <result property="payDate" column="pay_date" />
+    </resultMap>
+
+    <resultMap id="MemProQuotationResultMap" type="com.onestack.project.domain.MemProQuotation">
+        <association property="member" resultMap="MemberResultMap" />
+        <association property="professional" resultMap="ProfessionalResultMap" />
+        <association property="quotation" resultMap="QuotationResultMap" />
+    </resultMap>
+
+    <resultMap id="MemPayResultMap" type="com.onestack.project.domain.MemPay">
+        <association property="member" resultMap="MemberResultMap" />
+        <association property="pay" resultMap="PayResultMap" />
+    </resultMap>
+
+
+    <select id = "getPayForm" parameterType = "int" resultMap="MemProQuotationResultMap">
+        SELECT m.*, p.*, q.*
+        FROM Member m JOIN Quotation q
+                ON m.member_no = q.member_no
+            JOIN Professional p
+                ON q.pro_no = p.pro_no
+        WHERE q.quotation_no = #{quotationNo}
+    </select>
+
+    <select id = "getPrice" parameterType = "int" resultType = "int">
+        SELECT quotation_price
+        FROM Quotation
+        WHERE quotation_no = #{quotationNo}
+    </select>
+
+    <insert id="insertPay" parameterType="Pay">
+        INSERT INTO Pay(quotation_no, member_no, pay_type, pay_content, pay_price, pay_status)
+        VALUES(#{quotationNo}, #{memberNo}, #{payType}, #{payContent}, #{payPrice}, #{payStatus})
+    </insert>
+
+    <select id = "getPayDoneForm" parameterType = "int" resultMap="MemPayResultMap">
+        SELECT p.*, m.*
+        FROM Pay p JOIN Member m
+            ON p.member_no = m.member_no
+        WHERE quotation_no = #{quotationNo}
+    </select>
+
+</mapper>

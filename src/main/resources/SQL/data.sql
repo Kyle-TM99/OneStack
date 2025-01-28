@@ -193,3 +193,6 @@ VALUES (1, 1, '로그인이 안돼요', '비밀번호를 입력했는데 로그�
 (7, 7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
 (8, 8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
 
+-- 견적서 더미 데이터 --
+INSERT IGNORE INTO Quotation (quotation_no, member_no, pro_no, quotation_content, quotation_price, quotation_reg_date)
+VALUES(1, 1, 1, '기획 외주', 123000, current_time());

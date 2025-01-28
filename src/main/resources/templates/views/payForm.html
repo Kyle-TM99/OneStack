@@ -1,47 +1,56 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" style="scroll-behavior: smooth;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>견적서</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link href="/css/pay.css" rel="stylesheet">
+  <!-- 포트원 결제 -->
+  <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 </head>
 <body>
-<div class="memo">
+<div th:each="quotation : ${quotationList}"  class="memo">
   <div class="memo-header">
     <h1>견적서</h1>
-    <p>견적 번호: 123456</p>
+    <p id="projectName">견적 번호: [[ ${quotation.quotation.quotationNo} ]]</p>
   </div>
+  <p id="memberNo" hidden>[[ ${quotation.member.memberNo} ]]</p>
+  <p id="memberPhone" hidden>원스택 회원 전화번호</p>
+  <p id="memberEmail" hidden>원스택 회원 이메일</p>
 
   <table class="memo-table">
     <tr>
       <th>회원 이름</th>
-      <td>회원</td>
+      <td id="memberName">[[${quotation.member.name}]]</td>
     </tr>
     <tr>
       <th>전문가 이름</th>
-      <td>전문가</td>
+      <td>[[${quotation.professional.proNo}]]</td>
     </tr>
     <tr>
       <th>견적 내용</th>
-      <td>웹사이트 개발 및 유지 보수, 추가 기능 개발(예: 결제 연동, 회원관리 기능 등)</td>
+      <td id="quotationContent">[[${quotation.quotation.quotationContent}]]</td>
     </tr>
     <tr>
       <th>견적 금액</th>
-      <td>₩2,500,000</td>
+      <td id="projectPrice">₩[[${quotation.quotation.quotationPrice}]]</td>
     </tr>
     <tr>
       <th>견적 확정일</th>
-      <td>2025-01-25</td>
+      <td>[[${quotation.quotation.quotationRegDate}]]</td>
     </tr>
   </table>
 
   <div class="memo-footer">
-    <button class="btn-confirm">확인 및 결제</button>
+    <button id="payBtn" class="btn-confirm">확인 및 결제</button>
   </div>
 </div>
 
-
+<script src="/js/pay.js"></script>
 </body>
 </html>

@@ -8,41 +8,41 @@
   <link href="/css/pay.css" rel="stylesheet">
 </head>
 <body>
-<div class="receipt">
-  <div class="receipt-header">
+<div class="receipt" th:each="pay : ${payList}">
+  <div class="receipt-header" >
     <h1>결제 완료</h1>
-    <p>결제 번호: 987654</p>
+    <p>결제 번호: [[ ${pay.pay.payNo} ]]</p>
   </div>
 
   <table class="receipt-table">
     <tr>
       <th>견적서 번호</th>
-      <td>123456</td>
+      <td>[[ ${pay.pay.quotationNo} ]]</td>
     </tr>
     <tr>
       <th>회원 이름</th>
-      <td>회원</td>
+      <td>[[ ${pay.member.name} ]]</td>
     </tr>
     <tr>
       <th>견적 내용</th>
-      <td>웹사이트 개발 및 유지 보수, 추가 기능 개발(예: 결제 연동, 회원관리 기능 등)</td>
+      <td> [[ ${pay.pay.payContent} ]] </td>
     </tr>
     <tr>
       <th>결제 금액</th>
-      <td>₩2,500,000</td>
+      <td>₩[[ ${pay.pay.payPrice} ]]</td>
     </tr>
     <tr>
       <th>결제 방법</th>
-      <td>신용카드</td>
+      <td>[[ ${pay.pay.payType} ]]</td>
     </tr>
     <tr>
       <th>결제 시간</th>
-      <td>2025-01-20 15:30:45</td>
+      <td>[[ ${pay.pay.payDate} ]]</td>
     </tr>
   </table>
 
   <div class="receipt-footer">
-    <button class="btn-home">홈으로</button>
+    <button class="btn-home" onclick="window.location.href='/mainPage'">홈으로</button>
   </div>
 </div>
 
