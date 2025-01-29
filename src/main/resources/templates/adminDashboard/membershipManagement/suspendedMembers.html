@@ -68,7 +68,9 @@
                 <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
                 <td th:text="${member.reportedCount}">신고 횟수</td>
                 <td th:text="${member.memberStatus == 1 ? '비활성화' : '정지'}">활성화</td>
-                <td th:text="${#dates.format(member.banEndDate, 'yyyy-MM-dd HH:mm:ss')}">날짜</td>
+                <td th:text="${member.memberStatus == 2 ? '영구 정지' : (member.banEndDate != null ? #dates.format(member.banEndDate, 'yyyy-MM-dd HH:mm:ss') : '-')}">
+                    정지 기간
+                </td>
                 <td>
                     <button
                             class="btn btn-outline-dark btn-sm member-edit-btn">

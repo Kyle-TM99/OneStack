@@ -112,13 +112,21 @@
 </select>
 
 <!-- 회원 상태 변경 -->
-<update id="updateMember" parameterType="Map">
+<update id="updateMember">
 	UPDATE Member
-	SET member_type = #{memberType},
-	    member_status = #{memberStatus}
-	WHERE member_No = #{memberNo}
+	SET
+	name = #{name},
+	nickname = #{nickname},
+	member_id = #{memberId},
+	email = #{email},
+	phone = #{phone},
+	address1 = #{address},
+	address2 = #{address2},
+	member_type = #{memberType},
+	member_status = #{memberStatus},
+	ban_end_date = #{banEndDate}
+	WHERE member_no = #{memberNo}
 </update>
-
 
 <!-- 신고 정보 저장 -->
 <insert id="addReports" parameterType="Reports">
@@ -200,14 +208,6 @@
    WHERE member_type = 2 and member_type = 1
 </select>
 
-<!-- 회원 정지 -->
-<update id = "banMember" parameterType = "map">
-	Update Member
-	SET member_type = 2,
-		ban_end_date = #{date}
-	WHERE member_no = #{memberNo}
-</update>
-
 <!-- 회원의 모든 커뮤니티 게시글 비활성화 처리 -->
 <update id="disactivateCommunity" parameterType="int">
 	UPDATE Community
@@ -274,6 +274,30 @@
 	WHERE reports_no = #{reportsNo}
 </update>
 
+<!-- 회원 기간 정지 -->
+	<update id="suspendMember">
+		UPDATE Member
+		SET member_status = 1,
+		ban_end_date =
+		CASE
+		WHEN #{banEndDate} IS NOT NULL THEN #{banEndDate}
+		ELSE NULL
+		END
+		WHERE member_no = #{memberNo};
+	</update>
+
+
+<!-- 회원 기간 정지 자동해제 -->
+<update id="releaseSuspendMember">
+	UPDATE Member
+	SET member_status = 0,
+	ban_end_date = NULL
+	WHERE member_status = 2
+	AND ban_end_date IS NOT NULL
+	AND ban_end_date &lt; NOW();
+</update>
+
+<!-- QnA 게시글 비활성화 -->
 <update id="disableQna">
 	UPDATE QnA
 	SET  qna_board_activation = 0

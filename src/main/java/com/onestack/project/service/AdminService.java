@@ -1,11 +1,16 @@
 package com.onestack.project.service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.onestack.project.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.onestack.project.mapper.ManagerMapper;
@@ -34,9 +39,10 @@ public class AdminService {
 	}
 	
 	// 회원 유형/상태 변경
-	public void updateMember(int memberNo, Integer memberType, Integer memberStatus) {
-		managerMapper.updateMember(memberNo, memberType, memberStatus);
+	public void updateMember(int memberNo, String name, String nickname, String memberId, String email, String phone, String address, String address2, int memberType, int memberStatus, Timestamp banEndDate) {
+		managerMapper.updateMember(memberNo, name, nickname, memberId, email, phone, address, address2, memberType, memberStatus, banEndDate);
 	}
+
 
 	public Member getWithdrawalMember(){
 		return managerMapper.getWithdrawalMember();
@@ -50,6 +56,12 @@ public class AdminService {
 	public void saveReport(Reports report) {
 		managerMapper.addReports(report);
 		managerMapper.incrementReportedCount(report.getReportedMemberNo());
+	}
+
+	// 회원 기간 정지 자동 해제
+	@Scheduled(cron = "0 0 0 * * ?") // 00:00에 초기화
+	public void releaseSuspendMember(){
+		managerMapper.releaseSuspendMember();
 	}
 
 	// 신고 리스트 조회

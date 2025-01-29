@@ -1,7 +1,7 @@
 package com.onestack.project.mapper;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 import com.onestack.project.domain.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,15 +18,19 @@ public interface ManagerMapper {
             @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
-	void updateMember(@Param("memberNo") int memberNo,
-					  @Param("memberType") Integer memberType,
-					  @Param("memberStatus") Integer memberStatus);
+	void updateMember(int memberNo, String name, String nickname,
+					  String memberId, String email, String phone,
+					  String address, String address2, int memberType,
+					  int memberStatus, Timestamp banEndDate);
 
 	public Member getWithdrawalMember();
 
 	public Member getMember();
 
 	void addReports(Reports reports);
+
+	// 기간 정지 자동 해제
+	void releaseSuspendMember();
 
 	// 신고 대상 신고 횟수 증가
 	int incrementReportedCount(int memberNo);
