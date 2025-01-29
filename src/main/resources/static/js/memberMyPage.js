@@ -14,8 +14,9 @@ $(document).ready(function() {
 		address: false
 	};
 
+
 	// 사이드바 네비게이션 클릭 이벤트 수정
-	$('.sidebar .nav-link').click(function (e) {
+	$('.sidebar .nav-link').click(function(e) {
 		e.preventDefault();
 		$('.sidebar .nav-link').removeClass('active');
 		$(this).addClass('active');
@@ -31,7 +32,7 @@ $(document).ready(function() {
 	});
 
 	// 활동 카드의 각 항목 클릭 이벤트
-	$('.activity-card span .stats-overview .stat-content').click(function () {
+	$('.activity-card span .stats-overview .stat-content').click(function() {
 		const type = $(this).data('type');
 		$('.sidebar .nav-link').removeClass('active');
 
@@ -71,7 +72,7 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberInfo',
 				type: 'GET',
-				success: function (memberData) {
+				success: function(memberData) {
 					const contentMap = {
 						payment: `
                                              <div class="mb-4">
@@ -116,7 +117,7 @@ $(document).ready(function() {
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
-				error: function () {
+				error: function() {
 					alert('회원정보를 불러오는데 실패했습니다.');
 				}
 			});
@@ -126,7 +127,7 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberRequest',
 				type: 'GET',
-				success: function (memberData) {
+				success: function(memberData) {
 					const contentMap = {
 						Request: `
                         <div class="mb-4">
@@ -158,7 +159,7 @@ $(document).ready(function() {
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
-				error: function () {
+				error: function() {
 					alert('회원정보를 불러오는데 실패했습니다.');
 				}
 			});
@@ -183,7 +184,7 @@ $(document).ready(function() {
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
-				error: function () {
+				error: function() {
 					alert('회원정보를 불러오는데 실패했습니다.');
 				}
 			});
@@ -192,11 +193,11 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberInfo',
 				type: 'GET',
-				success: function (memberData) {
+				success: function(memberData) {
 					$.ajax({
 						url: '/ajax/member/myPageReview',
 						type: 'GET',
-						success: function (response) {
+						success: function(response) {
 							if (response.success) {
 								let reviewHtml = response.data.map(review => `
                                        <div class="review-list">
@@ -240,7 +241,7 @@ $(document).ready(function() {
 								$('.content-container').html(reviewHtml);
 							}
 						},
-						error: function () {
+						error: function() {
 							alert('리뷰를 불러오는 데 실패했습니다.');
 						}
 					});
@@ -282,7 +283,7 @@ $(document).ready(function() {
 								html += generateLikesHTML(response.data);
 							} else {
 								response.data.forEach(item => {
-									switch (subType) {
+									switch(subType) {
 										case 'post':
 											html += generatePostHTML(item);
 											break;
@@ -305,7 +306,7 @@ $(document).ready(function() {
 
 						// 탭 클릭 이벤트 리스너 추가
 						document.querySelectorAll('.nav-link').forEach(link => {
-							link.addEventListener('click', function (e) {
+							link.addEventListener('click', function(e) {
 								e.preventDefault();
 								const content = this.getAttribute('data-content');
 								const subType = this.getAttribute('data-subtype') || 'post';
@@ -588,7 +589,7 @@ $(document).ready(function() {
 	loadContent('payment');
 
 	// 탭 클릭 이벤트 처리
-	$('.nav-link').click(function () {
+	$('.nav-link').click(function() {
 		const content = $(this).data('content');
 		if (content === 'profile') {
 			// 다른 탭의 active 상태 제거
@@ -607,7 +608,6 @@ $(document).ready(function() {
 
 	// 프로필 HTML 생성 함수
 	function generateProfileHTML(memberData) {
-		const isSocialMember = memberData.socialType === 'kakao' || memberData.socialType === 'google';
 		return `
                <div class="profile-form-container">
                      <div class="container d-flex justify-content-center">
@@ -632,16 +632,14 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
-                                                   <label for="name" class="form-label">이름 *</label>
-														<input type="text" class="form-control" id="name" name="name" 
-															   value="${memberData.name}" 
-															   ${isSocialMember ? 'readonly' : ''}>
-													</div>
+                                                   <label for="name">&nbsp;이름 *</label> 
+                                                   <input id="name" name="name" type="text" class="form-control mb-2" value="${memberData.name}" maxlength="5" required>
+                                             </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="memberId">&nbsp;아이디</label>
                                                    <input id="memberId" name="memberId" type="text" class="form-control" value="${memberData.memberId}" readonly>
@@ -650,21 +648,21 @@ $(document).ready(function() {
                                        
                                        
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="nickname">&nbsp;닉네임</label>
                                                    <input type="text" class="form-control" id="nickname" name="nickname" value="${memberData.nickname}" readonly>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="birth">&nbsp;생년월일</label>
                                                    <input id="birth" name="birth" type="date" class="form-control" value="${memberData.birth}" readonly>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label>&nbsp;성별</label>
                                                    <div class="d-flex mb-2">
@@ -680,27 +678,25 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
-                                                   <label for="email" class="form-label">이메일 *</label>
-                    <input type="email" class="form-control" id="email" name="email" 
-                           value="${memberData.email}" 
-                           ${isSocialMember ? 'readonly' : ''}>
-                           <div class="form-check">
+                                                   <label for="email">&nbsp;이메일 *</label>
+                                                   <input type="email" class="form-control mb-2" id="email" name="email" value="${memberData.email}" required>
+                                                   <div class="form-check">
                                                       <input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent" ${memberData.emailGet ? 'checked' : ''}>
                                                       <label class="form-check-label" for="emailConsent">이메일 수신에 동의합니다.</label>
                                                    </div>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="phone">&nbsp;전화번호 *</label>
                                                    <input type="tel" class="form-control mb-2" id="phone" name="phone" value="${memberData.phone}" required>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="zipcode">&nbsp;우편번호 *</label>
                                                    <div class="input-group mb-2">
@@ -710,23 +706,23 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="address">&nbsp;주소 *</label>
                                                    <input type="text" class="form-control mb-2" id="address" name="address" value="${memberData.address}" readonly required>
                                              </div>
                                        </div>
 
-                                       <div class="row mb-4">
+                                       <div class="row mb-3">
                                              <div class="form-field">
                                                    <label for="address2">&nbsp;상세주소 *</label>
                                                    <input type="text" class="form-control mb-2" id="address2" name="address2" value="${memberData.address2}" required>
                                              </div>
                                        </div>
 
-                                       <button type="button" class="btn custom-button" id="changePasswordBtnShow">비밀번호 변경</button>
+                                       <button type="button" class="btn custom-button w-100" id="changePasswordBtnShow">비밀번호 변경</button>
                                        
-                                       <input type="submit" value="정보 수정" class="btn custom-button2 mt-4">
+                                       <input type="submit" value="정보 수정" class="btn custom-button2 w-100 mt-4">
                                  </form>
                            </div>
                      </div>
@@ -735,27 +731,27 @@ $(document).ready(function() {
 	}
 
 	// 비밀번호 확인 폼 제출 시
-	$('#passwordCheckForm').on('submit', function (e) {
+	$('#passwordCheckForm').on('submit', function(e) {
 		e.preventDefault();
 		const password = $('#currentPassword').val();
 
 		$.ajax({
 			url: '/ajax/member/checkPassword',
 			type: 'POST',
-			data: {pass: password},
-			success: function (response) {
+			data: { pass: password },
+			success: function(response) {
 				if (response.valid) {
 					$('#passwordCheckModal').modal('hide');
 					// 회원 정보 가져와서 프로필 페이지 표시
 					$.ajax({
 						url: '/ajax/member/getMemberInfo',
 						type: 'GET',
-						success: function (memberData) {
+						success: function(memberData) {
 							$('.content-container').html(generateProfileHTML(memberData));
 							// 폼이 로드된 후 표시 애니메이션 적용
 							$('.profile-form-container').fadeIn();
 						},
-						error: function () {
+						error: function() {
 							alert('회원정보를 불러오는데 실패했습니다.');
 						}
 					});
@@ -763,18 +759,18 @@ $(document).ready(function() {
 					$('#passwordError').text('비밀번호가 일치하지 않습니다.');
 				}
 			},
-			error: function () {
+			error: function() {
 				$('#passwordError').text('서버 오류가 발생했습니다.');
 			}
 		});
 	});
 
 	// 프로필 이미지 변경 시 미리보기
-	$(document).on('change', '#profileImage', function (e) {
+	$(document).on('change', '#profileImage', function(e) {
 		const file = e.target.files[0];
 		if (file) {
 			const reader = new FileReader();
-			reader.onload = function (e) {
+			reader.onload = function(e) {
 				$('.profile-image-container').attr('src', e.target.result);
 			}
 			reader.readAsDataURL(file);
@@ -783,7 +779,7 @@ $(document).ready(function() {
 
 
 	// 다음 지도 API
-	$(document).on('click', '#addressSearchBtn2', function () {
+	$(document).on('click', '#addressSearchBtn2', function() {
 		console.log('주소 찾기 버튼 클릭됨');  // 버튼 클릭 로그
 
 		if (typeof daum === 'undefined') {
@@ -793,7 +789,7 @@ $(document).ready(function() {
 		}
 
 		new daum.Postcode({
-			oncomplete: function (data) {
+			oncomplete: function(data) {
 				console.log('주소 선택 완료:', data);
 				$("#zipcode").val(data.zonecode);
 				$("#address").val(data.roadAddress);
@@ -803,10 +799,11 @@ $(document).ready(function() {
 		}).open();
 	});
 
-	$(document).on('input', '#address2', function () {
+	$(document).on('input', '#address2', function() {
 		console.log('상세주소 입력됨:', $(this).val());
 		validationState.address = $(this).val().trim() !== "";
 	});
+
 
 
 	// 비밀번호 유효성 검사 패턴

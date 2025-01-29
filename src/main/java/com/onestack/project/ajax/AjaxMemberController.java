@@ -241,7 +241,7 @@ public class AjaxMemberController {
 
     @PostMapping("/changePassword")
     public ResponseEntity<Map<String, Object>> changePassword(HttpSession session,
-            @RequestBody Map<String, String> requestBody
+                                                              @RequestBody Map<String, String> requestBody
     ) {
         Map<String, Object> response = new HashMap<>();
 
