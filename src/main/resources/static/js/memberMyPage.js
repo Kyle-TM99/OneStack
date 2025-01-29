@@ -14,9 +14,8 @@ $(document).ready(function() {
 		address: false
 	};
 
-
 	// 사이드바 네비게이션 클릭 이벤트 수정
-	$('.sidebar .nav-link').click(function(e) {
+	$('.sidebar .nav-link').click(function (e) {
 		e.preventDefault();
 		$('.sidebar .nav-link').removeClass('active');
 		$(this).addClass('active');
@@ -32,7 +31,7 @@ $(document).ready(function() {
 	});
 
 	// 활동 카드의 각 항목 클릭 이벤트
-	$('.activity-card span .stats-overview .stat-content').click(function() {
+	$('.activity-card span .stats-overview .stat-content').click(function () {
 		const type = $(this).data('type');
 		$('.sidebar .nav-link').removeClass('active');
 
@@ -72,7 +71,7 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberInfo',
 				type: 'GET',
-				success: function(memberData) {
+				success: function (memberData) {
 					const contentMap = {
 						payment: `
                                              <div class="mb-4">
@@ -117,7 +116,7 @@ $(document).ready(function() {
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
-				error: function() {
+				error: function () {
 					alert('회원정보를 불러오는데 실패했습니다.');
 				}
 			});
@@ -127,7 +126,7 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberRequest',
 				type: 'GET',
-				success: function(memberData) {
+				success: function (memberData) {
 					const contentMap = {
 						Request: `
                         <div class="mb-4">
@@ -159,17 +158,17 @@ $(document).ready(function() {
 					};
 					$('.content-container').html(contentMap[contentType]);
 				},
-				error: function() {
+				error: function () {
 					alert('회원정보를 불러오는데 실패했습니다.');
 				}
 			});
 		} else if (contentType === 'portfolio') {
-					$.ajax({
-						url: '/ajax/member/portfolio',
-						type: 'GET',
-						success: function (portfolio) {
-							const contentMap = {
-								portfolioHtml: `
+			$.ajax({
+				url: '/ajax/member/portfolio',
+				type: 'GET',
+				success: function (portfolio) {
+					const contentMap = {
+						portfolioHtml: `
                                        <div class="portfolio-list">
                                           <div class="card" style="width: 18rem;">
 										  <img src="..." class="card-img-top" alt="전문가 포트폴리오 썸네일">
@@ -181,23 +180,23 @@ $(document).ready(function() {
 										  </div>
 										</div>
                                     `,
-							};
-							$('.content-container').html(contentMap[contentType]);
-						},
-						error: function() {
-							alert('회원정보를 불러오는데 실패했습니다.');
-						}
-					});
+					};
+					$('.content-container').html(contentMap[contentType]);
+				},
+				error: function () {
+					alert('회원정보를 불러오는데 실패했습니다.');
+				}
+			});
 		} else if (contentType === 'review') {
 			// 세션에서 현재 로그인한 회원의 번호를 가져오는 AJAX 요청
 			$.ajax({
 				url: '/ajax/member/getMemberInfo',
 				type: 'GET',
-				success: function(memberData) {
+				success: function (memberData) {
 					$.ajax({
 						url: '/ajax/member/myPageReview',
 						type: 'GET',
-						success: function(response) {
+						success: function (response) {
 							if (response.success) {
 								let reviewHtml = response.data.map(review => `
                                        <div class="review-list">
@@ -241,7 +240,7 @@ $(document).ready(function() {
 								$('.content-container').html(reviewHtml);
 							}
 						},
-						error: function() {
+						error: function () {
 							alert('리뷰를 불러오는 데 실패했습니다.');
 						}
 					});
@@ -283,7 +282,7 @@ $(document).ready(function() {
 								html += generateLikesHTML(response.data);
 							} else {
 								response.data.forEach(item => {
-									switch(subType) {
+									switch (subType) {
 										case 'post':
 											html += generatePostHTML(item);
 											break;
@@ -306,7 +305,7 @@ $(document).ready(function() {
 
 						// 탭 클릭 이벤트 리스너 추가
 						document.querySelectorAll('.nav-link').forEach(link => {
-							link.addEventListener('click', function(e) {
+							link.addEventListener('click', function (e) {
 								e.preventDefault();
 								const content = this.getAttribute('data-content');
 								const subType = this.getAttribute('data-subtype') || 'post';
@@ -589,7 +588,7 @@ $(document).ready(function() {
 	loadContent('payment');
 
 	// 탭 클릭 이벤트 처리
-	$('.nav-link').click(function() {
+	$('.nav-link').click(function () {
 		const content = $(this).data('content');
 		if (content === 'profile') {
 			// 다른 탭의 active 상태 제거
@@ -635,11 +634,11 @@ $(document).ready(function() {
 
                                        <div class="row mb-4">
                                              <div class="form-field">
-                                                   <label for="name" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="name" name="name" 
-                           value="${memberData.name}" 
-                           ${isSocialMember ? 'readonly' : ''}>
-                </div>
+                                                   <label for="name" class="form-label">이름 *</label>
+														<input type="text" class="form-control" id="name" name="name" 
+															   value="${memberData.name}" 
+															   ${isSocialMember ? 'readonly' : ''}>
+													</div>
                                        </div>
 
                                        <div class="row mb-4">
@@ -683,7 +682,7 @@ $(document).ready(function() {
 
                                        <div class="row mb-4">
                                              <div class="form-field">
-                                                   <label for="email" class="form-label">이메일</label>
+                                                   <label for="email" class="form-label">이메일 *</label>
                     <input type="email" class="form-control" id="email" name="email" 
                            value="${memberData.email}" 
                            ${isSocialMember ? 'readonly' : ''}>
@@ -725,9 +724,9 @@ $(document).ready(function() {
                                              </div>
                                        </div>
 
-                                       <button type="button" class="btn custom-button w-100" id="changePasswordBtnShow">비밀번호 변경</button>
+                                       <button type="button" class="btn custom-button" id="changePasswordBtnShow">비밀번호 변경</button>
                                        
-                                       <input type="submit" value="정보 수정" class="btn custom-button2 w-100 mt-4">
+                                       <input type="submit" value="정보 수정" class="btn custom-button2 mt-4">
                                  </form>
                            </div>
                      </div>
@@ -736,27 +735,27 @@ $(document).ready(function() {
 	}
 
 	// 비밀번호 확인 폼 제출 시
-	$('#passwordCheckForm').on('submit', function(e) {
+	$('#passwordCheckForm').on('submit', function (e) {
 		e.preventDefault();
 		const password = $('#currentPassword').val();
 
 		$.ajax({
 			url: '/ajax/member/checkPassword',
 			type: 'POST',
-			data: { pass: password },
-			success: function(response) {
+			data: {pass: password},
+			success: function (response) {
 				if (response.valid) {
 					$('#passwordCheckModal').modal('hide');
 					// 회원 정보 가져와서 프로필 페이지 표시
 					$.ajax({
 						url: '/ajax/member/getMemberInfo',
 						type: 'GET',
-						success: function(memberData) {
+						success: function (memberData) {
 							$('.content-container').html(generateProfileHTML(memberData));
 							// 폼이 로드된 후 표시 애니메이션 적용
 							$('.profile-form-container').fadeIn();
 						},
-						error: function() {
+						error: function () {
 							alert('회원정보를 불러오는데 실패했습니다.');
 						}
 					});
@@ -764,18 +763,18 @@ $(document).ready(function() {
 					$('#passwordError').text('비밀번호가 일치하지 않습니다.');
 				}
 			},
-			error: function() {
+			error: function () {
 				$('#passwordError').text('서버 오류가 발생했습니다.');
 			}
 		});
 	});
 
 	// 프로필 이미지 변경 시 미리보기
-	$(document).on('change', '#profileImage', function(e) {
+	$(document).on('change', '#profileImage', function (e) {
 		const file = e.target.files[0];
 		if (file) {
 			const reader = new FileReader();
-			reader.onload = function(e) {
+			reader.onload = function (e) {
 				$('.profile-image-container').attr('src', e.target.result);
 			}
 			reader.readAsDataURL(file);
@@ -784,7 +783,7 @@ $(document).ready(function() {
 
 
 	// 다음 지도 API
-	$(document).on('click', '#addressSearchBtn2', function() {
+	$(document).on('click', '#addressSearchBtn2', function () {
 		console.log('주소 찾기 버튼 클릭됨');  // 버튼 클릭 로그
 
 		if (typeof daum === 'undefined') {
@@ -794,7 +793,7 @@ $(document).ready(function() {
 		}
 
 		new daum.Postcode({
-			oncomplete: function(data) {
+			oncomplete: function (data) {
 				console.log('주소 선택 완료:', data);
 				$("#zipcode").val(data.zonecode);
 				$("#address").val(data.roadAddress);
@@ -804,7 +803,7 @@ $(document).ready(function() {
 		}).open();
 	});
 
-	$(document).on('input', '#address2', function() {
+	$(document).on('input', '#address2', function () {
 		console.log('상세주소 입력됨:', $(this).val());
 		validationState.address = $(this).val().trim() !== "";
 	});
@@ -816,12 +815,12 @@ $(document).ready(function() {
 	};
 
 	// 비밀번호 변경 버튼 클릭 시 모달 오픈
-	$(document).on('click', '#changePasswordBtnShow', function() {
+	$(document).on('click', '#changePasswordBtnShow', function () {
 		$('#changePasswordModalShow').modal('show');
 	});
 
 	// 새 비밀번호 유효성 검사
-	$(document).on('input', '#newPasswordShow', function() {
+	$(document).on('input', '#newPasswordShow', function () {
 		const password = $(this).val().trim();
 		let isValid = patterns.password.test(password);
 
@@ -837,7 +836,7 @@ $(document).ready(function() {
 	});
 
 	// 비밀번호 확인 검증
-	$(document).on('input', '#confirmPasswordShow', function() {
+	$(document).on('input', '#confirmPasswordShow', function () {
 		validatePasswordConfirmation();
 	});
 
@@ -882,12 +881,12 @@ $(document).ready(function() {
 	}
 
 // 각 입력 필드에 이벤트 리스너 추가
-	$(document).on('input', '#currentPasswordShow, #newPasswordShow, #confirmPasswordShow', function() {
+	$(document).on('input', '#currentPasswordShow, #newPasswordShow, #confirmPasswordShow', function () {
 		validatePasswordConfirmation();
 	});
 
 	// 비밀번호 변경 버튼 클릭 이벤트
-	$(document).on('click', '#savePasswordBtnShow', function(e) {
+	$(document).on('click', '#savePasswordBtnShow', function (e) {
 		e.preventDefault();
 
 		const currentPassword = $('#currentPasswordShow').val().trim();
@@ -922,7 +921,7 @@ $(document).ready(function() {
 				newPasswordShow: newPassword,
 				confirmPasswordShow: confirmPassword
 			}),
-			success: function(response) {
+			success: function (response) {
 				alert(response.message);
 				$('#changePasswordModalShow').modal('hide');
 				// 모달 초기화
@@ -931,7 +930,7 @@ $(document).ready(function() {
 					.removeClass('is-valid is-invalid');
 				$('#newPasswordErrorShow, #confirmPasswordErrorShow').text('').hide();
 			},
-			error: function(xhr) {
+			error: function (xhr) {
 				const errorMessage = xhr.responseJSON ?
 					xhr.responseJSON.message :
 					'비밀번호 변경 중 오류가 발생했습니다.';
@@ -941,7 +940,7 @@ $(document).ready(function() {
 	});
 
 	// 모달 닫힐 때 초기화
-	$('#changePasswordModalShow').on('hidden.bs.modal', function() {
+	$('#changePasswordModalShow').on('hidden.bs.modal', function () {
 		// 입력 필드 초기화
 		$('#currentPasswordShow, #newPasswordShow, #confirmPasswordShow').val('');
 

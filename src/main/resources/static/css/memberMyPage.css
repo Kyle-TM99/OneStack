@@ -1,15 +1,20 @@
-/* New class for aligning profile image and information section */
+/* 입력 필드에 포커스 시 스타일 */
+.form-control:focus {
+    border-color: #80bdff; /* 포커스 시 테두리 색상 */
+    box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 포커스 시 그림자 효과 */
+}
+
 .profile-row {
     display: flex;
-    align-items: center; /* Vertical center alignment */
+    align-items: center;
 }
 
 .profile-section h4 {
     color: #215EA3;
     font-size: 18px;
-    white-space: normal; /* Allows the text to wrap */
-    word-wrap: break-word; /* Ensures words are not broken at the end of the line */
-    hyphens: auto; /* Automatically adds hyphens where appropriate */
+    white-space: normal;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .info-container{
@@ -216,21 +221,6 @@
     transform: scale(1.05);
 }
 
-.btn-edit-profile {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: #215EA3;
-    color: white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* 활동 요약 카드 */
 .activity-summary {
     margin-top: 20px;
@@ -421,7 +411,6 @@
     width: 100%;
 }
 
-/* 리뷰 리스트 스타일 개선 */
 .review-list .review-item {
     transition: all 0.2s;
 }
@@ -500,12 +489,6 @@ h4 {
 input[readonly], input[disabled] {
     background-color: #f8f9fa;
     cursor: not-allowed;
-}
-
-/* 필수 입력 필드 라벨 스타일 */
-label:has(+ input[required])::after {
-    content: " *";
-    color: #dc3545;
 }
 
 .myPage-model-dialog {

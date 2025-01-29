@@ -12,7 +12,12 @@
             <!-- 프로필 이미지 컨테이너 -->
             <div class="col-md-3 profile-image-container1">
                 <div class="profile-image-container">
+                <th:block th:if="${session.member.memberImage == null}">
                     <img src="/images/default-profile.png" alt="프로필 이미지" class="profile-image">
+                </th:block>
+                    <th:block th:unless="${session.member.memberImage == null}">
+                        <img src="${'/images/' + session.member.memberImage}" alt="프로필 이미지" class="profile-image">
+                    </th:block>
                 </div>
             </div>
 
@@ -159,7 +164,7 @@
                 </div>
             </div>
         </div>
-
+    </div>
     </div>
 
     <!-- 비밀번호 확인 모달을 content fragment 안으로 이동 -->
@@ -180,8 +185,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                            <button type="submit" class="btn btn-primary">확인</button>
+                            <button type="button" class="btn custom-button" data-bs-dismiss="modal">취소</button>
+                            <button type="submit" class="btn custom-button2">확인</button>
                         </div>
                     </form>
                 </div>
@@ -219,8 +224,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn custom-button2" data-bs-dismiss="modal">취소</button>
-                        <button type="submit" class="btn custom-button" id="savePasswordBtnShow">변경하기</button>
+                        <button type="button" class="btn custom-button" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn custom-button2" id="savePasswordBtnShow">변경하기</button>
                     </div>
                 </div>
             </div>
