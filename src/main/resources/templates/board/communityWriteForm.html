@@ -1,56 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
- <head>
+<head>
     <!-- TUI 에디터 CSS CDN -->
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-    
 </head>
 <body>
-<th:block>
-    <div layout:fragment="content" class="container py-5">
-    
-    <div class="row my-5">
-        <div class="col-md">
-            <h2><i class="bi bi-pencil-square me-2"></i>작성하기</h2>
-            <p class="text-muted">자유롭게 게시글을 작성해보세요!</p>
-        </div>
-    </div>
+<th:block layout:fragment="content">
+    <div class="container py-5">
+        <form name="communityWriteForm" id="communityWriteForm" th:action="@{/addCommunity}" method="post" enctype="multipart/form-data">
+            <!-- 히든 인풋으로 memberNo 설정 -->
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
 
-        <div class="row">
-            <div class="col-auto mx-3">
-                게시판
+            <!-- 히든 인풋으로 에디터 내용 저장 -->
+            <input type="hidden" id="quill_html" name="communityBoardContent">
+
+            <div class="row my-5">
+                <div class="col-md">
+                    <h2><i class="bi bi-pencil-square me-2"></i>작성하기</h2>
+                    <p class="text-muted">자유롭게 게시글을 작성해보세요!</p>
+                </div>
             </div>
-            |
-            <div class="col-auto">
-                <!-- 라디오 버튼 숨기기 -->
-                <label class="board-label mx-5">
-                    <input type="radio" name="board" id="communityRadio" class="radio-input" checked />
-                    <span class="board-text">Community</span>
-                </label>
-                <label class="board-label">
-                    <input type="radio" name="board" id="qaRadio" class="radio-input" />
-                    <span class="board-text">Q&A</span>
-                </label>
+
+            <div class="row">
+                <div class="col-md">
+                    <label for="communityBoardTitle" class="form-label">제 목</label>
+                    <input type="text" class="form-control" name="communityBoardTitle" id="communityBoardTitle" required>
+                </div>
             </div>
-        </div>
 
-        <!-- 에디터를 적용할 요소 (컨테이너) -->
-        <div id="content" class="my-5"></div>
+            <!-- 에디터를 적용할 요소 (컨테이너) -->
+            <div id="communityBoardContent" class="my-5"></div>
 
-         <!-- TUI 에디터 JS CDN -->
-        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script> 
-         <script>
-             // 페이지가 로드된 후에 실행되도록 변경
+            <div>
+                <input type="submit" value="등록" class="btn custom-button2"/>
+            </div>
+        </form>
+
+        <!-- TUI 에디터 JS CDN -->
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+        <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const editor = new toastui.Editor({
-                    el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
-                    height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
-                    initialEditType: 'markdown',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
-                    initialValue: '내용을 입력해 주세요.',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
-                    previewStyle: 'vertical'                // 마크다운 프리뷰 스타일 (tab || vertical)
+                    el: document.querySelector('#communityBoardContent'),
+                    height: '500px',
+                    initialEditType: 'markdown',
+                    initialValue: '',
+                    previewStyle: 'vertical',
+                    placeholder: '내용을 입력해 주세요.',
+
+                    // 에디터 내용 변경 시 히든 인풋 업데이트
+                    events: {
+                        change: function() {
+                            let htmlContent = editor.getHTML();
+
+                            htmlContent = htmlContent
+                                .replace(/<p>/g, '')
+                                .replace(/<\/p>/g, '')
+                                .replace(/<br>/g, '')
+                                .replace(/^\s+|\s+$/g, ''); // 양쪽 공백 제거
+
+                            document.getElementById('quill_html').value = htmlContent;
+                        }
+                    },
+
+                    hooks: {
+                        async addImageBlobHook(blob, callback) {
+                            try {
+                                const formData = new FormData();
+                                formData.append('image', blob);
+
+                                const response = await fetch('/tui-editor/image-upload', {
+                                    method: 'POST',
+                                    body: formData,
+                                });
+
+                                const filename = await response.text();
+                                console.log('서버에 저장된 파일명: ', filename);
+
+                                const imageUrl = `/tui-editor/image-print?filename=${filename}`;
+                                callback(imageUrl, 'image alt attribute');
+
+                            } catch (error) {
+                                console.error('업로드 실패: ', error);
+                            }
+                        }
+                    }
+                });
+
+                // 폼 제출 시 에디터 내용 검증
+                const form = document.getElementById('communityWriteForm');
+                form.addEventListener('submit', function(event) {
+                    const content = editor.getHTML().trim();
+
+                    // 내용이 비어있거나 기본 태그만 있는 경우 제출 방지
+                    if (content === '' || content === '<p><br></p>') {
+                        alert('내용을 입력해 주세요.');
+                        event.preventDefault(); // 폼 제출 방지
+                    }
                 });
             });
+            // 게시글 저장
+            async function addCommunity() {
+                // 1. 콘텐츠 입력 유효성 검사
+                if (editor.getMarkdown().length < 1) {
+                    alert('에디터 내용을 입력해 주세요.');
+                    throw new Error('editor content is required!');
+                }
+
+                // 2. url, parameter 세팅
+                const url = '/addCommunity';
+                const params = {
+                    communityBoardTitle: '1번 게시글 제목',
+                    communityBoardContent: editor.getHTML(),
+                }
+
+                // 3. API 호출
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(params),
+                    });
+                } catch (error) {
+                    console.error('저장 실패 : ', error)
+                }
+            }
         </script>
     </div>
 </th:block>
