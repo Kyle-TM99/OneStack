@@ -2,8 +2,12 @@ package com.onestack.project.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -32,53 +36,93 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/updateMember")
     public String updateMember(HttpSession session, Member member, MultipartFile profileImage) {
-
         Member sessionMember = (Member) session.getAttribute("member");
         member.setMemberNo(sessionMember.getMemberNo());
 
+        // 소셜 로그인 여부 확인 (예: sessionMember.getSocialLogin()이 true인 경우 소셜 로그인)
+        boolean isSocialLogin = sessionMember.isSocial(); // 소셜 로그인 여부를 확인하는 메서드 또는 필드
+
+        // 이름을 기존 정보로 유지
+        if (isSocialLogin) {
+            member.setName(sessionMember.getName()); // 소셜 로그인인 경우 기존 이름 유지
+        } else {
+            // 이름이 null이거나 비어있지 않은지 확인
+            if (member.getName() == null || member.getName().isEmpty()) {
+                return "redirect:/updateMemberForm?error=nameRequired"; // 오류 메시지와 함께 리다이렉트
+            }
+        }
+
+        // 프로필 이미지 처리 로직 추가 (필요한 경우)
+        if (profileImage != null && !profileImage.isEmpty()) {
+            try {
+                // 파일 저장 로직 구현
+                String fileName = saveProfileImage(profileImage);
+                member.setMemberImage(fileName);
+            } catch (IOException e) {
+                log.error("프로필 이미지 저장 실패", e);
+            }
+        }
+
         // 회원 정보 업데이트
         memberService.updateMember(member);
+        memberService.updateSocialMember(member);
 
         // 세션 정보 업데이트
-        sessionMember.setName(member.getName());
-        sessionMember.setEmail(member.getEmail());
-        sessionMember.setPhone(member.getPhone());
-        sessionMember.setZipcode(member.getZipcode());
-        sessionMember.setAddress(member.getAddress());
-        sessionMember.setAddress2(member.getAddress2());
-        sessionMember.setEmailGet(member.isEmailGet());
+        updateSessionMember(session, member);
 
-
-        return "member/memberMyPage";
+        return "redirect:/updateMemberForm"; // 수정 후 같은 페이지로 리다이렉트
     }
 
-    @GetMapping("/myPage")
+    // 세션 정보 업데이트 메서드 분리
+    private void updateSessionMember(HttpSession session, Member updatedMember) {
+        Member sessionMember = (Member) session.getAttribute("member");
+        sessionMember.setName(updatedMember.getName());
+        sessionMember.setMemberId(updatedMember.getMemberId());
+        sessionMember.setNickname(updatedMember.getNickname());
+        sessionMember.setEmail(updatedMember.getEmail());
+        sessionMember.setPhone(updatedMember.getPhone());
+        sessionMember.setZipcode(updatedMember.getZipcode());
+        sessionMember.setAddress(updatedMember.getAddress());
+        sessionMember.setAddress2(updatedMember.getAddress2());
+        sessionMember.setEmailGet(updatedMember.isEmailGet());
+
+        // 프로필 이미지가 업데이트된 경우
+        if (updatedMember.getMemberImage() != null) {
+            sessionMember.setMemberImage(updatedMember.getMemberImage());
+        }
+    }
+
+    // 프로필 이미지 저장 메서드 (필요한 경우)
+    private String saveProfileImage(MultipartFile profileImage) throws IOException {
+        String originalFilename = profileImage.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
+
+        // 파일 저장 경로 설정
+        Path uploadPath = Paths.get("src/main/resources/static/images/profile");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Path filePath = uploadPath.resolve(uniqueFileName);
+        profileImage.transferTo(filePath.toFile());
+
+        return uniqueFileName;
+    }
+
+    @GetMapping("/updateMemberForm")
     public String myPage(Model model, HttpSession session) {
         Member member = (Member) session.getAttribute("member");
 
         // 세션의 member 객체에서 memberNo 직접 사용
         int memberNo = member.getMemberNo();
-
-        // 데이터 조회
-        int communityCount = memberService.memberMyPageCommunityCount(memberNo);
-        int communityReplyCount = memberService.memberMyPageComReplyCount(memberNo);
-        int qnaCount = memberService.memberMyPageQnACount(memberNo);
-        int qnaReplyCount = memberService.memberMyPageQnAReplyCount(memberNo);
-        int reviewCount = memberService.findMyReviewCount(memberNo);
-
-        // 모델에 데이터 추가
-        model.addAttribute("communityCount", communityCount);
-        model.addAttribute("communityReplyCount", communityReplyCount);
-        model.addAttribute("qnaCount", qnaCount);
-        model.addAttribute("qnaReplyCount", qnaReplyCount);
-        model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("member", member);
 
         session.setAttribute("socialType", member.getSocialType());
 
-        return "member/memberMyPage";
+        return "member/EditMemberUpdateForm";
     }
 
 

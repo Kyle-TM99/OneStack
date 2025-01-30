@@ -6,6 +6,7 @@ import com.onestack.project.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AjaxMemberController {
 
+    @Autowired
     private final MemberService memberService;
+
 
     @GetMapping("/myPagePortfolio")
     @ResponseBody
@@ -238,7 +241,6 @@ public class AjaxMemberController {
 
         return response;
     }
-
     @PostMapping("/changePassword")
     public ResponseEntity<Map<String, Object>> changePassword(HttpSession session,
                                                               @RequestBody Map<String, String> requestBody

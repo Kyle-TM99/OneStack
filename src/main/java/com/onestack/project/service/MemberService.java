@@ -21,26 +21,26 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberService {
 
-	private final MemberMapper memberMapper;
+    private final MemberMapper memberMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
 
-/*
+    /*
 
-// 전문가 마이페이지에서 포트폴리오 조회
-public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
-    List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
-    return result;
-}
-*/
+    // 전문가 마이페이지에서 포트폴리오 조회
+    public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
+        List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
+        return result;
+    }
+    */
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
-       List<Estimation> result = memberMapper.proEstimation(proNo);
-       return result;
+        List<Estimation> result = memberMapper.proEstimation(proNo);
+        return result;
     }
 
     // 회원이 요청한 견적 리스트 Estimation
@@ -67,10 +67,10 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return result;
     }*/
 
-   /* public int proReviewCount(int proNo) {
-        return memberMapper.proReviewCount(proNo);
-    }
-*/
+    /* public int proReviewCount(int proNo) {
+         return memberMapper.proReviewCount(proNo);
+     }
+ */
     public int findMyReviewCount(int memberNo) {
         return memberMapper.findMyReviewCount(memberNo);
     }
@@ -174,6 +174,29 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             }
 
             memberMapper.updateMember(member);
+            memberMapper.updateSocialMember(member);
+            log.info("Member update completed for memberNo: {}", member.getMemberNo());
+        } catch (Exception e) {
+            log.error("Member update failed", e);
+            throw e;
+        }
+    }
+
+    public void updateSocialMember(Member member) {
+        try {
+            log.info("Updating member: {}", member);
+
+            // null 체크 추가
+            if (member == null) {
+                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
+            }
+
+            // 필수 필드 null 체크
+            if (member.getMemberNo() == 0) {
+                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
+            }
+
+            memberMapper.updateSocialMember(member);
             log.info("Member update completed for memberNo: {}", member.getMemberNo());
         } catch (Exception e) {
             log.error("Member update failed", e);
@@ -311,7 +334,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 
     public void sendPasswordResetEmail(String memberId, String email) {
         log.info("비밀번호 재설정 요청 - memberId: {}, email: {}", memberId, email);
-        
+
         Member member = memberMapper.getMember(memberId);
         log.info("조회된 회원 정보: {}", member);
 
@@ -319,7 +342,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             log.error("회원 정보가 없음 - memberId: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
-        
+
         if (!email.equals(member.getEmail())) {
             log.error("이메일 불일치 - 입력: {}, DB: {}", email, member.getEmail());
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
@@ -329,20 +352,20 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             log.error("소셜계정은 비밀번호 변경할 수 없습니다. - 소셜 여부: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
-        
+
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken(memberId, token);
-        
+
         try {
             memberMapper.savePasswordResetToken(resetToken);
-            
+
             String resetLink = "http://localhost:8080/resetPassword?token=" + token;
             String emailContent = String.format(
-                "안녕하세요,\n\n" +
-                "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +
-                "이 링크는 24시간 동안 유효합니다.\n" +
-                "본인이 요청하지 않았다면 이 이메일을 무시하시기 바랍니다.",
-                resetLink
+                    "안녕하세요,\n\n" +
+                            "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +
+                            "이 링크는 24시간 동안 유효합니다.\n" +
+                            "본인이 요청하지 않았다면 이 이메일을 무시하시기 바랍니다.",
+                    resetLink
             );
 
             SimpleMailMessage message = new SimpleMailMessage();
@@ -351,7 +374,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             message.setSubject("OneStack 비밀번호 재설정");
             message.setText(emailContent);
             mailSender.send(message);
-            
+
             log.info("비밀번호 재설정 이메일 발송 완료 - email: {}", email);
         } catch (Exception e) {
             log.error("이메일 발송 실패", e);
@@ -371,7 +394,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     }
 
 
-    
+
     public Integer getMemberById(String memberId) {
         int memberNo = memberMapper.findMemberNoByMemberId(memberId);
         return memberNo;

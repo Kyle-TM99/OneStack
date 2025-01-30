@@ -56,7 +56,7 @@ $(document).ready(function() {
     $("#memberId").on("keyup", function() {
         const memberId = $(this).val();
         const errorMsg = validators.validateInput(memberId, patterns.memberId, "아이디");
-        
+
         if (errorMsg) {
             $("#memberIdMessage").text(errorMsg).css("color", "red");
             $(this).css("border-color", "red");
@@ -68,7 +68,7 @@ $(document).ready(function() {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다.";
             const color = isValid ? "green" : "red";
-            
+
             $("#memberIdMessage").text(message).css("color", color);
             $("#memberId").css("border-color", color);
             validationState.memberId = isValid;
@@ -79,7 +79,7 @@ $(document).ready(function() {
     $("#nickname").on("keyup", function() {
         const nickname = $(this).val();
         const errorMsg = validators.validateInput(nickname, patterns.nickname, "닉네임");
-        
+
         if (errorMsg) {
             $("#nicknameMessage").text(errorMsg).css("color", "red");
             $(this).css("border-color", "red");
@@ -91,7 +91,7 @@ $(document).ready(function() {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 닉네임입니다." : "이미 사용 중인 닉네임입니다.";
             const color = isValid ? "green" : "red";
-            
+
             $("#nicknameMessage").text(message).css("color", color);
             $("#nickname").css("border-color", color);
             validationState.nickname = isValid;
@@ -102,7 +102,7 @@ $(document).ready(function() {
     $("#email").on("keyup", function() {
         const email = $(this).val();
         const errorMsg = validators.validateInput(email, patterns.email, "이메일");
-        
+
         if (errorMsg) {
             $("#emailMessage").text(errorMsg).css("color", "red");
             $(this).css("border-color", "red");
@@ -114,7 +114,7 @@ $(document).ready(function() {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 이메일입니다." : "이미 등록된 이메일입니다.";
             const color = isValid ? "green" : "red";
-            
+
             $("#emailMessage").text(message).css("color", color);
             $("#email").css("border-color", color);
             validationState.email = isValid;
@@ -125,7 +125,7 @@ $(document).ready(function() {
     $("#phone").on("keyup", function() {
         const phone = $(this).val();
         const errorMsg = validators.validateInput(phone, patterns.phone, "전화번호");
-        
+
         if (errorMsg) {
             $("#phoneMessage").text(errorMsg).css("color", "red");
             $(this).css("border-color", "red");
@@ -137,7 +137,7 @@ $(document).ready(function() {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 전화번호입니다." : "이미 등록된 전화번호입니다.";
             const color = isValid ? "green" : "red";
-            
+
             $("#phoneMessage").text(message).css("color", color);
             $("#phone").css("border-color", color);
             validationState.phone = isValid;
@@ -163,7 +163,7 @@ $(document).ready(function() {
         const password = $(this).val();
         let message = "";
         let isValid = false;
-        
+
         if (!password) {
             message = "비밀번호를 입력해주세요.";
         } else if (password.length < 8) {
@@ -172,7 +172,7 @@ $(document).ready(function() {
             const hasLetter = /[A-Za-z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
             const hasSpecial = /[@$!%*#?&]/.test(password);
-            
+
             if (!hasLetter || !hasNumber || !hasSpecial) {
                 message = "비밀번호는 문, 숫자, 특수문자(@$!%*#?&)를 모두 포함해야 합니다.";
             } else {
@@ -180,11 +180,11 @@ $(document).ready(function() {
                 isValid = true;
             }
         }
-        
+
         $("#pwMessage").text(message).css("color", isValid ? "green" : "red");
         $(this).css("border-color", isValid ? "green" : "red");
         validationState.pass = isValid;
-        
+
         // 비밀번호 확인 필드 재검사
         if ($("#memberPwCheck").val()) {
             checkPasswordMatch();
@@ -223,22 +223,22 @@ $(document).ready(function() {
     // 전화번호 자동 하이픈 추가 및 유효성 검사
     $("#phone").on("input", function() {
         let number = $(this).val().replace(/[^0-9]/g, "");
-        
+
         if (number.length > 3) {
-            number = number.length > 7 
+            number = number.length > 7
                 ? `${number.substr(0,3)}-${number.substr(3,4)}-${number.substr(7,4)}`
                 : `${number.substr(0,3)}-${number.substr(3)}`;
         }
-        
+
         $(this).val(number);
-        
+
         // 전화번호 형식이 완성되었을 때만 중복 체크
         if (patterns.phone.test(number)) {
             validators.checkDuplicate("/checkPhone", "phone", number, function(response) {
                 const isValid = response.available;
                 const message = isValid ? "사용 가능한 전화번호입니다." : "이미 등록된 전화번호입니다.";
                 const color = isValid ? "green" : "red";
-                
+
                 $("#phoneMessage").text(message).css("color", color);
                 $("#phone").css("border-color", color);
                 validationState.phone = isValid;
@@ -253,27 +253,27 @@ $(document).ready(function() {
     // 이메일 유효성 검사
     $("#email").on("input", function() {
         const email = $(this).val();
-        
+
         if (!email) {
             $("#emailMessage").text("이메일을 입력해주세요.").css("color", "red");
             $(this).css("border-color", "red");
             validationState.email = false;
             return;
         }
-        
+
         if (!patterns.email.test(email)) {
             $("#emailMessage").text("올바른 이메일 형식이 아닙니다.").css("color", "red");
             $(this).css("border-color", "red");
             validationState.email = false;
             return;
         }
-        
+
         // 이메일 중복 체크
         validators.checkDuplicate("/checkEmail", "email", email, function(response) {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 이메일입니다." : "이미 등록된 이메일입니다.";
             const color = isValid ? "green" : "red";
-            
+
             $("#emailMessage").text(message).css("color", color);
             $("#email").css("border-color", color);
             validationState.email = isValid;
@@ -287,9 +287,9 @@ $(document).ready(function() {
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
         const maxDate = `${year}-${month}-${day}`;
-        
+
         $("#birth").attr("max", maxDate);
-        
+
         $("#birth").on("change", function() {
             const selectedDate = new Date($(this).val());
             if (selectedDate > today) {
@@ -350,7 +350,7 @@ $(document).ready(function() {
             zipcode: $("#zipcode").val(),
             address: $("#address").val(),
             address2: $("#address2").val(),
-            emailGet: $("#emailConsent").is(":checked"),
+            emailGet: $("#emailGet").is(),
             gender: $("input[name='gender']:checked").val(),
             birth: $("#birth").val()
         };
@@ -381,8 +381,8 @@ $(document).ready(function() {
             oncomplete: function(data) {
                 $("#zipcode").val(data.zonecode);
                 $("#address").val(data.roadAddress);
-                $("#address2").focus(); 
-                
+                $("#address2").focus();
+
                 validationState.address = true;
             }
         }).open();
@@ -391,4 +391,6 @@ $(document).ready(function() {
     $("#address2").on("input", function() {
         validationState.address = $(this).val().trim() !== "";
     });
+
+
 });

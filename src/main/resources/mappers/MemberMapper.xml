@@ -221,25 +221,25 @@
 		WHERE pro_no = #{proNo}
 	</select>
 
-<!--
+	<!--
 
-	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
-	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
-		SELECT
-			m.*, p.*, pi.*, pr.*
-		FROM
-			Member m
-				JOIN
-			Professional pr ON m.member_no = pr.member_no
-				JOIN
-			Portfolio p ON pr.pro_no = p.pro_no
-				JOIN
-			PortfolioImages pi ON p.portfolio_id = pi.portfolio_id
-		WHERE
-			m.member_type = 2;
-	</select>
+        &lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
+        <select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
+            SELECT
+                m.*, p.*, pi.*, pr.*
+            FROM
+                Member m
+                    JOIN
+                Professional pr ON m.member_no = pr.member_no
+                    JOIN
+                Portfolio p ON pr.pro_no = p.pro_no
+                    JOIN
+                PortfolioImages pi ON p.portfolio_id = pi.portfolio_id
+            WHERE
+                m.member_type = 2;
+        </select>
 
--->
+    -->
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
@@ -255,16 +255,16 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
-<!--
+	<!--
 
-	&lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
-	<select id="proReview" parameterType="int" resultMap="Review">
-		SELECT *
-		FROM Review
-		WHERE pro_no =#{proNo}
-		ORDER BY revire_date DESC
-	</select>
--->
+        &lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
+        <select id="proReview" parameterType="int" resultMap="Review">
+            SELECT *
+            FROM Review
+            WHERE pro_no =#{proNo}
+            ORDER BY revire_date DESC
+        </select>
+    -->
 
 	<!-- 자신이 작성한 리뷰 수 조회 -->
 	<select id="findMyReviewCount" parameterType="int" resultType="int">
@@ -272,16 +272,16 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
-<!--
+	<!--
 
-	&lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
-	<select id="proReviewCount" parameterType="int" resultMap="Review">
-		SELECT COUNT(review_no)
-		FROM Review
-		WHERE pro_no =#{proNo}
-		ORDER BY revire_date DESC
-	</select>
--->
+        &lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
+        <select id="proReviewCount" parameterType="int" resultMap="Review">
+            SELECT COUNT(review_no)
+            FROM Review
+            WHERE pro_no =#{proNo}
+            ORDER BY revire_date DESC
+        </select>
+    -->
 
 
 	<!-- 회원별 작성한 게시글 조회 -->
@@ -394,12 +394,31 @@
 		UPDATE Member
 		SET
 		name = #{name},
+		nickname = #{nickname},
+		member_id = #{memberId},
 		email = #{email},
 		phone = #{phone},
 		email_get = #{emailGet},
 		zipcode = #{zipcode},
 		address = #{address},
 		address2 = #{address2}
+		<if test="memberImage != null and memberImage != ''">
+			, member_image = #{memberImage}
+		</if>
+		WHERE member_no = #{memberNo}
+	</update>
+
+	<!-- 소셜 로그인 회원 수정 -->
+	<update id="updateSocialMember" parameterType="Member">
+		UPDATE Member
+		SET
+			nickname = #{nickname},
+			email = #{email},
+			phone = #{phone},
+			email_get = #{emailGet},
+			zipcode = #{zipcode},
+			address = #{address},
+			address2 = #{address2}
 		<if test="memberImage != null and memberImage != ''">
 			, member_image = #{memberImage}
 		</if>

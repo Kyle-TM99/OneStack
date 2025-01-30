@@ -74,6 +74,8 @@ public interface MemberMapper {
 	// 회원 정보 업데이트
 	public void updateMember(Member member);
 
+	public void updateSocialMember(Member member);
+
 	// 회원 정보 비밀번호 수정
 	public void updateMemberMyPagePass(Member member);
 
