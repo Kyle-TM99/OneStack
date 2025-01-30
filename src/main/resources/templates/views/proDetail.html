@@ -82,44 +82,44 @@
                     </div>
 
                     <!-- 리뷰 목록 -->
-              <!--      <div class="review-summary border-top mt-4" id="review">
-                        <div class="d-flex mt-3">
-                            <h4 class="font-weight-bold font-size: 2.0em;">⭐️⭐️⭐️⭐️⭐️</h4>
-                            <div class="mt-2">
-                                <span class="ml-2 pl-2 border-left text-secondary small">평균 별점: [[ ${pro.professional.rate} ]]</span>
-                                <span class="ml-2 pl-2 border-left text-secondary small">총 리뷰 개수 : [[ ${pro.professional.reviewCount} ]]</span>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-custom" id="toggleReviewForm" style="width: 100px;">
-                                리뷰 작성
-                            </button>
-                        </div>
-                    </div>-->
+                    <!--      <div class="review-summary border-top mt-4" id="review">
+                              <div class="d-flex mt-3">
+                                  <h4 class="font-weight-bold font-size: 2.0em;">⭐️⭐️⭐️⭐️⭐️</h4>
+                                  <div class="mt-2">
+                                      <span class="ml-2 pl-2 border-left text-secondary small">평균 별점: [[ ${pro.professional.rate} ]]</span>
+                                      <span class="ml-2 pl-2 border-left text-secondary small">총 리뷰 개수 : [[ ${pro.professional.reviewCount} ]]</span>
+                                  </div>
+                              </div>
+                              <div class="d-flex justify-content-end">
+                                  <button type="button" class="btn btn-custom" id="toggleReviewForm" style="width: 100px;">
+                                      리뷰 작성
+                                  </button>
+                              </div>
+                          </div>-->
 
                     <!-- 리뷰 작성 폼 시작-->
-             <!--       <div class="review-form" id="reviewForm"
-                         style="display: none; opacity: 0; transform: translateY(-20px); transition: opacity 0.5s, transform 0.5s;">
-                        <div class="form-group">
-                            <div class="d-flex align-items-center">
-                                <label for="reviewRating" class="mr-2">평점</label>
-                                <select class="form-control" id="reviewRating" style="width: 22%;">
-                                    <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
-                                    <option value="4">⭐️⭐️⭐️⭐️</option>
-                                    <option value="3">⭐️⭐️⭐️</option>
-                                    <option value="2">⭐️⭐️</option>
-                                    <option value="1">⭐️</option>
-                                </select>
-                                <button type="button" class="btn btn-custom ml-auto" id="submitReview"
-                                        style="width: 100px;">리뷰 등록
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control review-textarea" id="reviewText" rows="5"
-                                      placeholder="리뷰를 작성하세요..."></textarea>
-                        </div>
-                    </div>--> <!-- 리뷰작성 폼 끝 -->
+                    <!--       <div class="review-form" id="reviewForm"
+                                style="display: none; opacity: 0; transform: translateY(-20px); transition: opacity 0.5s, transform 0.5s;">
+                               <div class="form-group">
+                                   <div class="d-flex align-items-center">
+                                       <label for="reviewRating" class="mr-2">평점</label>
+                                       <select class="form-control" id="reviewRating" style="width: 22%;">
+                                           <option value="5">⭐️⭐️⭐️⭐️⭐️</option>
+                                           <option value="4">⭐️⭐️⭐️⭐️</option>
+                                           <option value="3">⭐️⭐️⭐️</option>
+                                           <option value="2">⭐️⭐️</option>
+                                           <option value="1">⭐️</option>
+                                       </select>
+                                       <button type="button" class="btn btn-custom ml-auto" id="submitReview"
+                                               style="width: 100px;">리뷰 등록
+                                       </button>
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <textarea class="form-control review-textarea" id="reviewText" rows="5"
+                                             placeholder="리뷰를 작성하세요..."></textarea>
+                               </div>
+                           </div>--> <!-- 리뷰작성 폼 끝 -->
 
                 </div>
             </div>
@@ -167,11 +167,7 @@
             const url = `/estimationForm?proNo=${proNo}`;
 
             // 새 창 열기
-            window.open(
-                url,
-                "estimationForm",
-                "toolbar=no, scrollbars=no, resizable=no, status=no, menubar=no, width=550, height=700"
-            );
+            window.open(url, "estimationForm", "toolbar=no, scrollbars=no, resizable=no, status=no, menubar=no, width=550, height=700");
         }
     </script>
 </th:block>
