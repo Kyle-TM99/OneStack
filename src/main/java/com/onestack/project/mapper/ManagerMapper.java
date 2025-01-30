@@ -2,6 +2,7 @@ package com.onestack.project.mapper;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import com.onestack.project.domain.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,10 +19,9 @@ public interface ManagerMapper {
             @Param("professorStatus") Integer professorStatus, 
             @Param("screeningMsg") String screeningMsg);
 
-	void updateMember(int memberNo, String name, String nickname,
-					  String memberId, String email, String phone,
-					  String address, String address2, int memberType,
-					  int memberStatus, Timestamp banEndDate);
+	int checkDuplicateFields(Map<String, Object> params);
+
+	void updateMember(Map<String, Object> params);
 
 	public Member getWithdrawalMember();
 

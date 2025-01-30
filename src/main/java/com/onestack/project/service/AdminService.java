@@ -2,7 +2,9 @@ package com.onestack.project.service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +41,47 @@ public class AdminService {
 	}
 	
 	// 회원 유형/상태 변경
-	public void updateMember(int memberNo, String name, String nickname, String memberId, String email, String phone, String address, String address2, int memberType, int memberStatus, Timestamp banEndDate) {
-		managerMapper.updateMember(memberNo, name, nickname, memberId, email, phone, address, address2, memberType, memberStatus, banEndDate);
-	}
+	public void updateMember(Member member) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("memberNo", member.getMemberNo());
+		params.put("memberId", member.getMemberId());
+		params.put("nickname", member.getNickname());
+		params.put("email", member.getEmail());
+		params.put("phone", member.getPhone());
+		params.put("name", member.getName());
+		params.put("address", member.getAddress());
+		params.put("address2", member.getAddress2());
+		params.put("memberType", member.getMemberType());
+		params.put("memberStatus", member.getMemberStatus());
 
+		// 🔥 `banEndDate` 변환 (String → Timestamp) 포맷 오류 해결
+		if (member.getMemberStatus() == 1 && member.getBanEndDate() != null) {
+			try {
+				// ✅ `Timestamp` → `String` 변환
+				String banEndDateStr = member.getBanEndDate().toString().split(" ")[0]; // "yyyy-MM-dd"
+
+				// ✅ `String` → `LocalDate`
+				LocalDate localDate = LocalDate.parse(banEndDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+				// ✅ `LocalDate` → `LocalDateTime` (23:59:59 추가)
+				LocalDateTime localDateTime = localDate.atTime(23, 59, 59);
+
+				// ✅ `LocalDateTime` → `Timestamp` 변환
+				Timestamp banEndDate = Timestamp.valueOf(localDateTime);
+
+				params.put("banEndDate", banEndDate);
+			} catch (Exception e) {
+				throw new RuntimeException("정지 종료일 형식이 올바르지 않습니다. (yyyy-MM-dd)");
+			}
+		} else {
+			params.put("banEndDate", null);
+		}
+
+		System.out.println("✅ 최종 업데이트 데이터: " + params);
+
+		// ✅ MyBatis 호출
+		managerMapper.updateMember(params);
+	}
 
 	public Member getWithdrawalMember(){
 		return managerMapper.getWithdrawalMember();

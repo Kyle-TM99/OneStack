@@ -111,24 +111,30 @@
    WHERE member_id  = #{memberNo}
 </select>
 
-<!-- 회원 상태 변경 -->
-<update id="updateMember">
+<!-- 중복 검사 (본인 제외) -->
+<select id="checkDuplicateFields" parameterType="map" resultType="int">
+	SELECT COUNT(*)
+	FROM Member
+	WHERE (member_id = #{memberId} OR nickname = #{nickname} OR email = #{email} OR phone = #{phone})
+	AND member_no != #{memberNo}
+</select>
+
+<!-- 회원 정보 업데이트 (🔥 Map 기반 수정) -->
+<update id="updateMember" parameterType="map">
 	UPDATE Member
-	SET
-	name = #{name},
+	SET name = #{name},
 	nickname = #{nickname},
 	member_id = #{memberId},
 	email = #{email},
 	phone = #{phone},
-	address1 = #{address},
+	address = #{address},
 	address2 = #{address2},
 	member_type = #{memberType},
 	member_status = #{memberStatus},
 	ban_end_date = #{banEndDate}
 	WHERE member_no = #{memberNo}
 </update>
-
-<!-- 신고 정보 저장 -->
+	<!-- 신고 정보 저장 -->
 <insert id="addReports" parameterType="Reports">
 	INSERT INTO Reports (
 	member_no,

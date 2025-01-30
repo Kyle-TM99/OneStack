@@ -64,31 +64,12 @@ public class AdminController {
 
     @PostMapping("/adminPage/updateMember")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> updateMember(@RequestBody Map<String, String> memberData) {
+    public ResponseEntity<Map<String, String>> updateMember(@RequestBody Member request) {
         try {
-            int memberNo = Integer.parseInt(memberData.get("memberNo"));
-            String name = memberData.get("name");
-            String nickname = memberData.get("nickname");
-            String memberId = memberData.get("memberId");
-            String email = memberData.get("email");
-            String phone = memberData.get("phone");
-            String address1 = memberData.get("address");
-            String address2 = memberData.get("address2");
-            int memberType = Integer.parseInt(memberData.get("memberType"));
-            int memberStatus = Integer.parseInt(memberData.get("memberStatus"));
-
-            // 기간 정지일 변환
-            Timestamp banEndDate = null;
-            if (memberStatus == 1 && memberData.containsKey("banEndDate") && !memberData.get("banEndDate").isEmpty()) {
-                banEndDate = Timestamp.valueOf(memberData.get("banEndDate") + " 23:59:59");
-            }
-
-            // 서비스 호출
-            adminService.updateMember(memberNo, name, nickname, memberId, email, phone, address1, address2, memberType, memberStatus, banEndDate);
-
+            adminService.updateMember(request);
             return ResponseEntity.ok(Map.of("message", "회원 정보 수정 성공"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "회원 정보 수정 실패: " + e.getMessage()));
         }
     }

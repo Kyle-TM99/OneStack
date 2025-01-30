@@ -1,6 +1,15 @@
+// 허용된 휴대폰 번호 앞자리 (국번)
+const validPrefixes = ["010", "011", "016", "017", "018", "019"];
+
 // 핸드폰 번호 자동 하이픈 적용 함수
 function formatPhoneNumber(phone) {
     phone = phone.replace(/[^0-9]/g, ""); // 숫자 이외의 문자 제거
+
+    // 숫자 개수가 11자리를 초과하지 않도록 제한
+    if (phone.length > 11) {
+        phone = phone.substring(0, 11);
+    }
+
     if (phone.length <= 3) {
         return phone;
     } else if (phone.length <= 7) {
@@ -9,67 +18,124 @@ function formatPhoneNumber(phone) {
         return phone.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
     }
 }
+// 핸드폰 번호 입력 이벤트 핸들러 (숫자만 입력, 13자리 제한, 자동 하이픈 추가)
+function handlePhoneInput(event) {
+    let value = event.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
+
+    // 3자리 이상 입력되었을 때, 유효한 국번인지 체크
+    if (value.length >= 3) {
+        let prefix = value.substring(0, 3);
+        if (!validPrefixes.includes(prefix)) {
+            alert(`유효하지 않은 휴대폰 번호 앞자리입니다. (${validPrefixes.join(", ")})`);
+            event.target.value = "";
+            return;
+        }
+    }
+
+    // 숫자 개수를 11자리로 제한
+    if (value.length > 11) {
+        alert("핸드폰 번호는 11자리 숫자로 입력해야 합니다.");
+        value = value.substring(0, 11);
+    }
+
+    event.target.value = formatPhoneNumber(value);
+
+    // `-` 포함된 상태에서 13자리를 초과하면 입력 차단
+    if (event.target.value.length > 13) {
+        alert("핸드폰 번호는 '-' 포함 최대 13자리까지만 입력 가능합니다.");
+        event.target.value = event.target.value.substring(0, 13);
+    }
+}
+function handleMemberIdInput(event) {
+    let value = event.target.value;
+
+    // 1️⃣ 한글 및 특수문자 제거 (영문 + 숫자만 허용)
+    if (/[^a-zA-Z0-9]/.test(value)) {
+        alert("아이디는 영문과 숫자만 입력 가능합니다.");
+        event.target.value = value.replace(/[^a-zA-Z0-9]/g, ""); // 한글 및 특수문자 제거
+    }
+
+    // 2️⃣ 최대 길이 제한 적용 (50자)
+    if (value.length > 50) {
+        alert("아이디는 최대 50자까지 입력 가능합니다.");
+        setTimeout(() => { event.target.value = value.substring(0, 50); }, 10);
+    }
+}
 // 통합 스크립트 - 회원 관리 및 심사 관리 관련
 document.addEventListener('DOMContentLoaded', function () {
-
     initializeCommonEvents();
     initializeCheckboxes();
     initializeMemberManagement();
     initializeScreeningManagement();
     initializeScreeningModification();
 
-            // ** 입력 필드 길이 제한 적용**
-            const inputFields = [
-                { id: "memberName", max: 30,  type:"textOnly"},
-                { id: "memberId", max: 50 },
-                { id: "memberPass", max: 100 },
-                { id: "nickname", max: 20 },
-                { id: "zipcode", max: 5 },
-                { id: "address", max: 50 },
-                { id: "address2", max: 50 },
-                { id: "memberEmail", max: 30 },
-                { id: "phone", max: 13, type:"phoneOnly"},
-                { id: "stackName", max: 20 }
-            ];
+    const inputFields = [
+        { id: "memberName", max: 30, type: "name" },
+        { id: "memberId", max: 50, type: "text" },
+        { id: "memberPass", max: 100, type: "text" },
+        { id: "nickname", max: 20, type: "text" },
+        { id: "zipcode", max: 5, type: "number" },
+        { id: "address", max: 50, type: "text" },
+        { id: "address2", max: 50, type: "text" },
+        { id: "memberEmail", max: 30, type: "text" },
+        { id: "phone", max: 13, type: "phone" }, // 핸드폰 입력 필드
+        { id: "stackName", max: 20, type: "text" }
+    ];
 
-            inputFields.forEach(field => {
-                    const input = document.getElementById(field.id);
-                    if (input) {
-                        input.setAttribute("maxlength", field.max); // HTML에서도 길이 제한 적용
+   // ✅ `inputFields`를 사용하여 필드별 이벤트 적용
+       inputFields.forEach(field => {
+           const input = document.getElementById(field.id);
+           if (input) {
+               input.addEventListener("input", function () {
+                   let value = this.value;
 
-                        input.addEventListener("input", function () {
-                            // ** 입력 길이 초과 방지**
-                            if (this.value.length > field.max) {
-                                alert(`${field.id}은 최대 ${field.max}자까지 입력 가능합니다.`);
-                                this.value = this.value.substring(0, field.max);
-                            }
+                   // 최대 길이 제한 적용
+                   if (value.length > field.max) {
+                       alert(`${field.id}은(는) 최대 ${field.max}자까지 입력 가능합니다.`);
+                       setTimeout(() => { this.value = value.substring(0, field.max); }, 10);
+                   }
 
-                            // **숫자만 입력 가능 (핸드폰 번호)**
-                            if (field.type === "numberOnly" && /[^0-9-]/.test(this.value)) {
-                                alert("숫자만 입력해주세요.");
-                                this.value = this.value.replace(/[^0-9-]/g, "");  // 숫자와 `-`만 남기기
-                            }
+                   // 이름 (한글만 허용)
+                   if (field.type === "name" && /[^가-힣\s]/.test(value)) {
+                       alert("이름에는 숫자, 영문, 특수문자를 포함할 수 없습니다.");
+                       setTimeout(() => { this.value = value.replace(/[^가-힣\s]/g, ""); }, 10);
+                   }
+                   // 숫자만 입력 가능한 필드 체크
+                   if (field.type === "number" && /\D/.test(value)) {
+                       alert("숫자만 입력해주세요.");
+                       setTimeout(() => { this.value = value.replace(/\D/g, ""); }, 10);
+                   }
+               });
+           }
+       });
+           // ✅ 핸드폰 번호 입력 필드에 이벤트 리스너 등록 (중복 제거)
+           const phoneInput = document.getElementById("phone");
+           if (phoneInput) {
+               phoneInput.removeEventListener("input", handlePhoneInput);
+               phoneInput.addEventListener("input", handlePhoneInput);
+           }
 
-                            // **숫자 입력 방지 (이름)**
-                            if (field.type === "textOnly" && /\d/.test(this.value)) {
-                                alert("이름에는 숫자를 포함할 수 없습니다.");
-                                this.value = this.value.replace(/\d/g, "");  // 숫자 제거
-                            }
-                        });
-                    }
-                });
-
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.addedNodes.length) {
-                console.log('DOM changed, reinitializing components');
+           // ✅ MutationObserver (중복 실행 방지)
+           const observer = new MutationObserver(function (mutations) {
+               let shouldReinitialize = false;
+               mutations.forEach(function (mutation) {
+                   if (mutation.addedNodes.length) {
+                       shouldReinitialize = true;
+                   }
+           const memberIdInput = document.getElementById("memberId");
+           if (memberIdInput) {
+               memberIdInput.removeEventListener("input", handleMemberIdInput); // 중복 방지
+               memberIdInput.addEventListener("input", handleMemberIdInput);
+           }
+               });
+           if (shouldReinitialize) {
+                console.log('DOM 변경 감지됨, 컴포넌트 재초기화');
                 initializeCheckboxes();
                 initializeMemberManagement();
                 initializeScreeningManagement();
                 initializeScreeningModification();
             }
         });
-    });
 
     const dashboardContent = document.getElementById('dashboard-content');
     if (dashboardContent) {
@@ -167,71 +233,78 @@ function initializeMemberManagement() {
         });
     });
 
-  document.getElementById('editInformation')?.addEventListener('click', function () {
-      const memberNo = window.currentMemberNo;
-      if (!memberNo) {
-          alert('회원 번호가 누락되었습니다.');
-          return;
-      }
-    // ** 핸드폰 번호 입력 시 자동 하이픈 적용**
-    const phoneInput = document.getElementById("phone");
-    if (phoneInput) {
-        phoneInput.setAttribute("maxlength", "13"); // HTML에서도 길이 제한 적용
-        phoneInput.addEventListener("input", function () {
-            this.value = formatPhoneNumber(this.value);
-        });
+// 회원정보 수정
+ document.getElementById('editInformation')?.addEventListener('click', function () {
+     const memberNo = parseInt(window.currentMemberNo);
+     if (!memberNo) {
+         alert('회원 번호가 누락되었습니다.');
+         return;
+     }
+
+     const phoneInput = document.getElementById("phone");
+     if (phoneInput) {
+         phoneInput.setAttribute("maxlength", "13");
+         phoneInput.addEventListener("input", function () {
+             this.value = formatPhoneNumber(this.value);
+         });
+     }
+
+     const updatedData = {
+         memberNo: memberNo,
+         name: document.getElementById('memberName').value.trim(),
+         nickname: document.getElementById('nickname').value.trim(),
+         memberId: document.getElementById('memberId').value.trim(),
+         memberType: document.getElementById('memberType').value,  // 🔥 숫자로 변환
+         email: document.getElementById('memberEmail').value.trim(),
+         phone: phoneInput.value.trim(),
+         address: document.getElementById('address').value.trim(),
+         address2: document.getElementById('address2').value.trim(),
+         memberStatus: document.getElementById('memberStatus').value,
+         banEndDate: null
+     };
+
+    const banEndDateInput = document.getElementById("banEndDate").value.trim();
+
+    // 정지 상태일 경우, banEndDate 필수 입력
+    if (updatedData.memberStatus == "1") {
+        if (!banEndDateInput) {
+            alert("정지 종료일을 선택해주세요.");
+            return;
+        }
+        updatedData.banEndDate = banEndDateInput; // 🔥 'yyyy-MM-dd' 형식으로 전송
     }
 
-      const updatedData = {
-              memberNo: memberNo,
-              name: document.getElementById('memberName').value.trim(),
-              nickname: document.getElementById('nickname').value.trim(),
-              memberId: document.getElementById('memberId').value.trim(),
-              type: document.getElementById('memberType').value,
-              email: document.getElementById('memberEmail').value.trim(),
-              phone: phoneInput.value.trim(),
-              address: document.getElementById('address').value.trim(),
-              address2: document.getElementById('address2').value.trim(),
-              status: document.getElementById('memberStatus').value
-          };
+     // 필수 입력값 확인
+     for (let key in updatedData) {
+         if (!updatedData[key] && key !== "banEndDate") {
+             alert(`${key} 값을 입력해주세요.`);
+             return;
+         }
+     }
 
-      // 기간 정지(1)일 경우 `banEndDate` 포함
-      if (updatedData.status == "1") {
-          const banEndDate = document.getElementById("banEndDate").value.trim();
-          if (!banEndDate) {
-              alert("정지 종료일을 선택해주세요.");
-              return;
-          }
-          updatedData.banEndDate = banEndDate; // 서버로 보낼 데이터에 추가
-      } else {
-          updatedData.banEndDate = null; // 기간 정지가 아니면 `null`
-      }
+     console.log('Updated member data:', updatedData);
 
-      console.log('Updated member data:', updatedData);
-
-      fetch('/adminPage/updateMember', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedData),
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('회원 정보 수정 실패');
-          }
-          return response.json();  // JSON 응답 처리
-      })
-      .then(data => {
-          console.log('Update successful:', data);
-          alert(data.message);
-          location.reload();
-      })
-      .catch(error => {
-          console.error('Error updating member:', error);
-          alert(error.message);
-      });
-  });
+     fetch('/adminPage/updateMember', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(updatedData),
+     })
+     .then(response => response.json())
+     .then(data => {
+         if (data.message.includes("실패")) {
+             alert(data.message);
+         } else {
+             alert(data.message);
+             location.reload();
+         }
+     })
+     .catch(error => {
+         console.error('Error updating member:', error);
+         alert("회원 정보 수정 중 오류 발생");
+     });
+ });
 }
 
 function openMemberModal(memberData) {
@@ -240,14 +313,15 @@ function openMemberModal(memberData) {
     document.getElementById('nickname').value = memberData.nickname;
     document.getElementById('memberId').value = memberData.id;
     document.getElementById('memberEmail').value = memberData.email;
-        // 핸드폰 번호 자동 형식 적용 (초기 값 설정)
-      const phoneInput = document.getElementById('phone');
-      if (phoneInput) {
-          phoneInput.value = formatPhoneNumber(memberData.phone || "");
 
-          // 기존 리스너 제거 후 새로 추가 (중복 방지)
-          phoneInput.removeEventListener("input", handlePhoneInput);
-          phoneInput.addEventListener("input", handlePhoneInput);
+     // ✅ 핸드폰 번호 자동 형식 적용 및 이벤트 중복 제거
+     const phoneInput = document.getElementById('phone');
+     if (phoneInput) {
+         phoneInput.value = formatPhoneNumber(memberData.phone || "");
+
+         // 기존 이벤트 제거 후 새 이벤트 추가
+         phoneInput.removeEventListener("input", handlePhoneInput);
+         phoneInput.addEventListener("input", handlePhoneInput);
       }
     document.getElementById('address').value = memberData.address;
     document.getElementById('address2').value = memberData.address2;
@@ -286,26 +360,31 @@ function openMemberModal(memberData) {
 
         // 기간 정지일 경우 정지 종료일 필드 표시
         toggleBanDate();
-        // 오늘 이후 날짜만 선택 가능하도록 설정
-        setMinBanDate();
+
     }
-    document.getElementById('joinDate').value = memberData.joinDate;
+        document.getElementById('joinDate').value = memberData.joinDate;
 
-    // 정지 종료일 필드
-    document.getElementById('banEndDate').value = memberData.banEndDate || "";
+        // ✅ `banEndDate` 변환 (`yyyy-MM-dd HH:mm:ss` → `yyyy-MM-dd`)
+        if (memberData.banEndDate) {
+            let banDate = new Date(memberData.banEndDate);
+            let formattedDate = banDate.toISOString().split('T')[0]; // 🔥 'yyyy-MM-dd' 형식으로 변환
+            document.getElementById('banEndDate').value = formattedDate;
+        } else {
+            document.getElementById('banEndDate').value = ""; // 🚀 값이 없으면 비워둠
+        }
 
-    const modalElement = document.getElementById('memberModal');
-    modalElement.classList.add('show');
-    modalElement.style.display = 'block';
-    document.body.classList.add('modal-open');
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop fade show';
-    document.body.appendChild(backdrop);
-}
-// 핸드폰 번호 입력 이벤트 핸들러 (중복 제거 및 적용)
-function handlePhoneInput(event) {
-    event.target.value = formatPhoneNumber(event.target.value);
-}
+        // ✅ 오늘 이후 날짜만 선택 가능하도록 설정
+        setMinBanDate();
+
+        // ✅ 모달 표시
+        const modalElement = document.getElementById('memberModal');
+        modalElement.classList.add('show');
+        modalElement.style.display = 'block';
+        document.body.classList.add('modal-open');
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
 
 function setMinBanDate() {
     const banEndDateInput = document.getElementById("banEndDate");
