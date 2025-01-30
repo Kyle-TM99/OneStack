@@ -88,6 +88,22 @@
 			   SYSDATE(), #{communityFile})
 	</insert>
 
+	<!-- 자유게시판 수정하기 -->
+	<update id="updateCommunity" parameterType="Community">
+		UPDATE Community
+		SET community_board_title = #{communityBoardTitle}, community_board_content = #{communityBoardContent},
+			community_board_reg_date = SYSDATE()
+		WHERE community_board_no = #{communityBoardNo} AND member_no = #{memberNo}
+	</update>
+
+	<!-- 자우게시판 삭제하기 -->
+	<delete id="deleteCommunity">
+		DELETE FROM Community
+		WHERE community_board_no = #{communityBoardNo} AND member_no = #{memberNo}
+	</delete>
+
+
+
 <!--
 
 	&lt;!&ndash; 커뮤니티 리스트 조회 &ndash;&gt;
@@ -159,18 +175,14 @@
 		VALUES (#{memberNo}, #{communityBoardTitle}, #{communityBoardContent}, #{communityFile})
 	</insert>
 
-	<!-- 커뮤니티 수정 -->
+<!--
+	 커뮤니티 수정
 	<update id = "updateCommunity" parameterType = "Community">
 		UPDATE Community
 		SET community_board_title = #{communityBoardTitle}, community_board_content = #{communityBoardContent}, community_file = #{communityFile}
 		WHERE community_board_no = #{communityBoardNo}
 	</update>
-
-	<!-- 커뮤니티 삭제 -->
-	<delete id = "deleteCommunity" parameterType = "int">
-		DELETE FROM Community
-		WHERE community_board_no = #{communityBoardNo}
-	</delete>
+-->
 
 	<!-- 커뮤니티 좋아요/싫어요 -->
 	<update id = "updateCommunityRecommend" parameterType = "int">

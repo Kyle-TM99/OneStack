@@ -70,8 +70,8 @@ public class CommunityService {
     }
 
 
-    // 커뮤니티 게시글 수정
-    @Transactional
+
+    // 자유게시판 게시글 수정
     public int updateCommunity(Community community, MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
             String originalFilename = file.getOriginalFilename();
@@ -84,11 +84,12 @@ public class CommunityService {
         return communityMapper.updateCommunity(community);
     }
 
-    // 커뮤니티 게시글 삭제
-    @Transactional
-    public int deleteCommunity(int communityBoardNo) {
-        return communityMapper.deleteCommunity(communityBoardNo);
+    // 자유게시판 게시글 삭제
+    public void deleteCommunity(int communityBoardNo, int memberNo) {
+        communityMapper.deleteCommunity(communityBoardNo, memberNo);
     }
+
+
 
     // 이전 글, 다음 글 조회
     public Map<String, Object> getAdjacentPosts(int currentCommunityBoardNo) {

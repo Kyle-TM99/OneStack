@@ -17,6 +17,13 @@ public interface CommunityMapper {
     // 자유게시판 작성
     public void insertCommunity(Community community);
 
+    // 자유게시한 수정
+    public int updateCommunity(Community community);
+
+    // 자유게시판 삭제
+    public int deleteCommunity(int no);
+
+
 
     // 커뮤니티 게시글 목록 조회
     List<MemberWithCommunity> getCommunity(Map<String, Object> params);
@@ -30,11 +37,8 @@ public interface CommunityMapper {
     // 커뮤니티 게시글 작성
     int addCommunity(Community community);
 
-    // 커뮤니티 게시글 수정
-    int updateCommunity(Community community);
-
     // 커뮤니티 게시글 삭제
-    int deleteCommunity(int communityBoardNo);
+    int deleteCommunity(int communityBoardNo, int memberNo);
 
     // 이전 글 조회
     Community getPreviousCommunity(int currentCommunityBoardNo);

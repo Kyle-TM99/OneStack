@@ -6,42 +6,86 @@
 </head>
 <th:block>
     <div layout:fragment="content" class="container py-5">
-        <!-- ... 기존 코드 ... -->
+        <form name="communityCheckForm" id="communityCheckForm">
+            <input type="hidden" name="communityBoardNo" id="communityBoardNo" th:value="${community.communityBoardNo}"/>
+        </form>
         <div class="row d-flex justify-content-between my-3">
             <div class="col-auto">
                 <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd HH:mm')}">작성 날짜</small>
             </div>
-            <div class="col-auto">
+            <div class="col-auto dropdown-container communityDropdownContainer">
                 <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
-                <div class="dropdown-menu" style="display: none;">
-                    <a class="dropdown-item" th:if="${member.memberNo == community.memberNo}" th:href="@{/communityEdit/{no}(no=${community.communityBoardNo})}"> <input class="btn btn-warning" type="button" id="communityDetailUpdate" value="수정하기"/></a>
-                    <a class="dropdown-item" th:if="${member.memberNo == community.memberNo}" th:href="@{/communityDelete/{no}(no=${community.communityBoardNo})}"><input class="btn btn-danger" type="button" id="communityDetailDelete" value="삭제하기" /></a>
-                    <a class="dropdown-item" th:if="${member.memberNo != community.memberNo}" th:href="@{/report/{no}(no=${community.communityBoardNo})}">신고</a>
+                <div class="dropdown-menu communityDropdown" style="display: none;">
+                    <a class="dropdown-item communityDropdownItem"
+                       th:if="${session.member != null and session.member.memberNo == community.memberNo}"
+                       th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo})}">
+                        수정하기
+                    </a>
+                    <form action="#" th:action="@{/delete(communityBoardNo=${community.communityBoardNo})}" method="post" style="display:inline;">
+                        <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+                        <button type="submit" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
+                            삭제하기
+                        </button>
+                    </form>
+                    <a class="dropdown-item communityDropdownItem"
+                       th:if="${session.member != null and session.member.memberNo != community.memberNo}"
+                       th:href="@{/report(communityBoardNo=${community.communityBoardNo})}">
+                        신고하기
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="row my-3">
-            <div class="col text-center">
-                <input class="btn btn-warning" type="button" id="detailUpdate" value="수정하기"/>
-                <input class="btn btn-danger" type="button" id="detailDelete" value="삭제하기" />
+        <div class="row d-flex justify-content-between">
+            <div class="col-auto">
+                <span th:text="${community.memberNo}">작성자</span>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted ms-2">조회수 <span th:text="${community.communityView}">0</span></span>
             </div>
         </div>
 
-                <div class="row d-flex justify-content-between">
-                    <div class="col-auto">
-                        <span th:text="${community.memberNo}">작성자</span>
-                    </div>
-                    <div class="col-auto">
-                        <span class="text-muted ms-2">조회수 <span th:text="${community.communityView}">0</span></span>
-                    </div>
-                </div>
+        <div class="row mt-5 mx-3">
+            <div class="col">
+                <h3 th:text="${community.communityBoardTitle}">게시물 제목</h3>
+            </div>
+        </div>
 
-                <div class="row mt-5 mx-3">
-                    <div class="col">
-                        <h3 th:text="${community.communityBoardTitle}">게시물 제목</h3>
-                    </div>
+        <div class="row">
+            <div class="col">
+                <hr class="my-4 opacity-25">
+            </div>
+        </div>
+
+        <div class="row mx-3">
+            <div class="col">
+                <div th:text="${community.communityBoardContent}">게시물 내용</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div th:if="${community.communityFile != null}" class="text-center mb-4">
+                    <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}" class="img-fluid rounded" alt="게시물 이미지">
                 </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <hr class="my-4 opacity-25">
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-3 col-auto">
+                <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
+                <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+            </div>
+            <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
+            </div>
+            <div>
 
                 <div class="row">
                     <div class="col">
@@ -49,95 +93,46 @@
                     </div>
                 </div>
 
-                <div class="row mx-3">
-                    <div class="col">
-                        <div th:text="${community.communityBoardContent}">게시물 내용</div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div class="row">
-                    <div class="col">
-                        <div th:if="${community.communityFile != null}" class="text-center mb-4">
-                            <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}" class="img-fluid rounded" alt="게시물 이미지">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <hr class="my-4 opacity-25">
-                    </div>
-                </div>
-
-
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex gap-3 col-auto">
-                         <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
-                         <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+        <!-- &lt;!&ndash; 이전/다음 글 섹션 &ndash;&gt;
+         <div class="row mt-3">
+             <div class="col-6">
+                 <div th:if="${previousPost != null}" class="card">
+                     <div class="card-body">
+                         <h6 class="card-title">이전 글</h6>
+                         <a th:href="@{/communityDetail/{no}(no=${previousPost.communityBoardNo})}" class="text-decoration-none text-dark">
+                             <p th:text="${previousPost.communityBoardTitle}">이전 글 제목</p>
+                         </a>
                      </div>
-                    <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
-                    </div>
-                <div>
+                 </div>
+             </div>-->
+        <!-- <div class="col-6">
+             <div th:if="${nextPost != null}" class="card">
+                 <div class="card-body">
+                     <h6 class="card-title">다음 글</h6>
+                     <a th:href="@{/communityDetail/{no}(no=${nextPost.communityBoardNo})}" class="text-decoration-none text-dark">
+                         <p th:text="${nextPost.communityBoardTitle}">다음 글 제목</p>
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </div>-->
 
-                    <div class="row">
-                        <div class="col">
-                            <hr class="my-4 opacity-25">
-                        </div>
-                    </div>
-
-</div>
-                </div>
-
-               <!-- &lt;!&ndash; 이전/다음 글 섹션 &ndash;&gt;
-                <div class="row mt-3">
-                    <div class="col-6">
-                        <div th:if="${previousPost != null}" class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">이전 글</h6>
-                                <a th:href="@{/communityDetail/{no}(no=${previousPost.communityBoardNo})}" class="text-decoration-none text-dark">
-                                    <p th:text="${previousPost.communityBoardTitle}">이전 글 제목</p>
-                                </a>
+        <!-- 댓글 섹션 (추후 구현) -->
+        <!--                <div class="row mt-4">
+                            <div class="col">
+                                <h5>댓글</h5>
+                                &lt;!&ndash; 댓글 목록 및 작성 폼 추가 예정 &ndash;&gt;
                             </div>
-                        </div>
-                    </div>-->
-                   <!-- <div class="col-6">
-                        <div th:if="${nextPost != null}" class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">다음 글</h6>
-                                <a th:href="@{/communityDetail/{no}(no=${nextPost.communityBoardNo})}" class="text-decoration-none text-dark">
-                                    <p th:text="${nextPost.communityBoardTitle}">다음 글 제목</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-
-                <!-- 댓글 섹션 (추후 구현) -->
-<!--                <div class="row mt-4">
-                    <div class="col">
-                        <h5>댓글</h5>
-                        &lt;!&ndash; 댓글 목록 및 작성 폼 추가 예정 &ndash;&gt;
-                    </div>
-                </div>-->
-            </div>
+                        </div>-->
+    </div>
 </th:block>
-<script>
-    // 드롭다운 토글 기능을 전역으로 설정
-    window.toggleDropdown = function(element) {
-        const dropdownMenu = element.nextElementSibling;
-        dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
-    };
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // 클릭 외부에서 드롭다운을 닫는 기능 추가
-        document.addEventListener('click', function(event) {
-            const dropdowns = document.querySelectorAll('.dropdown-menu');
-            dropdowns.forEach(dropdown => {
-                if (!dropdown.previousElementSibling.contains(event.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>
+<!-- communityWrite.js 스크립트 포함 -->
+<th:block layout:fragment="script">
+    <script th:src="@{/js/communityWrite.js}"></script>
+    <script th:src="@{/js/header.js}"></script>
+</th:block>
 </html>

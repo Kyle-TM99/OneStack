@@ -32,12 +32,53 @@ public class CommunityController {
     @Autowired
     private CommunityService communityService;
 
+    /* 자유게시판 생성 */
     @PostMapping("/addCommunity")
     public String addBoard(Community community, MultipartFile file, HttpSession session) throws IOException {
         Member member = (Member) session.getAttribute("member"); // 세션에서 memberNo 가져오기
         community.setMemberNo(member.getMemberNo()); // Community 객체에 memberNo 설정
         communityService.addCommunity(community, file);
         return "redirect:community";
+    }
+
+    /* 자유게시판 수정 */
+    @GetMapping("/communityUpdateForm")
+    public String communityUpdateForm(@RequestParam("communityBoardNo") int communityBoardNo, Model model) {
+        Community community = communityService.getCommunity(communityBoardNo);
+        model.addAttribute("community", community);
+        return "board/communityUpdateForm"; // 이 경로가 맞는지 확인
+    }
+
+    /* 자유게시판 수정 */
+    @PostMapping("/communityUpdate")
+    public String updateCommunity(Model model, Community community, MultipartFile file, HttpSession session,
+                                  @RequestParam("communityBoardNo") int communityBoardNo) throws IOException {
+        Member member = (Member) session.getAttribute("member"); // 세션에서 member 가져오기
+        community.setMemberNo(member.getMemberNo()); // Community 객체에 memberNo 설정
+
+        // 파일 업로드 처리 (필요한 경우)
+        if (file != null && !file.isEmpty()) {
+            String originalFilename = file.getOriginalFilename();
+            String filename = UUID.randomUUID().toString() + "_" + originalFilename;
+            String uploadDir = "src/main/java/resources/static/images"; // 실제 업로드 디렉토리 경로 설정
+            File dest = new File(uploadDir, filename);
+            file.transferTo(dest);
+            community.setCommunityFile(filename);
+        }
+
+        // 게시글 업데이트
+        communityService.updateCommunity(community, file); // 데이터베이스에 업데이트
+        return "redirect:/community"; // 수정 후 커뮤니티 목록으로 리다이렉트
+    }
+
+
+    /* 자유게시판 삭제 */
+    @PostMapping("/delete")
+    public String deleteCommunity(HttpSession session, @RequestParam("communityBoardNo") int communityBoardNo) {
+        Member member = (Member) session.getAttribute("member");
+        // 게시글 삭제
+        communityService.deleteCommunity(communityBoardNo, member.getMemberNo());
+        return "redirect:/community";
     }
 
 
