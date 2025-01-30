@@ -309,10 +309,11 @@ function initializeMemberManagement() {
 
 function openMemberModal(memberData) {
     window.currentMemberNo = memberData.memberNo;
-    document.getElementById('memberName').value = memberData.name;
-    document.getElementById('nickname').value = memberData.nickname;
-    document.getElementById('memberId').value = memberData.id;
-    document.getElementById('memberEmail').value = memberData.email;
+    document.getElementById('memberName').value = memberData.name?.trim() || "";
+    document.getElementById('nickname').value = memberData.nickname?.trim() || "";
+    document.getElementById('memberId').value = memberData.id?.trim() || "";
+    document.getElementById('memberEmail').value = memberData.email?.trim() || "";
+
 
      // ✅ 핸드폰 번호 자동 형식 적용 및 이벤트 중복 제거
      const phoneInput = document.getElementById('phone');
@@ -323,14 +324,14 @@ function openMemberModal(memberData) {
          phoneInput.removeEventListener("input", handlePhoneInput);
          phoneInput.addEventListener("input", handlePhoneInput);
       }
-    document.getElementById('address').value = memberData.address;
-    document.getElementById('address2').value = memberData.address2;
+    document.getElementById('address').value = memberData.address?.trim() || "";
+    document.getElementById('address2').value = memberData.address2?.trim() || "";
 
 
     // 회원 유형
     const memberTypeElement = document.getElementById('memberType');
         if (memberTypeElement) {
-            const typeValue = memberData.type; // "0", "1", "2" (문자열일 수도 있음)
+            const typeValue = memberData.type; // "0", "1", "2"
             console.log("회원 유형 값 확인:", typeValue); // 디버깅 로그
 
             if (typeValue == "0") {

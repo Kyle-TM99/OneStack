@@ -59,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="pro : ${pro}" th:if="${pro.professional.professorStatus == 0}">
+                    <tr th:each="pro : ${pro}" th:if="${pro.member.memberType == 2}">
                         <td><input type="checkbox"/></td>
                         <td th:text="${pro.member.name}">이름</td>
                         <td th:text="${pro.member.memberId}">아이디</td>
@@ -130,11 +130,11 @@
                         <label class="form-label text-muted small">심사 결과</label>
                         <div class="d-flex justify-content-center gap-5 mt-2">
                             <div class="form-check ">
-                                <input class="form-check-input" type="radio" name="professorStatus" id="approve" value="2">
+                                <input class="form-check-input" type="radio" name="professorStatus" id="approve" value="1">
                                 <label class="form-check-label" for="approve">승인</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="professorStatus" id="reject" value="3">
+                                <input class="form-check-input" type="radio" name="professorStatus" id="reject" value="0">
                                 <label class="form-check-label" for="reject">거부</label>
                             </div>
                         </div>
