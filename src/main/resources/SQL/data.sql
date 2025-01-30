@@ -256,26 +256,13 @@ INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_o
 VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
--- 회원 문의글 더미 데이터 --
+-- 회원 문의글 데이터 --
 INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
-VALUES (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 되지 않습니다.', NOW(),'답변 대기', false),
-(1, '결제 문의드립니다', '결제 후 포인트가 적립되지 않았어요', DATE_SUB(NOW(), INTERVAL 1 DAY), '답변 중', true),
-(2, '회원 정보 변경 문의', '프로필 사진을 변경하고 싶은데 방법을 모르겠어요', DATE_SUB(NOW(), INTERVAL 2 DAY), '답변 완료', true),
-(2, '게시글 작성 오류', '게시글 작성 시 에러가 발생합니다', DATE_SUB(NOW(), INTERVAL 3 DAY), '답변 대기', false),
-(3, '환불 요청드립니다', '잘못 결제했는데 환불 가능할까요?', DATE_SUB(NOW(), INTERVAL 4 DAY), '답변 중', false),
-(3, '사이트 이용 문의', '사이트 이용 방법을 알고 싶습니다', DATE_SUB(NOW(), INTERVAL 5 DAY), '답변 완료', false),
-(1, '계정 보안 문의', '계정 보안 설정은 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 6 DAY), '답변 대기', true),
-(2, '포인트 사용 문의', '포인트는 어떻게 사용하나요?', DATE_SUB(NOW(), INTERVAL 7 DAY), '답변 중', true),
-(3, '회원 탈퇴 문의', '회원 탈퇴는 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 8 DAY), '답변 완료', false),
-(1, '오류 신고드립니다', '페이지 로딩이 안되는 오류가 있습니다', DATE_SUB(NOW(), INTERVAL 9 DAY), '답변 대기', false);
+VALUES (1, '문의 제목 1', '문의 내용 1입니다.', NOW(), NULL, '답변 대기', 0);
 
-INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
-VALUES (1, '로그인이 안돼요', '비밀번호를 입력했는데 로그인이 되지 않습니다.', NOW(), NULL, '답변 대기', 0),
-(2, '회원 정보 수정', '전화번호 변경을 요청합니다.', NOW(), NULL, '답변 중', 0),
-(3, '결제 오류', '결제가 완료되지 않고 오류가 발생했습니다.', NOW(), NULL, '답변 완료', 1),
-(4, '상품 문의', '해당 상품의 배송 일정이 궁금합니다.', NOW(), NULL, '답변 대기', 0),
-(5, '쿠폰 사용법', '프로모션 쿠폰은 어디에서 사용할 수 있나요?', NOW(), NULL, '답변 대기', 0),
-(6, '계정 해킹 의심', '다른 사람이 제 계정을 사용한 흔적이 있습니다.', NOW(), NULL, '답변 중', 0),
-(7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
-(8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
-
+-- 회원 문의글 답변 데이터 --
+INSERT IGNORE INTO InquiryAnswer (inquiry_no, member_no, inquiry_answer_content, inquiry_answer_file)
+VALUES (1, 1, '안녕하세요, 문의하신 내용에 대한 답변입니다. 해당 문제는 설정에서 해결 가능합니다.', NULL),
+(1, 1, '문의 주셔서 감사합니다. 추가 질문이 있으시면 언제든지 남겨주세요.', 'answer_file_1.pdf'),
+(1, 1, '해당 오류는 최근 업데이트로 인해 발생한 것으로 보입니다. 패치를 진행해 주세요.', NULL),
+(1, 1, '비슷한 사례를 확인한 결과, 설정을 초기화하면 해결될 가능성이 높습니다.', 'screenshot_123.png');

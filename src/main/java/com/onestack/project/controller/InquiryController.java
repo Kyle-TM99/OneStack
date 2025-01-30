@@ -1,8 +1,11 @@
 package com.onestack.project.controller;
 
 import com.onestack.project.domain.Inquiry;
+import com.onestack.project.domain.InquiryAnswer;
+import com.onestack.project.domain.ManagerWithInquiryAnswer;
 import com.onestack.project.domain.MemberWithInquiry;
 import com.onestack.project.service.InquiryService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import java.util.HashMap;
 
 import jakarta.servlet.http.HttpSession;
 
+import static java.lang.System.out;
+
 @Slf4j
 @Controller
 @RequestMapping("/memberInquiry")
@@ -26,7 +31,7 @@ public class InquiryController {
     @Autowired
     private InquiryService inquiryService;
 
-    // 기본 문의글 목록 조회 (검색 기능 포함)
+    // 문의글 목록 조회
     @GetMapping
     public String getInquiry(
             @RequestParam(name = "startRow", defaultValue = "0") int startRow,
@@ -37,41 +42,7 @@ public class InquiryController {
 
         // 문의글 목록 조회
         List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(startRow, num, type, keyword);
-
-        // 전체 문의글 수 조회 (페이징 처리를 위해)
-        int totalCount = inquiryService.getInquiryCount(type, keyword);
-
         model.addAttribute("inquiryList", inquiryList);
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("currentPage", startRow / num + 1);
-        model.addAttribute("searchType", type);
-        model.addAttribute("keyword", keyword);
-
-        return "inquiry/inquiryForm";
-    }
-
-    // 날짜 범위로 문의글 검색
-    @GetMapping("/date")
-    public String getInquiryByDate(
-            @RequestParam(name = "startRow", defaultValue = "0") int startRow,
-            @RequestParam(name = "num", defaultValue = "10") int num,
-            @RequestParam("date1") String date1,
-            @RequestParam("date2") String date2,
-            Model model) {
-
-        List<MemberWithInquiry> inquiryList = inquiryService.getInquiryByDate(startRow, num, date1, date2);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("type", "date");
-        params.put("date1", date1);
-        params.put("date2", date2);
-        int totalCount = inquiryService.getInquiryCount("date", null);
-
-        model.addAttribute("inquiryList", inquiryList);
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("currentPage", startRow / num + 1);
-        model.addAttribute("date1", date1);
-        model.addAttribute("date2", date2);
 
         return "inquiry/inquiryForm";
     }
@@ -99,10 +70,33 @@ public class InquiryController {
         return "redirect:/memberInquiry";
     }
 
+    // 문의글 상세보기
     @GetMapping("/{inquiryNo}")
     public String getInquiryDetail(@PathVariable int inquiryNo, Model model) {
         Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
+        List<InquiryAnswer> inquiryAnswer = inquiryService.getInquiryAnswer(inquiryNo);
+
         model.addAttribute("inquiry", inquiry);
+        model.addAttribute("inquiryAnswer", inquiryAnswer);
         return "inquiry/inquiryDetail";
     }
+    // 문의글 삭제
+    @PostMapping("/delete")
+    public String deleteInquiry(@RequestParam("inquiryNo") int inquiryNo) {
+        inquiryService.deleteInquiry(inquiryNo);
+        return "redirect:/memberInquiry";
+    }
+    @PostMapping("/update")
+    public String updateInquiry(Inquiry inquiry) {
+        inquiryService.updateInquiry(inquiry);
+        return "redirect:/memberInquiry";
+    }
+
+    @PostMapping("/updateForm")
+    public String updateBoard(Model model, @RequestParam("inquiryNo") int inquiryNo) {
+        Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
+        model.addAttribute("inquiry", inquiry);
+        return "inquiry/inquiryupdateForm";
+    }
+
 }

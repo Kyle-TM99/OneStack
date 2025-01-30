@@ -42,19 +42,21 @@
         <div class="row g-0 mt-5">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex">
-                        <select class="form-select me-2" style="width: 120px;" name="type">
-                            <option value="title">제목</option>
-                            <option value="content">내용</option>
-                        </select>
-                        <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
-                        <button type="submit" class="btn btn-primary">검색</button>
+                <form action="#" method="get" th:action="@{/memberInquiry/search}" th:object="${searchCriteria}">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex">
+                            <select class="form-select me-2" style="width: 120px;" name="type">
+                                <option value="title">제목</option>
+                                <option value="content">내용</option>
+                            </select>
+                            <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
+                            <button type="submit" class="btn btn-primary">검색</button>
+                        </div>
+                        <div>
+                            <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
+                        </div>
                     </div>
-                    <div>
-                        <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -71,21 +73,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="inquiry : ${inquiryList}">
-                            <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
-                            <td class="post-title">
-                                <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                            </td>
-                            <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                            <td class="text-center">
+                    <tr th:each="inquiry : ${inquiryList}">
+                        <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
+                        <td class="post-title">
+                            <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                               th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                        </td>
+                        <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
+                        <td class="text-center">
                                 <span th:switch="${inquiry.inquiry.inquiryStatus}">
                                     <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
                                     <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
                                     <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
                                 </span>
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(inquiryList)}">
+                        <td colspan="4" class="text-center">검색 결과가 없습니다.</td>
+                    </tr>
                     </tbody>
                 </table>
                 <div class="col-md-2"></div>

@@ -1,8 +1,10 @@
 package com.onestack.project.service;
 
 import com.onestack.project.domain.Inquiry;
+import com.onestack.project.domain.InquiryAnswer;
 import com.onestack.project.domain.MemberWithInquiry;
 import com.onestack.project.mapper.InquiryMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,18 +39,6 @@ public class InquiryService {
         return inquiryMapper.getInquiry(params);
     }
 
-    // 날짜 검색용 메서드
-    public List<MemberWithInquiry> getInquiryByDate(int startRow, int num, String date1, String date2) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("startRow", startRow);
-        params.put("num", num);
-        params.put("type", "date");
-        params.put("date1", date1);
-        params.put("date2", date2);
-
-        return inquiryMapper.getInquiry(params);
-    }
-
     // 전체 문의글 수 조회
     public int getInquiryCount(String type, String keyword) {
         Map<String, Object> params = new HashMap<>();
@@ -57,7 +47,6 @@ public class InquiryService {
             params.put("type", type);
             params.put("keyword", keyword);
         }
-
         return inquiryMapper.getInquiryCount(params);
     }
 
@@ -99,4 +88,19 @@ public class InquiryService {
     public Inquiry getInquiryDetail(int inquiryNo) {
         return inquiryMapper.getInquiryDetail(inquiryNo);
     }
+    // 문의글 삭제
+    public void deleteInquiry(int inquiryNo) {
+        inquiryMapper.deleteInquiry(inquiryNo);
+    }
+
+    // 문의글 수정
+    public void updateInquiry(Inquiry inquiry) {
+        inquiryMapper.updateInquiry(inquiry);
+    }
+
+    // 문의 답변 조회
+    public List<InquiryAnswer> getInquiryAnswer(int inquiryNo) {
+        return inquiryMapper.getInquiryAnswer(inquiryNo);
+    }
+
 }

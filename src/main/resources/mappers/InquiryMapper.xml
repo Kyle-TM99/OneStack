@@ -169,12 +169,11 @@
 </update>
 
 <!-- 문의 답변 조회 -->
-<select id = "getInquiryAnswer" parameterType = "int" resultMap = "ManagerWithInquiryAnswerResultMap">
-	SELECT ia.*, m.*
-	FROM InquiryAnswer ia JOIN Manager mg
-		ON ia.manager_no = mg.manager_no
-	WHERE ia.inquiry_no = #{inquiryNo}
-	ORDER BY ia.inquiry_answer_reg_date DESC
+<select id="getInquiryAnswer" parameterType="int" resultMap="InquiryAnswerResultMap">
+	SELECT *
+	FROM InquiryAnswer
+	WHERE inquiry_no = #{inquiryNo}
+	ORDER BY inquiry_answer_reg_date DESC
 </select>
 
 <!-- 문의 답변 추가 -->

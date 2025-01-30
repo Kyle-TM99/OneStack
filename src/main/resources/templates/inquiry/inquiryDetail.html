@@ -3,35 +3,77 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
 <head>
+    <title>고객센터 내 문의글 확인 페이지</title>
 </head>
 <body>
-  <div layout:fragment="content">
-    <div class="row g-0">
-	    <div class="col-md-1"></div>
-      <div class="col-md-10 mt-3 border-bottom">
-        <h1 class="fw-bold mb-4">회원 문의</h1>
-      </div>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row g-0">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 mt-3 border-bottom">
+                <h1 class="fw-bold mt-3 mb-4">내 문의글</h1>
+                <div class="col-md-1"></div>
+            </div>
+            <form name="checkForm" id="checkForm">
+                <input type="hidden" name="no" id="no" th:value="${inquiry.inquiryNo}"/>
+            </form>
+            <form name="updateForm" id="updateForm" action="/memberInquiry/updateForm" method="post">
+                <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
+            </form>
 
-      <div class="row g-0 mt-5">
-		    <div class="col-md-1"></div>
-        <div class="col-md-10">
-          <h2 class="fw-bold" th:text="${inquiry.inquiryTitle}">문의 제목</h2>
-          <p th:text="${inquiry.inquiryContent}">문의 내용</p>
-          <p>작성일 : <span th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}"></span></p>
-        </div>
-		    <div class="col-md-1"></div>
-      </div>
+            <div class="row g-0">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="breadcrumb-container mt-3 mb-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">고객센터</a></li>
+                                <li class="breadcrumb-item"><a href="/memberInquiry" class="text-decoration-none text-dark">회원 문의</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">내 문의글</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
 
-      <div class="row g-0 mt-5">
-		    <div class="col-md-1"></div>
-        <div class="col-md-10">
-          <h3 class="fw-bold">답변</h3>
-<!--          <p th:text="${inquiry.answerContent}">답변 내용이 여기에 표시됩니다.</p>-->
+            <!-- 문의 내용 -->
+            <div class="row g-0 mt-3">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <input class= "btn btn-warning" type="button" id="detailUpdate" value="수정하기"/>
+                    <input class= "btn btn-danger"  type="button" id="detailDelete" value="삭제하기" />
+                    <h2 class="fw-bold" th:text="${inquiry.inquiryTitle}">문의 제목</h2>
+                    <p>작성일 : <span th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+                    <p th:text="${inquiry.inquiryContent}">문의 내용</p>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+            <div class="row g-0 mt-3">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <h3 class="fw-bold">답변</h3>
+                    <div class="row g-0 mt-2" th:each="inquiryAnswer : ${inquiryAnswer}">
+                        <p id="answerContent" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용이 여기에 표시됩니다.</p>
+                    </div>
+                    <!--텍스트 폼 끝-->
+                    <div class="review-form" id="reviewForm">
+                        <div class="form-group">
+                            <textarea class="form-control review-textarea" id="reviewText" rows="5" placeholder="답변를 작성하세요" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="d-flex justify-content-end align-items-center mb-3 mt-3">
+                                <button type="button" class="btn btn-primary" id="submitAnswer">답변 등록</button>
+                            </div>
+                        </div>
+                    </div> <!-- 텍스트 폼 끝 -->
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
         </div>
-		    <div class="col-md-1"></div>
-      </div>
-      <div class="col-md-1"></div>
     </div>
-  </div>
+    <script th:src="@{/js/inquiry.js}"></script>
+</div>
 </body>
 </html>
