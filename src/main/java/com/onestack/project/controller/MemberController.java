@@ -38,12 +38,12 @@ public class MemberController {
 
 
     @PostMapping("/updateMember")
-    public String updateMember(HttpSession session, Member member, MultipartFile profileImage) {
+    public String updateMember(HttpSession session, Member member, @RequestParam("profileImage") MultipartFile profileImage) {
         Member sessionMember = (Member) session.getAttribute("member");
         member.setMemberNo(sessionMember.getMemberNo());
 
-        // 소셜 로그인 여부 확인 (예: sessionMember.getSocialLogin()이 true인 경우 소셜 로그인)
-        boolean isSocialLogin = sessionMember.isSocial(); // 소셜 로그인 여부를 확인하는 메서드 또는 필드
+        // 소셜 로그인 여부 확인
+        boolean isSocialLogin = sessionMember.isSocial(); // session/member.isSocial이 1이면 소셜 회원
 
         // 이름을 기존 정보로 유지
         if (isSocialLogin) {
@@ -67,8 +67,11 @@ public class MemberController {
         }
 
         // 회원 정보 업데이트
-        memberService.updateMember(member);
-        memberService.updateSocialMember(member);
+        if (isSocialLogin) {
+            memberService.updateSocialMember(member); // 소셜 회원 정보 업데이트
+        } else {
+            memberService.updateMember(member); // 일반 회원 정보 업데이트
+        }
 
         // 세션 정보 업데이트
         updateSessionMember(session, member);
