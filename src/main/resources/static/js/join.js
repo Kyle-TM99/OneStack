@@ -406,9 +406,42 @@ $(document).ready(function() {
         checkFormValidity(); // 유효성 검사
     });
 
-    // 모든 필드의 유효성 상태를 확인하고 제출 버튼 활성화
-    function checkFormValidity() {
-        const allValid = Object.values(validationState).every(state => state === true);
-        $("#submitBtn").prop("disabled", !allValid); // 모든 필드가 유효할 때만 활성화
-    }
+    // 폼 제출 이벤트 핸들러
+    $("#memberUpdateForm").on("submit", function(e) {
+        e.preventDefault(); // 기본 제출 이벤트 중단
+
+        // 각 필드별 유효성 검사
+        if (!patterns.name.test($("#name").val())) {
+            alert("이름은 한글 1~5자만 가능합니다.");
+            $("#name").focus();
+            return false;
+        }
+
+        if (!patterns.memberId.test($("#memberId").val())) {
+            alert("아이디는 영문, 숫자, 특수문자 4~20자만 가능합니다.");
+            $("#memberId").focus();
+            return false;
+        }
+
+        if (!patterns.nickname.test($("#nickname").val())) {
+            alert("닉네임은 영문, 숫자, 한글 2~20자만 가능합니다.");
+            $("#nickname").focus();
+            return false;
+        }
+
+        if (!patterns.email.test($("#email").val())) {
+            alert("이메일 형식이 올바르지 않습니다.");
+            $("#email").focus();
+            return false;
+        }
+
+        if (!patterns.phone.test($("#phone").val())) {
+            alert("전화번호 형식이 올바르지 않습니다.");
+            $("#phone").focus();
+            return false;
+        }
+
+        // 모든 검증을 통과한 경우 폼 데이터 제출
+        this.submit();
+    });
 });
