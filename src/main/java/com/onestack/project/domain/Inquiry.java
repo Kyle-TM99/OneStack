@@ -2,6 +2,8 @@ package com.onestack.project.domain;
 
 import java.sql.Timestamp;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Inquiry {
 	private int inquiryNo;
-	private int memberNo; 
+	private int memberNo;
 	private String inquiryTitle;
 	private String inquiryContent;
-	private Timestamp inquiryRegDate;
 	private String inquiryFile;
+	private Timestamp inquiryRegDate;
 	private String inquiryStatus;
 	private boolean inquirySatisfaction;
 }

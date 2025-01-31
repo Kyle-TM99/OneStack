@@ -28,6 +28,27 @@ public class MemberService {
 
 	private final JavaMailSender mailSender;
 
+
+/*
+
+// 전문가 마이페이지에서 포트폴리오 조회
+public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
+    List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
+    return result;
+}
+*/
+    // 전문가가 받은 견적 요청 리스트 Estimation
+    public List<Estimation> proEstimation(int proNo) {
+       List<Estimation> result = memberMapper.proEstimation(proNo);
+       return result;
+    }
+
+    // 회원이 요청한 견적 리스트 Estimation
+    public List<Estimation> memberEstimation(int memberNo) {
+        List<Estimation> result = memberMapper.memberEstimation(memberNo);
+        return result;
+    }
+
     // myPage 내역 조회
     public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
         List<MemberWithProfessional> result = memberMapper.memberWithProfessional(memberNo);
@@ -38,6 +59,20 @@ public class MemberService {
     public List<Review> findMyReview(int memberNo) {
         List<Review> result = memberMapper.findMyReview(memberNo);
         return result;
+    }
+/*
+    // 회원별 review 리스트 조회
+    public List<Review> proReview(int proNo) {
+        List<Review> result = memberMapper.proReview(proNo);
+        return result;
+    }*/
+
+   /* public int proReviewCount(int proNo) {
+        return memberMapper.proReviewCount(proNo);
+    }
+*/
+    public int findMyReviewCount(int memberNo) {
+        return memberMapper.findMyReviewCount(memberNo);
     }
 
     // 회원별 게시글 리스트 조회
@@ -123,6 +158,7 @@ public class MemberService {
     }
 
 
+
     public void updateMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -145,32 +181,35 @@ public class MemberService {
         }
     }
 
-    public void updateMemberMyPagePass(Member member) {
+    public boolean changePassword(String memberId, String currentPassword, String newPassword) {
+        // 현재 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+
+        // 현재 비밀번호 일치 여부 확인
+        if (!passwordEncoder.matches(currentPassword, member.getPass())) {
+            return false;
+        }
+
+        // 새 비밀번호 암호화
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
         try {
-
-            // null 체크 추가
-            if (member == null) {
-                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
-            }
-
-            // 필수 필드 null 체크
-            if (member.getMemberNo() == 0) {
-                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
-            }
-
-            memberMapper.updateMemberMyPagePass(member);
+            // 비밀번호 업데이트
+            memberMapper.updatePassword(memberId, encodedNewPassword);
+            return true;
         } catch (Exception e) {
-            log.error("Member update failed", e);
-            throw e;
+            return false;
         }
     }
 
 
-/*    // 선택적 필드 업데이트 메서드 추가
-    public void updateMemberSelective(Member member) {
-        memberMapper.updateMemberSelective(member);
+
+    // 현재 비밀번호 검증 메서드 추가
+    public boolean validateCurrentPassword(String memberId, String currentPassword) {
+        // 세션의 memberId로 회원 정보 조회 후 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+        return passwordEncoder.matches(currentPassword, member.getPass());
     }
-    */
 
 
 
@@ -233,17 +272,21 @@ public class MemberService {
     }
 
     public String findMemberId(Member member) {
+        // 먼저 소셜 로그인 회원인지 확인
+        String socialType = findSocialMemberId(member);
 
-        // 아이디 찾기 실행
+        if (socialType != null) {
+            // 소셜 로그인 회원이면 null 반환
+            return null;
+        }
+
+        // 소셜 로그인 회원이 아니면 아이디 찾기
         return memberMapper.findMemberId(member);
     }
 
-    public List<Review> myPageReview(int memberNo) {
-        return memberMapper.findMyReview(memberNo);
-    }
-
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
+    // 소셜 로그인 회원 확인 메서드 추가
+    public String findSocialMemberId(Member member) {
+        return memberMapper.findSocialMemberId(member);
     }
 
 
@@ -271,7 +314,7 @@ public class MemberService {
         
         Member member = memberMapper.getMember(memberId);
         log.info("조회된 회원 정보: {}", member);
-        
+
         if (member == null) {
             log.error("회원 정보가 없음 - memberId: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
@@ -281,7 +324,12 @@ public class MemberService {
             log.error("이메일 불일치 - 입력: {}, DB: {}", email, member.getEmail());
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
-        
+
+        if (member.isSocial()) {
+            log.error("소셜계정은 비밀번호 변경할 수 없습니다. - 소셜 여부: {}", memberId);
+            throw new RuntimeException("일치하는 회원 정보가 없습니다.");
+        }
+
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken(memberId, token);
         
@@ -322,4 +370,15 @@ public class MemberService {
         memberMapper.deletePasswordResetToken(token);
     }
 
+
+    
+    public Integer getMemberById(String memberId) {
+        int memberNo = memberMapper.findMemberNoByMemberId(memberId);
+        return memberNo;
+    }
+
+    public List<Portfolio> portfolio(int proNo) {
+        List<Portfolio> result = memberMapper.portfolio(proNo);
+        return result;
+    }
 }

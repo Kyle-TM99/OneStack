@@ -10,13 +10,30 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
+	// 소셜 로그인 회원 선택적 업데이트
+	public void updateMemberSelective(Member member);
+
+	// 현재 비밀번호 확인
+	public int checkCurrentPassword(@Param("memberNo") int memberNo, @Param("currentPassword") String currentPassword);
+
+	// 전문가가 받은 견적 요청 리스트 Estimation
+	public List<Estimation> proEstimation(int proNo);
+
+	// 회원이 요청한 견적 리스트 Estimation
+	public List<Estimation> memberEstimation(int memberNo);
+
+	// 전문가 myPage에서 포트폴리오 관리
+	//public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo);
+
 	// myPage에서 내역 조회
 	public List<MemberWithProfessional> memberWithProfessional(int memberNo);
 
 	// 회원별 작성 리뷰 조회
 	public List<Review> findMyReview(int memberNo);
+	public List<Review> proReview(int proNo);
 	// 회원별 작성 리뷰 수 조회
 	public int findMyReviewCount(int memberNo);
+	public int proReviewCount(int proNo);
 
 	// 회원별 작성 게시글 조회
 	public List<MemberWithCommunity> memberMyPageCommunity(int memberNo);
@@ -84,7 +101,9 @@ public interface MemberMapper {
 
 	public int checkPhone(String phone);
 
-	public String findMemberId(Member member);
+	String findMemberId(Member member);
+
+	String findSocialMemberId(Member member);
 
 	public String memberPassCheck(String memberId);
 
@@ -101,4 +120,9 @@ public interface MemberMapper {
 
 	public void deletePasswordResetToken(String token);
 
+	// LHB - 아이디로 회원번호 조회
+	Integer findMemberNoByMemberId(String memberId);
+
+
+	List<Portfolio> portfolio(int proNo);
 }

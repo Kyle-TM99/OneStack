@@ -1,4 +1,4 @@
-* 카테고리 상수화 */
+/* 카테고리 상수화 */
 const categorySelect = document.getElementById("categorySelect");
 
 /* 카테고리 변경 시 함수 실행 */
