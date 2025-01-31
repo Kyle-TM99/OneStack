@@ -134,6 +134,7 @@ public class ProfessionalController {
 
             // 데이터 저장
             professionalService.saveProConversionData(request);
+
             return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
         } catch (Exception e) {
             log.error("전문가 데이터 저장 실패", e);
