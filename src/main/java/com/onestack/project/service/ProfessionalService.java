@@ -77,5 +77,9 @@ public class ProfessionalService {
     public List<MemberWithProfessional> getPro2(int proNo) {
         return professionalMapper.getPro2(proNo);
     }
-    
+
+    public List<Portfolio> getPortfoliosByMember(int memberNo) {
+        return professionalMapper.getPortfoliosByMember(memberNo);
+    }
+
 }

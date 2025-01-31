@@ -54,19 +54,19 @@ public class AdminService {
 		params.put("memberType", member.getMemberType());
 		params.put("memberStatus", member.getMemberStatus());
 
-		// 🔥 `banEndDate` 변환 (String → Timestamp) 포맷 오류 해결
+		// `banEndDate` 변환 (String → Timestamp) 포맷 오류 해결
 		if (member.getMemberStatus() == 1 && member.getBanEndDate() != null) {
 			try {
-				// ✅ `Timestamp` → `String` 변환
+				// `Timestamp` → `String` 변환
 				String banEndDateStr = member.getBanEndDate().toString().split(" ")[0]; // "yyyy-MM-dd"
 
-				// ✅ `String` → `LocalDate`
+				//`String` → `LocalDate`
 				LocalDate localDate = LocalDate.parse(banEndDateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-				// ✅ `LocalDate` → `LocalDateTime` (23:59:59 추가)
+				//`LocalDate` → `LocalDateTime` (23:59:59 추가)
 				LocalDateTime localDateTime = localDate.atTime(23, 59, 59);
 
-				// ✅ `LocalDateTime` → `Timestamp` 변환
+				//`LocalDateTime` → `Timestamp` 변환
 				Timestamp banEndDate = Timestamp.valueOf(localDateTime);
 
 				params.put("banEndDate", banEndDate);
@@ -77,14 +77,16 @@ public class AdminService {
 			params.put("banEndDate", null);
 		}
 
-		System.out.println("✅ 최종 업데이트 데이터: " + params);
+		System.out.println("최종 업데이트 데이터: " + params);
 
-		// ✅ MyBatis 호출
+		// MyBatis 호출
 		managerMapper.updateMember(params);
 	}
 
-	public Member getWithdrawalMember(){
-		return managerMapper.getWithdrawalMember();
+	public List<Member> getWithdrawalMembers() {
+		List<Member> members = managerMapper.getWithdrawalMembers();
+		log.info("탈퇴 회원 수: {}", members.size());
+		return members;
 	}
 
 	public Member getMember(){
@@ -113,7 +115,7 @@ public class AdminService {
 	}
 
 
-	public void disableTarget(String type, int targetId) {
+	public void disableTarget(String type, int targetId, int reportsNo) {
 		switch (type) {
 			case "community":
 				managerMapper.disableCommunity(targetId);
@@ -133,6 +135,7 @@ public class AdminService {
 			default:
 				throw new IllegalArgumentException("지원되지 않는 타입입니다: " + type);
 		}
+		managerMapper.updateReportsStatus(reportsNo, 1);
 	}
 
 }

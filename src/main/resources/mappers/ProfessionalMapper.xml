@@ -126,6 +126,14 @@
 		AND visibility = 1
 </select>
 
+<!-- 포트폴리오 리스트 조회 -->
+	<select id="getPortfoliosByMember" parameterType="int" resultType="Portfolio">
+		SELECT p.*
+		FROM Portfolio p
+		JOIN Professional pr ON p.pro_no = pr.pro_no
+		WHERE pr.member_no = #{memberNo}
+	</select>
+
 <!-- 포트폴리오 추가 -->
 <insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
         INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,

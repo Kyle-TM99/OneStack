@@ -23,7 +23,8 @@ public interface ManagerMapper {
 
 	void updateMember(Map<String, Object> params);
 
-	public Member getWithdrawalMember();
+	public List<Member> getWithdrawalMembers();
+
 
 	public Member getMember();
 

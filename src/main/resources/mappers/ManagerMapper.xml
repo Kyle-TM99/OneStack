@@ -201,7 +201,7 @@
 </update>
 
 <!-- 탈퇴 회원 조회 -->
-<select id = "getWithdrawalMember" resultType = "Member">
+<select id = "getWithdrawalMembers" resultType = "Member">
    SELECT * 
    FROM Member 
    WHERE member_status = 3

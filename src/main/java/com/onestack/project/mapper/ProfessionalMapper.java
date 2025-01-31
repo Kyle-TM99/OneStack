@@ -27,4 +27,5 @@ public interface ProfessionalMapper {
 
     void updateMemberType(@Param("memberType") int memberType, @Param("memberNo")int memberNo);
 
+    List<Portfolio> getPortfoliosByMember(@Param("memberNo") int memberNo);
 }

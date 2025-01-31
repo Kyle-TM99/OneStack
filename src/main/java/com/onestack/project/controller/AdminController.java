@@ -84,9 +84,9 @@ public class AdminController {
 
     @GetMapping("/withdrawnMembers")
     public String getWithdrawnDashboard(Model model) {
-        Member member = adminService.getWithdrawalMember();
-
-        model.addAttribute("member", member);
+        List<Member> members = adminService.getWithdrawalMembers();
+        System.out.println("컨트롤러에서 받은 탈퇴 회원 수: " + members.size());
+        model.addAttribute("members", members);
          return "adminDashboard/membershipManagement/withdrawnMembers";
     }
 
@@ -137,8 +137,9 @@ public class AdminController {
 	}
     
     @GetMapping("/reportApplicationInquiry")
-    public String getReviewCompletedInquiry() {
-
+    public String getReviewCompletedInquiry(Model model) {
+        List<MemProPortPaiCate> pList = adminService.getMemProPortPaiCate();
+        model.addAttribute("pro", pList);
         return "adminDashboard/reportManagement/reportApplicationInquiry";
     }
 
@@ -152,7 +153,11 @@ public class AdminController {
     }
     
     @GetMapping("/reportProcessingDetails")
-    public String getReportProcessingDetails() {
+    public String getReportProcessingDetails(Model model) {
+        List<Reports> reportsList = adminService.getReports();
+        System.out.println("reportsList: " + reportsList); // 데이터를 출력해 실제로 값이 있는지 확인
+
+        model.addAttribute("reportsList", reportsList);
     	return "adminDashboard/reportManagement/reportProcessingDetails";
     }
 
@@ -166,9 +171,10 @@ public class AdminController {
     @PostMapping("/disable")
     public ResponseEntity<String> disableTarget(
             @RequestParam("type") String type,
-            @RequestParam("targetId") int targetId) {
+            @RequestParam("targetId") int targetId,
+            @RequestParam("reportsNo")int reportsNo) {
         try {
-            adminService.disableTarget(type, targetId);
+            adminService.disableTarget(type, targetId, reportsNo);
             return ResponseEntity.ok("비활성화 처리 완료");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("비활성화 처리 중 오류 발생: " + e.getMessage());

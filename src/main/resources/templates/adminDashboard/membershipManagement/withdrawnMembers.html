@@ -50,30 +50,16 @@
                         <span class="sort-down">▼</span>
                     </i>
                 </th>
-                <th scope="col" class="sortable" data-sort="date">
-                    복구 가능
-                    <i class="sort-icon">
-                        <span class="sort-up active">▲</span>
-                        <span class="sort-down">▼</span>
-                    </i>
-                </th>
-                <th scope="col">탈퇴 사유</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="member : ${member}">
+            <tr th:each="member : ${members}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${member.name}">이름</td>
                 <td th:text="${member.memberId}">아이디</td>
                 <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
                 <td th:text="${#dates.format(member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')}">가입일</td>
                 <td th:text="${#dates.format(member.withdrawalEndDate, 'yyyy-MM-dd HH:mm:ss')}">탈퇴일</td>
-                <td>
-                    <button
-                            class="btn btn-outline-dark btn-sm member-edit-btn">
-                        탈퇴 사유
-                    </button>
-                </td>
             </tr>
             </tbody>
         </table>
@@ -98,50 +84,6 @@
                 </li>
             </ul>
         </nav>
-    </div>
-</div>
-
-<div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="memberModalLabel">회원 상세 정보</h5>
-                <button type="button" class="btn btn-outline-secondary close-custom-btn" data-modal-id="memberModal">X</button>
-            </div>
-            <div class="modal-body">
-                <form id="memberForm">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">이름</label>
-                            <input type="text" class="form-control" id="memberName" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">아이디</label>
-                            <input type="text" class="form-control" id="memberId" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">이메일</label>
-                            <input type="email" class="form-control" id="memberEmail" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">탈퇴일</label>
-                            <input type="text" class="form-control" id="withdrawalEndDate" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">탈퇴 사유</label>
-                            <input type="text" class="form-control" id="memberStop" readonly>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-Secondary close-custom-btn" data-modal-id="memberModal">취소</button>
-            </div>
-        </div>
     </div>
 </div>
 </body>

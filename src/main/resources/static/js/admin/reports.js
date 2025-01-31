@@ -29,30 +29,44 @@ document.addEventListener("click", function (e) {
         }
     }
 
-    // 비활성화 버튼 클릭 시
-        if (e.target.classList.contains("btn-disable")) {
-            const reportsNo = document.getElementById("reportsNo").value;
-            const targetId = document.querySelector(`tr[data-report-no="${reportsNo}"]`).getAttribute("data-target-id");
-            const reportsType = document.getElementById("reportsType").value;
+     // 비활성화 버튼 클릭 시
+     if (e.target.classList.contains("btn-disable")) {
+         const reportsNo = document.getElementById("reportsNo").value;
+         const targetId = document.querySelector(`tr[data-report-no="${reportsNo}"]`).getAttribute("data-target-id");
+         const reportsType = document.getElementById("reportsType").value.toLowerCase();
+
+         // 한글 타입 변환
+         const typeMap = {
+             "커뮤니티": "community",
+             "질문": "qna",
+             "댓글": "reply",
+             "리뷰": "review"
+         };
+         const typeParam = typeMap[reportsType] || reportsType;
+
 
             console.log(`비활성화 요청: reportsNo=${reportsNo}, targetId=${targetId}, reportsType=${reportsType}`);
 
             // 비활성화 요청 서버 전송
-            fetch(`/disable?type=${reportsType}&targetId=${targetId}&reportsNo=${reportsNo}`, {
-                method: "POST",
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("비활성화 요청 실패");
-                    }
-                    return response.text();
-                })
-                .then((data) => {
-                    alert(data);
-                    location.reload();
-                })
-                .catch((error) => console.error("비활성화 요청 중 오류 발생:", error));
-        }
+             fetch(`/disable`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `type=${typeParam}&targetId=${targetId}&reportsNo=${reportsNo}`
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("비활성화 요청 실패");
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert(data);
+                        location.reload(); // 페이지 새로고침하여 변경 내용 반영
+                    })
+                    .catch(error => console.error("비활성화 요청 중 오류 발생:", error));
+                }
       });
 
 // 모달 닫기 이벤트 (모달 초기화)

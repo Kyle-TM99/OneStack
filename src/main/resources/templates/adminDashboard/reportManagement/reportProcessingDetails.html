@@ -1,42 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>정지 회원 조회</title>
+    <title>신고 요청 조회</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/adminPage.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>신고 처리 내역</h2>
-        <table class="table table-light table-hover">
+<div class="d-flex flex-column min-vh-100">
+    <!-- 테이블을 감싸는 영역 -->
+    <div class="flex-grow-1">
+        <table class="table">
             <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>신고 대상</th>
-                    <th>신고 타입</th>
-                    <th>신고 사유</th>
-                    <th>신고일</th>
-                    <th>처리일</th>
-                    <th>처리자</th>
-                    <th>활성화 여부</th>
-                </tr>
+            <tr>
+                <th scope="col"><input type="checkbox"/></th>
+                <th scope="col">신고 번호</th>
+                <th scope="col">신고자</th>
+                <th scope="col">신고 대상</th>
+                <th scope="col">신고 타입</th>
+                <th scope="col">신고 횟수</th>
+                <th scope="col">신고일</th>
+                <<th scope="col">처리여부</th>
+                <th scope="col">신고 사유</th>
+
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>길동이123</td>
-                    <td>댓글</td>
-                    <td>욕설 및 비하</td>
-                    <td>2024-01-03</td>
-                    <td>2024-01-03</td>
-                    <td>이순신</td>
-                    <td>활성화</td>
-                </tr>
+            <tr th:each="report : ${reportsList}" th:if="${report.reportsStatus == 1}" th:attr="data-report-no=${report.reportsNo},data-target-id=${report.reportedMemberNo}">
+                <td><input type="checkbox"/></td>
+                <td th:text="${report.reportsNo}">신고 번호</td>
+                <td th:text="${report.reporterNickname}">신고자</td>
+                <td th:text="${report.reportedNickname}">신고 대상</td>
+                <td th:text="${report.reportsType}">신고 타입</td>
+                <!-- 신고 횟수 표시 -->
+                <td th:text="${report.reportedCount}">신고 횟수</td>
+                <td th:text="${#dates.format(report.reportsDate, 'yyyy-MM-dd HH:mm:ss')}">2024-01-03</td>
+                <td th:text="${report.reportsStatus == 1 ? '처리 완료' : '미처리'}">미처리</td>
+                <td th:text="${report.reportsReason}">신고 사유</td>
+            </tr>
             </tbody>
+
         </table>
     </div>
+
+    <!-- 페이지네이션을 하단에 고정 -->
+    <div class="mt-3">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center my-3">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 </body>
 </html>
