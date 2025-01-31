@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>포트폴리오 추가</title>
+    <link th:href="@{/css/addPortfolio.css}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h4 class="card-title text-center fw-bold mb-4">포트폴리오 추가</h4>
+
+                    <form id="portfolioForm" enctype="multipart/form-data">
+                        <!-- 카테고리 선택 -->
+                        <div class="mb-3">
+                            <label for="categoryNo" class="form-label"><i class="fas fa-tags"></i> 카테고리 *</label>
+                            <select class="form-select" id="categoryNo" name="categoryNo" required>
+                                <option value="" hidden>카테고리를 선택해주세요.</option>
+                                <option value="1">개발</option>
+                                <option value="2">데이터</option>
+                            </select>
+                        </div>
+
+                        <!-- 전문분야 선택 -->
+                        <div class="mb-3">
+                            <label for="itemNo" class="form-label"><i class="fas fa-cogs"></i> 전문분야 *</label>
+                            <select class="form-select" id="itemNo" name="itemNo" required>
+                                <option value="" hidden>전문분야를 선택해주세요.</option>
+                                <option th:each="survey : ${surveyList}" th:value="${survey.survey.itemNo}" th:text="${survey.category.itemName}"></option>
+                            </select>
+                        </div>
+
+                        <!-- ✅ 설문조사 질문 및 답변 -->
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-list"></i> 설문조사 *</label>
+                            <div id="surveyContainer" class="p-3 border rounded bg-light">
+                                <p class="text-muted">전문분야를 선택하면 해당하는 설문조사가 표시됩니다.</p>
+                                <div th:each="survey : ${surveyList}" th:if="${survey.survey.itemNo == selectedItem}">
+                                    <div class="fw-bold my-2" th:text="'Q: ' + ${survey.survey.surveyQuestion}"></div>
+                                    <div class="form-check" th:each="option : ${#strings.arraySplit(survey.survey.surveyOption, ',')}">
+                                        <input class="form-check-input" type="radio"
+                                               th:name="'answer_' + ${survey.survey.surveyNo}"
+                                               th:value="${option.trim()}" required>
+                                        <label class="form-check-label" th:text="${option.trim()}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 자기소개 -->
+                        <div class="mb-3">
+                            <label for="selfIntroduction" class="form-label"><i class="fas fa-user"></i> 자기소개 *</label>
+                            <textarea class="form-control" id="selfIntroduction" name="selfIntroduction" rows="3" required></textarea>
+                        </div>
+
+                        <!-- 연락 가능 시간 -->
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-clock"></i> 연락 가능 시간 *</label>
+                            <div class="d-flex gap-2">
+                                <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
+                                    <option value="" hidden>시작 시간</option>
+                                    <option value="오전 6시">오전 6시</option>
+                                    <option value="오전 7시">오전 7시</option>
+                                    <option value="오전 8시">오전 8시</option>
+                                </select>
+                                <span class="align-self-center">~</span>
+                                <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
+                                    <option value="" hidden>종료 시간</option>
+                                    <option value="오후 12시">오후 12시</option>
+                                    <option value="오후 1시">오후 1시</option>
+                                    <option value="오후 2시">오후 2시</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 포트폴리오 제목 -->
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-file-alt"></i> 포트폴리오 제목 *</label>
+                            <input type="text" class="form-control" id="portfolioTitle" name="portfolioTitle" required>
+                        </div>
+
+                        <!-- 제출 버튼 -->
+                        <div class="text-end mt-4">
+                            <button type="button" class="btn btn-primary" id="submitPortfolioBtn">추가 완료</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/addPortfolio.js}"></script>
+</th:block>
+</body>
+</html>

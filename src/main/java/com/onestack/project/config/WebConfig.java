@@ -32,6 +32,11 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/resources/files/**")
 				// file: 프로토콜을 사용하면 업로드한 이미지가 바로 보인다.
 				.addResourceLocations("file:./src/main/resources/static/files/").setCachePeriod(1); // 캐쉬 지속시간(초)
+
+		// 업로드된 썸네일/ 포트폴리오이미지가 접근 가능하도록 설정
+		registry.addResourceHandler("/uploads/**")
+				.addResourceLocations("file:///C:/uploads/")
+				.setCachePeriod(3600);
 	}
 
 	  @Override 
@@ -42,5 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
 	            		  "/**"
 	              );
 	  }
+
+
 
 }

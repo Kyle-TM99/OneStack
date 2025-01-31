@@ -19,9 +19,6 @@ import java.util.*;
 @RestController
 public class PortfolioController {
 
-    @Autowired
-    private ProfessionalService professionalService;
-
     // 파일 저장 경로 설정
     private static final String UPLOAD_DIR = "C:/uploads/";
 
@@ -74,20 +71,5 @@ public class PortfolioController {
 
         file.transferTo(new File(filePath));
         return originalFilename; // 저장된 파일 이름 반환
-    }
-
-    @GetMapping("/portfolioList")
-    public String getPortfolioList(HttpSession session, Model model) {
-        Integer memberNo = (Integer) session.getAttribute("memberNo");
-
-        // 로그인 정보 확인
-        if (memberNo == null) {
-            return "redirect:/loginForm";
-        }
-
-        List<Portfolio> portfolioList = professionalService.getPortfoliosByMember(memberNo);
-        model.addAttribute("portfolioList", portfolioList);
-
-        return "views/portfolioList";
     }
 }

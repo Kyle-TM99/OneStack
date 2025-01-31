@@ -1,39 +1,35 @@
-// portfolioList.js
-
 document.addEventListener("DOMContentLoaded", function () {
-    const portfolioCards = document.querySelectorAll(".portfolio-card");
-
-    portfolioCards.forEach((card) => {
-        card.addEventListener("click", function () {
-            const portfolioId = this.getAttribute("data-portfolio-id");
-            window.location.href = `/portfolio/detail?portfolioNo=${portfolioId}`;
-        });
-    });
+    console.log("포트폴리오 리스트 로드됨");
 });
 
-// 수정 버튼 클릭 시
+/* 포트폴리오 상세 보기 */
+function viewPortfolioDetail(element) {
+    const portfolioId = element.getAttribute("data-portfolio-id");
+    window.location.href = `/portfolio/detail?portfolioNo=${portfolioId}`;
+}
+
+/* 포트폴리오 수정 */
 function editPortfolio(event, element) {
-    event.stopPropagation(); // 부모 클릭 방지
+    event.stopPropagation();
     const portfolioId = element.closest(".portfolio-card").getAttribute("data-portfolio-id");
     window.location.href = `/portfolio/edit?portfolioNo=${portfolioId}`;
 }
 
-// 삭제 버튼 클릭 시
+/* 포트폴리오 삭제 */
 function deletePortfolio(event, element) {
     event.stopPropagation();
     const portfolioId = element.closest(".portfolio-card").getAttribute("data-portfolio-id");
 
-    if (confirm("정말로 삭제하시겠습니까?")) {
+    if (confirm("정말 삭제하시겠습니까?")) {
         fetch(`/portfolio/delete?portfolioNo=${portfolioId}`, { method: "DELETE" })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    alert("삭제 완료");
-                    location.reload();
+            .then(response => {
+                if (response.ok) {
+                    alert("포트폴리오가 삭제되었습니다.");
+                    window.location.reload();
                 } else {
-                    alert(data.message);
+                    alert("삭제 실패. 다시 시도해주세요.");
                 }
             })
-            .catch((error) => console.error("삭제 실패:", error));
+            .catch(error => console.error("삭제 오류:", error));
     }
 }
