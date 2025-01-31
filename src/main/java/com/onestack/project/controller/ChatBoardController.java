@@ -1,7 +1,8 @@
 package com.onestack.project.controller;
 
-import com.kyletalk.sns.domain.ChatBoardEvent;
-import com.kyletalk.sns.service.ChatBoardService;
+
+import com.onestack.project.domain.ChatBoardEvent;
+import com.onestack.project.service.ChatBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

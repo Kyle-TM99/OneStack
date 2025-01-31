@@ -1,7 +1,8 @@
 package com.onestack.project.service;
 
-import com.kyletalk.sns.domain.ChatBoardEvent;
-import com.kyletalk.sns.mapper.ChatBoardMapper;
+
+import com.onestack.project.domain.ChatBoardEvent;
+import com.onestack.project.mapper.ChatBoardMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

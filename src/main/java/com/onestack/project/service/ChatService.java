@@ -1,9 +1,10 @@
 package com.onestack.project.service;
 
-import com.kyletalk.sns.domain.ChatMessage;
-import com.kyletalk.sns.domain.ChatRoom;
-import com.kyletalk.sns.domain.Member;
-import com.kyletalk.sns.mapper.ChatMapper;
+
+import com.onestack.project.domain.ChatMessage;
+import com.onestack.project.domain.ChatRoom;
+import com.onestack.project.domain.Member;
+import com.onestack.project.mapper.ChatMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

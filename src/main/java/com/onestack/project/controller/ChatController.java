@@ -1,11 +1,13 @@
 package com.onestack.project.controller;
 
-import com.kyletalk.sns.domain.ChatMessage;
-import com.kyletalk.sns.domain.ChatRoom;
-import com.kyletalk.sns.domain.Member;
-import com.kyletalk.sns.service.ChatService;
+
+import com.onestack.project.domain.ChatMessage;
+import com.onestack.project.domain.ChatRoom;
+import com.onestack.project.domain.Member;
+import com.onestack.project.service.ChatService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

@@ -1,8 +1,9 @@
 package com.onestack.project.mapper;
 
-import com.kyletalk.sns.domain.ChatMessage;
-import com.kyletalk.sns.domain.ChatRoom;
-import com.kyletalk.sns.domain.Member;
+
+import com.onestack.project.domain.ChatMessage;
+import com.onestack.project.domain.ChatRoom;
+import com.onestack.project.domain.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

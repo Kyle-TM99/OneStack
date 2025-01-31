@@ -1,7 +1,8 @@
 package com.onestack.project.service;
 
-import com.kyletalk.sns.domain.ChatCalendarEvent;
-import com.kyletalk.sns.mapper.ChatCalendarMapper;
+
+import com.onestack.project.domain.ChatCalendarEvent;
+import com.onestack.project.mapper.ChatCalendarMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.onestack.project.controller;
 
-import com.kyletalk.sns.domain.ChatCalendarEvent;
-import com.kyletalk.sns.service.ChatCalendarService;
+import com.onestack.project.domain.ChatCalendarEvent;
+import com.onestack.project.service.ChatCalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
