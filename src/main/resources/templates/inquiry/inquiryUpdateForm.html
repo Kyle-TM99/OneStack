@@ -39,16 +39,17 @@
     <div class="row g-0 mt-4">
       <div class="col-md-3"></div>
       <div class="col-md-6">
-        <form th:action="@{/memberInquiry/update}"  id="updateForm"  method="post" enctype="multipart/form-data">
-          <input type="hidden" name="memberNo" th:value="${session.member.memberNo}">
+        <form th:action="@{/memberInquiry/update}" id="updateForm" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
+          <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
           <div class="mb-3">
             <label for="inquiryTitle" class="form-label">제목</label>
-            <input type="text" class="form-control" id="inquiryTitle" name="inquiryTitle" required>
+            <input type="text" class="form-control" id="inquiryTitle" name="inquiryTitle" th:value="${inquiry.inquiryTitle}" required>
           </div>
 
           <div class="mb-3">
             <label for="inquiryContent" class="form-label">내용</label>
-            <textarea class="form-control" id="inquiryContent" name="inquiryContent" rows="8" required></textarea>
+            <textarea class="form-control" id="inquiryContent" name="inquiryContent" rows="8" required th:text="${inquiry.inquiryContent}"></textarea>
           </div>
 
           <div class="mb-3">

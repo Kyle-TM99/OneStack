@@ -87,7 +87,7 @@ public class InquiryController {
         return "redirect:/memberInquiry";
     }
     @PostMapping("/update")
-    public String updateInquiry(Inquiry inquiry) {
+    public String updateInquiry(@ModelAttribute Inquiry inquiry) {
         inquiryService.updateInquiry(inquiry);
         return "redirect:/memberInquiry";
     }
