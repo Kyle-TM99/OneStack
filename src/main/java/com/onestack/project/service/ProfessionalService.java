@@ -50,6 +50,13 @@ public class ProfessionalService {
         professionalMapper.addProAdvancedInfo(advancedInfo);
         int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
+        final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+
+        String thumbnailUrl = request.getThumbnailImage();
+        if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
+            thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
+        }
+
         // 포폴 저장
         Portfolio portfolio = new Portfolio();
         portfolio.setProNo(proNo);
@@ -57,7 +64,7 @@ public class ProfessionalService {
         portfolio.setPortfolioTitle(request.getPortfolioTitle());
         portfolio.setPortfolioContent(request.getPortfolioContent());
         portfolio.setVisibility(true); // 공개       
-        portfolio.setThumbnailImage(request.getThumbnailImage());
+        portfolio.setThumbnailImage(thumbnailUrl);
         List<String> portfolioFilePaths = request.getPortfolioFilePaths();
         portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
         portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
