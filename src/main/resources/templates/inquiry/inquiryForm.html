@@ -42,21 +42,19 @@
         <div class="row g-0 mt-5">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <form action="#" method="get" th:action="@{/memberInquiry/search}" th:object="${searchCriteria}">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex">
-                            <select class="form-select me-2" style="width: 120px;" name="type">
-                                <option value="title">제목</option>
-                                <option value="content">내용</option>
-                            </select>
-                            <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
-                            <button type="submit" class="btn btn-primary">검색</button>
-                        </div>
-                        <div>
-                            <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex">
+                        <select class="form-select me-2" style="width: 120px;" name="type">
+                            <option value="title">제목</option>
+                            <option value="content">내용</option>
+                        </select>
+                        <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
+                        <button type="submit" class="btn btn-primary">검색</button>
                     </div>
-                </form>
+                    <div>
+                        <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
+                    </div>
+                </div>
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -88,15 +86,24 @@
                                 </span>
                         </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(inquiryList)}">
-                        <td colspan="4" class="text-center">검색 결과가 없습니다.</td>
-                    </tr>
                     </tbody>
                 </table>
                 <div class="col-md-2"></div>
                 <div class="row">
                     <div class="col">
-
+                        <div class="pagination">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${currentPage - 2} * num, num=${num})}">이전</a>
+                                </li>
+                                <li class="page-item" th:each="page : ${#numbers.range(1, totalPages)}" th:classappend="${page == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${(page - 1)} * num, num=${num})}" th:text="${page}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${currentPage} * num, num=${num})}">다음</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -24,56 +24,31 @@ public class InquiryService {
 
     private static final String FILE_STORAGE_PATH = "src/main/resources/static/files/";
 
-    // 문의글 목록 조회 (검색 조건, 페이징 포함)
+    // 문의글 목록 조회 (검색 및 페이징 포함)
     public List<MemberWithInquiry> getInquiry(int startRow, int num, String type, String keyword) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("startRow", startRow);
-        params.put("num", num);
-
-        // 검색 조건이 있는 경우에만 파라미터 추가
-        if (type != null && keyword != null && !type.isEmpty() && !keyword.isEmpty()) {
-            params.put("type", type);
-            params.put("keyword", keyword);
-        }
-
-        return inquiryMapper.getInquiry(params);
+        return inquiryMapper.getInquiry(startRow, num, type, keyword);
     }
 
-    // 전체 문의글 수 조회
+    // 검색 조건에 맞는 전체 문의글 수 조회
     public int getInquiryCount(String type, String keyword) {
-        Map<String, Object> params = new HashMap<>();
-
-        if (type != null && keyword != null && !type.isEmpty() && !keyword.isEmpty()) {
-            params.put("type", type);
-            params.put("keyword", keyword);
-        }
-        return inquiryMapper.getInquiryCount(params);
+        return inquiryMapper.getInquiryCount(type, keyword);
     }
-
 
     // 문의글 작성
     public void addInquiry(Inquiry inquiry, MultipartFile file) throws IOException {
-
-        // 파일 처리
-        if (file != null && !file.isEmpty()) {
-            // 파일 저장 디렉토리 확인 및 생성
-            File directory = new File(FILE_STORAGE_PATH);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
-            // 고유한 파일명 생성
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String savedFileName = UUID.randomUUID().toString() + extension;
-
-            // 파일 저장
-            File savedFile = new File(directory, savedFileName);
-            file.transferTo(savedFile);
-
-            // 파일명 설정
-            inquiry.setInquiryFile(savedFileName);
+        String uploadDir = "C:/OneStack/OneStack/src/main/resources/static/files/"; // 절대 경로
+        File uploadPath = new File(uploadDir);
+        if (!uploadPath.exists()) {
+            uploadPath.mkdirs(); // 경로가 없으면 생성
         }
+
+        // 파일 저장
+        String fileName = file.getOriginalFilename();
+        File destinationFile = new File(uploadPath, fileName);
+        file.transferTo(destinationFile); // 파일 저장
+
+        // 파일명 설정
+        inquiry.setInquiryFile(fileName);
 
         // 문의글 저장
         inquiryMapper.addInquiry(inquiry);

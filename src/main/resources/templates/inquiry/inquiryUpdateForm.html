@@ -52,9 +52,16 @@
             <textarea class="form-control" id="inquiryContent" name="inquiryContent" rows="8" required th:text="${inquiry.inquiryContent}"></textarea>
           </div>
 
+          <!-- 기존 파일 정보 출력 -->
+          <div th:if="${inquiry.inquiryFile != null}" class="mt-3">
+            <p>현재 첨부 파일: <a th:href="@{/files/{filename}(filename=${inquiry.inquiryFile})}" th:text="${inquiry.inquiryFile}"></a></p>
+            <input type="hidden" name="existingFile" th:value="${inquiry.inquiryFile}"/>
+          </div>
+
           <div class="mb-3">
-            <label for="file" class="form-label">파일 첨부</label>
+            <label for="file" class="form-label">새 파일 첨부 (선택 사항)</label>
             <input type="file" class="form-control" id="file" name="file">
+            <small class="form-text text-muted">기존 파일이 있는 경우, 새 파일을 선택하지 않으면 기존 파일이 유지됩니다.</small>
           </div>
 
           <div class="d-flex justify-content-center gap-2 mt-4 mb-5">

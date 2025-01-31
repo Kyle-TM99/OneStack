@@ -1,9 +1,6 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.Inquiry;
-import com.onestack.project.domain.InquiryAnswer;
-import com.onestack.project.domain.ManagerWithInquiryAnswer;
-import com.onestack.project.domain.MemberWithInquiry;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.InquiryService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +31,24 @@ public class InquiryController {
     // 문의글 목록 조회
     @GetMapping
     public String getInquiry(
-            @RequestParam(name = "startRow", defaultValue = "0") int startRow,
-            @RequestParam(name = "num", defaultValue = "10") int num,
-            @RequestParam(name = "type", required = false) String type,
-            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(defaultValue = "0") int startRow,
+            @RequestParam(defaultValue = "10") int num,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword,
             Model model) {
 
         // 문의글 목록 조회
         List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(startRow, num, type, keyword);
         model.addAttribute("inquiryList", inquiryList);
+
+        // 페이징 정보
+        int totalCount = inquiryService.getInquiryCount(type, keyword);
+        int totalPages = (totalCount + num - 1) / num;
+
+        model.addAttribute("currentPage", startRow / num + 1);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
 
         return "inquiry/inquiryForm";
     }
@@ -60,13 +66,13 @@ public class InquiryController {
             @RequestParam(value = "file", required = false) MultipartFile file,
             HttpSession session) throws IOException {
 
-        // 파일 유무에 따른 서비스 메서드 호출
+        // 파일 처리 및 문의글 저장
         if (file != null && !file.isEmpty()) {
-            inquiryService.addInquiry(inquiry, file);  // 파일이 있는 경우
+            inquiryService.addInquiry(inquiry, file);
         } else {
-            inquiryService.addInquiry(inquiry);  // 파일이 없는 경우
+            inquiryService.addInquiry(inquiry);
         }
-        // 성공시 목록 페이지로 리다이렉트
+
         return "redirect:/memberInquiry";
     }
 
