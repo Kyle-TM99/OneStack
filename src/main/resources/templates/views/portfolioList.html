@@ -28,8 +28,7 @@
       <div class="col-md-4 d-flex" th:each="portfolio : ${portfolioList}">
         <div class="portfolio-card w-100" th:attr="data-portfolio-id=${portfolio.portfolioNo}" onclick="viewPortfolioDetail(this)">
           <div class="card shadow-sm">
-            <img th:src="${#strings.startsWith(portfolio.thumbnailImage, 'http') ? portfolio.thumbnailImage : '/uploads/' + portfolio.thumbnailImage}"
-                 class="card-img-top" alt="포트폴리오 이미지">
+            <img th:src="${portfolio.thumbnailImage}" class="card-img-top" alt="포트폴리오 이미지">
             <div class="card-body">
               <h5 class="card-title" th:text="${portfolio.portfolioTitle}"></h5>
               <p class="card-text text-muted" th:text="${#strings.abbreviate(portfolio.portfolioContent, 50)}"></p>

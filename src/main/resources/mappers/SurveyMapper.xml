@@ -36,9 +36,8 @@
     SELECT *  FROM Category
 </select>
 
-
-
-
-
+<select id="getAllSurveys" resultType="Survey">
+    SELECT * FROM Survey
+</select>
 
 </mapper>

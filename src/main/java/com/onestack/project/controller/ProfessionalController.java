@@ -171,18 +171,20 @@ public class ProfessionalController {
 
     @GetMapping("/portfolioList/addPortfolio")
     public String showAddPortfolioForm(HttpSession session, Model model) {
+        List<Map<String, Object>> surveyList = surveyService.getAllSurveysAsMap();
         Member member = (Member) session.getAttribute("member");
-        String memberId = member.getMemberId();
 
-        if (memberId == null) {
+        if (member == null) {
             return "redirect:/loginForm";
         }
-
-        model.addAttribute("member", memberService.getMember(memberId));
+        log.info("surveyList",surveyList);
+        System.out.println("surveyList" + surveyList);
+        model.addAttribute("surveyList", surveyList);
+        model.addAttribute("member", memberService.getMember(member.getMemberId()));
         model.addAttribute("categories", surveyService.getAllCategories());
+
         return "views/addPortfolio";
     }
-
 
     @PostMapping("/portfolio/submit")
     @ResponseBody

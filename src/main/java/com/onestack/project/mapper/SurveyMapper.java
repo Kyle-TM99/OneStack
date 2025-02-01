@@ -2,6 +2,7 @@ package com.onestack.project.mapper;
 
 import java.util.List;
 
+import com.onestack.project.domain.Survey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,5 +16,6 @@ public interface SurveyMapper {
 	public List<SurveyWithCategory> getSurvey(@Param("itemNo") int itemNo);
 	
 	List<Category> getAllCategories();
-	
+
+	List<Survey> getAllSurveys();
 }
