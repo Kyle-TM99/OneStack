@@ -1,10 +1,13 @@
 /* 결제 버튼 상수화 */
-const paymentBtn = document.getElementById("payBtn");
+const payKakaoBtn = document.getElementById("payKakaoBtn");
+const payKgBtn = document.getElementById("payKgBtn");
 
 /* 결제 버튼 클릭시 결제 요청 함수 실행 */
-paymentBtn.addEventListener("click", requestPaymentF);
+payKakaoBtn.addEventListener("click", () => requestPayment(1));
+payKgBtn.addEventListener("click", () => requestPayment(2));
 
-function requestPaymentF() {
+/* 카카오페이 */
+function requestPayment(channelNum) {
 
     const IMP = window.IMP; // IMP 초기화 및 연동
     IMP.init("imp80060870"); // 고객사 식별 코드(PortOne 콘솔 - 식별코드 - 고객사 식별코드)
@@ -16,6 +19,13 @@ function requestPaymentF() {
     const memberEmail = document.getElementById("memberEmail").textContent;
     const memberNo = document.getElementById("memberNo").textContent;
     const quotationContent = document.getElementById("quotationContent").textContent;
+    let channelKey;
+
+    if (channelNum == 1) {
+        channelKey = "channel-key-ecc4b522-d290-47ed-92c9-73ed6d22ab77";
+    } else if(channelNum == 2) {
+        channelKey = "channel-key-ad888640-2d53-49e2-924f-c653f7929d94";
+    }
 
     console.log(projectNumber);
     console.log(projectPrice);
@@ -24,9 +34,10 @@ function requestPaymentF() {
     console.log(memberEmail);
     console.log(memberNo);
     console.log(quotationContent);
+    console.log(channelKey);
 
     IMP.request_pay({
-        channelKey: "channel-key-ecc4b522-d290-47ed-92c9-73ed6d22ab77", // 채널 키 설정
+        channelKey: channelKey, // 채널 키 설정
         pay_method: "card",
         merchant_uid: `onestackPayment-${crypto.randomUUID()}`, // 상점에서 생성한 고유 주문번호
         name: `원스택-${projectNumber}`,
@@ -69,6 +80,5 @@ function requestPaymentF() {
             alert("결제 실패: " + rsp.error_msg);
         }
     });
-
 
 };

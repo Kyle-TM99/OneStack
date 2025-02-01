@@ -20,8 +20,8 @@
     <p id="projectName">견적 번호: [[ ${quotation.quotation.quotationNo} ]]</p>
   </div>
   <p id="memberNo" hidden>[[ ${quotation.member.memberNo} ]]</p>
-  <p id="memberPhone" hidden>원스택 회원 전화번호</p>
-  <p id="memberEmail" hidden>원스택 회원 이메일</p>
+  <p id="memberPhone" hidden>[[ ${quotation.member.phone} ]]</p>
+  <p id="memberEmail" hidden>[[ ${quotation.member.email} ]]</p>
 
   <table class="memo-table">
     <tr>
@@ -47,7 +47,8 @@
   </table>
 
   <div class="memo-footer">
-    <button id="payBtn" class="btn-confirm">확인 및 결제</button>
+    <button id="payKakaoBtn" class="btn-confirm">카카오페이</button>
+    <button id="payKgBtn" class="btn-confirm">KG</button>
   </div>
 </div>
 
