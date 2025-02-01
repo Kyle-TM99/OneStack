@@ -3,8 +3,8 @@ VALUES
     ('홍길동', 'user1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname1', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user1@example.com', 1, '010-1111-2222', SYSDATE(), 1, 0),
     ('이순신', 'user2', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname2', '1985-03-22', 'female', '54321', '서울특별시 종로구', '세종대로 456', 'user2@example.com', 1, '010-3333-4444', SYSDATE(), 1, 0),
     ('김구', 'user3', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname3', '1992-08-30', 'male', '23456', '서울특별시 서초구', '반포대로 789', 'user3@example.com', 0, '010-5555-6666', SYSDATE(), 1, 0),
-    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 1, 0),
-    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 1, 0),
+    ('유관순', 'user4', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname4', '1995-07-12', 'female', '34567', '경기도 성남시', '분당로 123', 'user4@example.com', 1, '010-7777-8888', SYSDATE(), 0, 0),
+    ('안중근', 'user5', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname5', '1988-01-15', 'male', '45678', '경기도 수원시', '영통로 456', 'user5@example.com', 1, '010-9999-0000', SYSDATE(), 0, 0),
     ('윤동주', 'user6', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname6', '1991-10-25', 'female', '56789', '부산광역시 해운대구', '광안로 789', 'user6@example.com', 0, '010-1234-5678', SYSDATE(), 1, 0),
     ('장영실', 'user7', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname7', '1989-04-01', 'male', '67890', '대전광역시 유성구', '과학로 123', 'user7@example.com', 1, '010-2468-1357', SYSDATE(), 1, 0),
     ('김민태', 'rlaxoals77', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'Kyle1', '1999-06-12', 'male', '67890', '대전광역시 유성구', '과학로 123', 'rlaxoals77@gmail.com', 1, '010-5478-5037', SYSDATE(), 1, 0),
@@ -27,12 +27,12 @@ VALUES
     ('박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1, 0),
     ('이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1, 0),
     ('최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1, 0),
-    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 2, 0),
-    ('전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0),
-    ('전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0);
+    ('전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1, 0),
+    ('전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 1, 0),
+    ('전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 1, 0);
 
 INSERT IGNORE INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin)
-   VALUES('관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1);
+   VALUES('관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 0, 0, 1);
 
 INSERT IGNORE INTO Professional (member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
@@ -63,7 +63,8 @@ VALUES
     (25, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 9시', 15500, 2),
     (26, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 88700, 22),
     (27, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 53500, 18),
-    (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 10시', 11100, 25);
+    (28, 2, '웹 개발자 전문가입니다.', '15년 경력의 기획자', NULL, 100, 4, 1, NULL, '오전 8시 - 오후 10시', 11100, 25),
+    (29, 29, 1, '기획 전문가입니다.', '10년 경력의 기획자', NULL, 100, 5, 1, NULL, '오전 8시 - 오후 9시', 11000, 20);
 
 -- 카테고리
 INSERT IGNORE INTO Category (item_no, item_title, category_no)
@@ -198,9 +199,8 @@ INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
 VALUES(25, 24, '데이터베이스 설계가 가능한 분야를 선택해주세요.', '식품, 도소매, 서비스업, IT, 기타');
 
 INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
-VALUES(26, 25, '통계분석 가능한 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타');
-INSERT IGNORE INTO Survey(survey_no, item_no, survey_question, survey_option)
-VALUES(27, 25, '사용 가능한 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
+VALUES(26, 25, '통계분석 가능한 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
+      (27, 25, '사용 가능한 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
 -- 필터링 --
 INSERT IGNORE INTO Filter(item_no, filter_question_no, filter_question, filter_option)
@@ -257,25 +257,31 @@ VALUES(25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데
       (25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
 -- 회원 문의글 더미 데이터 --
-INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
-VALUES (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 되지 않습니다.', NOW(),'답변 대기', false),
-(1, '결제 문의드립니다', '결제 후 포인트가 적립되지 않았어요', DATE_SUB(NOW(), INTERVAL 1 DAY), '답변 중', true),
-(2, '회원 정보 변경 문의', '프로필 사진을 변경하고 싶은데 방법을 모르겠어요', DATE_SUB(NOW(), INTERVAL 2 DAY), '답변 완료', true),
-(2, '게시글 작성 오류', '게시글 작성 시 에러가 발생합니다', DATE_SUB(NOW(), INTERVAL 3 DAY), '답변 대기', false),
-(3, '환불 요청드립니다', '잘못 결제했는데 환불 가능할까요?', DATE_SUB(NOW(), INTERVAL 4 DAY), '답변 중', false),
-(3, '사이트 이용 문의', '사이트 이용 방법을 알고 싶습니다', DATE_SUB(NOW(), INTERVAL 5 DAY), '답변 완료', false),
-(1, '계정 보안 문의', '계정 보안 설정은 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 6 DAY), '답변 대기', true),
-(2, '포인트 사용 문의', '포인트는 어떻게 사용하나요?', DATE_SUB(NOW(), INTERVAL 7 DAY), '답변 중', true),
-(3, '회원 탈퇴 문의', '회원 탈퇴는 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 8 DAY), '답변 완료', false),
-(1, '오류 신고드립니다', '페이지 로딩이 안되는 오류가 있습니다', DATE_SUB(NOW(), INTERVAL 9 DAY), '답변 대기', false);
+INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_status, inquiry_satisfaction)
+VALUES 
+    (1, '로그인이 안돼요', '비밀번호를 입력해도 로그인이 되지 않습니다.', NOW(), '답변 대기', false),
+    (1, '결제 문의드립니다', '결제 후 포인트가 적립되지 않았어요', DATE_SUB(NOW(), INTERVAL 1 DAY), '답변 중', true),
+    (2, '회원 정보 변경 문의', '프로필 사진을 변경하고 싶은데 방법을 모르겠어요', DATE_SUB(NOW(), INTERVAL 2 DAY), '답변 완료', true),
+    (2, '게시글 작성 오류', '게시글 작성 시 에러가 발생합니다', DATE_SUB(NOW(), INTERVAL 3 DAY), '답변 대기', false),
+    (3, '환불 요청드립니다', '잘못 결제했는데 환불 가능할까요?', DATE_SUB(NOW(), INTERVAL 4 DAY), '답변 중', false),
+    (3, '사이트 이용 문의', '사이트 이용 방법을 알고 싶습니다', DATE_SUB(NOW(), INTERVAL 5 DAY), '답변 완료', false),
+    (1, '계정 보안 문의', '계정 보안 설정은 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 6 DAY), '답변 대기', true),
+    (2, '포인트 사용 문의', '포인트는 어떻게 사용하나요?', DATE_SUB(NOW(), INTERVAL 7 DAY), '답변 중', true),
+    (3, '회원 탈퇴 문의', '회원 탈퇴는 어떻게 하나요?', DATE_SUB(NOW(), INTERVAL 8 DAY), '답변 완료', false),
+    (1, '오류 신고드립니다', '페이지 로딩이 안되는 오류가 있습니다', DATE_SUB(NOW(), INTERVAL 9 DAY), '답변 대기', false);
 
-INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
-VALUES (1, '로그인이 안돼요', '비밀번호를 입력했는데 로그인이 되지 않습니다.', NOW(), NULL, '답변 대기', 0),
-(2, '회원 정보 수정', '전화번호 변경을 요청합니다.', NOW(), NULL, '답변 중', 0),
-(3, '결제 오류', '결제가 완료되지 않고 오류가 발생했습니다.', NOW(), NULL, '답변 완료', 1),
-(4, '상품 문의', '해당 상품의 배송 일정이 궁금합니다.', NOW(), NULL, '답변 대기', 0),
-(5, '쿠폰 사용법', '프로모션 쿠폰은 어디에서 사용할 수 있나요?', NOW(), NULL, '답변 대기', 0),
-(6, '계정 해킹 의심', '다른 사람이 제 계정을 사용한 흔적이 있습니다.', NOW(), NULL, '답변 중', 0),
-(7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
-(8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
+-- Estimation 테이블에 더미 데이터 추가
+INSERT IGNORE INTO Estimation (member_no, pro_no, item_no, estimation_content, estimation_price, estimation_msg, estimation_isread)
+VALUES 
+    -- user1(member_no: 1)이 user100(pro_no: 29)에게 보낸 견적 요청
+    (1, 29, 11, '웹사이트 기획 문서 작성 요청드립니다', 500000, '최대한 빠른 시일 내에 부탁드립니다.', false),
+    
+    -- user2(member_no: 2)가 user100에게 보낸 견적 요청
+    (2, 29, 11, '모바일 앱 기획서 작성 의뢰', 800000, '앱 출시 일정이 촉박해서 빠른 작업 필요합니다.', false),
+    
+    -- user3(member_no: 3)이 user100에게 보낸 견적 요청
+    (3, 29, 11, 'AI 서비스 기획 문서 작성', 1000000, '인공지능 서비스 관련 기획서 작성 요청드립니다.', true),
+    
+    -- user4(member_no: 4)가 user100에게 보낸 견적 요청
+    (4, 29, 11, '쇼핑몰 리뉴얼 기획', 700000, '기존 쇼핑몰 개선을 위한 기획 문서 필요합니다.', false);
 

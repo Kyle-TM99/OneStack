@@ -3,7 +3,6 @@ package com.onestack.project.mapper;
 import com.onestack.project.domain.Inquiry;
 import com.onestack.project.domain.MemberWithInquiry;
 import com.onestack.project.domain.InquiryAnswer;
-import com.onestack.project.domain.ManagerWithInquiryAnswer;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -38,9 +37,6 @@ public interface InquiryMapper {
 
     // 문의글 만족/불만족 상태 변경
     void updateInquirySatisfaction(Map<String, Object> params);
-
-    // 문의 답변 조회
-    List<ManagerWithInquiryAnswer> getInquiryAnswer(int inquiryNo);
 
     // 문의 답변 추가
     void addInquiryAnswer(InquiryAnswer inquiryAnswer);

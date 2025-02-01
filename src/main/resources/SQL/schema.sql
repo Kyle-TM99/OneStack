@@ -1,3 +1,9 @@
+## DATABASE 생성확인
+DROP DATABASE IF EXISTS onestack;
+CREATE DATABASE IF NOT EXISTS onestack;
+USE onestack;
+
+
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                      name VARCHAR(5) NOT NULL,
@@ -115,16 +121,21 @@ CREATE TABLE IF NOT EXISTS ProfessionalBoard (item_no   INTEGER   NOT NULL,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Estimation - 견적
-CREATE TABLE IF NOT EXISTS Estimation (estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-                         member_no INTEGER NOT NULL,
-                         pro_no INTEGER NOT NULL,
-                         item_no   INTEGER   NOT NULL,
-                         estimation_content VARCHAR(300)   NOT NULL,
-                         estimation_price DECIMAL(10,2) NOT NULL,
-                         estimation_msg VARCHAR(300)   NULL,
-                         estimation_isread TINYINT DEFAULT 0 NOT NULL, -- 0(안읽음) 1(읽음) --
-                         CONSTRAINT member_no_estimation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
-                         CONSTRAINT pro_no_estimation_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS Estimation (
+	estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+    member_no INTEGER NOT NULL,
+    pro_no INTEGER NOT NULL,
+    item_no   INTEGER   NOT NULL,
+    estimation_content VARCHAR(300)   NOT NULL,
+    estimation_price DECIMAL(10,2) NOT NULL,
+    estimation_msg VARCHAR(300)   NULL,
+    estimation_isread TINYINT DEFAULT 0 NOT NULL, -- 0(안읽음) 1(읽음) --
+    progress INTEGER DEFAULT 0 NOT NULL, -- 0(요청) 1(채팅) 2(결제) 3(완료) 4(거절)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 견적 요청 --
+    updated_at TIMESTAMP NULL, -- 결제 시 --
+    estimation_check TINYINT DEFAULT 0 NOT NULL, -- 0(견적 최종 확인 전) 1(견적 최종 확인 후) --
+    CONSTRAINT member_no_estimation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
+    CONSTRAINT pro_no_estimation_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Matching - 매칭
@@ -291,14 +302,16 @@ CREATE TABLE IF NOT EXISTS PasswordResetToken (id BIGINT AUTO_INCREMENT PRIMARY 
 CREATE TABLE IF NOT EXISTS chat_room (
     room_id VARCHAR(50) PRIMARY KEY,
     room_name VARCHAR(100) NOT NULL,
-    created_by VARCHAR(50) NOT NULL,
-    room_admin VARCHAR(50) NOT NULL,
-    room_password VARCHAR(100),  -- 비공개방 비밀번호 (NULL이면 공개방)
-    max_users INT DEFAULT 100,   -- 최대 참여 인원
-    current_users INT DEFAULT 0, -- 현재 참여 인원
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_room_creator FOREIGN KEY (created_by) REFERENCES member(member_id),
-    CONSTRAINT fk_room_admin FOREIGN KEY (room_admin) REFERENCES member(member_id)
+    member_no INTEGER NOT NULL,
+    pro_no INTEGER NOT NULL,
+    estimation_no INTEGER NOT NULL,
+    max_users INT NOT NULL DEFAULT 2,
+    created_at TIMESTAMP NOT NULL,
+    room_admin INT NOT NULL,  -- 방장 ID (전문가 ID) 컬럼 추가
+    CONSTRAINT fk_room_member FOREIGN KEY (member_no) REFERENCES member(member_no),
+    CONSTRAINT fk_room_pro FOREIGN KEY (pro_no) REFERENCES member(member_no),
+    CONSTRAINT fk_room_estimation FOREIGN KEY (estimation_no) REFERENCES estimation(estimation_no),
+    CONSTRAINT fk_room_admin FOREIGN KEY (room_admin) REFERENCES member(member_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅 메세지

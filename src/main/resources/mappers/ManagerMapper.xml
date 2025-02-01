@@ -74,11 +74,6 @@
         <result property="itemTitle" column="item_title" />
         <result property="categoryNo" column="category_no" />
     </resultMap>
-
-	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
-        <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolio" resultMap="PortfolioResultMap" />
-    </resultMap>
     
     <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">
         <association property="member" resultMap="MemberResultMap" />

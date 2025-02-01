@@ -200,19 +200,27 @@
 	</update>
 
 	<!-- 회원이 요청한 견적 리스트 Estimation-->
-	<select id="memberEstimation" parameterType="int" resultMap="Estimation">
-		SELECT e.*, m.*
+	<select id="memberEstimation" parameterType="int" resultType="Estimation">
+		SELECT e.*, 
+			   m.nickname as memberNickname, 
+			   p.nickname as proNickname,
+			   c.item_title as categoryName
 		FROM Estimation e
-				 JOIN Member m ON e.member_no = m.member_no
+		JOIN Member m ON e.member_no = m.member_no
+		JOIN Member p ON e.pro_no = p.member_no
+		JOIN Category c ON e.item_no = c.item_no
 		WHERE e.member_no = #{memberNo}
+		ORDER BY e.estimation_no DESC
 	</select>
 
-	<!-- 전문가가 받은 견적 요청 리스트 Estimation-->
-	<select id="proEstimation" parameterType="int" resultMap="Estimation">
-		SELECT e.*, p.*
+	<!-- 전문가가 받은 견적 요청 리스트 조회 (대기 상태만) -->
+	<select id="proEstimation" resultType="Estimation">
+		SELECT e.*, m.name as memberName, m.nickname as memberNickname
 		FROM Estimation e
-				 JOIN Professional p ON e.pro_no = p.pro_no
+		JOIN Member m ON e.member_no = m.member_no
 		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0  <!-- 대기 상태인 것만 -->
+		ORDER BY e.estimation_no DESC
 	</select>
 
 	<select id="portfolio" parameterType="Portfolio">
@@ -546,4 +554,78 @@
 		WHERE token = #{token}
 	</delete>
 
+	<update id="updateEstimationProgress">
+		UPDATE Estimation 
+		SET progress = #{progress},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<!-- 전체 견적 수 조회 -->
+	<select id="getEstimationCount" resultType="int">
+		SELECT COUNT(*)
+		FROM Estimation e
+		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0
+	</select>
+
+	<!-- 페이지별 견적 목록 조회 -->
+	<select id="getEstimationsByPage" resultType="Estimation">
+		SELECT 
+			e.*, 
+			m.name as memberName, 
+			m.nickname as memberNickname,
+			c.item_title as categoryName
+		FROM 
+			Estimation e
+			JOIN Member m ON e.member_no = m.member_no
+			JOIN Category c ON e.item_no = c.item_no
+		WHERE 
+			e.pro_no = #{proNo}
+			AND e.progress = 0
+		ORDER BY 
+			e.estimation_no DESC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+
+	<!-- 회원 번호로 회원 정보 조회 -->
+	<select id="getMemberByNo" resultType="Member">
+		SELECT *
+		FROM Member
+		WHERE member_no = #{memberNo}
+	</select>
+
+	<!-- 견적 번호로 견적 정보 조회 -->
+	<select id="getEstimationByNo" resultType="Estimation">
+		SELECT 
+			e.*,
+			m.nickname as memberNickname,
+			p.nickname as proNickname,
+			c.item_title as categoryName
+		FROM 
+			estimation e
+			LEFT JOIN member m ON e.member_no = m.member_no
+			LEFT JOIN member p ON e.pro_no = p.member_no
+			LEFT JOIN category c ON e.item_no = c.item_no
+		WHERE 
+			e.estimation_no = #{estimationNo}
+	</select>
+
+	<!-- 견적 확인 상태 업데이트 -->
+	<update id="updateEstimationCheck">
+		UPDATE Estimation 
+		SET 
+			estimation_check = #{estimationCheck},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<update id="updateEstimationPrice">
+		UPDATE Estimation
+		SET
+			estimation_price = #{estimationPrice},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+	
 </mapper>

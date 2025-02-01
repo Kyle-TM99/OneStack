@@ -127,40 +127,109 @@ $(document).ready(function() {
 			$.ajax({
 				url: '/ajax/member/getMemberRequest',
 				type: 'GET',
-				success: function(memberData) {
-					const contentMap = {
-						Request: `
-                        <div class="mb-4">
-<div class="expert-list">
-    <div class="expert-list-item">
-        <div class="quote-details mt-4">
-            <div class="row">
-                <div class="col-9">
-                    <ul class="list-unstyled">
-                        <li><strong>회원 이름:</strong> 김철수</li>
-                        <li><strong>전문가 이름:</strong> 박지훈</li>
-                        <li><strong>종목 번호:</strong> 123456</li>
-                        <li><strong>견적 내용:</strong> 모바일 앱 개발</li>
-                        <li><strong>희망 금액:</strong> 8,000,000원</li>
-                        <li><strong>기타 건의사항:</strong> UI/UX 디자인에 신경 써 주세요.</li>
-                        <li><strong>견적 확인 여부:</strong> 대기 중</li>
-                    </ul>
-                </div>
-                <div class="col-3 d-flex align-items-center"> 
-                    <div class="expert-action text-center w-100">
-                        <a href="#" class="btn custom-button checkPDF w-100">매칭</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                        `,
-					};
-					$('.content-container').html(contentMap[contentType]);
+				dataType: 'json',
+				success: function(response) {
+					console.log('서버 응답 전체:', response);
+					console.log('memberEstimations:', response.memberEstimations);
+					console.log('proEstimations:', response.proEstimations);
+					
+					let requestHtml = '<div class="mb-4">';
+					
+					if (!response || !response.success) {
+						requestHtml += `
+							<div class="alert alert-danger">
+								견적 요청 목록을 불러오는데 실패했습니다.
+							</div>`;
+					} else {
+						// 일반 회원 견적 요청 목록
+						if (response.memberEstimations && Array.isArray(response.memberEstimations)) {
+							requestHtml += `<h4 class="mb-3">보낸 견적 요청</h4>`;
+							if (response.memberEstimations.length === 0) {
+								requestHtml += `
+									<div class="alert alert-info">
+										아직 보낸 견적 요청이 없습니다.
+									</div>`;
+							} else {
+								response.memberEstimations.forEach(estimation => {
+									requestHtml += `
+									<div class="expert-list">
+										<div class="expert-list-item">
+											<div class="quote-details mt-4">
+												<div class="row">
+													<div class="col-9">
+														<ul class="list-unstyled">
+															<li><strong>견적 번호:</strong> ${estimation.estimationNo}</li>
+															<li><strong>회원 이름:</strong> ${estimation.memberName}</li>
+															<li><strong>견적 내용:</strong> ${estimation.estimationContent}</li>
+															<li><strong>희망 금액:</strong> ${estimation.estimationPrice ? estimation.estimationPrice.toLocaleString() : '0'}원</li>
+															<li><strong>기타 건의사항:</strong> ${estimation.estimationMsg || '없음'}</li>
+														</ul>
+													</div>
+													<div class="col-3 d-flex align-items-center"> 
+														<div class="expert-action text-center w-100">
+															<button class="btn custom-button w-100" 
+																	onclick="startChat(${estimation.estimationNo})" 
+																	${estimation.estimationIsread ? 'disabled' : ''}>
+																${estimation.estimationIsread ? '채팅중' : '매칭하기'}
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>`;
+								});
+							}
+						}
+						
+						// 전문가 견적 요청 목록
+						if (response.proEstimations && Array.isArray(response.proEstimations)) {
+							requestHtml += `<h4 class="mb-3 mt-4">받은 견적 요청</h4>`;
+							if (!response.proEstimations || response.proEstimations.length === 0) {
+								requestHtml += `
+									<div class="alert alert-info">
+										아직 받은 견적 요청이 없습니다.
+									</div>`;
+							} else {
+								response.proEstimations.forEach(estimation => {
+									requestHtml += `
+									<div class="expert-list">
+										<div class="expert-list-item">
+											<div class="quote-details mt-4">
+												<div class="row">
+													<div class="col-9">
+														<ul class="list-unstyled">
+															<li><strong>견적 번호:</strong> ${estimation.estimationNo}</li>
+															<li><strong>회원 이름:</strong> ${estimation.memberName}</li>
+															<li><strong>견적 내용:</strong> ${estimation.estimationContent}</li>
+															<li><strong>희망 금액:</strong> ${estimation.estimationPrice ? estimation.estimationPrice.toLocaleString() : '0'}원</li>
+															<li><strong>기타 건의사항:</strong> ${estimation.estimationMsg || '없음'}</li>
+														</ul>
+													</div>
+													<div class="col-3 d-flex align-items-center"> 
+														<div class="expert-action text-center w-100">
+															<button class="btn custom-button w-100" 
+																	onclick="startChat(${estimation.estimationNo})" 
+																	${estimation.estimationIsread ? 'disabled' : ''}>
+																${estimation.estimationIsread ? '채팅중' : '매칭하기'}
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>`;
+								});
+							}
+						}
+					}
+					
+					requestHtml += '</div>';
+					$('.content-container').html(requestHtml);
 				},
-				error: function() {
-					alert('회원정보를 불러오는데 실패했습니다.');
+				error: function(xhr, status, error) {
+					console.error('Ajax 오류:', {xhr, status, error});
+					alert('견적 요청 목록을 불러오는데 실패했습니다.');
 				}
 			});
 		} else if (contentType === 'portfolio') {
@@ -951,4 +1020,45 @@ $(document).ready(function() {
 		// 저장 버튼 비활성화
 		$('#savePasswordBtnShow').prop('disabled', true);
 	});
+
+	// 매칭 처리 함수
+	function handleMatching(estimationNo) {
+		if (confirm('해당 견적을 매칭하시겠습니까?')) {
+			$.ajax({
+				url: '/ajax/member/matchEstimation',
+				type: 'POST',
+				data: { estimationNo: estimationNo },
+				success: function(response) {
+					alert('매칭이 완료되었습니다.');
+					// 견적 목록 새로고침
+					loadContent('Request');
+				},
+				error: function() {
+					alert('매칭 처리 중 오류가 발생했습니다.');
+				}
+			});
+		}
+	}
+
+	// 채팅 시작 함수
+	function startChat(estimationNo) {
+		if (confirm('해당 견적을 매칭하고 채팅을 시작하시겠습니까?')) {
+			$.ajax({
+				url: '/ajax/member/startChat',
+				type: 'POST',
+				data: { estimationNo: estimationNo },
+				success: function(response) {
+					if (response.success) {
+						// 채팅 페이지로 이동
+						window.location.href = `/chat/room/${response.roomId}`;
+					} else {
+						alert(response.message || '채팅 시작에 실패했습니다.');
+					}
+				},
+				error: function() {
+					alert('채팅 시작 중 오류가 발생했습니다.');
+				}
+			});
+		}
+	}
 });
