@@ -61,6 +61,21 @@ function selectLocalImage() {
 quilljsediterInit();
 
 document.addEventListener("DOMContentLoaded", function() {
+
+    $("#updateForm").on("submit", function() {
+        if($("#communityBoardTitle").val().length <= 0) {
+            alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
+            $("#communityBoardTitle").focus();
+            return false;
+        }
+        if($("#communityBoardContent").val().length <= 0) {
+            alert("내용이 입력되지 않았습니다.\n내용을 입력해주세요");
+            $("#communityBoardContent").focus();
+            return false;
+        }
+    });
+
+
     // 게시글 쓰기 폼 유효성 검사
     const communityWriteForm = document.getElementById("communityWriteForm");
 
@@ -69,6 +84,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const communityBoardTitle = document.getElementById("communityBoardTitle");
         if (communityBoardTitle.value.trim().length <= 0) {
             alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
+            communityBoardTitle.focus();
+            event.preventDefault(); // 폼 제출을 중단
+            return;
+        }
+        // 제목 유효성 검사
+        const communityBoardContent = document.getElementById("communityBoardContent");
+        if (communityBoardContent.value.trim().length <= 0) {
+            alert("내용이 입력되지 않았습니다.\n내용을 입력해주세요");
             communityBoardTitle.focus();
             event.preventDefault(); // 폼 제출을 중단
             return;

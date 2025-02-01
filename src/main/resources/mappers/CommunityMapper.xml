@@ -66,12 +66,56 @@
 		<association property="communityReply" resultMap="CommunityReplyResultMap" />
 	</resultMap>
 
+	<insert id="insertCommunityReply" parameterType="CommunityReply">
+		INSERT INTO CommunityReply (communityBoardNo, memberNo, communityReplyContent, communityReplyRegDate)
+		VALUES (#{communityBoardNo}, #{memberNo}, #{communityReplyContent}, NOW())
+	</insert>
+
+	<!-- 댓글 (member + reply) -->
+	<select id="selectMemberWithCommunityReplies" resultMap="MemberWithCommunityReplyResultMap">
+		SELECT
+		m.*, cr.*
+		FROM Member m
+		JOIN CommunityReply cr ON m.member_no = cr.member_no
+		WHERE cr.community_board_no = #{communityBoardNo}
+	</select>
+
 	<!-- 자유게시판 리스트 조회-->
-	<select id="communityList" resultType="Community">
+	<select id="communityList" parameterType="map" resultType="Community">
 		SELECT *
 		FROM Community
+		<where>
+			<if test="type == 'communityBoardTitle'">
+				community_board_title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="type == 'communityBoardContent'">
+				community_board_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
 		ORDER BY community_board_no DESC
+		LIMIT #{startRow}, #{num}
 	</select>
+
+	<!-- 페이징네이션을 위핸 전체 게시글 수 -->
+	<select id="getCommunityCount">
+		SELECT COUNT(community_board_no)
+		FROM Community
+		<where>
+			<if test="type == 'communityBoardTitle'">
+				community_board_title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="type == 'communityBoardContent'">
+				community_board_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 게시글 읽은 횟수 증가 -->
+	<update id="incrementReadCount">
+		UPDATE Community
+		SET community_view = community_view + 1
+		WHERE community_board_no = #{communityBoardNo}
+	</update>
 
 	<!-- 자유게시판 상세보기 조회-->
 	<select id="getCommunity" resultType="Community">
@@ -104,31 +148,31 @@
 
 
 
-<!--
+	<!--
 
-	&lt;!&ndash; 커뮤니티 리스트 조회 &ndash;&gt;
-	<select id = "getCommunity" parameterType = "map" resultMap = "MemberWithCommunityResultMap">
-		SELECT c.*, m.*
-		FROM Community c JOIN Member m
-		ON c.member_no = m.member_no
-		<where>
-			<if test = "type == 'title'">
-				c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test = "type == 'memberNickname'">
-				m.nickname LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test = "type == 'content'">
-				c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test = "type == 'date'">
-				c.community_board_reg_date BETWEEN #{date1} AND #{date2}
-			</if>
-		</where>
-		ORDER BY c.community_board_reg_date DESC
-		LIMIT #{startRow}, #{num}
-	</select>
--->
+        &lt;!&ndash; 커뮤니티 리스트 조회 &ndash;&gt;
+        <select id = "getCommunity" parameterType = "map" resultMap = "MemberWithCommunityResultMap">
+            SELECT c.*, m.*
+            FROM Community c JOIN Member m
+            ON c.member_no = m.member_no
+            <where>
+                <if test = "type == 'title'">
+                    c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test = "type == 'memberNickname'">
+                    m.nickname LIKE CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test = "type == 'content'">
+                    c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
+                </if>
+                <if test = "type == 'date'">
+                    c.community_board_reg_date BETWEEN #{date1} AND #{date2}
+                </if>
+            </where>
+            ORDER BY c.community_board_reg_date DESC
+            LIMIT #{startRow}, #{num}
+        </select>
+    -->
 
 	<!-- 커뮤니티 게시글 수 조회 -->
 	<select id = "getCommunityBoardCount" parameterType = "map" resultType ="int">
@@ -250,10 +294,10 @@
 	</update>
 
 	<!-- 커뮤니티 게시글 상세 조회 -->
-	<select id="getCommunityDetail" parameterType="int" resultMap="MemberWithCommunityResultMap">
+	<select id="getCommunityDetail" parameterType="int" resultType="MemberWithCommunity">
 		SELECT c.*, m.*
-		FROM Community c JOIN Member m
-							  ON c.member_no = m.member_no
+		FROM Community c
+				 JOIN Member m ON c.member_no = m.member_no
 		WHERE c.community_board_no = #{communityBoardNo}
 	</select>
 

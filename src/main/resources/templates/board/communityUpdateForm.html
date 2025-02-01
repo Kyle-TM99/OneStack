@@ -13,6 +13,11 @@
             <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
             <input type="hidden" name="memberNo" th:value="${community.memberNo}"/>
             <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
+            <input type="hidden" name="pageNum" th:value="${pageNum}">
+            <th:block th:if="${searchOption}">
+                <input type="hidden" name="type" th:value="${ type }" />
+                <input type="hidden" name="keyword" th:value="${ keyword }" />
+            </th:block>
             <!--<input type="hidden" name="communityBoardRegDate" th:value="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd HH:mm')}"/>-->
 
             <!-- 히든 인풋으로 에디터 내용 저장 -->

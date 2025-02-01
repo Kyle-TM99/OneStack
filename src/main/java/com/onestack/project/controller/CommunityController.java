@@ -2,6 +2,8 @@ package com.onestack.project.controller;
 
 import com.onestack.project.domain.Community;
 import com.onestack.project.domain.Member;
+import com.onestack.project.domain.MemberWithCommunity;
+import com.onestack.project.domain.MemberWithCommunityReply;
 import com.onestack.project.service.CommunityService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -31,6 +35,20 @@ public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
+
+    @GetMapping("community/{communityBoardNo}")
+    public String communityDetail(
+            @PathVariable int communityBoardNo,
+            Model model
+    ) {
+        MemberWithCommunity communityDetail = communityService.getCommunityDetail(communityBoardNo);
+        if (communityDetail == null) {
+            // 적절한 오류 처리 로직 추가
+            return "error"; // 예: 오류 페이지로 리다이렉트
+        }
+        model.addAttribute("community", communityDetail);
+        return "board/communityDetail";
+    }
 
     /* 자유게시판 생성 */
     @PostMapping("/addCommunity")
@@ -43,16 +61,32 @@ public class CommunityController {
 
     /* 자유게시판 수정 */
     @GetMapping("/communityUpdateForm")
-    public String communityUpdateForm(@RequestParam("communityBoardNo") int communityBoardNo, Model model) {
-        Community community = communityService.getCommunity(communityBoardNo);
+    public String communityUpdateForm(@RequestParam("communityBoardNo") int communityBoardNo, Model model,
+                                      @RequestParam(value="pageNum", defaultValue="1") int pageNum,
+                                      @RequestParam(value="type", defaultValue="null") String type,
+                                      @RequestParam(value="keyword", defaultValue="null") String keyword) {
+        Community community = communityService.getCommunity(communityBoardNo, false);
+        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
+
+        model.addAttribute("pageNum", pageNum);
         model.addAttribute("community", community);
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("searchOption", searchOption);
+
+        if(searchOption) {
+            model.addAttribute("type", type);
+            model.addAttribute("keyword", keyword);
+        }
+
         return "board/communityUpdateForm"; // 이 경로가 맞는지 확인
     }
 
     /* 자유게시판 수정 */
     @PostMapping("/communityUpdate")
-    public String updateCommunity(Model model, Community community, MultipartFile file, HttpSession session,
-                                  @RequestParam("communityBoardNo") int communityBoardNo) throws IOException {
+    public String updateCommunity(Community community, MultipartFile file, HttpSession session,
+                                  @RequestParam(value="pageNum", defaultValue="1") int pageNum, RedirectAttributes reAttrs,
+                                  @RequestParam(value="type", defaultValue="null") String type,
+                                  @RequestParam(value="keyword", defaultValue="null") String keyword) throws IOException {
         Member member = (Member) session.getAttribute("member"); // 세션에서 member 가져오기
         community.setMemberNo(member.getMemberNo()); // Community 객체에 memberNo 설정
 
@@ -65,19 +99,41 @@ public class CommunityController {
             file.transferTo(dest);
             community.setCommunityFile(filename);
         }
-
         // 게시글 업데이트
         communityService.updateCommunity(community, file); // 데이터베이스에 업데이트
+        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
+
+        reAttrs.addAttribute("searchOption", searchOption);
+        reAttrs.addAttribute("pageNum", pageNum);
+
+        if(searchOption) {
+            reAttrs.addAttribute("type", type);
+            reAttrs.addAttribute("keyword", keyword);
+        }
         return "redirect:/community"; // 수정 후 커뮤니티 목록으로 리다이렉트
     }
 
 
     /* 자유게시판 삭제 */
     @PostMapping("/delete")
-    public String deleteCommunity(HttpSession session, @RequestParam("communityBoardNo") int communityBoardNo) {
+    public String deleteCommunity(RedirectAttributes reAttrs, HttpSession session, @RequestParam("communityBoardNo") int communityBoardNo,
+                                  @RequestParam(value="pageNum", defaultValue="1") int pageNum,
+                                  @RequestParam(value="type", defaultValue="null") String type,
+                                  @RequestParam(value="keyword", defaultValue="null") String keyword) {
         Member member = (Member) session.getAttribute("member");
         // 게시글 삭제
         communityService.deleteCommunity(communityBoardNo, member.getMemberNo());
+        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
+
+        reAttrs.addAttribute("pageNum", pageNum);
+        reAttrs.addAttribute("searchOption", searchOption);
+
+        if(searchOption) {
+            reAttrs.addAttribute("type", type);
+            reAttrs.addAttribute("keyword", keyword);
+        }
+
+
         return "redirect:/community";
     }
 
@@ -167,19 +223,33 @@ public class CommunityController {
         }
     }
 
-    // 자유게시판 리스트 조회
-    @GetMapping("/community")
-    public String boardList(Model model) {
-        List<Community> communityList = communityService.communityList();
-        model.addAttribute("communityList", communityList);
-        return "board/community";
-    }
-
     // 자유게시판 상세보기 조회
     @GetMapping("/communityDetail")
-    public String getCommunity(Model model, @RequestParam("communityBoardNo") int communityBoardNo, HttpSession session) {
-        model.addAttribute("community", communityService.getCommunity(communityBoardNo));
+    public String getCommunity(Model model, @RequestParam("communityBoardNo") int communityBoardNo,
+                               @RequestParam(value="pageNum", defaultValue="1") int pageNum, HttpSession session,
+                               @RequestParam(value="type", defaultValue="null") String type,
+                               @RequestParam(value="keyword", defaultValue="null") String keyword) {
+        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
+        Community community = communityService.getCommunity(communityBoardNo, true);
+
+        // community가 null인지 확인
+        if (community == null) {
+            // 적절한 오류 처리 로직 추가 (예: 에러 페이지로 리다이렉트)
+            return "error"; // 에러 페이지로 리다이렉트
+        }
+
+        model.addAttribute("community", community);
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("searchOption", searchOption);
         model.addAttribute("member", session.getAttribute("member"));
+        List<MemberWithCommunityReply> replyList = communityService.replyList(communityBoardNo);
+        model.addAttribute("replyList", replyList);
+
+        if (searchOption) {
+            model.addAttribute("type", type);
+            model.addAttribute("keyword", keyword);
+        }
+
         return "board/communityDetail";
     }
 
@@ -208,46 +278,38 @@ public class CommunityController {
 
         return result;
     }
-/*
+
     // 커뮤니티 게시글 목록 조회
     @GetMapping("/community")
-    public String communityList(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "keyword", required = false) String keyword,
-            Model model
-    ) {
-        Map<String, Object> result = communityService.communityList(page, type, keyword);
-        model.addAttribute("communityList", result.get("list"));
-        model.addAttribute("totalCount", result.get("totalCount"));
-        model.addAttribute("currentPage", result.get("currentPage"));
-        model.addAttribute("totalPages", result.get("totalPages"));
+    public String communityList(Model model, @RequestParam(required = false) String type, @RequestParam(required = false) String keyword) {
+        Map<String, Object> data = communityService.communityList(1, type, keyword);
+        model.addAllAttributes(data);
         return "board/community";
-    }*/
-/*
-    // 커뮤니티 게시글 상세 조회
-    @GetMapping("community/{communityBoardNo}")
-    public String communityDetail(
-            @PathVariable int communityBoardNo,
-            Model model
-    ) {
-        MemberWithCommunity communityDetail = communityService.getCommunityDetail(communityBoardNo);
-        Map<String, Object> adjacentPosts = communityService.getAdjacentPosts(communityBoardNo);
-
-        model.addAttribute("community", communityDetail);
-        model.addAttribute("previousPost", adjacentPosts.get("previousPost"));
-        model.addAttribute("nextPost", adjacentPosts.get("nextPost"));
-        return "board/communityDetail";
     }
-*/
+    /*
+        // 커뮤니티 게시글 상세 조회
+        @GetMapping("community/{communityBoardNo}")
+        public String communityDetail(
+                @PathVariable int communityBoardNo,
+                Model model
+        ) {
+            MemberWithCommunity communityDetail = communityService.getCommunityDetail(communityBoardNo);
+            Map<String, Object> adjacentPosts = communityService.getAdjacentPosts(communityBoardNo);
+
+            model.addAttribute("community", communityDetail);
+            model.addAttribute("previousPost", adjacentPosts.get("previousPost"));
+            model.addAttribute("nextPost", adjacentPosts.get("nextPost"));
+            return "board/communityDetail";
+        }
+    */
     // 게시글 작성 폼
 // 게시글 작성 폼
-@GetMapping("/communityWriteForm")
-public String communityWriteForm(Model model) {
-    Community community = new Community(); // 새로운 Community 객체 생성
-    model.addAttribute("community", community); // 모델에 추가
-    return "board/communityWriteForm";
-}
+    @GetMapping("/communityWriteForm")
+    public String communityWriteForm(Model model) {
+        Community community = new Community(); // 새로운 Community 객체 생성
+        model.addAttribute("community", community); // 모델에 추가
+        return "board/communityWriteForm";
+    }
 /*
     // 게시글 등록
     @PostMapping("/write")

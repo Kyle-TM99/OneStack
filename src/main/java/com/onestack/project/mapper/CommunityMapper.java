@@ -1,15 +1,32 @@
 package com.onestack.project.mapper;
 
 import com.onestack.project.domain.Community;
+import com.onestack.project.domain.CommunityReply;
 import com.onestack.project.domain.MemberWithCommunity;
+import com.onestack.project.domain.MemberWithCommunityReply;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface CommunityMapper {
+
+    void insertCommunityReply(CommunityReply communityReply);
+
+
+    // 댓글
+    public List<MemberWithCommunityReply> selectMemberWithCommunityReplies(int communityBoardNo);
+
     // 자유게시판 리스트 조회
-    public List<Community> communityList();
+    public List<Community> communityList(@Param("startRow") int startRow, @Param("num") int num,
+                                         @Param("type") String type, @Param("keyword") String keyword);
+
+    // 페이징네이션을 위한 전체 게시글 수
+    public int getCommunityCount(@Param("type") String type, @Param("keyword") String keyword);
+
+    public void incrementReadCount(int communityBoardNo);
 
     // 자유게시판 상세보기 조회
     public Community getCommunity(int communityBoardNo);
@@ -48,4 +65,6 @@ public interface CommunityMapper {
 
     // 조회수 증가
     void incrementCommunityReadCount(int communityBoardNo);
+
+    int getCommunityCount();
 }

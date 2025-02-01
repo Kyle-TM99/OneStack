@@ -4,11 +4,23 @@
 <head>
     <link th:href="@{/css/community.css}" rel="stylesheet">
 </head>
-<th:block>
-    <div layout:fragment="content" class="container py-5">
+<div layout:fragment="content" class="container py-5">
+    <th:block>
         <form name="communityCheckForm" id="communityCheckForm">
             <input type="hidden" name="communityBoardNo" id="communityBoardNo" th:value="${community.communityBoardNo}"/>
+            <input type="hidden" name="pageNum" th:value="${pageNum}"/>
+            <th:block th:if="${searchOption}">
+                <input type="hidden" name="type" th:value="${ type }" />
+                <input type="hidden" name="keyword" th:value="${ keyword }" />
+            </th:block>
         </form>
+        <div class="row mt-5">
+            <div class="col-md">
+                <a href="#" th:onclick="@{|location.href='communityList?pageNum=${pageNum}'|}" style="text-decoration: none; color: inherit;">
+                    <span class="fw-bold">자유 게시판</span>
+                </a>
+            </div>
+        </div>
         <div class="row d-flex justify-content-between my-3">
             <div class="col-auto">
                 <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd HH:mm')}">작성 날짜</small>
@@ -80,59 +92,133 @@
 
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 col-auto">
-                <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
-                <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                <span id="communityBoardLike" ><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
+                <span id="communityBoardDislike" ><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
             </div>
             <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
             </div>
             <div>
-
-                <div class="row">
-                    <div class="col">
-                        <hr class="my-4 opacity-25">
-                    </div>
-                </div>
-
             </div>
         </div>
 
-        <!-- &lt;!&ndash; 이전/다음 글 섹션 &ndash;&gt;
-         <div class="row mt-3">
-             <div class="col-6">
-                 <div th:if="${previousPost != null}" class="card">
-                     <div class="card-body">
-                         <h6 class="card-title">이전 글</h6>
-                         <a th:href="@{/communityDetail/{no}(no=${previousPost.communityBoardNo})}" class="text-decoration-none text-dark">
-                             <p th:text="${previousPost.communityBoardTitle}">이전 글 제목</p>
-                         </a>
-                     </div>
-                 </div>
-             </div>-->
-        <!-- <div class="col-6">
-             <div th:if="${nextPost != null}" class="card">
-                 <div class="card-body">
-                     <h6 class="card-title">다음 글</h6>
-                     <a th:href="@{/communityDetail/{no}(no=${nextPost.communityBoardNo})}" class="text-decoration-none text-dark">
-                         <p th:text="${nextPost.communityBoardTitle}">다음 글 제목</p>
-                     </a>
-                 </div>
-             </div>
-         </div>
-     </div>-->
 
-        <!-- 댓글 섹션 (추후 구현) -->
-        <!--                <div class="row mt-4">
-                            <div class="col">
-                                <h5>댓글</h5>
-                                &lt;!&ndash; 댓글 목록 및 작성 폼 추가 예정 &ndash;&gt;
+        <div class="row mt-4">
+            <div class="col">
+                <div class="d-flex gap-2">
+                    <form id="replyForm">
+                        <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
+                        <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+                        <textarea class="form-control" rows="3" placeholder="댓글을 입력하세요" name="communityReplyContent"></textarea>
+                        <button type="submit" class="btn btn-primary align-self-start">등록</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 목록 -->
+        <th:block th:if="${not #lists.isEmpty(replyList)}">
+            <div class="row mt-4" id="replyList" th:each="reply : ${replyList}">
+
+                <div class="col-auto dropdown-container communityDropdownContainer">
+                    <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                    <div class="dropdown-menu communityDropdown" style="display: none;">
+                        <a class="dropdown-item communityDropdownItem"
+                           th:if="${session.member != null and session.member.memberNo == communityReply.memberNo}"
+                           th:href="@{/communityReplyUpdateForm(communityBoardNo=${community.communityBoardNo})}">
+                            수정하기
+                        </a>
+                        <form action="#" th:action="@{/delete(communityBoardNo=${community.communityBoardNo})}" method="post" style="display:inline;">
+                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+                            <button type="submit" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
+                                삭제하기
+                            </button>
+                        </form>
+                        <a class="dropdown-item communityDropdownItem"
+                           th:if="${session.member != null and session.member.memberNo != community.memberNo}"
+                           th:href="@{/report(communityBoardNo=${community.communityBoardNo})}">
+                            신고하기
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <form>
+                                <input type="hidden" name="communityBoardNo" th:value="${MemberWithCommunityReply.communityReply.communityReplyNo}">
+                                <input type="hidden" name="communityBoardNo" th:value="${MemberWithCommunityReply.communityReply.communityBoardNo}">
+                                <input type="hidden" name="memberNo" th:value="${MemberWithCommunityReply.communityReply.memberNo}">
+                                <input type="hidden" name="communityReplyActivation" value="1">
+                            </form>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${MemberWithCommunityReply.member.nickname}">작성자</h6>
+                                    <p class="card-text" th:text="${MemberWithCommunityReply.communityReply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
+                                    <div class="d-flex gap-2 text-muted">
+                                        <small th:text="${#temporals.format(MemberWithCommunityReply.communityReply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                                        <span><i class="bi bi-heart"></i> <span th:text="${MemberWithCommunityReply.communityReply.communityReplyLike}">0</span></span>
+                                        <span><i class="bi bi-hand-thumbs-down"></i> <span th:text="${MemberWithCommunityReply.communityReply.communityReplyDislike}">0</span></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>-->
-    </div>
-</th:block>
-
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </th:block>
+</div>
 <!-- communityWrite.js 스크립트 포함 -->
 <th:block layout:fragment="script">
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/header.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#replyForm').on('submit', function(event) {
+                event.preventDefault(); // 기본 폼 제출 방지
+                $.ajax({
+                    type: 'POST',
+                    url: '/community/reply',
+                    data: $(this).serialize(), // 폼 데이터 직렬화
+                    success: function(response) {
+                        // 댓글 등록 성공 시 댓글 목록에 추가
+                        // 예: response에 새 댓글 데이터가 포함되어 있다고 가정
+                        $('#replyList').append(`
+                            <div class="col-auto dropdown-container communityDropdownContainer">
+                                <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                                <div class="dropdown-menu communityDropdown" style="display: none;">
+                                    <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
+                                    <form action="#" method="post" style="display:inline;">
+                                        <input type="hidden" name="memberNo" value="${response.memberNo}"/>
+                                        <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
+                                    </form>
+                                    <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">${response.nickname}</h6>
+                                        <p class="card-text">${response.communityReplyContent}</p>
+                                        <div class="d-flex gap-2 text-muted">
+                                            <small>${response.communityReplyRegDate}</small>
+                                            <span><i class="bi bi-heart"></i> <span>${response.communityReplyLike}</span></span>
+                                            <span><i class="bi bi-hand-thumbs-down"></i> <span>${response.communityReplyDislike}</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                        // 폼 초기화
+                        $('#replyForm')[0].reset();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('댓글 등록에 실패했습니다. 다시 시도해 주세요.');
+                    }
+                });
+            });
+        });
+    </script>
 </th:block>
 </html>
