@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onestack.project.mapper.MemberMapper;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
@@ -28,6 +30,33 @@ public class MemberService {
 
 	private final JavaMailSender mailSender;
 
+
+/*
+
+// 전문가 마이페이지에서 포트폴리오 조회
+public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
+    List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
+    return result;
+}
+*/
+    // 전문가가 받은 견적 요청 리스트 Estimation
+    public List<Estimation> proEstimation(int proNo) {
+        try {
+            return memberMapper.proEstimation(proNo);
+        } catch (Exception e) {
+            log.error("견적 요청 목록 조회 실패: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    // 회원이 요청한 견적 리스트 Estimation
+    public List<Estimation> memberEstimation(int memberNo) {
+        log.info("Fetching estimations for member: {}", memberNo);
+        List<Estimation> result = memberMapper.memberEstimation(memberNo);
+        log.info("Found {} estimations", result != null ? result.size() : 0);
+        return result;
+    }
+
     // myPage 내역 조회
     public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
         List<MemberWithProfessional> result = memberMapper.memberWithProfessional(memberNo);
@@ -38,6 +67,20 @@ public class MemberService {
     public List<Review> findMyReview(int memberNo) {
         List<Review> result = memberMapper.findMyReview(memberNo);
         return result;
+    }
+/*
+    // 회원별 review 리스트 조회
+    public List<Review> proReview(int proNo) {
+        List<Review> result = memberMapper.proReview(proNo);
+        return result;
+    }*/
+
+   /* public int proReviewCount(int proNo) {
+        return memberMapper.proReviewCount(proNo);
+    }
+*/
+    public int findMyReviewCount(int memberNo) {
+        return memberMapper.findMyReviewCount(memberNo);
     }
 
     // 회원별 게시글 리스트 조회
@@ -72,11 +115,6 @@ public class MemberService {
     // 회원별 질문글 수 조회
     public int memberMyPageQnACount(int memberNo) {
         return memberMapper.memberMyPageQnACount(memberNo);
-    }
-
-    // 회원별 댓글 조회
-    public List<ComWithComReply> comWithComReply(int memberNo) {
-        return memberMapper.comWithComReply(memberNo);
     }
 
     // 회원별 댓글 수 조회
@@ -123,6 +161,7 @@ public class MemberService {
     }
 
 
+
     public void updateMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -145,32 +184,35 @@ public class MemberService {
         }
     }
 
-    public void updateMemberMyPagePass(Member member) {
+    public boolean changePassword(String memberId, String currentPassword, String newPassword) {
+        // 현재 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+
+        // 현재 비밀번호 일치 여부 확인
+        if (!passwordEncoder.matches(currentPassword, member.getPass())) {
+            return false;
+        }
+
+        // 새 비밀번호 암호화
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
         try {
-
-            // null 체크 추가
-            if (member == null) {
-                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
-            }
-
-            // 필수 필드 null 체크
-            if (member.getMemberNo() == 0) {
-                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
-            }
-
-            memberMapper.updateMemberMyPagePass(member);
+            // 비밀번호 업데이트
+            memberMapper.updatePassword(memberId, encodedNewPassword);
+            return true;
         } catch (Exception e) {
-            log.error("Member update failed", e);
-            throw e;
+            return false;
         }
     }
 
 
-/*    // 선택적 필드 업데이트 메서드 추가
-    public void updateMemberSelective(Member member) {
-        memberMapper.updateMemberSelective(member);
+
+    // 현재 비밀번호 검증 메서드 추가
+    public boolean validateCurrentPassword(String memberId, String currentPassword) {
+        // 세션의 memberId로 회원 정보 조회 후 비밀번호 검증
+        Member member = memberMapper.getMember(memberId);
+        return passwordEncoder.matches(currentPassword, member.getPass());
     }
-    */
 
 
 
@@ -233,17 +275,21 @@ public class MemberService {
     }
 
     public String findMemberId(Member member) {
+        // 먼저 소셜 로그인 회원인지 확인
+        String socialType = findSocialMemberId(member);
 
-        // 아이디 찾기 실행
+        if (socialType != null) {
+            // 소셜 로그인 회원이면 null 반환
+            return null;
+        }
+
+        // 소셜 로그인 회원이 아니면 아이디 찾기
         return memberMapper.findMemberId(member);
     }
 
-    public List<Review> myPageReview(int memberNo) {
-        return memberMapper.findMyReview(memberNo);
-    }
-
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
+    // 소셜 로그인 회원 확인 메서드 추가
+    public String findSocialMemberId(Member member) {
+        return memberMapper.findSocialMemberId(member);
     }
 
 
@@ -334,4 +380,65 @@ public class MemberService {
         return memberNo;
     }
 
+    public List<Portfolio> portfolio(int proNo) {
+        List<Portfolio> result = memberMapper.portfolio(proNo);
+        return result;
+    }
+
+    // 견적 상태 업데이트
+    public void updateEstimationProgress(int estimationNo, int progress) {
+        try {
+            memberMapper.updateEstimationProgress(estimationNo, progress);
+        } catch (Exception e) {
+            log.error("견적 상태 업데이트 실패: {}", e.getMessage());
+            throw new RuntimeException("견적 상태 업데이트에 실패했습니다.", e);
+        }
+    }
+
+    // 전체 견적 수 조회
+    public int getEstimationCount(int proNo) {
+        return memberMapper.getEstimationCount(proNo);
+    }
+
+    // 페이지별 견적 목록 조회
+    public List<Estimation> getEstimationsByPage(int proNo, int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        return memberMapper.getEstimationsByPage(proNo, offset, pageSize);
+    }
+
+    // 견적 번호로 견적 정보 조회
+    public Estimation getEstimationByNo(int estimationNo) {
+        return memberMapper.getEstimationByNo(estimationNo);
+    }
+
+    // 회원 번호로 회원 정보 조회
+    public Member getMemberByNo(int memberNo) {
+        return memberMapper.getMemberByNo(memberNo);
+    }
+
+    @Transactional
+    public void confirmEstimationByPro(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+        
+        // 전문가 확인 상태로 변경
+        memberMapper.updateEstimationCheck(estimationNo, 1);
+    }
+
+    @Transactional
+    public void confirmEstimationByClient(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+        
+        // 의뢰인 확인 완료 및 결제 단계로 변경
+        memberMapper.updateEstimationProgress(estimationNo, 2);  // 결제 단계로 변경
+    }
+
+    public void updateEstimationPrice(int estimationNo, int estimationPrice) {
+        memberMapper.updateEstimationPrice(estimationNo, estimationPrice);
+    }
 }

@@ -4,135 +4,250 @@
 
 <mapper namespace="com.onestack.project.mapper.MemberMapper">
 
+	<resultMap id="memberMap" type="Member">
+		<id property="memberNo" column="member_no"/>
+		<result property="name" column="name"/>
+		<result property="memberId" column="member_id"/>
+		<result property="pass" column="pass"/>
+		<result property="nickname" column="nickname"/>
+		<result property="birth" column="birth"/>
+		<result property="gender" column="gender"/>
+		<result property="zipcode" column="zipcode"/>
+		<result property="address" column="address"/>
+		<result property="address2" column="address2"/>
+		<result property="email" column="email"/>
+		<result property="emailGet" column="email_get"/>
+		<result property="phone" column="phone"/>
+		<result property="memberRegDate" column="member_reg_date"/>
+		<result property="memberType" column="member_type"/>
+		<result property="memberImage" column="member_image"/>
+		<result property="stack" column="stack"/>
+		<result property="stackName" column="stack_name"/>
+		<result property="withdrawalEndDate" column="withdrawal_end_date"/>
+		<result property="banEndDate" column="ban_end_date"/>
+		<result property="reportedCount" column="reported_count"/>
+		<result property="isSocial" column="is_social"/>
+		<result property="socialType" column="social_type"/>
+	</resultMap>
+
+	<resultMap id="professionalMap" type="Professional">
+		<id property="proNo" column="pro_no"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="itemNo" column="item_no"/>
+		<result property="selfIntroduction" column="self_introduction"/>
+		<result property="career" column="career"/>
+		<result property="awardCareer" column="award_career"/>
+		<result property="studentCount" column="student_count"/>
+		<result property="rate" column="rate"/>
+		<result property="professorStatus" column="professor_status"/>
+		<result property="screeningMsg" column="screening_msg"/>
+		<result property="proDate" column="pro_date"/>
+		<result property="contactableTime" column="contactable_time"/>
+		<result property="averagePrice" column="average_price"/>
+		<result property="reviewCount" column="review_count"/>
+	</resultMap>
+
+	<resultMap id="communityMap" type="Community">
+		<id property="communityBoardNo" column="community_board_no"/>
+		<result property="communityBoardTitle" column="community_board_title"/>
+		<result property="communityBoardContent" column="community_board_content"/>
+		<result property="communityBoardRegDate" column="community_board_reg_date"/>
+		<result property="communityView" column="community_view"/>
+		<result property="communityBoardLike" column="community_board_like"/>
+	</resultMap>
+
+	<resultMap id="qnaMap" type="QnA">
+		<id property="qnaBoardNo" column="qna_board_no"/>
+		<result property="qnaBoardTitle" column="qna_board_title"/>
+		<result property="qnaBoardContent" column="qna_board_content"/>
+		<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
+		<result property="qnaView" column="qna_view"/>
+		<result property="qnaBoardLike" column="qna_board_like"/>
+		<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
+	</resultMap>
+
+	<resultMap id="communityReplyMap" type="CommunityReply">
+		<id property="communityReplyNo" column="community_reply_no"/>
+		<result property="communityReplyContent" column="community_reply_content"/>
+		<result property="communityReplyRegDate" column="community_reply_reg_date"/>
+		<result property="communityReplyLike" column="community_reply_like"/>
+		<result property="communityReplyDislike" column="community_reply_dislike"/>
+		<result property="communityReplyActivation" column="community_reply_activation"/>
+	</resultMap>
+
+	<resultMap id="qnaReplyMap" type="QnAReply">
+		<id property="qnaReplyNo" column="qna_reply_no"/>
+		<result property="qnaBoardNo" column="qna_board_no"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="qnaBoardTitle" column="qna_board_title"/>
+		<result property="qnaReplyContent" column="qna_reply_content"/>
+		<result property="qnaReplyRegDate" column="qna_reply_reg_date"/>
+		<result property="qnaReplyAdoption" column="qna_reply_adoption"/>
+		<result property="qnaReplyLike" column="qna_reply_like"/>
+		<result property="qnaReplyActivation" column="qna_reply_activation"/>
+		<result property="writerName" column="writer_name"/>
+	</resultMap>
+
+	<resultMap id="portfolioMap" type="Portfolio">
+		<id property="portfolioNo" column="portfolio_no"/>
+		<result property="proNo" column="pro_no"/>
+		<result property="proAdvancedNo" column="pro_advanced_no"/>
+		<result property="portfolioTitle" column="portfolio_title"/>
+		<result property="portfolioContent" column="portfolio_content"/>
+		<result property="visibility" column="visibility"/>
+	</resultMap>
+
+	<resultMap id="portfolioImagesMap" type="PortfolioImage">
+		<id property="portfolioNo" column="portfolio_no"/>
+		<result property="thumbnailImage" column="thumbnail_image"/>
+		<result property="portfolioFile1" column="portfolio_file1"/>
+		<result property="portfolioFile2" column="portfolio_file2"/>
+		<result property="portfolioFile3" column="portfolio_file3"/>
+		<result property="portfolioFile4" column="portfolio_file4"/>
+		<result property="portfolioFile5" column="portfolio_file5"/>
+		<result property="portfolioFile6" column="portfolio_file6"/>
+		<result property="portfolioFile7" column="portfolio_file7"/>
+		<result property="portfolioFile8" column="portfolio_file8"/>
+		<result property="portfolioFile9" column="portfolio_file9"/>
+		<result property="portfolioFile10" column="portfolio_file10"/>
+	</resultMap>
+
+	<resultMap id="review" type="com.onestack.project.domain.Review">
+		<id property="reviewNo" column="review_no"/>
+		<result property="proNo" column="pro_no"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="reviewContent" column="review_content"/>
+		<result property="reviewRate" column="review_rate"/>
+		<result property="reviewDate" column="review_date"/>
+		<result property="reviewActivation" column="review_activation"/>
+	</resultMap>
+
+	<resultMap id="Estimation" type="com.onestack.project.domain.Estimation">
+		<id property="estimationNo" column="estimation_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="proNo" column="pro_no" />
+		<result property="itemNo" column="item_no" />
+		<result property="estimationContent" column="estimation_content" />
+		<result property="estimationPrice" column="estimation_price" />
+		<result property="estimationMsg" column="estimation_msg" />
+		<result property="estimationIsRead" column="estimation_isread" />
+	</resultMap>
+
+	<resultMap id="memProWithPortPortImage" type="MemProWithPortPortImage">
+		<association property="portfolioWithportfolioImage" javaType="PortfolioWithportfolioImage" resultMap="portfolioWithportfolioImage" />
+		<association property="memberWithProfessional" javaType="MemberWithProfessional" resultMap="memberWithProfessional" />
+	</resultMap>
+
 
 	<resultMap id="memberWithProfessional" type="MemberWithProfessional">
-		<association property="member" javaType="Member">
-			<id property="memberNo" column="member_no"/>
-			<result property="name" column="name"/>
-			<result property="memberId" column="member_id"/>
-			<result property="pass" column="pass"/>
-			<result property="nickname" column="nickname"/>
-			<result property="birth" column="birth"/>
-			<result property="gender" column="gender"/>
-			<result property="zipcode" column="zipcode"/>
-			<result property="address" column="address"/>
-			<result property="address2" column="address2"/>
-			<result property="email" column="email"/>
-			<result property="emailGet" column="email_get"/>
-			<result property="phone" column="phone"/>
-			<result property="memberRegDate" column="member_reg_date"/>
-			<result property="memberType" column="member_type"/>
-			<result property="memberImage" column="member_image"/>
-			<result property="stack" column="stack"/>
-			<result property="stackName" column="stack_name"/>
-			<result property="withdrawalEndDate" column="withdrawal_end_date"/>
-			<result property="banEndDate" column="ban_end_date"/>
-			<result property="reportedCount" column="reported_count"/>
-			<result property="isSocial" column="is_social"/>
-			<result property="socialType" column="social_type"/>
-		</association>
-		<association property="professional" javaType="Professional">
-			<id property="proNo" column="pro_no"/>
-			<result property="memberNo" column="member_no"/>
-			<result property="itemNo" column="item_no"/>
-			<result property="selfIntroduction" column="self_introduction"/>
-			<result property="career" column="career"/>
-			<result property="awardCareer" column="award_career"/>
-			<result property="studentCount" column="student_count"/>
-			<result property="rate" column="rate"/>
-			<result property="professorStatus" column="professor_status"/>
-			<result property="screeningMsg" column="screening_msg"/>
-			<result property="proDate" column="pro_date"/>
-			<result property="contactableTime" column="contactable_time"/>
-			<result property="averagePrice" column="average_price"/>
-			<result property="reviewCount" column="review_count"/>
-		</association>
+		<association property="member" javaType="Member" resultMap="memberMap"/>
+		<association property="professional" javaType="Professional" resultMap="professionalMap"/>
 	</resultMap>
 
 	<!-- ResultMap 정의 추가 -->
 	<resultMap id="memberWithCommunityMap" type="MemberWithCommunity">
-		<association property="member" javaType="Member">
-			<id property="memberNo" column="member_no"/>
-			<result property="name" column="name"/>
-		</association>
-		<association property="community" javaType="Community">
-			<id property="communityBoardNo" column="community_board_no"/>
-			<result property="communityBoardTitle" column="community_board_title"/>
-			<result property="communityBoardContent" column="community_board_content"/>
-			<result property="communityBoardRegDate" column="community_board_reg_date"/>
-			<result property="communityView" column="community_view"/>
-			<result property="communityBoardLike" column="community_board_like"/>
-		</association>
+		<association property="member" javaType="Member" resultMap="memberMap"/>
+		<association property="community" javaType="Community" resultMap="communityMap"/>
 	</resultMap>
 
 	<!-- QnA ResultMap -->
 	<resultMap id="memberWithQnAMap" type="MemberWithQnA">
-		<association property="member" javaType="Member">
-			<id property="memberNo" column="member_no"/>
-			<result property="name" column="name"/>
-		</association>
-		<association property="qna" javaType="QnA">
-			<id property="qnaBoardNo" column="qna_board_no"/>
-			<result property="qnaBoardTitle" column="qna_board_title"/>
-			<result property="qnaBoardContent" column="qna_board_content"/>
-			<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
-			<result property="qnaView" column="qna_view"/>
-			<result property="qnaBoardLike" column="qna_board_like"/>
-			<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
-		</association>
+		<association property="member" javaType="Member" resultMap="memberMap"/>
+		<association property="qna" javaType="QnA" resultMap="qnaMap" />
 	</resultMap>
 
 	<!-- community With CommunityReply -->
 	<resultMap id="ComWithComReply" type="ComWithComReply">
-		<association property="community" javaType="Community">
-			<id property="communityBoardNo" column="community_board_no"/>
-			<result property="memberNo" column="member_no"/>
-			<result property="communityBoardTitle" column="community_board_title"/>
-			<result property="communityBoardContent" column="community_board_content"/>
-			<result property="communityBoardRegDate" column="community_board_reg_date"/>
-			<result property="communityView" column="community_view"/>
-			<result property="communityBoardLike" column="community_board_like"/>
-			<result property="communityBoardDislike" column="community_board_dislike"/>
-			<result property="communityBoardActivation" column="community_board_activation"/>
-		</association>
-		<association property="communityReply" javaType="CommunityReply">
-			<id property="communityReplyNo" column="community_reply_no"/>
-			<result property="communityReplyContent" column="community_reply_content"/>
-			<result property="communityReplyRegDate" column="community_reply_reg_date"/>
-			<result property="communityReplyLike" column="community_reply_like"/>
-			<result property="communityReplyDislike" column="community_reply_dislike"/>
-			<result property="communityReplyActivation" column="community_reply_activation"/>
-		</association>
+		<association property="community" javaType="Community" resultMap="communityMap"/>
+		<association property="communityReply" javaType="CommunityReply" resultMap="communityReplyMap" />
 	</resultMap>
 
 	<!-- QnA With QnAReply -->
-	<!-- QnA ResultMap -->
 	<resultMap id="QnAWithReply" type="QnAWithReply">
-		<association property="qna" javaType="QnA">
-			<id property="qnaBoardNo" column="qna_board_no"/>
-			<result property="memberNo" column="member_no"/>
-			<result property="qnaBoardTitle" column="qna_board_title"/>
-			<result property="qnaBoardContent" column="qna_board_content"/>
-			<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
-			<result property="qnaView" column="qna_view"/>
-			<result property="qnaFile" column="qna_file"/>
-			<result property="qnaBoardLike" column="qna_board_like"/>
-			<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
-			<result property="qnaBoardActivation" column="qna_board_activation"/>
-		</association>
-		<association property="qnaReply" javaType="QnAReply">
-			<id property="qnaReplyNo" column="qna_reply_no"/>
-			<result property="qnaBoardNo" column="qna_board_no"/>
-			<result property="memberNo" column="member_no"/>
-			<result property="qnaBoardTitle" column="qna_board_title"/>
-			<result property="qnaReplyContent" column="qna_reply_content"/>
-			<result property="qnaReplyRegDate" column="qna_reply_reg_date"/>
-			<result property="qnaReplyAdoption" column="qna_reply_adoption"/>
-			<result property="qnaReplyLike" column="qna_reply_like"/>
-			<result property="qnaReplyActivation" column="qna_reply_activation"/>
-			<result property="writerName" column="writer_name"/>
-		</association>
+		<association property="qna" javaType="QnA" resultMap="qnaMap" />
+		<association property="qnaReply" javaType="QnAReply" resultMap="qnaReplyMap" />
 	</resultMap>
+
+
+	<resultMap id="memberEstimation" type="MemberEstimation">
+		<association property="member" javaType="Member" resultMap="memberMap"/>
+		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
+	</resultMap>
+
+	<resultMap id="proEstimation" type="ProEstimation">
+		<association property="professional" javaType="Professional" resultMap="professionalMap"/>
+		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
+	</resultMap>
+
+	<!-- 회원 정보 수정 시, 기존 비밀번호 체크-->
+	<select id="checkCurrentPassword" resultType="int">
+		SELECT COUNT(*)
+		FROM Member
+		WHERE member_no = #{memberNo}
+		  AND pass = #{currentPassword}
+	</select>
+
+	<!-- 소셜 로그인 회원 선택적 업데이트 쿼리 -->
+	<update id="updateMemberSelective" parameterType="Member">
+		UPDATE Member
+		<set>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="zipcode != null">zipcode = #{zipcode},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="address2 != null">address2 = #{address2}</if>
+		</set>
+		WHERE member_id = #{memberId}
+	</update>
+
+	<!-- 회원이 요청한 견적 리스트 Estimation-->
+	<select id="memberEstimation" parameterType="int" resultType="Estimation">
+		SELECT e.*, 
+			   m.nickname as memberNickname, 
+			   p.nickname as proNickname,
+			   c.item_title as categoryName
+		FROM Estimation e
+		JOIN Member m ON e.member_no = m.member_no
+		JOIN Member p ON e.pro_no = p.member_no
+		JOIN Category c ON e.item_no = c.item_no
+		WHERE e.member_no = #{memberNo}
+		ORDER BY e.estimation_no DESC
+	</select>
+
+	<!-- 전문가가 받은 견적 요청 리스트 조회 (대기 상태만) -->
+	<select id="proEstimation" resultType="Estimation">
+		SELECT e.*, m.name as memberName, m.nickname as memberNickname
+		FROM Estimation e
+		JOIN Member m ON e.member_no = m.member_no
+		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0  <!-- 대기 상태인 것만 -->
+		ORDER BY e.estimation_no DESC
+	</select>
+
+	<select id="portfolio" parameterType="Portfolio">
+		SELECT *
+		FROM Portfolio
+		WHERE pro_no = #{proNo}
+	</select>
+
+<!--
+
+	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
+	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
+		SELECT
+			m.*, p.*, pi.*, pr.*
+		FROM
+			Member m
+				JOIN
+			Professional pr ON m.member_no = pr.member_no
+				JOIN
+			Portfolio p ON pr.pro_no = p.pro_no
+				JOIN
+			PortfolioImages pi ON p.portfolio_id = pi.portfolio_id
+		WHERE
+			m.member_type = 2;
+	</select>
+
+-->
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
@@ -148,6 +263,16 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
+<!--
+
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
+	<select id="proReview" parameterType="int" resultMap="Review">
+		SELECT *
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+-->
 
 	<!-- 자신이 작성한 리뷰 수 조회 -->
 	<select id="findMyReviewCount" parameterType="int" resultType="int">
@@ -155,6 +280,17 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
+<!--
+
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
+	<select id="proReviewCount" parameterType="int" resultMap="Review">
+		SELECT COUNT(review_no)
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+-->
+
 
 	<!-- 회원별 작성한 게시글 조회 -->
 	<select id="memberMyPageCommunity" parameterType="int" resultMap="memberWithCommunityMap">
@@ -260,6 +396,7 @@
 		WHERE qr.member_no = #{memberNo}
 		  AND qr.qna_reply_like > 0
 	</select>
+
 	<!-- 회원 수정 -->
 	<update id="updateMember" parameterType="Member" >
 		UPDATE Member
@@ -276,16 +413,6 @@
 		</if>
 		WHERE member_no = #{memberNo}
 	</update>
-
-	<!-- 회원 정보 비밀번호 수정 (하는 중) -->
-	<update id="updateMemberMyPagePass" parameterType="Member">
-		UPDATE Member
-		SET
-			pass = #{pass}
-		WHERE member_no = #{memberNo}
-	</update>
-
-
 
 	<!-- 회원 조회 -->
 	<select id="getMember" parameterType="String" resultType="Member">
@@ -328,21 +455,21 @@
 		WHERE phone = #{phone}
 	</select>
 
-	<!-- 아이디 찾기 -->
 	<select id="findMemberId" parameterType="Member" resultType="String">
 		SELECT member_id
 		FROM Member
 		WHERE name = #{name}
 		  AND phone = #{phone}
+		  AND (social_type IS NULL OR social_type = 'none')
 	</select>
 
-
-
-	<update id="updatePasswordMember" parameterType="Member">
-		UPDATE Member
-		SET pass = #{pass}
-		WHERE member_no = #{memberNo}
-	</update>
+	<select id="findSocialMemberId" parameterType="Member" resultType="String">
+		SELECT social_type
+		FROM Member
+		WHERE name = #{name}
+		  AND phone = #{phone}
+		  AND social_type IN ('google', 'kakao')
+	</select>
 
 	<!-- 회원 탈퇴 -->
 	<update id="withdrawalMember" parameterType="int">
@@ -394,37 +521,111 @@
 		WHERE payment_no = #{paymentId}
 	</delete>
 
-<!-- LHB - 회원ID로 회원번호 조회 -->
-<select id="findMemberNoByMemberId" parameterType="string" resultType="int">
-    SELECT member_no
-    FROM Member
-    WHERE member_id = #{memberId}
-</select>
+	<!-- LHB - 회원ID로 회원번호 조회 -->
+	<select id="findMemberNoByMemberId" parameterType="string" resultType="int">
+		SELECT member_no
+		FROM Member
+		WHERE member_id = #{memberId}
+	</select>
 
 
-<!-- 비밀번호 재설정 토큰 저장 -->
-<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
-    INSERT INTO PasswordResetToken (member_id, token, expiry_date)
-    VALUES (#{memberId}, #{token}, #{expiryDate})
-</insert>
+	<!-- 비밀번호 재설정 토큰 저장 -->
+	<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
+		INSERT INTO PasswordResetToken (member_id, token, expiry_date)
+		VALUES (#{memberId}, #{token}, #{expiryDate})
+	</insert>
 
-<!-- 토큰으로 비밀번호 재설정 정보 조회 -->
-<select id="findByToken" parameterType="String" resultType="PasswordResetToken">
-    SELECT * FROM PasswordResetToken 
-    WHERE token = #{token}
-</select>
+	<!-- 토큰으로 비밀번호 재설정 정보 조회 -->
+	<select id="findByToken" parameterType="String" resultType="PasswordResetToken">
+		SELECT * FROM PasswordResetToken
+		WHERE token = #{token}
+	</select>
 
-<!-- 비밀번호 업데이트 -->
-<update id="updatePassword">
-    UPDATE member 
-    SET pass = #{newPassword} 
-    WHERE member_id = #{memberId}
-</update>
+	<!-- 비밀번호 업데이트 -->
+	<update id="updatePassword">
+		UPDATE member
+		SET pass = #{newPassword}
+		WHERE member_id = #{memberId}
+	</update>
 
-<!-- 사용된 토큰 삭제 -->
-<delete id="deletePasswordResetToken" parameterType="String">
-    DELETE FROM PasswordResetToken 
-    WHERE token = #{token}
-</delete>
+	<!-- 사용된 토큰 삭제 -->
+	<delete id="deletePasswordResetToken" parameterType="String">
+		DELETE FROM PasswordResetToken
+		WHERE token = #{token}
+	</delete>
 
+	<update id="updateEstimationProgress">
+		UPDATE Estimation 
+		SET progress = #{progress},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<!-- 전체 견적 수 조회 -->
+	<select id="getEstimationCount" resultType="int">
+		SELECT COUNT(*)
+		FROM Estimation e
+		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0
+	</select>
+
+	<!-- 페이지별 견적 목록 조회 -->
+	<select id="getEstimationsByPage" resultType="Estimation">
+		SELECT 
+			e.*, 
+			m.name as memberName, 
+			m.nickname as memberNickname,
+			c.item_title as categoryName
+		FROM 
+			Estimation e
+			JOIN Member m ON e.member_no = m.member_no
+			JOIN Category c ON e.item_no = c.item_no
+		WHERE 
+			e.pro_no = #{proNo}
+			AND e.progress = 0
+		ORDER BY 
+			e.estimation_no DESC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+
+	<!-- 회원 번호로 회원 정보 조회 -->
+	<select id="getMemberByNo" resultType="Member">
+		SELECT *
+		FROM Member
+		WHERE member_no = #{memberNo}
+	</select>
+
+	<!-- 견적 번호로 견적 정보 조회 -->
+	<select id="getEstimationByNo" resultType="Estimation">
+		SELECT 
+			e.*,
+			m.nickname as memberNickname,
+			p.nickname as proNickname,
+			c.item_title as categoryName
+		FROM 
+			estimation e
+			LEFT JOIN member m ON e.member_no = m.member_no
+			LEFT JOIN member p ON e.pro_no = p.member_no
+			LEFT JOIN category c ON e.item_no = c.item_no
+		WHERE 
+			e.estimation_no = #{estimationNo}
+	</select>
+
+	<!-- 견적 확인 상태 업데이트 -->
+	<update id="updateEstimationCheck">
+		UPDATE Estimation 
+		SET 
+			estimation_check = #{estimationCheck},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<update id="updateEstimationPrice">
+		UPDATE Estimation
+		SET
+			estimation_price = #{estimationPrice},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+	
 </mapper>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <title>채팅 목록</title>
+    <style>
+        .chat-list-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .chat-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .chat-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .chat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .chat-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-participants {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .participant {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .participant-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .chat-body {
+            padding: 20px;
+        }
+
+        .last-message {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .chat-footer {
+            padding: 15px 20px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .message-count {
+            background: #e11d48;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .no-chats {
+            text-align: center;
+            padding: 40px;
+            background: #f8fafc;
+            border-radius: 12px;
+            color: #64748b;
+        }
+
+        .separator {
+            color: #cbd5e1;
+            margin: 0 8px;
+        }
+
+        @media (max-width: 768px) {
+            .chat-participants {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="chat-list-container">
+        <h1 class="page-title">채팅 목록</h1>
+        
+        <div class="chat-list">
+            <th:block th:if="${not #lists.isEmpty(chatRooms)}">
+                <div th:each="room : ${chatRooms}" class="chat-card">
+                    <a th:href="@{/chat/room/{roomId}(roomId=${room.roomId})}" class="chat-link">
+                        <div class="chat-header">
+                            <div class="chat-participants">
+                                <div class="participant">
+
+                                    <div class="avatar">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <span class="participant-name" th:text="${room.memberNickname}"></span>
+                                    <span class="badge rounded-pill text-bg-primary">멤버</span>
+                                </div>
+                                <span class="separator">·</span>
+                                <div class="participant">
+                                    <div class="avatar">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <span class="participant-name" th:text="${room.proNickname}"></span>
+                                    <span class="badge rounded-pill text-bg-success">전문가</span>
+                                </div>
+                            </div>
+                            <div class="chat-status">
+                                <span th:class="'status-badge ' + 
+                                    (${room.progress == 2 ? 'status-active' : 'status-pending'})"
+                                    th:text="${room.progress == 2 ? '진행중' : '대기중'}">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="chat-body">
+                            <p class="last-message" th:text="${room.lastMessage ?: '새로운 채팅방이 생성되었습니다.'}"></p>
+                        </div>
+                        <div class="chat-footer">
+                            <span th:text="${#temporals.format(room.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:if="${room.unreadCount > 0}" class="message-count" 
+                                  th:text="${room.unreadCount}"></span>
+                        </div>
+                    </a>
+                </div>
+            </th:block>
+            <div th:if="${#lists.isEmpty(chatRooms)}" class="no-chats">
+                <i class="bi bi-chat-dots mb-3" style="font-size: 2rem;"></i>
+                <p>진행 중인 채팅이 없습니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

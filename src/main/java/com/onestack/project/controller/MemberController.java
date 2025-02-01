@@ -3,8 +3,11 @@ package com.onestack.project.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.onestack.project.domain.Member;
+import com.onestack.project.domain.Estimation;
 import com.onestack.project.service.MemberService;
 
 import jakarta.servlet.ServletException;
@@ -51,7 +55,7 @@ public class MemberController {
         sessionMember.setEmailGet(member.isEmailGet());
 
 
-        return "board/memberMyPage";
+        return "member/memberMyPage";
     }
 
     @GetMapping("/myPage")
@@ -76,7 +80,9 @@ public class MemberController {
         model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("member", member);
 
-        return "board/memberMyPage";
+        session.setAttribute("socialType", member.getSocialType());
+
+        return "member/memberMyPage";
     }
 
 
@@ -194,9 +200,6 @@ public class MemberController {
         return "member/findId";  // findId.html을 보여줌
     }
 
-
-
-
     @PostMapping("/findId")
     public String findId(
             @RequestParam(name = "name") String name,
@@ -207,18 +210,31 @@ public class MemberController {
             Member member = new Member();
             member.setName(name);
             member.setPhone(phone);
-            
+
             String memberId = memberService.findMemberId(member);
+
             if (memberId != null) {
-                // 회원정보가 일치하는 경우
+                // 일반 회원 아이디 존재
                 model.addAttribute("memberId", memberId);
                 model.addAttribute("found", true);
+                model.addAttribute("socialType", null);
             } else {
-                // 회원정보가 일치하지 않는 경우
-                model.addAttribute("found", false);
+                // 소셜 로그인 회원이거나 일치하는 회원 없음
+                String socialType = memberService.findSocialMemberId(member);
+
+                if (socialType != null) {
+                    // 소셜 로그인 회원
+                    model.addAttribute("found", false);
+                    model.addAttribute("socialType", socialType);
+                } else {
+                    // 완전히 일치하는 회원 없음
+                    model.addAttribute("found", false);
+                    model.addAttribute("socialType", null);
+                }
             }
         } catch (Exception e) {
             model.addAttribute("found", false);
+            model.addAttribute("socialType", null);
         }
 
         return "member/findId";

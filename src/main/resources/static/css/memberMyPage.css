@@ -1,4 +1,42 @@
-/* 통계 개요 섹션 */
+/* 입력 필드에 포커스 시 스타일 */
+.form-control:focus {
+    border-color: #80bdff; /* 포커스 시 테두리 색상 */
+    box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 포커스 시 그림자 효과 */
+}
+
+.profile-row {
+    display: flex;
+    align-items: center;
+}
+
+.profile-section h4 {
+    color: #215EA3;
+    font-size: 18px;
+    white-space: normal;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.info-container{
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-details {
+    font-size: 14px;
+    color: #666;
+}
+
+.profile-details strong {
+    color: #333;
+}
+
+.modal-body {
+    margin: 10px;
+}
+
 .stats-overview {
     background-color: #fff;
     padding: 20px;
@@ -6,7 +44,6 @@
     margin: 20px 0;
 }
 
-/* 통계 박스 */
 .stat-box {
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -58,7 +95,7 @@
         flex-direction: row;
         flex-wrap: wrap;
     }
-    
+
     .stats-overview .col {
         flex: 0 0 50%;
         margin-bottom: 10px;
@@ -67,15 +104,15 @@
 
 
 .checkPDF {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .badge {
-	color: #000;
+    color: #000;
 }
 
 .rankName {
-	background-color: #ffffff;
+    background-color: #ffffff;
     color: #215EA3;
     padding: 10px 20px;
     border-radius: 5px;
@@ -86,86 +123,85 @@
 }
 
 .stepper-wrapper {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
 }
 .stepper-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
 
-  @media (max-width: 768px) {
-    font-size: 12px;
-  }
+    @media (max-width: 768px) {
+        font-size: 12px;
+    }
 }
 
 .stepper-item::before {
-  position: absolute;
-  content: "";
-  border-bottom: 2px solid #215EA3;
-  width: 100%;
-  top: 20px;
-  left: -50%;
-  z-index: 2;
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #215EA3;
+    width: 100%;
+    top: 20px;
+    left: -50%;
+    z-index: 2;
 }
 
 .stepper-item::after {
-  position: absolute;
-  content: "";
-  border-bottom: 2px solid #215EA3;
-  width: 100%;
-  top: 20px;
-  left: 50%;
-  z-index: 2;
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #215EA3;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 2;
 }
 
 .stepper-item .step-counter {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #215EA3;
-  color: #215EA3;
-  background: #fff;
-  margin-bottom: 6px;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #215EA3;
+    color: #215EA3;
+    background: #fff;
+    margin-bottom: 6px;
 }
 
 .stepper-item.active {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .stepper-item.completed .step-counter {
-  background-color: #215EA3;
-  color: #fff;
+    background-color: #215EA3;
+    color: #fff;
 }
 
 .stepper-item.completed::after {
-  position: absolute;
-  content: "";
-  border-bottom: 2px solid #215EA3;
-  width: 100%;
-  top: 20px;
-  left: 50%;
-  z-index: 3;
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #215EA3;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 3;
 }
 
 .stepper-item:first-child::before {
-  content: none;
+    content: none;
 }
 .stepper-item:last-child::after {
-  content: none;
+    content: none;
 }
 
-/* 프로필 이미지 영역 수정 */
 .profile-image-container {
     position: relative;
     width: 200px;
@@ -181,19 +217,8 @@
     border: 3px solid #215EA3;
 }
 
-.btn-edit-profile {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: #215EA3;
-    color: white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.profile-image-container:hover {
+    transform: scale(1.05);
 }
 
 /* 활동 요약 카드 */
@@ -327,7 +352,7 @@
         width: 150px;
         height: 150px;
     }
-    
+
     .activity-card {
         margin-bottom: 15px;
     }
@@ -337,20 +362,20 @@
     .col-3, .col-9 {
         width: 100%;
     }
-    
+
     .sidebar {
         margin-bottom: 20px;
     }
-    
+
     .profile-image-container {
         margin-bottom: 20px;
     }
-    
+
     .rankName {
         padding: 8px 15px;
         font-size: 14px;
     }
-    
+
     h4 {
         font-size: 1.2rem;
     }
@@ -362,7 +387,7 @@
         align-items: flex-start !important;
         gap: 10px !important;
     }
-    
+
     .custom-button {
         margin-top: 10px;
     }
@@ -386,7 +411,6 @@
     width: 100%;
 }
 
-/* 리뷰 리스트 스타일 개선 */
 .review-list .review-item {
     transition: all 0.2s;
 }
@@ -467,12 +491,6 @@ input[readonly], input[disabled] {
     cursor: not-allowed;
 }
 
-/* 필수 입력 필드 라벨 스타일 */
-label:has(+ input[required])::after {
-    content: " *";
-    color: #dc3545;
-}
-
 .myPage-model-dialog {
     display: flex;
     align-items: center;
@@ -481,11 +499,59 @@ label:has(+ input[required])::after {
 }
 
 .modal-dialog.myPage-model-dialog {
-    margin: 1.75rem auto; /* Bootstrap 기본 마진 추가 */
-    max-width: 500px; /* 모달의 최대 너비 설정 */
+    margin: 1.75rem auto !important; /* Bootstrap 기본 마진 추가 */
+    max-width: 500px !important; /* 모달의 최대 너비 설정 */
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: auto !important;
 }
 
 /* 내 정보 수정 폼 초기 숨김 */
 .profile-form-container {
     display: none;
+}
+
+/* 헤더 스타일 */
+.profile-section h2 {
+    color: #215EA3;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* 아이콘 스타일 */
+.bi-award {
+    color: #FFD700; /* 금색 */
+    font-size: 30px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+/* 정보 텍스트 스타일 */
+.profile-info p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.profile-info strong {
+    color: #333;
+    font-weight: bold;
+}
+
+/* 프로필 이미지와 정보 섹션을 포함하는 행 스타일 */
+.profile-row {
+    display: flex;
+    align-items: center; /* 세로 방향 중앙 정렬 */
+}
+
+/* 프로필 이미지 컨테이너 스타일 */
+.profile-image-container1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }

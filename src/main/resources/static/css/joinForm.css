@@ -1,3 +1,9 @@
+.modal-content {
+    margin: auto !important; /* 수직 및 수평 중앙 정렬 */
+    top: 50% !important; /* 화면의 50% 위치 */
+    transform: translateY(-50%) !important; /* 수직 중앙 정렬을 위한 변환 */
+}
+
 :root {
     --primary-color: #215EA3;
     --hover-color: #ffffff;
