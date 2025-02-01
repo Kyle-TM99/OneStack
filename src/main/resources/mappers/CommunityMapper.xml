@@ -66,18 +66,28 @@
 		<association property="communityReply" resultMap="CommunityReplyResultMap" />
 	</resultMap>
 
+<!--
+	<select id="getRepliesByBoardNo" resultType="MemberWithCommunityReplyResultMap">
+		SELECT r.*, m.*
+		FROM CommunityReply r
+				 JOIN Member m ON r.member_no = m.member_no
+		WHERE r.community_board_no = #{communityBoardNo}
+	</select>
+-->
+
 	<insert id="insertCommunityReply" parameterType="CommunityReply">
-		INSERT INTO CommunityReply (communityBoardNo, memberNo, communityReplyContent, communityReplyRegDate)
-		VALUES (#{communityBoardNo}, #{memberNo}, #{communityReplyContent}, NOW())
+		INSERT INTO CommunityReply (community_board_no, member_no, community_reply_content, community_reply_reg_date)
+		VALUES (#{communityBoardNo}, #{memberNo}, #{communityReplyContent}, SYSDATE())
 	</insert>
 
-	<!-- 댓글 (member + reply) -->
-	<select id="selectMemberWithCommunityReplies" resultMap="MemberWithCommunityReplyResultMap">
+	<select id="getCommunityAll" resultType="com.onestack.project.domain.Community">
 		SELECT
-		m.*, cr.*
-		FROM Member m
-		JOIN CommunityReply cr ON m.member_no = cr.member_no
+			cr.*, m.*, c.*
+		FROM CommunityReply cr
+				 JOIN Member m ON cr.member_no = m.member_no
+				 JOIN Community c ON cr.community_board_no = c.community_board_no
 		WHERE cr.community_board_no = #{communityBoardNo}
+		ORDER BY cr.community_reply_reg_date DESC
 	</select>
 
 	<!-- 자유게시판 리스트 조회-->

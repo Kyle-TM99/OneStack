@@ -36,17 +36,45 @@ public class CommunityController {
     @Autowired
     private CommunityService communityService;
 
-    @GetMapping("community/{communityBoardNo}")
+    @GetMapping("/communityDetail")
     public String communityDetail(
-            @PathVariable int communityBoardNo,
-            Model model
-    ) {
-        MemberWithCommunity communityDetail = communityService.getCommunityDetail(communityBoardNo);
-        if (communityDetail == null) {
-            // 적절한 오류 처리 로직 추가
-            return "error"; // 예: 오류 페이지로 리다이렉트
+            @RequestParam(value = "communityBoardNo", required = false) Integer communityBoardNo,
+            @PathVariable(value = "communityBoardNo", required = false) Integer pathVariableCommunityBoardNo,
+            Model model, HttpSession session,
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "type", defaultValue = "null") String type,
+            @RequestParam(value = "keyword", defaultValue = "null") String keyword) {
+
+        // communityBoardNo가 null인 경우 pathVariable에서 가져오기
+        if (communityBoardNo == null) {
+            communityBoardNo = pathVariableCommunityBoardNo;
         }
-        model.addAttribute("community", communityDetail);
+
+        // 커뮤니티 상세 정보 가져오기
+        Community community = communityService.getCommunity(communityBoardNo, true);
+        if (community == null) {
+            return "error"; // 오류 페이지로 리다이렉트
+        }
+
+        model.addAttribute("community", community);
+        model.addAttribute("pageNum", pageNum);
+
+        // 검색 옵션 처리
+        boolean searchOption = !(type.equals("null") || keyword.equals("null"));
+        model.addAttribute("searchOption", searchOption);
+        if (searchOption) {
+            model.addAttribute("type", type);
+            model.addAttribute("keyword", keyword);
+        }
+
+        // 세션에서 member 가져오기
+        Member member = (Member) session.getAttribute("member");
+        model.addAttribute("member", member); // 모델에 member 추가
+
+        // 댓글 리스트 가져오기
+        List<Community> replyList = communityService.replyList(communityBoardNo);
+        model.addAttribute("replyList", replyList);
+
         return "board/communityDetail";
     }
 
@@ -223,35 +251,6 @@ public class CommunityController {
         }
     }
 
-    // 자유게시판 상세보기 조회
-    @GetMapping("/communityDetail")
-    public String getCommunity(Model model, @RequestParam("communityBoardNo") int communityBoardNo,
-                               @RequestParam(value="pageNum", defaultValue="1") int pageNum, HttpSession session,
-                               @RequestParam(value="type", defaultValue="null") String type,
-                               @RequestParam(value="keyword", defaultValue="null") String keyword) {
-        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
-        Community community = communityService.getCommunity(communityBoardNo, true);
-
-        // community가 null인지 확인
-        if (community == null) {
-            // 적절한 오류 처리 로직 추가 (예: 에러 페이지로 리다이렉트)
-            return "error"; // 에러 페이지로 리다이렉트
-        }
-
-        model.addAttribute("community", community);
-        model.addAttribute("pageNum", pageNum);
-        model.addAttribute("searchOption", searchOption);
-        model.addAttribute("member", session.getAttribute("member"));
-        List<MemberWithCommunityReply> replyList = communityService.replyList(communityBoardNo);
-        model.addAttribute("replyList", replyList);
-
-        if (searchOption) {
-            model.addAttribute("type", type);
-            model.addAttribute("keyword", keyword);
-        }
-
-        return "board/communityDetail";
-    }
 
 
     //QIll API

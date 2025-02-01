@@ -31,11 +31,20 @@ public class CommunityService {
         return communityMapper.getCommunityDetail(communityBoardNo);
     }
 
+/*
+    public List<MemberWithCommunityReply> replyList(int communityBoardNo) {
+        return communityMapper.getRepliesByBoardNo(communityBoardNo);
+    }
+*/
+public List<Community> getCommunityAll(int communityBoardNo) {
+    return communityMapper.getCommunityAll(communityBoardNo);
+}
 
     // Reply
-    public List<MemberWithCommunityReply> replyList(int communityBoardNo) {
-        return communityMapper.selectMemberWithCommunityReplies(communityBoardNo);
+    public List<Community> replyList(int communityBoardNo) {
+        return communityMapper.getCommunityAll(communityBoardNo);
     }
+
 
 
     //자유게시판 리스트 조회

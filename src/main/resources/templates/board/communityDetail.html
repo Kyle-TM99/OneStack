@@ -123,18 +123,19 @@
                     <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
                     <div class="dropdown-menu communityDropdown" style="display: none;">
                         <a class="dropdown-item communityDropdownItem"
-                           th:if="${session.member != null and session.member.memberNo == communityReply.memberNo}"
-                           th:href="@{/communityReplyUpdateForm(communityBoardNo=${community.communityBoardNo})}">
+                           th:if="${session.member != null and session.member.memberNo == reply.memberNo}"
+                           th:href="@{/communityReplyUpdateForm(communityBoardNo=${community.communityBoardNo}, replyNo=${reply.communityReplyNo})}">
                             수정하기
                         </a>
                         <form action="#" th:action="@{/delete(communityBoardNo=${community.communityBoardNo})}" method="post" style="display:inline;">
-                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
-                            <button type="submit" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
+                            <input type="hidden" name="memberNo" th:value="${session.member != null ? session.member.memberNo : ''}"/>
+                            <button type="submit" class="dropdown-item communityDropdownItem"
+                                    th:if="${session.member != null and session.member.memberNo == reply.memberNo}">
                                 삭제하기
                             </button>
                         </form>
                         <a class="dropdown-item communityDropdownItem"
-                           th:if="${session.member != null and session.member.memberNo != community.memberNo}"
+                           th:if="${session.member != null and session.member.memberNo != reply.memberNo}"
                            th:href="@{/report(communityBoardNo=${community.communityBoardNo})}">
                             신고하기
                         </a>
@@ -145,19 +146,17 @@
                     <div class="card mb-2">
                         <div class="card-body">
                             <form>
-                                <input type="hidden" name="communityBoardNo" th:value="${MemberWithCommunityReply.communityReply.communityReplyNo}">
-                                <input type="hidden" name="communityBoardNo" th:value="${MemberWithCommunityReply.communityReply.communityBoardNo}">
-                                <input type="hidden" name="memberNo" th:value="${MemberWithCommunityReply.communityReply.memberNo}">
+                                <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}">
+                                <input type="hidden" name="communityBoardNo" th:value="${reply.communityBoardNo}">
+                                <input type="hidden" name="memberNo" th:value="${reply.memberNo}">
                                 <input type="hidden" name="communityReplyActivation" value="1">
                             </form>
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${MemberWithCommunityReply.member.nickname}">작성자</h6>
-                                    <p class="card-text" th:text="${MemberWithCommunityReply.communityReply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
+                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${reply.nickname}">작성자</h6>
+                                    <p class="card-text" th:text="${reply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
                                     <div class="d-flex gap-2 text-muted">
-                                        <small th:text="${#temporals.format(MemberWithCommunityReply.communityReply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
-                                        <span><i class="bi bi-heart"></i> <span th:text="${MemberWithCommunityReply.communityReply.communityReplyLike}">0</span></span>
-                                        <span><i class="bi bi-hand-thumbs-down"></i> <span th:text="${MemberWithCommunityReply.communityReply.communityReplyDislike}">0</span></span>
+                                        <small th:text="${#dates.format(reply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +171,6 @@
 <th:block layout:fragment="script">
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/header.js}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#replyForm').on('submit', function(event) {

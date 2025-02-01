@@ -15,9 +15,15 @@ public interface CommunityMapper {
 
     void insertCommunityReply(CommunityReply communityReply);
 
+    public List<Community> selectCommunity(int communityBoardNo);
+
+    // 커뮤니티 상세 정보 및 댓글 리스트 조회
+    List<Community> getCommunityAll(@Param("communityBoardNo") int communityBoardNo);
+
+
 
     // 댓글
-    public List<MemberWithCommunityReply> selectMemberWithCommunityReplies(int communityBoardNo);
+    public List<Community> selectMemberWithCommunityReplies(int communityBoardNo);
 
     // 자유게시판 리스트 조회
     public List<Community> communityList(@Param("startRow") int startRow, @Param("num") int num,
