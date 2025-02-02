@@ -325,19 +325,19 @@ CREATE TABLE IF NOT EXISTS chat_message (
     message TEXT NOT NULL,
     message_type VARCHAR(10) NOT NULL,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_chat_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id),
+    CONSTRAINT fk_chat_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
     CONSTRAINT fk_chat_sender FOREIGN KEY (sender) REFERENCES member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅방 게시판 테이블 추가
 CREATE TABLE IF NOT EXISTS chat_board_event (
-	board_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	room_id VARCHAR(50),
+    board_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_id VARCHAR(50),
     member_id VARCHAR(50),
     board_title VARCHAR(50) NOT NULL,
-	board_content VARCHAR(10000) NOT NULL,
-	joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_chat_board_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id),
+    board_content VARCHAR(10000) NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_chat_board_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
     CONSTRAINT fk_chat_board_member FOREIGN KEY (member_id) REFERENCES member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
