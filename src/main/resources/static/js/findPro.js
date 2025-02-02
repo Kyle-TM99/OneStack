@@ -106,7 +106,6 @@ function updateResults(pros, overallAveragePrice) {
             '        <div>' +
             '          <h5 class="card-title mb-2">' + pro.member.name + '</h5>' +
             '          <span class="card-subtitle text-muted mb-2">' + pro.category.itemTitle + '</span> <br>' +
-            '          <span class="badge bg-primary me-2 mb-2">' + pro.member.stackName + '</span>' +
             '          <span class="badge bg-success">' + pro.professional.career + '</span> <br>' +
             '          <span class="card-text">' + pro.professional.selfIntroduction + '</span> <br>' +
             '          <i class="bi bi-star-fill text-warning"></i>' +

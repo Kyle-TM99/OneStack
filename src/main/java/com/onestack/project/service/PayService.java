@@ -167,5 +167,10 @@ public class PayService {
         payMapper.updateProPrice(averagePrice, proNo);
     }
 
+    // estimationNo 가져오기
+    public int findByPayNo(int payNo) {
+        return payMapper.findByPayNo(payNo);
+    }
+
 
 }

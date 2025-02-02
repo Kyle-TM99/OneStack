@@ -375,6 +375,3 @@ CREATE TABLE IF NOT EXISTS chat_calendar_event (
     CONSTRAINT fk_calendar_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
     CONSTRAINT fk_calendar_creator FOREIGN KEY (created_by) REFERENCES member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-use onestack;
-select * from member;

@@ -1101,7 +1101,6 @@
                 buyer_email: memberEmail
             }, function (rsp) {
                 if (rsp.success) {
-                    alert("결제 성공: " + rsp.imp_uid);
                     // 서버에 결제 조회 요청
                     fetch('/api/payment/verify', {
                         method: 'POST',
@@ -1133,10 +1132,13 @@
                         // 주문 완료 페이지로 이동하며 주문 번호 전달
                         showPaymentCompleteModal(payNo);
 
-                        // 전문가 평균 가격 수정
+                        // 전문가 평균 가격 수정 및 견적 과정 수정
                         updateProAveragePrice(payNo);
 
-                        alert("완료");
+                        // 영수증 모달창 닫히면 페이지 리로드
+                        $('#payDoneModal').on('hidden.bs.modal', function () {
+                            location.reload();
+                        });
 
                     }).catch(error => {
                         alert('결제 처리 중 오류가 발생했습니다: ' + error.message);
