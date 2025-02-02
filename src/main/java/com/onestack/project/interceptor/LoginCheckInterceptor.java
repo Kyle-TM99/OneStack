@@ -1,5 +1,8 @@
 package com.onestack.project.interceptor;
 
+import com.onestack.project.domain.Member;
+import com.onestack.project.mapper.MemberMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,7 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 // 접속자가 로그인 상태인지 체크하는 인터셉터
 @Slf4j
 public class LoginCheckInterceptor implements HandlerInterceptor {
-	
+
+	private final MemberMapper memberMapper; //
+
+	// ✅ 생성자로 주입
+	public LoginCheckInterceptor(MemberMapper memberMapper) {
+		this.memberMapper = memberMapper;
+	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, 
@@ -27,7 +36,29 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 			response.sendRedirect("loginForm");
 			session.setAttribute("loginMsg", "로그인이 필요한 서비스");
 			return false;
-		}		
+		}
+
+		Member member = (Member) session.getAttribute("member");
+		Member dbMember = memberMapper.getMember(member.getMemberId());
+		if (dbMember == null) {
+			session.invalidate(); // 세션 삭제
+			response.sendRedirect("/loginForm?error=not_found");
+			return false;
+		}
+		int memberStatus = dbMember.getMemberStatus();
+		if (memberStatus == 1) {
+			session.invalidate();
+			response.sendRedirect("/loginForm?error=deactivated");
+			return false;
+		} else if (memberStatus == 2) {
+			session.invalidate();
+			response.sendRedirect("/loginForm?error=suspended");
+			return false;
+		} else if (memberStatus == 3) {
+			session.invalidate();
+			response.sendRedirect("/loginForm?error=withdrawn");
+			return false;
+		}
 		return true;
 	}
 

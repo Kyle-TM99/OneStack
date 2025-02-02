@@ -35,9 +35,6 @@
               <span class="badge bg-secondary" th:text="${portfolio.visibility == 1 ? '공개' : '비공개'}"></span>
 
               <div class="portfolio-actions d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-warning btn-sm me-2" onclick="editPortfolio(event, this)">
-                  <i class="bi bi-pencil"></i> 수정
-                </button>
                 <button class="btn btn-outline-danger btn-sm" onclick="deletePortfolio(event, this)">
                   <i class="bi bi-trash"></i> 삭제
                 </button>

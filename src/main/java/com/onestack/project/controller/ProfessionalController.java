@@ -1,14 +1,17 @@
 package com.onestack.project.controller;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onestack.project.domain.*;
 import com.onestack.project.service.ProService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.ibatis.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +23,8 @@ import com.onestack.project.service.SurveyService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
@@ -170,54 +175,146 @@ public class ProfessionalController {
     }
 
     @GetMapping("/portfolioList/addPortfolio")
-    public String showAddPortfolioForm(HttpSession session, Model model) {
-        List<Map<String, Object>> surveyList = surveyService.getAllSurveysAsMap();
+    public String showAddPortfolioForm(HttpSession session, Model model,
+                                       @RequestParam(value = "itemNo", required = false, defaultValue = "0") int itemNo) {
+        // 세션에서 회원 정보 가져오기
         Member member = (Member) session.getAttribute("member");
-
         if (member == null) {
             return "redirect:/loginForm";
         }
-        log.info("surveyList",surveyList);
-        System.out.println("surveyList" + surveyList);
-        model.addAttribute("surveyList", surveyList);
+
+        // 설문조사 데이터 가져오기
+        Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
+        model.addAllAttributes(surveyData);
+
+        // 모델 속성 추가
+        model.addAttribute("selectedItemNo", itemNo);
         model.addAttribute("member", memberService.getMember(member.getMemberId()));
         model.addAttribute("categories", surveyService.getAllCategories());
 
         return "views/addPortfolio";
     }
 
-    @PostMapping("/portfolio/submit")
+    @GetMapping("/portfolio/portfolioDetail")
+    public String getPortfolioDetail(@RequestParam("portfolioNo") int portfolioNo, Model model) {
+        PortfolioDetail portfolio = professionalService.getPortfolioById(portfolioNo); // 단일 객체 반환
+        model.addAttribute("portfolio", portfolio);
+        return "views/portfolioDetail";  // 템플릿 경로 맞추기
+    }
+
+
+//    @GetMapping("/editPortfolio")
+//    public String getEditPortfolioPage(
+//            @RequestParam("portfolioNo") int portfolioNo,
+//            @RequestParam(value = "itemNo", required = false, defaultValue = "0") int itemNo,
+//            Model model, HttpSession session) {
+//
+//        // ✅ 세션에서 회원 정보 가져오기
+//        Member member = (Member) session.getAttribute("member");
+//        if (member == null) {
+//            return "redirect:/loginForm";
+//        }
+//
+//        // ✅ 기존 포트폴리오, 전문가, 전문가 고급정보 가져오기
+//        Portfolio portfolio = professionalService.getPortfolioById(portfolioNo);
+//        Professional professional = professionalService.getProfessionalByPortfolio(portfolioNo);
+//        ProfessionalAdvancedInformation advancedInfo = professionalService.getAdvancedInfoByPortfolio(portfolioNo);
+//
+//        if (portfolio == null || professional == null || advancedInfo == null) {
+//            return "redirect:/errorPage";  // 데이터가 없으면 오류 페이지로 리다이렉트
+//        }
+//
+//        Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
+//        model.addAllAttributes(surveyData);
+//
+//        // ✅ 모델 속성 추가 (HTML에서 사용 가능)
+//        model.addAttribute("selectedItemNo", itemNo);
+//        model.addAttribute("portfolio", portfolio);
+//        model.addAttribute("professional", professional);
+//        model.addAttribute("advancedInfo", advancedInfo);
+//        model.addAttribute("categories", surveyService.getAllCategories());
+//
+//        return "views/editPortfolio"; // 📌 HTML 페이지 경로
+//    }
+
+//    /**
+//     * ✅ 포트폴리오 수정 (업데이트 처리)
+//     */
+//    @PostMapping("/editPortfolio/submit")
+//    public String editPortfolio(
+//            @RequestParam("portfolioNo") int portfolioNo,
+//            @RequestParam("categoryNo") int categoryNo,
+//            @RequestParam("itemNo") int itemNo,
+//            @RequestParam("selfIntroduction") String selfIntroduction,
+//            @RequestParam("contactableTimeStart") String contactableTimeStart,
+//            @RequestParam("contactableTimeEnd") String contactableTimeEnd,
+//            @RequestParam("career") String career,
+//            @RequestParam("awardCareer") String awardCareer,
+//            @RequestParam("portfolioTitle") String portfolioTitle,
+//            @RequestParam("portfolioContent") String portfolioContent,
+//            @RequestParam(value = "thumbnailImage", required = false) MultipartFile thumbnailImage,
+//            @RequestParam(value = "portfolioFiles", required = false) MultipartFile[] portfolioFiles,
+//            RedirectAttributes redirectAttributes) {
+//
+//        try {
+//            // ✅ 기존 포트폴리오 가져오기
+//            Portfolio existingPortfolio = professionalService.getPortfolioById(portfolioNo);
+//            if (existingPortfolio == null) {
+//                redirectAttributes.addFlashAttribute("error", "포트폴리오를 찾을 수 없습니다.");
+//                return "redirect:/portfolioList";
+//            }
+//
+//            // ✅ 기존 전문가 정보 가져오기
+//            Professional professional = professionalService.getProfessionalByPortfolio(portfolioNo);
+//            ProfessionalAdvancedInformation advancedInfo = professionalService.getAdvancedInfoByPortfolio(portfolioNo);
+//
+//            // ✅ 포트폴리오 데이터 업데이트
+//            existingPortfolio.setPortfolioTitle(portfolioTitle);
+//            existingPortfolio.setPortfolioContent(portfolioContent);
+//
+//            // ✅ 기존 썸네일 유지 or 새로운 썸네일 저장
+//            if (thumbnailImage != null && !thumbnailImage.isEmpty()) {
+//                existingPortfolio.setThumbnailImage(professionalService.uploadImage(thumbnailImage));
+//            }
+//
+//            // ✅ 기존 포트폴리오 파일 유지 or 새로운 파일 저장
+//            List<String> portfolioFileUrls = (portfolioFiles != null && portfolioFiles.length > 0)
+//                    ? professionalService.uploadPortfolioFiles(portfolioFiles)
+//                    : new ArrayList<>();
+//
+//            // ✅ 전문가 정보 업데이트
+//            professional.setCategoryNo(categoryNo);
+//            professional.setSelfIntroduction(selfIntroduction);
+//            professional.setCareer(career);
+//            professional.setAwardCareer(awardCareer);
+//            professional.setContactableTime(contactableTimeStart + " - " + contactableTimeEnd);
+//
+//            // ✅ 전문가 고급정보 업데이트
+//            advancedInfo.setItemNo(itemNo);
+//
+//            // ✅ 최종 업데이트 실행
+//            professionalService.updatePortfolio(existingPortfolio, professional, advancedInfo, portfolioFileUrls);
+//
+//            redirectAttributes.addFlashAttribute("success", "포트폴리오가 수정되었습니다.");
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("error", "포트폴리오 수정 중 오류가 발생했습니다.");
+//        }
+//
+//        return "redirect:/portfolioList";
+//    }
+
+
+
+    @DeleteMapping("/portfolio/delete")
     @ResponseBody
-    public ResponseEntity<?> submitPortfolio(
-            @RequestBody ProConversionRequest request,
-            HttpSession session) {
+    public ResponseEntity<?> deletePortfolio(@RequestParam("portfolioNo") int portfolioNo) {
         try {
-            Member member = (Member) session.getAttribute("member");
-            Integer memberNo = member != null ? member.getMemberNo() : null;
-
-            if (memberNo == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "로그인이 필요합니다."));
-            }
-
-            log.info("포트폴리오 추가 요청 데이터: {}", request);
-
-            // 빈 Survey Answer 제거
-            List<String> filteredAnswers = request.getSurveyAnswers().stream()
-                    .filter(answer -> answer != null && !answer.trim().isEmpty())
-                    .toList();
-            request.setSurveyAnswers(filteredAnswers);
-
-            // 사용자 ID 설정
-            request.setMemberNo(memberNo);
-
-            // 데이터 저장 (기존 전문가 신청 로직 사용)
-            professionalService.saveProConversionData(request);
-
-            return ResponseEntity.ok(Collections.singletonMap("message", "포트폴리오가 성공적으로 추가되었습니다."));
+            // ✅ 포트폴리오 및 연관 데이터 삭제
+            professionalService.deletePortfolio(portfolioNo);
+            return ResponseEntity.ok(Map.of("message", "포트폴리오 및 관련 데이터가 삭제되었습니다."));
         } catch (Exception e) {
-            log.error("포트폴리오 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "포트폴리오 저장 실패"));
+                    .body(Map.of("message", "삭제 실패"));
         }
     }
 

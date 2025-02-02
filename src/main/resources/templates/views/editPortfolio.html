@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>포트폴리오 수정</title>
+  <link th:href="@{/css/addPortfolio.css}" rel="stylesheet">
+</head>
+<body>
+<!-- 콘텐츠 영역 -->
+<div layout:fragment="content">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg border-0 rounded-3">
+          <div class="card-body p-4">
+            <h4 class="card-title text-center fw-bold mb-4">포트폴리오 수정</h4>
+
+            <!-- 포트폴리오 번호 -->
+            <input type="hidden" id="portfolioNo" th:value="${portfolio.portfolioNo}">
+            <input type="hidden" id="selectedItemNo" th:value="${selectedItemNo}">
+
+              <form id="portfolioForm" enctype="multipart/form-data">
+                <!-- 카테고리 선택 -->
+                <select id="categoryNo" name="categoryNo" class="form-select mb-3" th:data-db-value="${professional.categoryNo}">
+                  <option value="1" th:selected="${professional.categoryNo == 1}">개발</option>
+                  <option value="2" th:selected="${professional.categoryNo == 2}">데이터</option>
+                </select>
+
+              <!-- 전문분야 선택 -->
+              <select id="itemNo" name="itemNo" class="form-select mb-3" th:data-db-value="${selectedItemNo}">
+                <option value="" hidden>전문분야 선택</option>
+                <th:block th:each="item : ${itemList}">
+                  <option th:value="${item.value}" th:text="${item.text}" th:selected="${item.value == selectedItemNo}"></option>
+                </th:block>
+              </select>
+
+              <!-- ✅ 설문조사 영역 -->
+<!--              <div id="surveyContainer" class="p-3 border rounded bg-light" data-survey='[[${surveyList}]]'>-->
+<!--                <p class="text-muted" th:if="${surveyList == null or #lists.isEmpty(surveyList)}">-->
+<!--                  전문분야를 선택하면 해당하는 설문조사가 표시됩니다.-->
+<!--                </p>-->
+<!--                <th:block th:each="survey : ${surveyList}">-->
+<!--                  <div class="fw-bold my-2">-->
+<!--                    Q<span th:text="${survey.survey.surveyNo}"></span>:-->
+<!--                    <span th:text="${survey.survey.surveyQuestion}"></span>-->
+<!--                  </div>-->
+<!--                  <div>-->
+<!--                    <th:block th:each="option : ${#strings.arraySplit(survey.survey.surveyOption, ',')}">-->
+<!--                      <div class="form-check">-->
+<!--                        <input class="form-check-input" type="radio"-->
+<!--                               th:name="'answer_' + ${survey.survey.surveyNo}"-->
+<!--                               th:value="${option}" required>-->
+<!--                        <label class="form-check-label ms-2" th:text="${option}"></label>-->
+<!--                      </div>-->
+<!--                    </th:block>-->
+<!--                  </div>-->
+<!--                </th:block>-->
+<!--              </div>-->
+              <div id="surveyContainer" class="p-3 border rounded bg-light"
+                   th:data-survey-json="${surveyList != null ? surveyList : '[]'}">
+                <p class="text-muted">전문분야를 선택하면 설문조사가 표시됩니다.</p>
+              </div>
+
+              <!-- 자기소개 -->
+              <label for="selfIntroduction">자기소개 *</label>
+              <textarea class="form-control mb-2" id="selfIntroduction" name="selfIntroduction" required
+                        th:text="${professional.selfIntroduction}"></textarea>
+
+              <!-- 연락 가능 시간 -->
+              <div class="mb-3">
+                <label class="form-label"><i class="fas fa-clock"></i> 연락 가능 시간 *</label>
+                <div class="d-flex gap-2">
+                  <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
+                    <option value="" hidden>시작 시간</option>
+                    <option value="오전 6시" th:selected="${contactableTimeStart == '오전 6시'}">오전 6시</option>
+                    <option value="오전 7시" th:selected="${contactableTimeStart == '오전 7시'}">오전 7시</option>
+                    <option value="오전 8시" th:selected="${contactableTimeStart == '오전 8시'}">오전 8시</option>
+                    <option value="오전 9시" th:selected="${contactableTimeStart == '오전 9시'}">오전 9시</option>
+                    <option value="오전 10시" th:selected="${contactableTimeStart == '오전 10시'}">오전 10시</option>
+                    <option value="오전 11시" th:selected="${contactableTimeStart == '오전 11시'}">오전 11시</option>
+                    <option value="오전 12시" th:selected="${contactableTimeStart == '오전 12시'}">오전 12시</option>
+                    <option value="오후 1시" th:selected="${contactableTimeStart == '오후 1시'}">오후 1시</option>
+                    <option value="오후 2시" th:selected="${contactableTimeStart == '오후 2시'}">오후 2시</option>
+                    <option value="오후 3시" th:selected="${contactableTimeStart == '오후 3시'}">오후 3시</option>
+                    <option value="오후 4시" th:selected="${contactableTimeStart == '오후 4시'}">오후 4시</option>
+                    <option value="오후 5시" th:selected="${contactableTimeStart == '오후 5시'}">오후 5시</option>
+                    <option value="오후 6시" th:selected="${contactableTimeStart == '오후 6시'}">오후 6시</option>
+                    <option value="오후 7시" th:selected="${contactableTimeStart == '오후 7시'}">오후 7시</option>
+                    <option value="오후 8시" th:selected="${contactableTimeStart == '오후 8시'}">오후 8시</option>
+                    <option value="오후 9시" th:selected="${contactableTimeStart == '오후 9시'}">오후 9시</option>
+                    <option value="오후 10시" th:selected="${contactableTimeStart == '오후 10시'}">오후 10시</option>
+                  </select>
+                  <span class="align-self-center">~</span>
+                  <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
+                    <option value="" hidden>종료 시간</option>
+                    <option value="오전 6시" th:selected="${contactableTimeEnd == '오전 6시'}">오전 6시</option>
+                    <option value="오전 7시" th:selected="${contactableTimeEnd == '오전 7시'}">오전 7시</option>
+                    <option value="오전 8시" th:selected="${contactableTimeEnd == '오전 8시'}">오전 8시</option>
+                    <option value="오전 9시" th:selected="${contactableTimeEnd == '오전 9시'}">오전 9시</option>
+                    <option value="오전 10시" th:selected="${contactableTimeEnd == '오전 10시'}">오전 10시</option>
+                    <option value="오전 11시" th:selected="${contactableTimeEnd == '오전 11시'}">오전 11시</option>
+                    <option value="오전 12시" th:selected="${contactableTimeEnd == '오전 12시'}">오전 12시</option>
+                    <option value="오후 1시" th:selected="${contactableTimeEnd == '오후 1시'}">오후 1시</option>
+                    <option value="오후 2시" th:selected="${contactableTimeEnd == '오후 2시'}">오후 2시</option>
+                    <option value="오후 3시" th:selected="${contactableTimeEnd == '오후 3시'}">오후 3시</option>
+                    <option value="오후 4시" th:selected="${contactableTimeEnd == '오후 4시'}">오후 4시</option>
+                    <option value="오후 5시" th:selected="${contactableTimeEnd == '오후 5시'}">오후 5시</option>
+                    <option value="오후 6시" th:selected="${contactableTimeEnd == '오후 6시'}">오후 6시</option>
+                    <option value="오후 7시" th:selected="${contactableTimeEnd == '오후 7시'}">오후 7시</option>
+                    <option value="오후 8시" th:selected="${contactableTimeEnd == '오후 8시'}">오후 8시</option>
+                    <option value="오후 9시" th:selected="${contactableTimeEnd == '오후 9시'}">오후 9시</option>
+                    <option value="오후 10시" th:selected="${contactableTimeEnd == '오후 10시'}">오후 10시</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 경력 입력 필드 (textarea 방식) -->
+              <div id="careerContainer">
+                <th:block th:each="career : ${careerList}">
+                  <div class="d-flex mb-2">
+                    <input type="text" class="form-control" name="career" th:value="${career}">
+                    <button type="button" class="btn btn-danger btn-sm remove-career ms-2">삭제</button>
+                  </div>
+                </th:block>
+                <button type="button" class="btn btn-secondary btn-sm add-career">경력 추가</button>
+              </div>
+
+              <!-- ✅ 수상 경력 -->
+              <div id="awardsContainer">
+                <th:block th:each="award : ${awardList}">
+                  <div class="d-flex mb-2">
+                    <input type="text" class="form-control" name="awardCareer" th:value="${award}">
+                    <button type="button" class="btn btn-danger btn-sm remove-award ms-2">삭제</button>
+                  </div>
+                </th:block>
+                <button type="button" class="btn btn-secondary btn-sm add-award">수상 추가</button>
+              </div>
+
+              <!-- 포트폴리오 제목 및 내용 -->
+              <div class="form-field my-3">
+                <label for="portfolioTitle">포트폴리오 제목 *</label>
+                <input type="text" class="form-control mb-2" id="portfolioTitle" th:value="${portfolio.portfolioTitle}" required>
+                <label for="portfolioContent">포트폴리오 내용 *</label>
+                <textarea class="form-control mb-2" id="portfolioContent" required th:text="${portfolio.portfolioContent}"></textarea>
+              </div>
+
+              <!-- 썸네일 이미지 -->
+              <label for="thumbnailImage">썸네일 이미지 *</label>
+              <input type="file" class="form-control mb-2" id="thumbnailImage" name="thumbnailImage" accept="image/*">
+              <p class="text-muted">
+                현재 파일: <span id="currentThumbnail"
+                             th:text="${#strings.substringAfterLast(portfolio.thumbnailImage, '/')}"></span>
+                <button type="button" class="btn btn-danger btn-sm remove-thumbnail">삭제</button>
+              </p>
+
+              <!-- 포트폴리오 파일 -->
+              <div id="portfolioFileContainer" class="mt-3" th:data-files-json="${portfolioFiles}"></div>
+              <button type="button" class="btn btn-secondary btn-sm add-file-btn">파일 추가</button>
+
+
+              <!-- 전문가 답변 (숨김 처리) -->
+              <div class="d-none">
+                <label for="proAnswer1">전문가 질문 1 *</label>
+                <input type="text" class="form-control mb-2" id="proAnswer1" readonly>
+                <label for="proAnswer2">전문가 질문 2 *</label>
+                <input type="text" class="form-control mb-2" id="proAnswer2" readonly>
+                <label for="proAnswer3">전문가 질문 3 *</label>
+                <input type="text" class="form-control mb-2" id="proAnswer3" readonly>
+                <label for="proAnswer4">전문가 질문 4 *</label>
+                <input type="text" class="form-control mb-2" id="proAnswer4" readonly>
+                <label for="proAnswer5">전문가 질문 5 *</label>
+                <input type="text" class="form-control mb-2" id="proAnswer5" readonly>
+              </div>
+
+              <!-- 수정 완료 및 취소 버튼 -->
+              <div class="text-end mt-4">
+                <button type="button" class="btn btn-primary" id="updatePortfolioBtn">수정 완료</button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">취소</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script th:src="@{/js/editPortfolio.js}"></script>
+  <script th:src="@{/js/header.js}"></script>
+</th:block>
+</body>
+</html>

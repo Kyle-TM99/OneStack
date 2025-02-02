@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Category {
-    private int itemNo;
-    private String itemTitle;
-    private int categoryNo;
+@NoArgsConstructor
+public class ProfessionalInfo {
+    private int proNo;
+    private int proAdvancedNo;
 
 }

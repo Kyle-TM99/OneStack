@@ -33,21 +33,5 @@ public class SurveyService {
 	        return surveyMapper.getAllCategories();
 	    }
 
-	public List<Map<String, Object>> getAllSurveysAsMap() {
-		List<Survey> surveys = surveyMapper.getAllSurveys();
-		List<Map<String, Object>> surveyList = new ArrayList<>();
-
-		for (Survey survey : surveys) {
-			Map<String, Object> surveyMap = new HashMap<>();
-			surveyMap.put("surveyNo", survey.getSurveyNo());
-			surveyMap.put("itemNo", survey.getItemNo());
-			surveyMap.put("surveyQuestion", survey.getSurveyQuestion());
-			surveyMap.put("surveyOption", survey.getSurveyOption());
-			surveyList.add(surveyMap);
-		}
-
-		return surveyList;
-	}
-
-	}
+}
 

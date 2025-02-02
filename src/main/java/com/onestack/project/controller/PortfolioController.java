@@ -1,9 +1,11 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.Portfolio;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.ProfessionalService;
+import com.onestack.project.service.SurveyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,10 @@ import java.util.stream.Stream;
 @RestController
 public class PortfolioController {
 
+    @Autowired
+    private ProfessionalService professionalService;
+    @Autowired
+    private SurveyService surveyService;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
     private final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
@@ -67,6 +73,7 @@ public class PortfolioController {
         }
     }
 
+    // 썸네일 포트폴리오 저장
     public String uploadImage(MultipartFile file) throws IOException {
         // 파일명 생성 (UUID 사용)
         String originalFilename = file.getOriginalFilename();

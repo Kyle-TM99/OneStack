@@ -9,60 +9,56 @@
 
 </head>
 <body>
-<div layout:fragment="content" class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body p-4">
-                    <input type="hidden" name="memberId" th:value="${memberId}">
-                    <input type="hidden" name="memberNo" th:value="${member.memberNo}">
-                    <input type="hidden" id="selectedItemNo" name="selectedItemNo" value="">
+<!-- ✅ 콘텐츠 영역 감싸기 -->
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <h4 class="card-title text-center fw-bold mb-4">포트폴리오 추가</h4>
+                        <input type="hidden" name="memberNo" th:value="${member.memberNo}">
+                        <form id="portfolioForm" enctype="multipart/form-data">
+                            <!-- ✅ 카테고리 선택 -->
+                            <label for="categoryNo">카테고리 *</label>
+                            <select id="categoryNo" name="categoryNo" class="form-select mb-3">
+                                <option value="">카테고리를 선택해주세요.</option>
+                                <option value="1">개발</option>
+                                <option value="2">데이터</option>
+                            </select>
 
+                            <!-- ✅ 전문분야 선택 -->
+                            <label for="itemNo">전문분야 *</label>
+                            <select id="itemNo" name="itemNo" class="form-select mb-3"
+                                    onchange="location.href='/portfolioList/addPortfolio?itemNo=' + this.value">
+                                <option value="">전문분야 선택</option>
+                            </select>
 
-                    <h4 class="card-title text-center fw-bold mb-4">포트폴리오 추가</h4>
+                            <!-- ✅ 설문조사 영역 -->
+                            <div id="surveyContainer" class="p-3 border rounded bg-light">
+                                <p class="text-muted" th:if="${surveyList == null or #lists.isEmpty(surveyList)}">
+                                    전문분야를 선택하면 해당하는 설문조사가 표시됩니다.
+                                </p>
 
-                    <form id="portfolioForm" enctype="multipart/form-data">
-                        <!-- 카테고리 선택 -->
-                        <div class="row mt-2">
-                            <div class="form-field">
-                                <label for="categoryNo">카테고리 *</label>
-                                <select class="form-select mb-3" id="categoryNo" name="categoryNo" required>
-                                    <option value="" hidden>카테고리를 선택해주세요.</option>
-                                    <option value="1">개발</option>
-                                    <option value="2">데이터</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- 전문분야 -->
-                        <div class="row mt-2">
-                            <div class="form-field">
-                                <label for="itemNo">전문분야 *</label>
-                                <select class="form-select mb-3" id="itemNo" name="itemNo" required>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="surveyContainer" class="p-3 border rounded bg-light">
-                            <p class="text-muted">전문분야를 선택하면 해당하는 설문조사가 표시됩니다.</p>
-
-                            <th:block th:each="survey : ${surveyList}">
-                                <th:block th:if="${survey.itemNo == selectedItemNo}">
+                                <th:block th:each="survey : ${surveyList}">
                                     <div class="fw-bold my-2">
-                                        Q<span th:text="${survey.surveyNo}"></span>:
-                                        <span th:text="${survey.surveyQuestion}"></span>
+                                        Q<span th:text="${survey.survey.surveyNo}"></span>:
+                                        <span th:text="${survey.survey.surveyQuestion}"></span>
                                     </div>
-                                    <div class="form-check">
-                                        <th:block th:each="option : ${#strings.arraySplit(survey.surveyOption, ',')}">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" th:name="'answer_' + ${survey.surveyNo}" th:value="${option}" required>
-                                                <span th:text="${option}"></span>
-                                            </label>
+                                    <div>
+                                        <th:block th:each="option : ${#strings.arraySplit(survey.survey.surveyOption, ',')}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                       th:name="'answer_' + ${survey.survey.surveyNo}"
+                                                       th:value="${option}" required>
+                                                <label class="form-check-label ms-2" th:text="${option}"></label>
+                                            </div>
                                         </th:block>
                                     </div>
                                 </th:block>
-                            </th:block>
-                        </div>
+                            </div>
 
-                        <!-- 자기소개 -->
+                            <!-- 자기소개 -->
                         <div class="mb-3">
                             <label for="selfIntroduction" class="form-label"><i class="fas fa-user"></i> 자기소개 *</label>
                             <textarea class="form-control" id="selfIntroduction" name="selfIntroduction" rows="3" required></textarea>
@@ -141,25 +137,18 @@
                             <label for="portfolioContent">포트폴리오 내용 *</label>
                             <textarea class="form-control mb-2" name="portfolioContent" required></textarea>
                             <!-- 썸네일 이미지 표시 -->
-                            <label for="thumbnailImage" class="form-label">썸네일 이미지</label>
+                            <label for="thumbnailImage" class="form-label">썸네일 이미지 *</label>
                             <input type="file" class="form-control" id="thumbnailImage" name="thumbnailImage" accept="image/*">
-                            <div id="thumbnailImageDisplay" class="text-muted mb-5" >
-                                <div th:text="${thumbnailImage}"></div>
-                            </div>
 
                             <!-- 포트폴리오 파일 표시 -->
                             <div class="mb-3" id="portfolioFileContainer">
-                                <label for="portfolioFile1" class="form-label">포트폴리오 파일 1</label>
-                                <input type="file" class="form-control" id="portfolioFile1" name="portfolioFile1" accept="image/*" />
+                                <label for="portfolioFile1" class="form-label">포트폴리오 파일 *</label>
+                                <input type="file" class="form-control" id="portfolioFile1" name="portfolioFiles" accept="image/*">
                                 <button type="button" class="btn btn-secondary btn-sm float-end mt-2" id="addFileButtonBtn">파일 추가</button>
                             </div>
                             <div id="fileInfo" class="mt-2 text-muted">
                                 <small>최대 10개의 파일을 추가할 수 있습니다.</small>
                             </div>
-                            <ul id="portfolioFilesDisplay" class="text-muted">
-                                <!-- 서버에서 받은 파일 경로가 이곳에 반영됨 -->
-                                <li th:each="file : ${portfolioFiles}" th:text="${file}"></li>
-                            </ul>
 
                         </div>
                         <div class="d-none">
@@ -184,10 +173,11 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
 
 <th:block layout:fragment="script">
-    <script th:src="@{/js/addPortfolio.js}" defer></script>
+    <script th:src="@{/js/addPortfolio.js}"></script>
     <script th:src="@{/js/header.js}"></script>
 </th:block>
 </body>
