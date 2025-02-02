@@ -60,8 +60,13 @@ public class CommunityController {
         }
 
         try {
+            // 권한 체크 추가
+            if (member.getMemberNo() != communityReply.getMemberNo()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
             communityService.updateCommunityReply(communityReply);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(communityReply);  // 수정된 댓글 정보 반환
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

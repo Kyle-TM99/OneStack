@@ -69,45 +69,60 @@ $(document).ready(function() {
     $(document).on('click', '.communityDropdownItem[href="#"]', function(e) {
         e.preventDefault();
         const replyContainer = $(this).closest('.row');
-        const replyContent = replyContainer.find('.card-text').text();
-        const replyNo = $(this).closest('form').find('input[name="communityReplyNo"]').val();
+        const replyContent = replyContainer.find('.card-text').text().trim();
+        const form = replyContainer.find('.card-body form');
+        const replyNo = form.find('input[name="communityReplyNo"]').val();
+        const boardNo = form.find('input[name="communityBoardNo"]').val();
+        const memberNo = form.find('input[name="memberNo"]').val();
 
         // 댓글 내용을 수정 가능한 텍스트 영역으로 변경
         replyContainer.find('.card-text').html(`
-            <textarea class="form-control edit-reply">${replyContent}</textarea>
-            <div class="mt-2">
-                <button class="btn btn-primary btn-sm save-edit" data-reply-no="${replyNo}">저장</button>
-                <button class="btn btn-secondary btn-sm cancel-edit">취소</button>
-            </div>
-        `);
+        <textarea class="form-control edit-reply">${replyContent}</textarea>
+        <div class="mt-2">
+            <button class="btn btn-primary btn-sm save-edit" 
+                    data-reply-no="${replyNo}"
+                    data-board-no="${boardNo}"
+                    data-member-no="${memberNo}">저장</button>
+            <button class="btn btn-secondary btn-sm cancel-edit" 
+                    data-original-content="${replyContent}">취소</button>
+        </div>
+    `);
     });
 
-    // 수정 취소
+// 수정 취소
     $(document).on('click', '.cancel-edit', function() {
         const replyContainer = $(this).closest('.row');
-        const originalContent = replyContainer.find('textarea').val();
+        const originalContent = $(this).data('original-content');
         replyContainer.find('.card-text').text(originalContent);
     });
 
-    // 수정 저장
+// 수정 저장
     $(document).on('click', '.save-edit', function() {
-        const replyNo = $(this).data('reply-no');
-        const newContent = $(this).closest('.card-text').find('textarea').val();
-        const replyContainer = $(this).closest('.row');
+        const $this = $(this);
+        const replyContainer = $this.closest('.row');
+        const newContent = replyContainer.find('textarea').val();
+
+        const replyData = {
+            communityReplyNo: $this.data('reply-no'),
+            communityBoardNo: $this.data('board-no'),
+            memberNo: $this.data('member-no'),
+            communityReplyContent: newContent
+        };
 
         $.ajax({
             type: 'PATCH',
             url: '/community/reply',
             contentType: 'application/json',
-            data: JSON.stringify({
-                communityReplyNo: replyNo,
-                communityReplyContent: newContent
-            }),
+            data: JSON.stringify(replyData),
             success: function(response) {
-                replyContainer.find('.card-text').text(newContent);
+                replyContainer.find('.card-text').html(newContent);
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
                 alert('댓글 수정에 실패했습니다.');
+                // 실패시 원래 내용으로 복구
+                const originalContent = replyContainer.find('textarea').val();
+                replyContainer.find('.card-text').text(originalContent);
             }
         });
     });

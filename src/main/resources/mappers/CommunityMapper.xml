@@ -71,16 +71,16 @@
 		VALUES (#{communityBoardNo}, #{memberNo}, #{communityReplyContent}, SYSDATE())
 	</insert>
 
-	<update id="updateCommunityReply" parameterType="Community">
+	<update id="updateCommunityReply" parameterType="CommunityReply">
 		UPDATE CommunityReply
-		SET community_reply_content = #{communityReplyContent},
-			community_reply_reg_date = SYSDATE()
+		SET community_reply_content = #{communityReplyContent}
 		WHERE community_reply_no = #{communityReplyNo}
+		  AND member_no = #{memberNo}
 	</update>
 
 	<delete id="deleteCommunityReply">
 		DELETE FROM CommunityReply
-		WHERE community_reply_no = #{communityReplyNo}
+		WHERE community_reply_no = #{communityReplyNo} AND member_no = #{memberNo}
 	</delete>
 
 	<select id="getCommunityReplies" resultType="CommunityReply">
