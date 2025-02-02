@@ -3,11 +3,9 @@ package com.onestack.project.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.onestack.project.domain.Member;
-import com.onestack.project.domain.Estimation;
 import com.onestack.project.service.MemberService;
 
 import jakarta.servlet.ServletException;
@@ -126,7 +123,7 @@ public class MemberController {
 
             member.setSocial(false);
             member.setSocialType("none");
-            member.setMemberImage("/images/defaultProfile.png");
+            member.setMemberImage("/images/default-profile.png");
 
 
 
