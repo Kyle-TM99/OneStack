@@ -1,0 +1,10 @@
+.btn {
+    position: relative;
+    transition: border 0.3s ease;
+}
+
+.btn:hover {
+    border: 2px solid #888888; /* 원하는 색상으로 변경 가능 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    color: #888888; /* 안에 있는 요소도 회색으로 출력 */
+}

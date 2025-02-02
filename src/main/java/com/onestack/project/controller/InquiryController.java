@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -103,6 +104,32 @@ public class InquiryController {
         Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
         model.addAttribute("inquiry", inquiry);
         return "inquiry/inquiryupdateForm";
+    }
+
+    @PostMapping("/addInquiryAnswer")
+    @ResponseBody // AJAX 요청에 대한 응답을 JSON으로 반환
+    public ResponseEntity<String> addInquiryAnswer(@RequestBody InquiryAnswer inquiryAnswer) {
+        inquiryService.addInquiryAnswer(inquiryAnswer);
+        return ResponseEntity.ok("답변이 등록되었습니다.");
+    }
+
+    @GetMapping("/checkAdmin")
+    @ResponseBody
+    public int checkAdmin(HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        if (member != null) {
+            return member.isAdmin() ? 1 : 0; // isAdmin 값을 반환
+        }
+        return 0; // 로그인하지 않은 경우
+    }
+
+    // 문의글 만족/불만족 처리
+    @PostMapping("/inquiry/satisfaction")
+    public ResponseEntity<String> updateSatisfaction(
+            @RequestParam int inquiryNo,
+            @RequestParam boolean isSatisfied) {
+        inquiryService.updateInquirySatisfaction(inquiryNo, isSatisfied);
+        return ResponseEntity.ok("문의글 만족도 업데이트 완료");
     }
 
 }

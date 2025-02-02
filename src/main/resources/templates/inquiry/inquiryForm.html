@@ -89,23 +89,6 @@
                     </tbody>
                 </table>
                 <div class="col-md-2"></div>
-                <div class="row">
-                    <div class="col">
-                        <div class="pagination">
-                            <ul class="pagination">
-                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${currentPage - 2} * num, num=${num})}">이전</a>
-                                </li>
-                                <li class="page-item" th:each="page : ${#numbers.range(1, totalPages)}" th:classappend="${page == currentPage} ? 'active'">
-                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${(page - 1)} * num, num=${num})}" th:text="${page}"></a>
-                                </li>
-                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/memberInquiry(startRow=${currentPage} * num, num=${num})}">다음</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

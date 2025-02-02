@@ -2,6 +2,7 @@ package com.onestack.project.service;
 
 import com.onestack.project.domain.Inquiry;
 import com.onestack.project.domain.InquiryAnswer;
+import com.onestack.project.domain.Member;
 import com.onestack.project.domain.MemberWithInquiry;
 import com.onestack.project.mapper.InquiryMapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,10 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class InquiryService {
@@ -75,7 +73,24 @@ public class InquiryService {
 
     // 문의 답변 조회
     public List<InquiryAnswer> getInquiryAnswer(int inquiryNo) {
-        return inquiryMapper.getInquiryAnswer(inquiryNo);
+        List<InquiryAnswer> answers = inquiryMapper.getInquiryAnswer(inquiryNo);
+        // 답변을 등록일 기준으로 내림차순 정렬
+        answers.sort(Comparator.comparing(InquiryAnswer::getInquiryAnswerRegDate).reversed());
+        return answers;
+    }
+
+    // 문의 답변 추가
+    public void addInquiryAnswer(InquiryAnswer inquiryAnswer) {
+        inquiryMapper.addInquiryAnswer(inquiryAnswer);
+    }
+
+    // 문의글 만족/불만족 업데이트 메서드
+    public void updateInquirySatisfaction(int inquiryNo, boolean isSatisfied) {
+        int status = isSatisfied ? 1 : 0; // 1: 만족, 0: 불만족
+        Map<String, Object> params = new HashMap<>();
+        params.put("inquiryNo", inquiryNo);
+        params.put("status", status);
+        inquiryMapper.updateInquirySatisfaction(params);
     }
 
 }
