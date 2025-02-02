@@ -128,8 +128,8 @@
                         <div class="board-container">
                             <div class="board-header d-flex justify-content-between align-items-center mb-4">
                                 <h5 class="mb-0">게시판</h5>
-                                <button class="btn btn-primary btn-sm" onclick="openPostModal()">
-                                    <i class="bi bi-plus"></i> 글쓰기
+                                <button class="btn btn-primary rounded-circle" onclick="openPostModal()">
+                                    <i class="bi bi-plus-circle"></i>
                                 </button>
                             </div>
                             <div class="board-list" id="boardList">
@@ -269,7 +269,7 @@
 
         <!-- 게시글 작성 모달 -->
         <div class="modal fade" id="postModal" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog" style="max-width: 600px; width: 100%;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">게시글 작성</h5>
@@ -279,11 +279,13 @@
                         <form id="postForm">
                             <div class="mb-3">
                                 <label class="form-label">제목</label>
-                                <input type="text" class="form-control" id="postTitle" required>
+                                <input type="text" class="form-control" id="postTitle" required 
+                                       style="word-break: break-all;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">내용</label>
-                                <textarea class="form-control" id="postContent" rows="3" required></textarea>
+                                <textarea class="form-control" id="postContent" rows="5" required 
+                                          style="word-break: break-all; white-space: pre-wrap; resize: vertical;"></textarea>
                             </div>
                         </form>
                     </div>
@@ -295,26 +297,28 @@
             </div>
         </div>
 
-        <!-- 일정 상세 정보 모달 추가 -->
-        <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel">
-            <div class="modal-dialog modal-dialog-centered">
+        <!-- 일정 상세보기 모달 -->
+        <div class="modal fade" id="eventDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 600px; width: 100%;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventDetailModalLabel">일정 상세</h5>
+                        <h5 class="modal-title">일정 상세보기</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="fw-bold">제목</label>
-                            <p id="detailEventTitle" class="mb-3"></p>
-                            <label class="fw-bold">시작 일시</label>
-                            <p id="detailEventStart" class="mb-3"></p>
-                            <label class="fw-bold">종료 일시</label>
-                            <p id="detailEventEnd" class="mb-3"></p>
-                            <label class="fw-bold">설명</label>
-                            <p id="detailEventDescription" class="mb-3"></p>
-                            <label class="fw-bold">작성자</label>
-                            <p id="detailEventCreator" class="mb-3"></p>
+                        <div class="container-fluid">
+                            <div class="mb-3">
+                                <label class="fw-bold h6 mb-2">제목</label>
+                                <p id="detailEventTitle" class="mb-3" style="word-break: break-all; white-space: pre-wrap;"></p>
+                                <label class="fw-bold h6 mb-2">시작 일시</label>
+                                <p id="detailEventStart" class="mb-3"></p>
+                                <label class="fw-bold h6 mb-2">종료 일시</label>
+                                <p id="detailEventEnd" class="mb-3"></p>
+                                <label class="fw-bold h6 mb-2">설명</label>
+                                <p id="detailEventDescription" class="mb-3" style="word-break: break-all; white-space: pre-wrap;"></p>
+                                <label class="fw-bold h6 mb-2">작성자</label>
+                                <p id="detailEventCreator" class="mb-3"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -572,7 +576,7 @@
                         <div class="board-item" data-post-id="${post.boardId}">
                             <div class="post-header" onclick="togglePost(this)">
                                 <div class="post-title-area">
-                                    <h6 class="post-title">${post.boardTitle}</h6>
+                                    <h6 class="post-title" style="word-break: break-all; white-space: pre-wrap;">${post.boardTitle}</h6>
                                 </div>
                                 <div class="post-meta">
                                     <span>${post.writerNickname || post.memberId}</span>
@@ -582,9 +586,7 @@
                                         ''}
                                 </div>
                             </div>
-                            <div class="post-content">
-                                ${post.boardContent}
-                            </div>
+                            <div class="post-content" style="word-break: break-all; white-space: pre-wrap;">${post.boardContent}</div>
                         </div>
                     `).join('');
                 })
@@ -690,13 +692,16 @@
             });
         }
 
-        // 캘린더 초기화
+        // calendar 객체를 전역 변수로 선언
+        let calendar;
+
         document.addEventListener('DOMContentLoaded', function() {
             // 게시글 목록 초기 로드
             loadPosts();
 
             const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
+            // calendar 객체 초기화
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',
@@ -888,12 +893,24 @@
         
         // 게시글 저장
         function savePost() {
+            const postTitle = document.getElementById('postTitle').value.trim();
+            const postContent = document.getElementById('postContent').value
+                .replace(/^\s+/gm, '')  // 각 줄 시작의 공백 제거
+                .replace(/\n\s*\n\s*/g, '\n\n')  // 여러 줄 공백을 두 줄로 제한
+                .trim();  // 앞뒤 공백 제거
+
             const postData = {
                 roomId: roomId,
                 memberId: currentUser.memberId,
-                boardTitle: document.getElementById('postTitle').value,
-                boardContent: document.getElementById('postContent').value
+                boardTitle: postTitle,
+                boardContent: postContent
             };
+            
+            // 제목이나 내용이 비어있는지 확인
+            if (!postData.boardTitle || !postData.boardContent) {
+                alert('제목과 내용을 입력해주세요.');
+                return;
+            }
             
             fetch('/api/chat/posts', {
                 method: 'POST',
@@ -924,7 +941,7 @@
             modal.show();
         }
 
-        // 일정 삭제 함수 추가
+        // 일정 삭제 함수
         function deleteEvent(eventId) {
             if (!confirm('이 일정을 삭제하시겠습니까?')) {
                 return;
@@ -935,10 +952,15 @@
                 type: 'DELETE',
                 success: function(response) {
                     if (response.success) {
+                        // 먼저 모달 닫기
                         const modal = bootstrap.Modal.getInstance(document.getElementById('eventDetailModal'));
                         modal.hide();
-                        calendar.refetchEvents();
+                        
+                        // 알림창 표시
                         alert('일정이 삭제되었습니다.');
+                        
+                        // 캘린더 이벤트 새로고침 (이제 전역 calendar 객체에 접근 가능)
+                        calendar.refetchEvents();
                     } else {
                         alert(response.error || '일정 삭제에 실패했습니다.');
                     }
