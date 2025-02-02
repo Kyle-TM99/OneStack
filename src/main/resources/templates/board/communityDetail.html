@@ -91,12 +91,29 @@
 
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 col-auto">
-                <span id="communityBoardLike" ><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
-                <span id="communityBoardDislike" ><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                <!-- 좋아요 버튼 -->
+                <span id="communityBoardLike" class="recommend-btn"
+                      th:with="isAuthor=${session.member != null && session.member.memberNo == community.memberNo}"
+                      th:style="${!isAuthor && session.member != null} ? 'cursor: pointer;' : 'cursor: not-allowed; opacity: 0.6;'"
+                      th:data-board-no="${community.communityBoardNo}"
+                      th:data-is-author="${isAuthor}"
+                      th:classappend="${community.communityBoardLike > 0} ? 'active' : ''">
+            <i class="bi" th:classappend="${community.communityBoardLike > 0} ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+            좋아요 <span class="like-count" th:text="${community.communityBoardLike}">0</span>
+        </span>
+
+                <!-- 싫어요 버튼 -->
+                <span id="communityBoardDislike" class="recommend-btn"
+                      th:with="isAuthor=${session.member != null && session.member.memberNo == community.memberNo}"
+                      th:style="${!isAuthor && session.member != null} ? 'cursor: pointer;' : 'cursor: not-allowed; opacity: 0.6;'"
+                      th:data-board-no="${community.communityBoardNo}"
+                      th:data-is-author="${isAuthor}"
+                      th:classappend="${community.communityBoardDislike > 0} ? 'active' : ''">
+            <i class="bi" th:classappend="${community.communityBoardDislike > 0} ? 'bi-hand-thumbs-down-fill text-primary' : 'bi-hand-thumbs-down'"></i>
+            싫어요 <span class="dislike-count" th:text="${community.communityBoardDislike}">0</span>
+        </span>
             </div>
             <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
-            </div>
-            <div>
             </div>
         </div>
 

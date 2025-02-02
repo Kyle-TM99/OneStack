@@ -34,6 +34,42 @@ public class CommunityController {
     @Autowired
     private CommunityService communityService;
 
+    @PostMapping("/community/recommend")
+    @ResponseBody
+    public ResponseEntity<?> handleRecommend(
+            @RequestParam int communityBoardNo,
+            @RequestParam String recommendType,
+            @RequestParam boolean isCancel,
+            HttpSession session) {
+
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "로그인이 필요한 기능입니다."));
+        }
+
+        try {
+            Map<String, Object> result = communityService.handleRecommend(
+                    communityBoardNo,
+                    recommendType,
+                    isCancel,
+                    member.getMemberNo()
+            );
+
+            if ((boolean) result.get("success")) {
+                return ResponseEntity.ok(result);
+            } else {
+                return ResponseEntity.badRequest().body(result);
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "서버 오류가 발생했습니다."));
+        }
+    }
+
     @DeleteMapping("/community/reply")
     @ResponseBody
     public ResponseEntity<?> deleteReply(@RequestParam("communityReplyNo") int communityReplyNo, HttpSession session) {

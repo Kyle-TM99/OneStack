@@ -17,6 +17,11 @@ public interface CommunityMapper {
     void updateCommunityReply(CommunityReply communityReply);
     void deleteCommunityReply(int communityReplyNo);
 
+    void increaseLike(int communityBoardNo);
+    void increaseDislike(int communityBoardNo);
+    void decreaseLike(int communityBoardNo);
+    void decreaseDislike(int communityBoardNo);
+
     public List<Community> selectCommunity(int communityBoardNo);
 
     // 커뮤니티 상세 정보 및 댓글 리스트 조회

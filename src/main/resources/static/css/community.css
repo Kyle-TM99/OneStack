@@ -1,3 +1,110 @@
+/* 추천 버튼 기본 스타일 */
+.recommend-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* 클릭 가능한 버튼 스타일 */
+.recommend-btn:not([style*="not-allowed"]) {
+    cursor: pointer;
+}
+
+.recommend-btn:not([style*="not-allowed"]):hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 좋아요 버튼 활성화 상태 */
+#communityBoardLike.active {
+    background-color: #fff5f5;
+    border-color: #ff8787;
+}
+
+#communityBoardLike.active i {
+    color: #ff6b6b !important;
+}
+
+#communityBoardLike.active .like-count {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+/* 싫어요 버튼 활성화 상태 */
+#communityBoardDislike.active {
+    background-color: #f1f3ff;
+    border-color: #748ffc;
+}
+
+#communityBoardDislike.active i {
+    color: #5c7cfa !important;
+}
+
+#communityBoardDislike.active .dislike-count {
+    color: #5c7cfa;
+    font-weight: bold;
+}
+
+/* 아이콘 스타일 */
+.recommend-btn i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+/* 카운트 숫자 스타일 */
+.like-count,
+.dislike-count {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 비활성화된 버튼 스타일 */
+.recommend-btn[style*="not-allowed"] {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    opacity: 0.6;
+}
+
+/* 호버 효과 애니메이션 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.recommend-btn:not([style*="not-allowed"]):active {
+    animation: pulse 0.3s ease;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .recommend-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .recommend-btn i {
+        font-size: 1rem;
+    }
+
+    .like-count,
+    .dislike-count {
+        font-size: 0.8rem;
+    }
+}
+
 .communityDropdown {
     position: absolute;
     background-color: white;

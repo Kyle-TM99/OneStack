@@ -23,6 +23,47 @@ public class CommunityService {
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
 
+    public Map<String, Object> handleRecommend(int communityBoardNo, String recommendType, boolean isCancel, int memberNo) {
+        Community community = communityMapper.getCommunity(communityBoardNo);
+
+        // 본인 게시글 체크
+        if (community.getMemberNo() == memberNo) {
+            throw new IllegalStateException("본인 게시글에는 추천/비추천을 할 수 없습니다.");
+        }
+
+        try {
+            if (isCancel) {
+                // 추천 취소
+                if (recommendType.equals("LIKE")) {
+                    communityMapper.decreaseLike(communityBoardNo);
+                } else {
+                    communityMapper.decreaseDislike(communityBoardNo);
+                }
+            } else {
+                // 새로운 추천
+                if (recommendType.equals("LIKE")) {
+                    communityMapper.increaseLike(communityBoardNo);
+                } else {
+                    communityMapper.increaseDislike(communityBoardNo);
+                }
+            }
+
+            // 업데이트된 정보 조회
+            Community updatedCommunity = communityMapper.getCommunity(communityBoardNo);
+
+            return Map.of(
+                    "success", true,
+                    "likeCount", updatedCommunity.getCommunityBoardLike(),
+                    "dislikeCount", updatedCommunity.getCommunityBoardDislike()
+            );
+        } catch (Exception e) {
+            return Map.of(
+                    "success", false,
+                    "message", "추천/비추천 처리 중 오류가 발생했습니다."
+            );
+        }
+    }
+
     public void addCommunityReply(CommunityReply communityReply) {
         communityMapper.insertCommunityReply(communityReply);
     }
