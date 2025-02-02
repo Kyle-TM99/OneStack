@@ -92,7 +92,7 @@
                         <h3 class="fw-bold mb-3">답변</h3>
                         <div class="row g-0 mb-2" th:each="inquiryAnswer : ${inquiryAnswer}">
                             <p class="m-0" id="answerContent" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
-                            <span class="float-right ml-2 border-left pl-2 text-secondary small"
+                            <span class="ml-2 border-left pl-2 text-secondary small"
                                   th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy-MM-dd HH:mm')}">답변 작성 시간</span>
                         </div>
                         <!--텍스트 폼 시작-->

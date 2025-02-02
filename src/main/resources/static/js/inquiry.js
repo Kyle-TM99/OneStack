@@ -48,8 +48,12 @@ $(function() {
     });
 
     function updateSatisfaction(inquiryNo, isSatisfied, memberNo) {
+        console.log("inquiryNo:", inquiryNo); // inquiryNo 값 확인
+        console.log("isSatisfied:", isSatisfied); // isSatisfied 값 확인
+        console.log("memberNo:", memberNo); // memberNo 값 확인
+
         $.ajax({
-            url: '/inquiry/satisfaction',
+            url: '/memberInquiry/inquiry/satisfaction',
             type: 'POST',
             data: {
                 inquiryNo: inquiryNo,
@@ -61,21 +65,22 @@ $(function() {
                 location.reload(); // 페이지 새로 고침
             },
             error: function(xhr, status, error) {
+                console.error(xhr.responseText); // 오류 메시지 출력
                 alert("업데이트에 실패했습니다.");
             }
         });
     }
 
-    // 만족 버튼 클릭 시
+// 만족 버튼 클릭 시
     $("#satisfactionButton").on("click", function() {
-        const inquiryNo = $(this).data("inquiry-no");
+        const inquiryNo = $("input[name='inquiryNo']").val(); // 히든 필드에서 inquiryNo 가져오기
         const memberNo = $("input[name='memberNo']").val(); // 히든 필드에서 memberNo 가져오기
         updateSatisfaction(inquiryNo, true, memberNo); // 만족으로 설정
     });
 
-    // 불만족 버튼 클릭 시
+// 불만족 버튼 클릭 시
     $("#dissatisfactionButton").on("click", function() {
-        const inquiryNo = $(this).data("inquiry-no");
+        const inquiryNo = $("input[name='inquiryNo']").val(); // 히든 필드에서 inquiryNo 가져오기
         const memberNo = $("input[name='memberNo']").val(); // 히든 필드에서 memberNo 가져오기
         updateSatisfaction(inquiryNo, false, memberNo); // 불만족으로 설정
     });

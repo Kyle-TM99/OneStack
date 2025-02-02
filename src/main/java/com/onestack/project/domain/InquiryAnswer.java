@@ -17,6 +17,6 @@ public class InquiryAnswer {
 	private int memberNo;
 	private String inquiryAnswerContent;
 	private Timestamp inquiryAnswerRegDate;
-	private String inquiryAnswerFile;	
+	private String inquiryAnswerFile;
 }
 

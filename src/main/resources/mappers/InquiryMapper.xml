@@ -162,7 +162,7 @@
 
 	<!-- 문의글 만족/불만족 -->
 	<update id="updateInquirySatisfaction" parameterType="map">
-		UPDATE inquiry
+		UPDATE Inquiry
 		SET inquiry_satisfaction = #{status}
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
