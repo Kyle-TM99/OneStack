@@ -89,7 +89,6 @@
             </div>
         </div>
 
-
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 col-auto">
                 <span id="communityBoardLike" ><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
@@ -119,26 +118,17 @@
         <th:block th:if="${not #lists.isEmpty(replyList)}">
             <div class="row mt-4" id="replyList" th:each="reply : ${replyList}">
 
-                <div class="col-auto dropdown-container communityDropdownContainer">
+                <div class="col-auto dropdown-container communityDropdownContainer"
+                     th:if="${session.member != null && session.member.memberNo == reply.memberNo}">
                     <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
                     <div class="dropdown-menu communityDropdown" style="display: none;">
-                        <a class="dropdown-item communityDropdownItem"
-                           th:if="${session.member != null and session.member.memberNo == reply.memberNo}"
-                           th:href="@{/communityReplyUpdateForm(communityBoardNo=${community.communityBoardNo}, replyNo=${reply.communityReplyNo})}">
-                            수정하기
-                        </a>
-                        <form action="#" th:action="@{/delete(communityBoardNo=${community.communityBoardNo})}" method="post" style="display:inline;">
-                            <input type="hidden" name="memberNo" th:value="${session.member != null ? session.member.memberNo : ''}"/>
-                            <button type="submit" class="dropdown-item communityDropdownItem"
-                                    th:if="${session.member != null and session.member.memberNo == reply.memberNo}">
-                                삭제하기
-                            </button>
+                        <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
+                        <form action="#" method="post" style="display:inline;">
+                            <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
+                            <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
+                            <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
                         </form>
-                        <a class="dropdown-item communityDropdownItem"
-                           th:if="${session.member != null and session.member.memberNo != reply.memberNo}"
-                           th:href="@{/report(communityBoardNo=${community.communityBoardNo})}">
-                            신고하기
-                        </a>
+                        <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
                     </div>
                 </div>
 
@@ -170,53 +160,8 @@
 <!-- communityWrite.js 스크립트 포함 -->
 <th:block layout:fragment="script">
     <script th:src="@{/js/communityWrite.js}"></script>
+    <script th:src="@{/js/communityReply.js}"></script>
     <script th:src="@{/js/header.js}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#replyForm').on('submit', function(event) {
-                event.preventDefault(); // 기본 폼 제출 방지
-                $.ajax({
-                    type: 'POST',
-                    url: '/community/reply',
-                    data: $(this).serialize(), // 폼 데이터 직렬화
-                    success: function(response) {
-                        // 댓글 등록 성공 시 댓글 목록에 추가
-                        // 예: response에 새 댓글 데이터가 포함되어 있다고 가정
-                        $('#replyList').append(`
-                            <div class="col-auto dropdown-container communityDropdownContainer">
-                                <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
-                                <div class="dropdown-menu communityDropdown" style="display: none;">
-                                    <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
-                                    <form action="#" method="post" style="display:inline;">
-                                        <input type="hidden" name="memberNo" value="${response.memberNo}"/>
-                                        <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
-                                    </form>
-                                    <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card mb-2">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted">${response.nickname}</h6>
-                                        <p class="card-text">${response.communityReplyContent}</p>
-                                        <div class="d-flex gap-2 text-muted">
-                                            <small>${response.communityReplyRegDate}</small>
-                                            <span><i class="bi bi-heart"></i> <span>${response.communityReplyLike}</span></span>
-                                            <span><i class="bi bi-hand-thumbs-down"></i> <span>${response.communityReplyDislike}</span></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                        // 폼 초기화
-                        $('#replyForm')[0].reset();
-                    },
-                    error: function(xhr, status, error) {
-                        alert('댓글 등록에 실패했습니다. 다시 시도해 주세요.');
-                    }
-                });
-            });
-        });
-    </script>
+
 </th:block>
 </html>

@@ -1,9 +1,6 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.Community;
-import com.onestack.project.domain.Member;
-import com.onestack.project.domain.MemberWithCommunity;
-import com.onestack.project.domain.MemberWithCommunityReply;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.CommunityService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +33,64 @@ public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
+
+    @DeleteMapping("/community/reply")
+    @ResponseBody
+    public ResponseEntity<?> deleteReply(@RequestParam("communityReplyNo") int communityReplyNo, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            communityService.deleteCommunityReply(communityReplyNo);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PatchMapping("/community/reply")
+    @ResponseBody
+    public ResponseEntity<?> updateCommunityReply(@RequestBody CommunityReply communityReply, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            communityService.updateCommunityReply(communityReply);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/community/reply")
+    @ResponseBody
+    public ResponseEntity<CommunityReply> addCommunityReply(@RequestBody CommunityReply communityReply, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            // 필요한 정보 설정
+            communityReply.setMemberNo(member.getMemberNo());
+            communityReply.setNickname(member.getNickname());  // 닉네임 설정
+            communityReply.setCommunityReplyRegDate(new Timestamp(System.currentTimeMillis())); // 등록일시 설정
+
+            // 댓글 등록
+            communityService.addCommunityReply(communityReply);
+
+            return ResponseEntity.ok(communityReply);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GetMapping("/communityDetail")
     public String communityDetail(

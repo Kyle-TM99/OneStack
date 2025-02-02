@@ -20,4 +20,5 @@ public class CommunityReply {
     private int communityReplyLike;
     private int communityReplyDislike;
     private boolean communityReplyActivation;
+    private String nickname;
 }

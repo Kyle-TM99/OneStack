@@ -66,19 +66,37 @@
 		<association property="communityReply" resultMap="CommunityReplyResultMap" />
 	</resultMap>
 
-<!--
-	<select id="getRepliesByBoardNo" resultType="MemberWithCommunityReplyResultMap">
-		SELECT r.*, m.*
-		FROM CommunityReply r
-				 JOIN Member m ON r.member_no = m.member_no
-		WHERE r.community_board_no = #{communityBoardNo}
-	</select>
--->
-
 	<insert id="insertCommunityReply" parameterType="CommunityReply">
 		INSERT INTO CommunityReply (community_board_no, member_no, community_reply_content, community_reply_reg_date)
 		VALUES (#{communityBoardNo}, #{memberNo}, #{communityReplyContent}, SYSDATE())
 	</insert>
+
+	<update id="updateCommunityReply" parameterType="Community">
+		UPDATE CommunityReply
+		SET community_reply_content = #{communityReplyContent},
+			community_reply_reg_date = SYSDATE()
+		WHERE community_reply_no = #{communityReplyNo}
+	</update>
+
+	<delete id="deleteCommunityReply">
+		DELETE FROM CommunityReply
+		WHERE community_reply_no = #{communityReplyNo}
+	</delete>
+
+	<select id="getCommunityReplies" resultType="CommunityReply">
+		SELECT cr.*, m.*
+		FROM CommunityReply cr
+				 JOIN Member m ON cr.member_no = m.member_no
+		WHERE cr.community_board_no = #{communityBoardNo}
+		ORDER BY cr.community_reply_reg_date DESC
+	</select>
+
+	<select id="getCommunityReply" resultType="CommunityReply">
+		SELECT cr.*, m.*
+		FROM CommunityReply cr
+				 JOIN Member m ON cr.member_no = m.member_no
+		WHERE cr.community_reply_no = #{communityReplyNo}
+	</select>
 
 	<select id="getCommunityAll" resultType="com.onestack.project.domain.Community">
 		SELECT
@@ -157,33 +175,6 @@
 	</delete>
 
 
-
-	<!--
-
-        &lt;!&ndash; 커뮤니티 리스트 조회 &ndash;&gt;
-        <select id = "getCommunity" parameterType = "map" resultMap = "MemberWithCommunityResultMap">
-            SELECT c.*, m.*
-            FROM Community c JOIN Member m
-            ON c.member_no = m.member_no
-            <where>
-                <if test = "type == 'title'">
-                    c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
-                </if>
-                <if test = "type == 'memberNickname'">
-                    m.nickname LIKE CONCAT('%', #{keyword}, '%')
-                </if>
-                <if test = "type == 'content'">
-                    c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
-                </if>
-                <if test = "type == 'date'">
-                    c.community_board_reg_date BETWEEN #{date1} AND #{date2}
-                </if>
-            </where>
-            ORDER BY c.community_board_reg_date DESC
-            LIMIT #{startRow}, #{num}
-        </select>
-    -->
-
 	<!-- 커뮤니티 게시글 수 조회 -->
 	<select id = "getCommunityBoardCount" parameterType = "map" resultType ="int">
 		SELECT COUNT(community_board_no)
@@ -229,14 +220,6 @@
 		VALUES (#{memberNo}, #{communityBoardTitle}, #{communityBoardContent}, #{communityFile})
 	</insert>
 
-<!--
-	 커뮤니티 수정
-	<update id = "updateCommunity" parameterType = "Community">
-		UPDATE Community
-		SET community_board_title = #{communityBoardTitle}, community_board_content = #{communityBoardContent}, community_file = #{communityFile}
-		WHERE community_board_no = #{communityBoardNo}
-	</update>
--->
 
 	<!-- 커뮤니티 좋아요/싫어요 -->
 	<update id = "updateCommunityRecommend" parameterType = "int">
@@ -259,49 +242,11 @@
 	</update>
 
 
-
-
-
-	<!-- 커뮤니티 댓글 조회 -->
-	<select id = "getCommunityReply" resultMap = "MemberWithCommunityReplyResultMap">
-		SELECT cr.*, m.*
-		FROM CommunityReply cr JOIN Member m
-									ON cr.member_no = m.member_no
-		WHERE cr.community_board_no = #{communityBoardNo}
-		ORDER BY cr.community_reply_reg_date DESC
-	</select>
-
 	<!-- 커뮤니티 댓글 추가 -->
 	<insert id = "addCommunityReply" parameterType = "CommunityReply" useGeneratedKeys = "true" keyProperty = "communityReplyNo">
 		INSERT INTO CommunityReply(community_board_no, member_no, community_reply_content)
 		VALUES(#{communityBoardNo}, #{memberNo}, #{communityReplyContent})
 	</insert>
-
-	<!-- 커뮤니티 댓글 수정 -->
-	<update id = "updateCommunityReply" parameterType = "CommunityReply">
-		UPDATE CommunityReply
-		SET community_reply_content = #{communityReplyContent}
-		WHERE community_reply_no = #{communityReplyNo}
-	</update>
-
-	<!-- 커뮤니티 댓글 삭제 -->
-	<delete id = "deleteCommunityReply" parameterType = "int">
-		DELETE FROM CommunityReply
-		WHERE community_reply_no = #{communityReplyNo}
-	</delete>
-
-	<!-- 커뮤니티 댓글 좋아요/싫어요 -->
-	<update id = "updateCommunityReplyRecommend" parameterType = "int">
-		UPDATE Community
-		SET
-		<if test = "communityReplyRecommend == 'like'">
-			community_reply_like = community_reply_like + 1
-		</if>
-		<if test = "communityReplyRecommend == 'dislike'">
-			community_reply_dislike = community_reply_dislike + 1
-		</if>
-		WHERE community_reply_no = #{communityReplyNo}
-	</update>
 
 	<!-- 커뮤니티 게시글 상세 조회 -->
 	<select id="getCommunityDetail" parameterType="int" resultType="MemberWithCommunity">

@@ -27,6 +27,14 @@ public class CommunityService {
         communityMapper.insertCommunityReply(communityReply);
     }
 
+    public void updateCommunityReply(CommunityReply communityReply) {
+        communityMapper.updateCommunityReply(communityReply);
+    }
+
+    public void deleteCommunityReply(int communityReplyNo) {
+        communityMapper.deleteCommunityReply(communityReplyNo);
+    }
+
     public MemberWithCommunity getCommunityDetail(int communityBoardNo) {
         return communityMapper.getCommunityDetail(communityBoardNo);
     }

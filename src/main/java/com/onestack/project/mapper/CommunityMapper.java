@@ -14,6 +14,8 @@ import java.util.Map;
 public interface CommunityMapper {
 
     void insertCommunityReply(CommunityReply communityReply);
+    void updateCommunityReply(CommunityReply communityReply);
+    void deleteCommunityReply(int communityReplyNo);
 
     public List<Community> selectCommunity(int communityBoardNo);
 
