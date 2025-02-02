@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 완료</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="/css/pay.css" rel="stylesheet">
+</head>
+<body>
+<div class="receipt" th:each="pay : ${payList}">
+  <div class="receipt-header" >
+    <h1>결제 완료</h1>
+    <p>결제 번호: [[ ${pay.pay.payNo} ]]</p>
+  </div>
+
+  <table class="receipt-table">
+    <tr>
+      <th>견적서 번호</th>
+      <td>[[ ${pay.pay.estimationNo} ]]</td>
+    </tr>
+    <tr>
+      <th>회원 이름</th>
+      <td>[[ ${pay.member.name} ]]</td>
+    </tr>
+    <tr>
+      <th>견적 내용</th>
+      <td> [[ ${pay.pay.payContent} ]] </td>
+    </tr>
+    <tr>
+      <th>결제 금액</th>
+      <td>₩[[ ${pay.pay.payPrice} ]]</td>
+    </tr>
+    <tr>
+      <th>결제 방법</th>
+      <td>[[ ${pay.pay.payType} ]]</td>
+    </tr>
+    <tr>
+      <th>결제 시간</th>
+      <td>[[ ${pay.pay.payDate} ]]</td>
+    </tr>
+  </table>
+
+  <div class="receipt-footer">
+    <button class="btn-home" onclick="window.location.href='/mainPage'">홈으로</button>
+  </div>
+</div>
+
+
+</body>
+</html>

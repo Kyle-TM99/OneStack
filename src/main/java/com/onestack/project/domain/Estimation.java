@@ -18,7 +18,6 @@ public class Estimation {
     private String estimationContent;
     private double estimationPrice;
     private String estimationMsg;
-    private int estimationIsread;    // TINYINT 타입과 매칭 (0: 안읽음, 1: 읽음)
     private int progress;            // 0(요청) 1(채팅) 2(결제) 3(완료) 4(거절)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

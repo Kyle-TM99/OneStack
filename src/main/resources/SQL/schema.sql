@@ -1,9 +1,3 @@
-## DATABASE 생성확인
-DROP DATABASE IF EXISTS onestack;
-CREATE DATABASE IF NOT EXISTS onestack;
-USE onestack;
-
-
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,
@@ -128,7 +122,7 @@ CREATE TABLE IF NOT EXISTS Estimation (
     pro_no INTEGER NOT NULL,
     item_no   INTEGER   NOT NULL,
     estimation_content VARCHAR(300)   NOT NULL,
-    estimation_price DECIMAL(10,2) NOT NULL,
+    estimation_price INTEGER NOT NULL,
     estimation_msg VARCHAR(300)   NULL,
     progress INTEGER DEFAULT 0 NOT NULL, -- 0(요청) 1(채팅) 2(결제) 3(완료) 4(거절)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 견적 요청 --
@@ -149,17 +143,16 @@ CREATE TABLE IF NOT EXISTS Matching (matching_no   INTEGER AUTO_INCREMENT PRIMAR
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Quotation - 견적서
-CREATE TABLE IF NOT EXISTS Quotation (
-	quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	matching_no INTEGER   NOT NULL,
-	member_no INTEGER NOT NULL,
-	pro_no INTEGER NOT NULL,
-	quotation_content VARCHAR(500) NOT NULL,
-	
-	quotation_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	CONSTRAINT matching_no_quotation_fk FOREIGN KEY (matching_no) REFERENCES Matching(matching_no) ON DELETE CASCADE,
-	CONSTRAINT member_no_quotation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
-	CONSTRAINT pro_no_quotation_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS Quotation (quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                        matching_no INTEGER   NOT NULL,
+                        member_no INTEGER NOT NULL,
+                        pro_no INTEGER NOT NULL,
+                        quotation_content VARCHAR(500) NOT NULL,
+                        quotation_price   DECIMAL(10,2) NOT NULL,
+                        quotation_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                        CONSTRAINT matching_no_quotation_fk FOREIGN KEY (matching_no) REFERENCES Matching(matching_no) ON DELETE CASCADE,
+                        CONSTRAINT member_no_quotation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
+                        CONSTRAINT pro_no_quotation_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Review - 리뷰
@@ -300,6 +293,19 @@ CREATE TABLE IF NOT EXISTS PasswordResetToken (id BIGINT AUTO_INCREMENT PRIMARY 
 	 FOREIGN KEY (member_id) REFERENCES Member(member_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Pay - 결제
+CREATE TABLE IF NOT EXISTS Pay (pay_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                                estimation_no INTEGER NOT NULL,
+                                member_no INTEGER NOT NULL,
+                                pay_type VARCHAR(50) NOT NULL,
+    pay_content VARCHAR(500) NOT NULL,
+    pay_price INTEGER NOT NULL,
+    pay_status TINYINT(1) NOT NULL, -- 1(결제 완료) 0(미결제) --
+    pay_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT member_no_pay_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
+    CONSTRAINT estimation_no_pay_fk FOREIGN KEY (estimation_no) REFERENCES Estimation(estimation_no) ON DELETE CASCADE
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- 채팅방
 CREATE TABLE IF NOT EXISTS chat_room (
     room_id VARCHAR(50) PRIMARY KEY,
@@ -327,6 +333,16 @@ CREATE TABLE IF NOT EXISTS chat_message (
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_chat_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
     CONSTRAINT fk_chat_sender FOREIGN KEY (sender) REFERENCES member(member_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 채팅방 참여자 테이블 추가
+CREATE TABLE IF NOT EXISTS chat_room_participant (
+    room_id VARCHAR(50),
+    member_id VARCHAR(50),
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (room_id, member_id),
+    CONSTRAINT fk_participant_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id),
+    CONSTRAINT fk_participant_member FOREIGN KEY (member_id) REFERENCES member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅방 게시판 테이블 추가
