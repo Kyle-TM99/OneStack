@@ -91,7 +91,7 @@ public class PayController {
         payService.updateAveragePrice(Integer.parseInt(payNo));
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "전문가 평균 가격 수정 성공");
+        response.put("message", "전문가 평균 가격 수정 성공!");
         return ResponseEntity.ok(response);
     }
 
