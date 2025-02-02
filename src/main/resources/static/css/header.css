@@ -290,3 +290,61 @@ header.navbar-header {
 .bi-chevron-down {
     transition: transform 0.2s ease-in-out;
 }
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.auth-buttons .btn {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.auth-buttons .btn-outline-primary {
+    border-color: #215EA3;
+    color: #215EA3;
+}
+
+.auth-buttons .btn-outline-primary:hover {
+    background-color: #215EA3;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 94, 163, 0.2);
+}
+
+.auth-buttons .btn-primary {
+    background-color: #215EA3;
+    border-color: #215EA3;
+}
+
+.auth-buttons .btn-primary:hover {
+    background-color: #1b4d8a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 94, 163, 0.3);
+}
+
+.auth-buttons .bi {
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
