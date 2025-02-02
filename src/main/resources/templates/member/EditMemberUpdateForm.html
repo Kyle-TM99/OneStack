@@ -20,11 +20,12 @@
                         <div class="col-12">
                             <div class="profile-image-wrapper text-center">
                                 <div class="position-relative d-inline-block">
-                                    <!--<img src="${session.member.memberImage ? '/resources/files/' + session.member.memberImage : '/images/default-profile.png'}"
-                                         alt="프로필" class="profile-image-container" style="width: 150px; height: 150px; border-radius: 15px; object-fit: cover;">-->
+                                    <img th:src="${session.member.memberImage != null ? session.member.memberImage : '/images/default-profile.png'}"
+                                         alt="프로필" id="previewImage" class="profile-image-container"
+                                         style="width: 150px; height: 150px; border-radius: 15px; object-fit: cover;">
                                     <input type="file" id="profileImage" name="profileImage" class="d-none" accept="image/*">
                                     <button type="button" class="btn btn-sm btn-edit-profile"
-                                            onclick="$('#profileImage').click()"
+                                            onclick="document.getElementById('profileImage').click()"
                                             style="position: absolute; bottom: 0; right: 0;">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>

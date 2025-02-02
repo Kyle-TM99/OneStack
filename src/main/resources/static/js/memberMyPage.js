@@ -1,4 +1,57 @@
 document.addEventListener("DOMContentLoaded", function() {
+	// 프로필 이미지 변경 및 미리보기
+	const profileImageInput = document.getElementById('profileImage');
+	const previewImage = document.getElementById('previewImage');
+	let uploadedImage = null;
+
+	if (profileImageInput) {
+		profileImageInput.addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				// 미리보기 표시
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					previewImage.src = e.target.result;
+				}
+				reader.readAsDataURL(file);
+				uploadedImage = file;
+			}
+		});
+	}
+
+	// 폼 제출 처리
+	const memberUpdateForm = document.getElementById('memberUpdateForm');
+	if (memberUpdateForm) {
+		memberUpdateForm.addEventListener('submit', function(e) {
+			e.preventDefault();
+
+			const formData = new FormData(this);
+
+			// 이미지가 변경되었을 경우만 FormData에 추가
+			if (uploadedImage) {
+				formData.set('profileImage', uploadedImage);
+			}
+
+			$.ajax({
+				url: '/updateMember',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function(response) {
+					if(response.success) {
+						alert('회원 정보가 성공적으로 수정되었습니다.');
+						window.location.href = '/updateMemberForm';
+					} else {
+						alert(response.message || '회원 정보 수정 중 오류가 발생했습니다.');
+					}
+				},
+				error: function(xhr) {
+					alert('회원 정보 수정 중 오류가 발생했습니다.');
+				}
+			});
+		});
+	}
 
 	// 각 필드의 유효성 상태 추적
 	const validationState = {
@@ -14,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		address: false
 	};
 
-	// 프로필 이미지 변경 시 미리보기
-	const profileImageInput = document.getElementById('profileImage');
 	if (profileImageInput) {
 		profileImageInput.addEventListener('change', function(e) {
 			const file = e.target.files[0];

@@ -55,110 +55,6 @@ public class MemberService {
         return result;
     }
 
-    // 회원별 review 리스트 조회
-    public List<Review> findMyReview(int memberNo) {
-        List<Review> result = memberMapper.findMyReview(memberNo);
-        return result;
-    }
-/*
-    // 회원별 review 리스트 조회
-    public List<Review> proReview(int proNo) {
-        List<Review> result = memberMapper.proReview(proNo);
-        return result;
-    }*/
-
-    /* public int proReviewCount(int proNo) {
-         return memberMapper.proReviewCount(proNo);
-     }
- */
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
-    }
-
-    // 회원별 게시글 리스트 조회
-    public List<MemberWithCommunity> memberMyPageCommunity(int memberNo) {
-        List<MemberWithCommunity> result = memberMapper.memberMyPageCommunity(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-                if (item != null) {
-                    System.out.println("Member: " + item.getMember());
-                    System.out.println("Community: " + item.getCommunity());
-                }
-            });
-        }
-        return result;
-    }
-
-    // 회원별 게시글 수 조회
-    public int memberMyPageCommunityCount(int memberNo) {
-        return memberMapper.memberMyPageCommunityCount(memberNo);
-    }
-
-    // 회원별 질문글 조회
-    public List<MemberWithQnA> memberMyPageQnA(int memberNo) {
-        List<MemberWithQnA> result = memberMapper.memberMyPageQnA(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-            });
-        }
-        return result;
-    }
-
-    // 회원별 질문글 수 조회
-    public int memberMyPageQnACount(int memberNo) {
-        return memberMapper.memberMyPageQnACount(memberNo);
-    }
-
-    // 회원별 댓글 조회
-    public List<ComWithComReply> comWithComReply(int memberNo) {
-        return memberMapper.comWithComReply(memberNo);
-    }
-
-    // 회원별 댓글 수 조회
-    public int memberMyPageComReplyCount(int memberNo) {
-        return memberMapper.memberMyPageComReplyCount(memberNo);
-    }
-
-    // 회원별 답글 조회
-    public List<QnAWithReply> qnaWithReply(int memberNo) {
-        return memberMapper.qnaWithReply(memberNo);
-    }
-
-    // 회원별 답글 수 조회
-    public int memberMyPageQnAReplyCount(int memberNo) {
-        return memberMapper.memberMyPageQnAReplyCount(memberNo);
-    }
-
-    // 게시글 공감 조회
-    public List<Community> memberMyPageCommunityLike(int memberNo) {
-        return memberMapper.memberMyPageCommunityLike(memberNo);
-    }
-
-    // 질문글 공감 조회
-    public List<QnA> memberMyPageQnALike(int memberNo) {
-        return memberMapper.memberMyPageQnALike(memberNo);
-    }
-
-    // 댓글 공감 조회
-    public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
-        try {
-            log.info("Fetching comment likes for member: {}", memberNo);
-            List<CommunityReply> result = memberMapper.memberMyPageComReplyLike(memberNo);
-            log.info("Found {} liked comments", result.size());
-            return result;
-        } catch (Exception e) {
-            log.error("Error fetching comment likes", e);
-            throw e;
-        }
-    }
-
-    // 답변 공감 조회
-    public List<QnAReply> memberMyPageQnAReplyLike(int memberNo) {
-        return memberMapper.memberMyPageQnAReplyLike(memberNo);
-    }
-
-
-
     public void updateMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -268,7 +164,6 @@ public class MemberService {
         return result;
     }
 
-    // 마이페이지
 
     // 회원 로그인 요청을 처리하기 위한 메서드
     public Member getMember(String memberId) {
