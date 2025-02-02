@@ -21,7 +21,7 @@
 								<div class="left-menu">
 									<a href="#" class="nav-link px-3" data-menu="findPro">고수 찾기</a>
 									<a href="#" class="nav-link px-3" data-menu="community">커뮤니티</a>
-
+									
 									<!-- 통합 서브메뉴 -->
 									<div class="submenu-container">
 										<div class="container">
@@ -74,7 +74,7 @@
 										</div>
 									</div>
 								</div>
-
+								
 								<!-- 오른쪽 메뉴 -->
 								<div class="d-flex align-items-center gap-3">
 									<th:block th:if="${session.isLogin}">
@@ -94,8 +94,16 @@
 									<div class="d-flex align-items-center gap-2">
 										<!-- 로그인하지 않은 경우 보이는 버튼들 -->
 										<th:block th:unless="${session.isLogin}">
-											<a class="btn btn-outline-dark btn-sm" href="loginForm">로그인</a>
-											<a class="btn btn-outline-dark btn-sm" href="joinForm">회원가입</a>
+											<div class="auth-buttons">
+												<a class="btn btn-outline-primary btn-sm me-2" href="loginForm">
+													<i class="bi bi-box-arrow-in-right me-1"></i>
+													로그인
+												</a>
+												<a class="btn btn-primary btn-sm" href="joinForm">
+													<i class="bi bi-person-plus me-1"></i>
+													회원가입
+												</a>
+											</div>
 										</th:block>
 										<!-- 로그인한 경우에만 보이는 버튼들 -->
 										<th:block th:if="${session.isLogin}">
@@ -135,8 +143,6 @@
 			</div>
 		</nav>
 	</header>
-    <th:block layout:fragment="script">
-        <script th:src="@{/js/header.js}"></script>
-    </th:block>
+		<script th:src="@{/js/header.js}"></script>
 </div>
 </html>

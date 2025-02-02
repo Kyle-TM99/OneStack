@@ -108,7 +108,7 @@ public class EstimationController {
             
             // 3. 채팅방 생성
             ChatRoom chatRoom = new ChatRoom();
-            chatRoom.setRoomName(estimation.getMemberNickname() + "님과의 상담");
+            chatRoom.setRoomName("회원 : " + estimation.getMemberNickname() + " 전문가 : " + member.getNickname());
             chatRoom.setMemberNo(estimation.getMemberNo());
             chatRoom.setProNo(member.getMemberNo());
             chatRoom.setEstimationNo(estimationNo);
@@ -158,6 +158,7 @@ public class EstimationController {
         return response;
     }
 
+    // 견적 금액 수정
     @PostMapping("/api/estimation/{estimationNo}/price")
     @ResponseBody
     public Map<String, Object> updateEstimationPrice(

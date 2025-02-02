@@ -190,16 +190,42 @@
             background: #0ea5e9;
             color: white;
         }
+
+        .no-estimations {
+            text-align: center;
+            padding: 60px 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-estimations i {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .no-estimations p {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 0;
+        }
     </style>
 </head>
-<body>
-<div layout:fragment="content">
+
+<th:block layout:fragment="content">
     <div class="estimation-container">
         <h1 class="page-title">견적 관리</h1>
         
         <!-- 견적 목록 -->
         <div class="estimation-list">
-            <div th:each="estimation : ${estimations}" class="estimation-card">
+            <!-- 견적이 없을 경우 표시할 메시지 -->
+            <div th:if="${#lists.isEmpty(estimations)}" class="no-estimations">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #9ca3af;"></i>
+                <p>신청된 견적이 존재하지 않습니다.</p>
+            </div>
+            
+            <!-- 견적이 있을 경우 목록 표시 -->
+            <div th:unless="${#lists.isEmpty(estimations)}" th:each="estimation : ${estimations}" class="estimation-card">
                 <div class="estimation-header">
                     <div class="client-info">
                         <div class="client-avatar">
@@ -257,6 +283,61 @@
             </th:block>
         </div>
     </div>
-</div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        // 견적 매칭 처리
+        function matchEstimation(estimationNo) {
+            if (confirm('해당 견적을 매칭하시겠습니까?')) {
+                fetch(`/api/estimation/${estimationNo}/match`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('매칭이 완료되었습니다. 채팅방으로 이동합니다.');
+                        window.location.href = `/chat/room/${data.roomId}`;
+                    } else {
+                        alert(data.message || '매칭 처리에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('매칭 처리 중 오류가 발생했습니다.');
+                });
+            }
+        }
+
+        // 견적 거절 처리
+        function rejectEstimation(estimationNo) {
+            if (confirm('해당 견적을 거절하시겠습니까?')) {
+                fetch(`/api/estimation/${estimationNo}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload(); // 페이지 새로고침
+                    } else {
+                        alert(data.message || '견적 거절에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('견적 거절 중 오류가 발생했습니다.');
+                });
+            }
+        }
+    </script>
+</th:block>
+
 </body>
 </html>
