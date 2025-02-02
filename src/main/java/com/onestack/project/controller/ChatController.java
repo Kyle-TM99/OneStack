@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -120,21 +119,24 @@ public class ChatController {
     }
 
     // 채팅방 삭제
-    @PostMapping("/chat/room/{roomId}/delete")
+    @PostMapping("/api/chat/room/{roomId}/delete")
     @ResponseBody
-    public Map<String, Object> deleteChatRoom(@PathVariable String roomId, HttpSession session) {
+    public Map<String, Object> deleteRoom(@PathVariable String roomId) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Member member = (Member) session.getAttribute("member");
-            if (member == null) {
-                throw new RuntimeException("로그인이 필요합니다.");
-            }
-
-            // 참여자 확인
-            if (!chatService.isParticipant(roomId, member.getMemberNo())) {
-                throw new RuntimeException("채팅방 참여자가 아닙니다.");
-            }
-
+            // 시스템 메시지 전송
+            ChatMessage systemMessage = new ChatMessage();
+            systemMessage.setRoomId(roomId);
+            systemMessage.setType("SYSTEM");
+            systemMessage.setMessage("채팅방이 삭제되었습니다.");
+            systemMessage.setSentAt(LocalDateTime.now());
+            
+            // 시스템 메시지를 웹소켓으로 전송
+            messagingTemplate.convertAndSend("/topic/chat/room/" + roomId, systemMessage);
+            
+            // 잠시 대기 후 채팅방 삭제 (메시지가 전송될 시간을 주기 위해)
+            Thread.sleep(500);
+            
             chatService.deleteChatRoom(roomId);
             response.put("success", true);
             response.put("message", "채팅방이 삭제되었습니다.");

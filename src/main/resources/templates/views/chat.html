@@ -204,20 +204,22 @@
                     </div>
                     <div class="modal-footer">
                         <!-- 전문가일 경우 견적 확인 버튼 표시 -->
-                        <th:block th:if="${session.member.memberNo == room.roomAdmin}">
+                        <th:block th:if="${session.member.memberNo == estimation.proNo}">
                             <button th:if="${estimation.estimationCheck == 0}" 
                                     type="button" 
                                     class="btn btn-primary"
                                     th:data-estimation-no="${estimation.estimationNo}"
+                                    id="confirmEstimationBtn"
                                     onclick="confirmEstimation(this)">견적 확인</button>
                         </th:block>
                         
                         <!-- 의뢰인일 경우 견적 확인 버튼 표시 -->
                         <th:block th:if="${session.member.memberNo == estimation.memberNo}">
-                            <button th:if="${estimation.estimationCheck == 1}" 
+                            <button th:if="${estimation.estimationCheck == 1 and estimation.progress == 1}" 
                                     type="button" 
                                     class="btn btn-primary"
                                     th:data-estimation-no="${estimation.estimationNo}"
+                                    id="confirmEstimationByClientBtn"
                                     onclick="confirmEstimationByClient(this)">견적 확인</button>
                         </th:block>
                         
@@ -667,15 +669,18 @@
             }
             
             $.ajax({
-                url: `/chat/delete/${roomId}`,
+                url: `/api/chat/room/${roomId}/delete`,
                 type: 'POST',
                 contentType: 'application/json',
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        window.location.href = '/chat';
+                        // 시스템 메시지가 표시될 시간을 주기 위해 잠시 대기
+                        setTimeout(() => {
+                            alert(response.message);
+                            window.location.href = '/chat';  // chat_list.html로 리다이렉트
+                        }, 1000);
                     } else {
-                        alert(response.error || '채팅방 삭제에 실패했습니다.');
+                        alert(response.message || '채팅방 삭제에 실패했습니다.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -687,6 +692,9 @@
 
         // 캘린더 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // 게시글 목록 초기 로드
+            loadPosts();
+
             const calendarEl = document.getElementById('calendar');
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -705,6 +713,15 @@
                 navLinks: false,
                 fixedWeekCount: false,
                 showNonCurrentDates: false,
+                select: function(info) {
+                    // 선택한 날짜 정보를 모달에 설정
+                    document.getElementById('eventStartDate').value = moment(info.start).format('YYYY-MM-DDTHH:mm');
+                    document.getElementById('eventEndDate').value = moment(info.end).format('YYYY-MM-DDTHH:mm');
+                    
+                    // 모달 표시
+                    const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+                    eventModal.show();
+                },
                 events: function(info, successCallback, failureCallback) {
                     $.ajax({
                         url: `/api/chat/calendar/${roomId}`,
@@ -766,23 +783,6 @@
                     if (info.event.allDay) {
                         info.el.style.backgroundColor = '#3788d8';
                     }
-                },
-                select: function(info) {
-                    // 선택한 날짜를 현지 시간으로 변환
-                    const startDate = moment(info.start).format('YYYY-MM-DDTHH:mm');
-                    const endDate = moment(info.end).subtract(1, 'days').format('YYYY-MM-DDTHH:mm');
-                    
-                    document.getElementById('eventStartDate').value = startDate;
-                    document.getElementById('eventEndDate').value = endDate;
-                    
-                    updateEndDateMin();
-                    
-                    const eventModal = new bootstrap.Modal(document.getElementById('eventModal'), {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                    eventModal.show();
-                    $('#eventTitle').focus();
                 },
                 eventClick: function(info) {
                     const event = info.event;
@@ -880,12 +880,6 @@
                 });
             };
         });
-
-        function loadParticipants() {
-            $.get('/api/chat/rooms/' + roomId + '/participants', function(participants) {
-                updateParticipantsList(participants);
-            });
-        }
 
         // 게시글 작성 모달 열기
         function openPostModal() {
@@ -998,6 +992,7 @@
                 .then(data => {
                     if(data.success) {
                         alert('견적이 확인되었습니다. 결제를 진행해주세요.');
+                        document.getElementById('confirmEstimationByClientBtn').style.display = 'none';
                         location.reload();
                     } else {
                         alert(data.message || '견적 확인 처리 중 오류가 발생했습니다.');

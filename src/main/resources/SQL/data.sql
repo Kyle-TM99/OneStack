@@ -193,22 +193,5 @@ VALUES (1, 1, '로그인이 안돼요', '비밀번호를 입력했는데 로그�
 (7, 7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
 (8, 8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
 
--- 견적서 더미 데이터 --
-INSERT IGNORE INTO Quotation (quotation_no, member_no, pro_no, quotation_content, quotation_price, quotation_reg_date)
-VALUES(1, 1, 1, '기획 외주', 123000, current_time());
 
--- Estimation 테이블에 더미 데이터 추가
-INSERT IGNORE INTO Estimation (member_no, pro_no, item_no, estimation_content, estimation_price, estimation_msg, estimation_isread)
-VALUES
--- user1(member_no: 1)이 user100(pro_no: 29)에게 보낸 견적 요청
-(1, 29, 11, '웹사이트 기획 문서 작성 요청드립니다', 500000, '최대한 빠른 시일 내에 부탁드립니다.', false),
-
--- user2(member_no: 2)가 user100에게 보낸 견적 요청
-(2, 29, 11, '모바일 앱 기획서 작성 의뢰', 800000, '앱 출시 일정이 촉박해서 빠른 작업 필요합니다.', false),
-
--- user3(member_no: 3)이 user100에게 보낸 견적 요청
-(3, 29, 11, 'AI 서비스 기획 문서 작성', 1000000, '인공지능 서비스 관련 기획서 작성 요청드립니다.', true),
-
--- user4(member_no: 4)가 user100에게 보낸 견적 요청
-(4, 29, 11, '쇼핑몰 리뉴얼 기획', 700000, '기존 쇼핑몰 개선을 위한 기획 문서 필요합니다.', false);
 
