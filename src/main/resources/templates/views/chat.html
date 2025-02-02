@@ -1132,8 +1132,13 @@
                         // 주문 완료 페이지로 이동하며 주문 번호 전달
                         showPaymentCompleteModal(payNo);
 
-                        // 전문가 평균 가격 수정
+                        // 전문가 평균 가격 수정 및 견적 과정 수정
                         updateProAveragePrice(payNo);
+
+                        // 영수증 모달창 닫히면 페이지 리로드
+                        $('#payDoneModal').on('hidden.bs.modal', function () {
+                            location.reload();
+                        });
 
                     }).catch(error => {
                         alert('결제 처리 중 오류가 발생했습니다: ' + error.message);

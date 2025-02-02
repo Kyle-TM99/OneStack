@@ -4,6 +4,7 @@ import com.onestack.project.domain.MemPay;
 import com.onestack.project.domain.MemProEstimation;
 import com.onestack.project.domain.Pay;
 import com.onestack.project.domain.PaymentVerificationRequest;
+import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
 import com.onestack.project.service.ProService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ public class PayController {
     PayService payService;
     @Autowired
     private ProService proService;
+    @Autowired
+    private MemberService memberService;
 
 
     /* 결제 요청 폼 */
@@ -84,7 +87,7 @@ public class PayController {
         return ResponseEntity.status(400).body("결제 검증 실패");
     }
 
-    /* 전문가 평균 가격 수정 */
+    /* 전문가 평균 가격 수정 및 견적 과정 수정*/
     @PostMapping("/updateAveragePrice")
     public ResponseEntity<Map<String, String>> updateAveragePrice(@RequestBody Map<String, String> payload) {
         String payNo = payload.get("payNo");
@@ -92,6 +95,11 @@ public class PayController {
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "전문가 평균 가격 수정 성공!");
+
+        int estimationNo = payService.findByPayNo(Integer.parseInt(payNo));
+
+        memberService.updateEstimationProgress(estimationNo, 3);
+
         return ResponseEntity.ok(response);
     }
 
