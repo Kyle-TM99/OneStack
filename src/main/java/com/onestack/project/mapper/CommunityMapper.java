@@ -56,13 +56,13 @@ public interface CommunityMapper {
 
 
     // 커뮤니티 게시글 목록 조회
-    List<MemberWithCommunity> getCommunity(Map<String, Object> params);
+    List<Community> getCommunity(Map<String, Object> params);
 
     // 커뮤니티 게시글 총 개수 조회
     int getCommunityBoardCount(Map<String, Object> params);
 
     // 커뮤니티 게시글 상세 조회
-    MemberWithCommunity getCommunityDetail(int communityBoardNo);
+    Community getCommunityDetail(int communityBoardNo);
 
     // 커뮤니티 게시글 작성
     int addCommunity(Community community);

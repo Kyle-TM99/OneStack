@@ -34,6 +34,14 @@ public class CommunityController {
     @Autowired
     private CommunityService communityService;
 
+    @GetMapping("/detail/{communityBoardNo}")
+    public String getCommunityDetail(@PathVariable int communityBoardNo, Model model) {
+        Community community = communityService.getCommunity(communityBoardNo, true);
+        // community.communityBoardContent에는 Quill에서 생성된 HTML이 저장되어 있어야 함
+        model.addAttribute("community", community);
+        return "board/communityDetail";
+    }
+
     @PostMapping("/community/recommend")
     @ResponseBody
     public ResponseEntity<?> handleRecommend(
@@ -133,6 +141,7 @@ public class CommunityController {
         }
     }
 
+
     @GetMapping("/communityDetail")
     public String communityDetail(
             @RequestParam(value = "communityBoardNo", required = false) Integer communityBoardNo,
@@ -141,6 +150,8 @@ public class CommunityController {
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "type", defaultValue = "null") String type,
             @RequestParam(value = "keyword", defaultValue = "null") String keyword) {
+
+        Map<String, Object> result = communityService.getCommunityDetail(communityBoardNo);
 
         // communityBoardNo가 null인 경우 pathVariable에서 가져오기
         if (communityBoardNo == null) {
@@ -154,6 +165,7 @@ public class CommunityController {
         }
 
         model.addAttribute("community", community);
+        model.addAttribute("htmlContent", result.get("htmlContent"));
         model.addAttribute("pageNum", pageNum);
 
         // 검색 옵션 처리
@@ -215,17 +227,8 @@ public class CommunityController {
         Member member = (Member) session.getAttribute("member"); // 세션에서 member 가져오기
         community.setMemberNo(member.getMemberNo()); // Community 객체에 memberNo 설정
 
-        // 파일 업로드 처리 (필요한 경우)
-        if (file != null && !file.isEmpty()) {
-            String originalFilename = file.getOriginalFilename();
-            String filename = UUID.randomUUID().toString() + "_" + originalFilename;
-            String uploadDir = "src/main/java/resources/static/images"; // 실제 업로드 디렉토리 경로 설정
-            File dest = new File(uploadDir, filename);
-            file.transferTo(dest);
-            community.setCommunityFile(filename);
-        }
         // 게시글 업데이트
-        communityService.updateCommunity(community, file); // 데이터베이스에 업데이트
+        communityService.updateCommunity(community);
         boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
 
         reAttrs.addAttribute("searchOption", searchOption);
@@ -382,6 +385,9 @@ public class CommunityController {
         model.addAllAttributes(data);
         return "board/community";
     }
+
+
+
     /*
         // 커뮤니티 게시글 상세 조회
         @GetMapping("community/{communityBoardNo}")

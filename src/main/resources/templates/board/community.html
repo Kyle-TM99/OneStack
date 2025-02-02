@@ -87,127 +87,124 @@
             <p class="text-center">아직 올라온 게시글이 없습니다.</p>
         </th:block>
 
+
         <div th:if="${searchOption and not #lists.isEmpty(cList)}" class="col-12 col-lg-8 mx-auto">
             <th:block th:each="community : ${cList}">
-                <div class="row mx-3">
-                    <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
-                        <div class="col">
+                <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
+                    <div class="row mx-4">
+                        <div class="col-8">
+                            <div class="row fw-bold" th:text="${community.communityBoardTitle}"></div>
                             <div class="row">
-                                <div class="col-md-8">
-                                    <h5 th:text="${community.communityBoardTitle}">게시물 제목</h5>
-                                    <p th:text="${#strings.abbreviate(community.communityBoardContent, 100)}">게시물 내용 미리보기...</p>
-                                </div>
-                                <div th:if="${community.communityFile != null}" class="col-md-4 d-flex align-items-center justify-content-end">
-                                    <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}" class="img-fluid rounded" alt="게시물 이미지">
+                                <div class="ql-editor content-preview" th:utext="${community.communityBoardContent}"
+                                     style="overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    max-height: 3em;
+                    line-height: 1.5em;">
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="col-md-8 mt-3">
+                                <div class="col">
                                     <div class="d-flex gap-3">
+                                        <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
                                         <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
                                         <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
-                                        <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mt-3 d-flex align-items-center justify-content-end">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="d-flex flex-column align-items-end">
+                                <!-- 이미지 -->
+                                <div th:if="${community.communityFile != null}" style="width: 100%; max-width: 120px;"> <!-- 컨테이너 크기 제한 -->
+                                    <div style="position: relative; width: 100%; padding-bottom: 100%;"> <!-- 1:1 비율 유지를 위한 컨테이너 -->
+                                        <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
+                                             class="rounded"
+                                             style="position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;"
+                                             alt="게시물 이미지">
+                                    </div>
+                                </div>
+                                <!-- 날짜 -->
+                                <div class="mt-2">
                                     <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd')}">2024.03.21</small>
                                 </div>
                             </div>
                         </div>
-                    </a>
-                </div>
+
                 <div class="row">
                     <div class="col">
                         <hr class="my-4 opacity-25">
                     </div>
                 </div>
-            </th:block>
-        </div>
-
-        <div th:if="${not searchOption and not #lists.isEmpty(cList)}" class="col-12 col-lg-8 mx-auto">
-            <th:block th:each="community : ${cList}">
-                <div class="row mx-3">
-                    <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
-                        <div class="col">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h5 class="card-title" th:text="${community.communityBoardTitle}">게시물 제목</h5>
-                                    <p class="card-text text-muted" th:text="${#strings.abbreviate(community.communityBoardContent, 100)}">게시물 내용 미리보기...</p>
-                                </div>
-                                <div th:if="${community.communityFile != null}" class="col-md-4 d-flex align-items-center justify-content-end">
-                                    <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}" class="img-fluid rounded" alt="게시물 이미지">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-8 mt-3">
-                                    <div class="d-flex gap-3">
-                                        <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
-                                        <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
-                                        <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3 d-flex align-items-center justify-content-end">
-                                    <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd')}">2024.03.21</small>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <hr class="my-4 opacity-25">
                     </div>
-                </div>
+                    </a>
             </th:block>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <nav th:if="${searchOption and not #lists.isEmpty(cList)}" aria-label="Pagenavigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item" th:if="${ startPage > pageGroup }">
-                            <a class="page-link" th:href="@{|?pageNum=${startPage - 1}&type=${type}&keyword=${keyword}|}">Pre</a>
-                        </li>
-                        <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
-                            th:classappend="${num == currentPage} ? 'active'"
-                            class="page-item" aria-current="page">
-                            <th:block th:if="${num != currentPage}">
-                                <a th:text="${num}" class="page-link" th:href="@{|?pageNum=${num}&type=${type}&keyword=${keyword}|}" ></a>
-                            </th:block>
-                            <th:block th:unless="${num != currentPage}">
-                                <span th:text="${num}" class="page-link"></span>
-                            </th:block>
-                        </li>
-                        <li class="page-item" th:if="${endPage < pageCount}">
-                            <a class="page-link" th:href="@{|?pageNum=${startPage + pageGroup}&type=${type}&keyword=${keyword}|}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-                <nav th:if="${not searchOption and not #lists.isEmpty(cList)}" aria-label="Pagenavigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item" th:if="${ startPage > pageGroup }">
-                            <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
-                        </li>
-                        <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
-                            th:classappend="${num == currentPage} ? 'active'"
-                            class="page-item" aria-current="page">
-                            <th:block th:if="${num != currentPage}">
-                                <a th:text="${num}" th:href="@{|?pageNum=${num}|}"
-                                   class="page-link"></a>
-                            </th:block>
-                            <th:block th:unless="${num != currentPage}">
-                                <span th:text="${num}" class="page-link"></span>
-                            </th:block>
-                        </li>
-                        <li class="page-item" th:if="${endPage < pageCount}">
-                            <a class="page-link" th:href="@{|?pageNum=${startPage + pageGroup}|}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
         </div>
     </div>
+
+                <div th:if="${not searchOption and not #lists.isEmpty(cList)}" class="col-12 col-lg-8 mx-auto">
+                    <th:block th:each="community : ${cList}">
+                        <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
+                            <div class="row mx-4">
+                                <div class="col-8">
+                                    <div class="row fw-bold" th:text="${community.communityBoardTitle}"></div>
+                                    <div class="row">
+                                        <div class="ql-editor content-preview" th:utext="${community.communityBoardContent}"
+                                             style="overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    max-height: 3em;
+                    line-height: 1.5em;">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="d-flex gap-3">
+                                                <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
+                                                <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
+                                                <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex flex-column align-items-end">
+                                        <!-- 이미지 -->
+                                        <div th:if="${community.communityFile != null}" style="width: 100%; max-width: 120px;"> <!-- 컨테이너 크기 제한 -->
+                                            <div style="position: relative; width: 100%; padding-bottom: 100%;"> <!-- 1:1 비율 유지를 위한 컨테이너 -->
+                                                <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
+                                                     class="rounded"
+                                                     style="position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;"
+                                                     alt="게시물 이미지">
+                                            </div>
+                                        </div>
+                                        <!-- 날짜 -->
+                                        <div class="mt-2">
+                                            <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd')}">2024.03.21</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <hr class="my-4 opacity-25">
+                                        </div>
+                                    </div>
+                                </div>
+                        </a>
+                    </th:block>
+                </div>
 </th:block>
 </html>

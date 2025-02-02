@@ -3,9 +3,11 @@ package com.onestack.project.service;
 import com.onestack.project.domain.*;
 import com.onestack.project.mapper.CommunityMapper;
 import lombok.RequiredArgsConstructor;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -22,6 +24,10 @@ public class CommunityService {
     // 페이징네이션 관련 상수
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
+
+    private final Parser parser = Parser.builder().build();
+    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
+
 
     public Map<String, Object> handleRecommend(int communityBoardNo, String recommendType, boolean isCancel, int memberNo) {
         Community community = communityMapper.getCommunity(communityBoardNo);
@@ -76,15 +82,36 @@ public class CommunityService {
         communityMapper.deleteCommunityReply(communityReplyNo);
     }
 
-    public MemberWithCommunity getCommunityDetail(int communityBoardNo) {
-        return communityMapper.getCommunityDetail(communityBoardNo);
+
+    public Map<String, Object> getCommunityDetail(int communityBoardNo) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            Community community = communityMapper.getCommunityDetail(communityBoardNo);
+            if (community == null) {
+                return result;  // 게시글이 없는 경우 빈 Map 반환
+            }
+
+            // 마크다운을 HTML로 변환
+            String htmlContent = convertMarkdownToHtml(community.getCommunityBoardContent());
+
+            result.put("community", community);
+            result.put("htmlContent", htmlContent);
+
+        } catch (Exception e) {
+        }
+
+        return result;
     }
 
-/*
-    public List<MemberWithCommunityReply> replyList(int communityBoardNo) {
-        return communityMapper.getRepliesByBoardNo(communityBoardNo);
+    // 마크다운을 HTML로 변환하는 메서드 추가
+    // CommonMark 라이브러리를 사용하여 마크다운을 HTML로 변환
+    private String convertMarkdownToHtml(String markdown) {
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(markdown);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return renderer.render(document);
     }
-*/
 public List<Community> getCommunityAll(int communityBoardNo) {
     return communityMapper.getCommunityAll(communityBoardNo);
 }
@@ -187,15 +214,7 @@ public List<Community> getCommunityAll(int communityBoardNo) {
 
 
     // 자유게시판 게시글 수정
-    public int updateCommunity(Community community, MultipartFile file) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            String originalFilename = file.getOriginalFilename();
-            String filename = UUID.randomUUID().toString() + "_" + originalFilename;
-            String uploadDir = "path/to/upload/directory"; // 실제 업로드 디렉토리 경로 설정
-            File dest = new File(uploadDir, filename);
-            file.transferTo(dest);
-            community.setCommunityFile(filename);
-        }
+    public int updateCommunity(Community community) throws IOException {
         return communityMapper.updateCommunity(community);
     }
 

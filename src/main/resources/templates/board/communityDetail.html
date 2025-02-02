@@ -3,6 +3,10 @@
       layout:decorate="~{layouts/main_layout}">
 <head>
     <link th:href="@{/css/community.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <!-- Toast UI Editor JS -->
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
 </head>
 <div layout:fragment="content" class="container py-5">
     <th:block>
@@ -71,7 +75,7 @@
 
         <div class="row mx-3">
             <div class="col">
-                <div th:text="${community.communityBoardContent}">게시물 내용</div>
+                <div class="ql-editor" th:utext="${community.communityBoardContent}"></div>
             </div>
         </div>
 
@@ -179,6 +183,23 @@
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/communityReply.js}"></script>
     <script th:src="@{/js/header.js}"></script>
+        <script>
+            // 이미지 로딩 에러 처리
+            document.querySelectorAll('.ql-editor img').forEach(img => {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    console.log('이미지 로딩 실패:', this.src);
+                };
+            });
+
+            // 링크 새 창에서 열기
+            document.querySelectorAll('.ql-editor a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+        </script>
+    </th:block>
+
 
 </th:block>
 </html>

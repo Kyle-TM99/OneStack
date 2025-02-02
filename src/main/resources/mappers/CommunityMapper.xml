@@ -16,56 +16,6 @@
 		<result property="communityReplyCount" column="community_reply_count" />
 	</resultMap>
 
-	<resultMap id="CommunityReplyResultMap" type="com.onestack.project.domain.CommunityReply">
-		<id property="communityReplyNo" column="community_reply_no" />
-		<result property="communityBoardNo" column="community_board_no" />
-		<result property="memberNo" column="member_no" />
-		<result property="communityReplyContent" column="community_reply_content" />
-		<result property="communityReplyRegDate" column="community_reply_reg_date" />
-		<result property="communityReplyLike" column="community_reply_like" />
-		<result property="communityReplyDislike" column="community_reply_dislike" />
-		<result property="communityReplyActivation" column="community_reply_activation" />
-	</resultMap>
-
-	<resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
-		<id property="memberNo" column="member_no" />
-		<result property="name" column="name" />
-		<result property="memberId" column="member_id" />
-		<result property="kakaoId" column="kakao_id" />
-		<result property="pass" column="pass" />
-		<result property="nickname" column="nickname" />
-		<result property="birth" column="birth" />
-		<result property="gender" column="gender" />
-		<result property="zipcode" column="zipcode" />
-		<result property="address" column="address" />
-		<result property="address2" column="address2" />
-		<result property="email" column="email" />
-		<result property="emailGet" column="email_get" />
-		<result property="phone" column="phone" />
-		<result property="memberRegDate" column="member_reg_date" />
-		<result property="memberType" column="member_type" />
-		<result property="memberStatus" column="member_status" />
-		<result property="memberImage" column="member_image" />
-		<result property="stack" column="stack" />
-		<result property="stackName" column="stack_name" />
-		<result property="withdrawalEndDate" column="withdrawal_end_date" />
-		<result property="banEndDate" column="ban_end_date" />
-		<result property="reportedCount" column="reported_count" />
-		<result property="isAdmin" column="is_admin" />
-		<result property="isSocial" column="is_social" />
-		<result property="socialType" column="social_type" />
-	</resultMap>
-
-	<resultMap id="MemberWithCommunityResultMap" type="com.onestack.project.domain.MemberWithCommunity">
-		<association property="member" resultMap="MemberResultMap" />
-		<association property="community" resultMap="CommunityResultMap" />
-	</resultMap>
-
-	<resultMap id="MemberWithCommunityReplyResultMap" type="com.onestack.project.domain.MemberWithCommunityReply">
-		<association property="member" resultMap="MemberResultMap" />
-		<association property="communityReply" resultMap="CommunityReplyResultMap" />
-	</resultMap>
-
 
 	<!-- 좋아요 증가 -->
 	<update id="increaseLike">
@@ -292,11 +242,19 @@
 	</insert>
 
 	<!-- 커뮤니티 게시글 상세 조회 -->
-	<select id="getCommunityDetail" parameterType="int" resultType="MemberWithCommunity">
-		SELECT c.*, m.*
-		FROM Community c
-				 JOIN Member m ON c.member_no = m.member_no
-		WHERE c.community_board_no = #{communityBoardNo}
+	<select id="getCommunityDetail" parameterType="int" resultType="Community">
+		SELECT
+		c.*,
+		m.member_nickname,
+		m.member_image,
+		(SELECT COUNT(*) FROM community_reply WHERE community_board_id = c.community_board_id) as reply_count,
+		c.community_board_content as raw_content,
+		c.community_board_content_html as html_content  <!-- HTML 변환된 내용 추가 -->
+		FROM
+		community c
+		LEFT JOIN member m ON c.member_id = m.member_id
+		WHERE
+		c.community_board_id = #{communityBoardId}
 	</select>
 
 	<!-- 이전 글 조회 -->
