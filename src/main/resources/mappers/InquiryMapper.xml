@@ -194,5 +194,17 @@
 		WHERE inquiry_answer_no = #{inquiryAnswerNo}
 	</delete>
 
+	<update id="updateInquiryStatusToInProgress" parameterType="int">
+		UPDATE Inquiry
+		SET inquiry_status = '답변 중'
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+
+	<update id="updateInquiryStatusToCompleted" parameterType="int">
+		UPDATE Inquiry
+		SET inquiry_status = '답변 완료'
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+
 
 </mapper>

@@ -14,7 +14,7 @@ $(function() {
     $("#submitAnswer").on("click", function() {
         const inquiryNo = $("input[name='inquiryNo']").val(); // 히든 필드에서 문의글 번호 가져오기
         const answerContent = $("#reviewText").val(); // 답변 내용 가져오기
-        const memberNo = $("input[name='isAdmin']").val(); // 히든 필드에서 memberNo 가져오기
+        const memberNo = $("input[name='memberNo']").val(); // 히든 필드에서 memberNo 가져오기
 
         // AJAX 요청을 통해 답변 등록
         $.ajax({

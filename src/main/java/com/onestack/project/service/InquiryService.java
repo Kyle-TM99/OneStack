@@ -82,6 +82,7 @@ public class InquiryService {
     // 문의 답변 추가
     public void addInquiryAnswer(InquiryAnswer inquiryAnswer) {
         inquiryMapper.addInquiryAnswer(inquiryAnswer);
+        inquiryMapper.updateInquiryStatusToInProgress(inquiryAnswer.getInquiryNo()); // 상태를 '답변 중'으로 업데이트
     }
 
     // 문의글 만족/불만족 업데이트 메서드
@@ -91,6 +92,19 @@ public class InquiryService {
         params.put("inquiryNo", inquiryNo);
         params.put("status", status);
         inquiryMapper.updateInquirySatisfaction(params);
+    }
+
+    // 문의글 답변 완료
+    public void completeInquiryAnswer(int inquiryNo) {
+        inquiryMapper.updateInquiryStatusToCompleted(inquiryNo); // 상태를 '답변 완료'로 업데이트
+    }
+
+    public void handleSatisfaction(int inquiryNo, boolean isSatisfied) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("inquiryNo", inquiryNo);
+        params.put("status", isSatisfied ? 1 : 0); // 1: 만족, 0: 불만족
+        inquiryMapper.updateInquirySatisfaction(params); // 맵으로 전달
+        inquiryMapper.updateInquiryStatusToCompleted(inquiryNo); // 상태를 '답변 완료'로 업데이트
     }
 
 }

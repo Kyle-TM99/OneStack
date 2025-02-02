@@ -125,11 +125,9 @@ public class InquiryController {
 
     // 문의글 만족/불만족 처리
     @PostMapping("/inquiry/satisfaction")
-    public ResponseEntity<String> updateSatisfaction(
-            @RequestParam int inquiryNo,
-            @RequestParam boolean isSatisfied) {
-        inquiryService.updateInquirySatisfaction(inquiryNo, isSatisfied);
-        return ResponseEntity.ok("문의글 만족도 업데이트 완료");
+    public ResponseEntity<String> updateSatisfaction(@RequestParam int inquiryNo, @RequestParam boolean isSatisfied) {
+        inquiryService.handleSatisfaction(inquiryNo, isSatisfied);
+        return ResponseEntity.ok("문의글 상태가 업데이트되었습니다.");
     }
 
 }
