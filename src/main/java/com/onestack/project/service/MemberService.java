@@ -102,15 +102,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageCommunityCount(memberNo);
     }
 
-    // 회원별 질문글 조회
-    public List<MemberWithQnA> memberMyPageQnA(int memberNo) {
-        List<MemberWithQnA> result = memberMapper.memberMyPageQnA(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-            });
-        }
-        return result;
-    }
 
     // 회원별 질문글 수 조회
     public int memberMyPageQnACount(int memberNo) {
@@ -122,10 +113,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageComReplyCount(memberNo);
     }
 
-    // 회원별 답글 조회
-    public List<QnAWithReply> qnaWithReply(int memberNo) {
-        return memberMapper.qnaWithReply(memberNo);
-    }
 
     // 회원별 답글 수 조회
     public int memberMyPageQnAReplyCount(int memberNo) {
@@ -137,10 +124,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageCommunityLike(memberNo);
     }
 
-    // 질문글 공감 조회
-    public List<QnA> memberMyPageQnALike(int memberNo) {
-        return memberMapper.memberMyPageQnALike(memberNo);
-    }
 
     // 댓글 공감 조회
     public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
@@ -155,10 +138,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         }
     }
 
-    // 답변 공감 조회
-    public List<QnAReply> memberMyPageQnAReplyLike(int memberNo) {
-        return memberMapper.memberMyPageQnAReplyLike(memberNo);
-    }
 
 
 
