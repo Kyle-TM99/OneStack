@@ -107,10 +107,13 @@
 										</th:block>
 										<!-- 로그인한 경우에만 보이는 버튼들 -->
 										<th:block th:if="${session.isLogin}">
-											<span class="me-2" th:text="${session.member.name + '님 환영합니다'}"></span>
+											<span class="me-2" th:text="${session.member.nickname + '님 환영합니다'}"></span>
 											<div class="dropdown">
 												<a href="#" class="profile-link d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-													<img src="https://placehold.co/32x32" alt="프로필" class="rounded-circle">
+													<img th:src="${session.member != null ? session.member.memberImage : '/images/default-profile.png'}" 
+														 alt="프로필" 
+														 class="rounded-circle" 
+														 style="width: 32px; height: 32px;">
 													<i class="fas fa-chevron-down small text-muted"></i>
 												</a>
 												<ul class="dropdown-menu dropdown-menu-end">

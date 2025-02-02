@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS onestack;
+CREATE DATABASE IF NOT EXISTS onestack;
+USE onestack;
+
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,
@@ -17,8 +21,6 @@ CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 member_status INTEGER DEFAULT 0 NOT NULL, -- 0(활성화) 1(비활성화) 2(정지) 3(탈퇴) --
 	 member_image VARCHAR(100) NULL,
 	 member_stop VARCHAR(5000) NULL,  -- 정지 사유 (member_status가 2(정지)일때만)
-	 stack INTEGER DEFAULT 0 NOT NULL,
-	 stack_name VARCHAR(20) DEFAULT '기본 회원' NOT NULL,
 	 withdrawal_end_date   TIMESTAMP NULL,
 	 ban_end_date   TIMESTAMP NULL,
 	 reported_count INTEGER DEFAULT 0 NOT NULL,
@@ -294,10 +296,11 @@ CREATE TABLE IF NOT EXISTS PasswordResetToken (id BIGINT AUTO_INCREMENT PRIMARY 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Pay - 결제
-CREATE TABLE IF NOT EXISTS Pay (pay_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-                                estimation_no INTEGER NOT NULL,
-                                member_no INTEGER NOT NULL,
-                                pay_type VARCHAR(50) NOT NULL,
+CREATE TABLE IF NOT EXISTS Pay (
+	pay_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+	estimation_no INTEGER NOT NULL,
+	member_no INTEGER NOT NULL,
+	pay_type VARCHAR(50) NOT NULL,
     pay_content VARCHAR(500) NOT NULL,
     pay_price INTEGER NOT NULL,
     pay_status TINYINT(1) NOT NULL, -- 1(결제 완료) 0(미결제) --
@@ -372,3 +375,6 @@ CREATE TABLE IF NOT EXISTS chat_calendar_event (
     CONSTRAINT fk_calendar_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
     CONSTRAINT fk_calendar_creator FOREIGN KEY (created_by) REFERENCES member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+use onestack;
+select * from member;
