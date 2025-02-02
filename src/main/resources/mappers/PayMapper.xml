@@ -49,18 +49,23 @@
         <result property="reviewCount" column="review_count" />
     </resultMap>
 
-    <resultMap id="QuotationResultMap" type="com.onestack.project.domain.Quotation">
-        <id property="quotationNo" column="quotation_no" />
+    <resultMap id="EstimationResultMap" type="com.onestack.project.domain.Estimation">
+        <id property="estimationNo" column="estimation_no" />
         <result property="memberNo" column="member_no" />
         <result property="proNo" column="pro_no" />
-        <result property="quotationContent" column="quotation_content" />
-        <result property="quotationPrice" column="quotation_price" />
-        <result property="quotationRegDate" column="quotation_reg_date" />
+        <result property="itemNo" column="item_no" />
+        <result property="estimationContent" column="estimation_content" />
+        <result property="estimationPrice" column="estimation_price" />
+        <result property="estimationMsg" column="estimation_msg" />
+        <result property="progress" column="progress" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="estimationCheck" column="estimation_check" />
     </resultMap>
 
     <resultMap id="PayResultMap" type="com.onestack.project.domain.Pay">
         <id property="payNo" column="pay_no" />
-        <result property="quotationNo" column="quotation_no" />
+        <result property="estimationNo" column="estimation_no" />
         <result property="memberNo" column="member_no" />
         <result property="payType" column="pay_type" />
         <result property="payContent" column="pay_content" />
@@ -69,10 +74,10 @@
         <result property="payDate" column="pay_date" />
     </resultMap>
 
-    <resultMap id="MemProQuotationResultMap" type="com.onestack.project.domain.MemProQuotation">
+    <resultMap id="MemProEstimationResultMap" type="com.onestack.project.domain.MemProEstimation">
         <association property="member" resultMap="MemberResultMap" />
         <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="quotation" resultMap="QuotationResultMap" />
+        <association property="estimation" resultMap="EstimationResultMap" />
     </resultMap>
 
     <resultMap id="MemPayResultMap" type="com.onestack.project.domain.MemPay">
@@ -81,31 +86,68 @@
     </resultMap>
 
 
-    <select id = "getPayForm" parameterType = "int" resultMap="MemProQuotationResultMap">
-        SELECT m.*, p.*, q.*
-        FROM Member m JOIN Quotation q
-                ON m.member_no = q.member_no
+    <select id = "getPayForm" parameterType = "int" resultMap="MemProEstimationResultMap">
+        SELECT m.*, p.*, e.*
+        FROM Member m JOIN Estimation e
+                ON m.member_no = e.member_no
             JOIN Professional p
-                ON q.pro_no = p.pro_no
-        WHERE q.quotation_no = #{quotationNo}
+                ON e.pro_no = p.pro_no
+        WHERE e.estimation_no = #{estimationNo}
     </select>
 
     <select id = "getPrice" parameterType = "int" resultType = "int">
-        SELECT quotation_price
-        FROM Quotation
-        WHERE quotation_no = #{quotationNo}
+        SELECT estimation_price
+        FROM Estimation
+        WHERE estimation_no = #{estimationNo}
     </select>
 
     <insert id="insertPay" parameterType="Pay">
-        INSERT INTO Pay(quotation_no, member_no, pay_type, pay_content, pay_price, pay_status)
-        VALUES(#{quotationNo}, #{memberNo}, #{payType}, #{payContent}, #{payPrice}, #{payStatus})
+        INSERT INTO Pay(estimation_no, member_no, pay_type, pay_content, pay_price, pay_status)
+        VALUES(#{estimationNo}, #{memberNo}, #{payType}, #{payContent}, #{payPrice}, #{payStatus})
     </insert>
 
     <select id = "getPayDoneForm" parameterType = "int" resultMap="MemPayResultMap">
         SELECT p.*, m.*
         FROM Pay p JOIN Member m
             ON p.member_no = m.member_no
-        WHERE quotation_no = #{quotationNo}
+        WHERE p.pay_no = #{payNo}
     </select>
+
+    <select id="getPayNo" parameterType="int" resultType="int">
+        SELECT pay_no
+        FROM Pay
+        WHERE estimation_no = #{estimationNo}
+    </select>
+
+    <select id="findByPayNo" parameterType="int" resultType="int">
+        SELECT estimation_no
+        FROM Pay
+        WHERE pay_no = #{payNo}
+    </select>
+
+    <select id="findByEstimationNo" parameterType="int" resultType="int">
+        SELECT pro_no
+        FROM Estimation
+        WHERE estimation_no = #{estimationNo}
+    </select>
+
+    <select id="getPro" parameterType="int" resultType="Professional">
+        SELECT *
+        FROM Professional
+        WHERE pro_no = #{proNo}
+    </select>
+
+    <select id="getPayCount" parameterType="int" resultType="int">
+        SELECT count(pay_no)
+        FROM Estimation e JOIN Pay p
+            ON e.estimation_no = p.estimation_no
+        WHERE e.pro_no = #{proNo}
+    </select>
+
+    <update id="updateProPrice" parameterType="Professional">
+        UPDATE Professional
+        SET average_price = #{averagePrice}
+        WHERE pro_no = #{proNo}
+    </update>
 
 </mapper>

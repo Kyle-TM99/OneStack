@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Pay {
     private int payNo;
-    private int quotationNo;
+    private int estimationNo;
     private int memberNo;
     private String payType;
     private String payContent;

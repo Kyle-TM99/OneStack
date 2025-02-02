@@ -1,12 +1,10 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.ChatMessage;
-import com.onestack.project.domain.ChatRoom;
-import com.onestack.project.domain.Estimation;
-import com.onestack.project.domain.Member;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.ChatService;
 import com.onestack.project.service.MemberService;
 
+import com.onestack.project.service.PayService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,9 @@ public class ChatController {
     private MemberService memberService;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private PayService payService;
 
     // 채팅방 목록 페이지
     @GetMapping("/chat")
@@ -86,6 +87,10 @@ public class ChatController {
             // 최근 메시지 조회 (최근 50개)
             List<ChatMessage> messages = chatService.getRecentMessages(roomId, 50);
             model.addAttribute("messages", messages);
+
+            // 결제 요청서
+            MemProEstimation payList = payService.getPayForm(room.getEstimationNo());
+            model.addAttribute("payList", payList);
             
             return "views/chat";
         } catch (Exception e) {

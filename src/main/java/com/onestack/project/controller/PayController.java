@@ -1,19 +1,19 @@
 package com.onestack.project.controller;
 
+import com.onestack.project.domain.MemPay;
+import com.onestack.project.domain.MemProEstimation;
 import com.onestack.project.domain.Pay;
 import com.onestack.project.domain.PaymentVerificationRequest;
 import com.onestack.project.service.PayService;
-import jakarta.servlet.http.HttpSession;
+import com.onestack.project.service.ProService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -22,41 +22,50 @@ public class PayController {
 
     @Autowired
     PayService payService;
+    @Autowired
+    private ProService proService;
 
 
     /* 결제 요청 폼 */
     @GetMapping("/payForm")
     public String getPayForm(Model model, int quotationNo) {
 
-        Map<String, Object> quotationModelMap = payService.getPayForm(quotationNo);
-        model.addAllAttributes(quotationModelMap);
+        MemProEstimation payList = payService.getPayForm(quotationNo);
+        model.addAttribute(payList);
 
         return "views/payForm";
     }
 
     /* 결제 완료 폼 */
     @GetMapping("/payDoneForm")
-    public String getPayDoneForm(Model model, @RequestParam int quotationNo) {
-        Map<String, Object> payModelMap = payService.getPayDoneForm(quotationNo);
-        model.addAllAttributes(payModelMap);
-
-        return "views/payDoneForm";
+    @ResponseBody
+    public MemPay getPayDoneForm(@RequestParam int payNo) {
+        MemPay payDone = payService.getPayDoneForm(payNo);
+        return payDone;  // 이 객체는 자동으로 JSON 형식으로 변환됩니다.
     }
+
 
     /* 결제 검증 */
     @PostMapping("/api/payment/verify")
     public ResponseEntity<String> paymentVerify(@RequestBody PaymentVerificationRequest request) throws Exception {
 
         log.info("/verify : " + request.getImpUid());
-        boolean isVerified = payService.verifyPayment(request.getImpUid(), request.getQuotationNo(), request.getPaidAmount());
+        boolean isVerified = payService.verifyPayment(request.getImpUid(), request.getEstimationNo(), request.getPaidAmount());
+
+        int estimationNo = request.getEstimationNo();
 
         if (isVerified) {
             // 최종 결제 처리 - DB(결제 테이블) 작업
 
             Pay pay = new Pay();
-            pay.setQuotationNo(request.getQuotationNo()); // 주문 정보의 quotationNo
+            pay.setEstimationNo(request.getEstimationNo()); // 주문 정보의 quotationNo
             pay.setMemberNo(request.getMemberNo()); // 주문 정보의 memberNo
-            pay.setPayType("카카오페이"); // 결제 타입
+            // 결제 타입
+            if(request.getChannelNum() == 1) {
+                pay.setPayType("카카오페이");
+            } else if (request.getChannelNum() == 2) {
+                pay.setPayType("KG이니시스");
+            }
             pay.setPayContent(request.getPayContent()); // 결제 내용
             pay.setPayPrice(request.getPaidAmount()); // 결제 금액
             pay.setPayStatus(true); // 결제 완료 상태 (1)
@@ -64,11 +73,30 @@ public class PayController {
             // 결제 정보 DB에 저장
             payService.insertPay(pay);
 
+            // 방금 결제한 결제 내역의 payNo를 가져오기
+            Pay pay1 = new Pay();
+            int payNo = payService.getPayNo(estimationNo);
 
-            return ResponseEntity.ok(String.valueOf(request.getQuotationNo()));
+
+            return ResponseEntity.ok(String.valueOf(payNo));
         }
 
         return ResponseEntity.status(400).body("결제 검증 실패");
     }
+
+    /* 전문가 평균 가격 수정 */
+    @PostMapping("/updateAveragePrice")
+    public ResponseEntity<Map<String, String>> updateAveragePrice(@RequestBody Map<String, String> payload) {
+        String payNo = payload.get("payNo");
+        payService.updateAveragePrice(Integer.parseInt(payNo));
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "전문가 평균 가격 수정 성공");
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
 
 }

@@ -1,9 +1,12 @@
 package com.onestack.project.service;
 
 import com.onestack.project.domain.MemPay;
+import com.onestack.project.domain.MemProEstimation;
 import com.onestack.project.domain.Pay;
-import com.onestack.project.domain.Quotation;
+import com.onestack.project.domain.Professional;
 import com.onestack.project.mapper.PayMapper;
+import com.onestack.project.mapper.ProMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class PayService {
 
     @Autowired
@@ -26,16 +30,15 @@ public class PayService {
 
     @Value("${portone.api.secret}")
     private String apiSecret;
+    @Autowired
+    private ProMapper proMapper;
 
     // 견적서 폼 요청
-    public Map<String, Object> getPayForm(int quotationNo) {
+    public MemProEstimation getPayForm(int estimationNo) {
 
-        List<Quotation> quotationList = payMapper.getPayForm(quotationNo);
+        MemProEstimation payList = payMapper.getPayForm(estimationNo);
 
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("quotationList", quotationList);
-
-        return modelMap;
+        return payList;
     }
 
 
@@ -74,7 +77,7 @@ public class PayService {
 
 
     // 결제 검증
-    public boolean verifyPayment(String impUid, int quotationNo, int paidAmount) throws Exception {
+    public boolean verifyPayment(String impUid, int estimationNo, int paidAmount) throws Exception {
         // 1. 먼저 토큰 발급 메서드를 호출하여 액세스 토큰 가져오기
         String accessToken = getAccessToken();
 
@@ -100,7 +103,7 @@ public class PayService {
             String status = paymentData.getString("status"); // 결제 상태 추출
 
             // 4. DB에서 해당 주문의 금액을 조회
-            double orderAmount = payMapper.getPrice(quotationNo); // 주문 금액 조회 (DB에서)
+            double orderAmount = payMapper.getPrice(estimationNo); // 주문 금액 조회 (DB에서)
 
             // 5. 결제 검증 로직: 금액과 상태가 일치하는지 확인
             if (amount == orderAmount && "paid".equals(status) && paidAmount == amount) { // 금액과 상태, paidAmount 비교
@@ -120,14 +123,48 @@ public class PayService {
     }
 
     // 결제 완료 폼
-    public Map<String, Object> getPayDoneForm(int quotationNo) {
+    public MemPay getPayDoneForm(int payNo) {
 
-        List<MemPay> payList = payMapper.getPayDoneForm(quotationNo);
+        MemPay payDoneList = payMapper.getPayDoneForm(payNo);
 
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("payList", payList);
+        return payDoneList;
+    }
 
-        return modelMap;
+    // 결제 번호 가져오기
+    public int getPayNo(int estimationNo) {
+        return payMapper.getPayNo(estimationNo);
+    }
+
+    // 전문가 평균 가격 수정
+    public void updateAveragePrice(int payNo) {
+        // payNo로 전문가 조회
+        int estimationNo = payMapper.findByPayNo(payNo);
+        int proNo = payMapper.findByEstimationNo(estimationNo);
+
+        // proNo로 전문가 조회
+        Professional professional = payMapper.getPro(proNo);
+
+        // 방금 결제된 금액 가져오기
+        MemPay memPay = payMapper.getPayDoneForm(payNo);
+        int payAmount = memPay.getPay().getPayPrice();
+
+        // 전문가의 이전까지 총 결제 금액 구하기
+        int count = payMapper.getPayCount(proNo);
+        int beforePrice = professional.getAveragePrice();
+        int afterPrice = beforePrice*count;
+
+
+        // 평균 가격 계산
+        double newAveragePrice = (afterPrice + payAmount) / (count + 1);
+
+        // 평균 가격 수정
+        professional.setAveragePrice((int) newAveragePrice);
+
+        // 평균 가격 불러오기
+        int averagePrice = professional.getAveragePrice();
+
+        // 매퍼를 통해 DB에 수정된 값 저장
+        payMapper.updateProPrice(averagePrice, proNo);
     }
 
 

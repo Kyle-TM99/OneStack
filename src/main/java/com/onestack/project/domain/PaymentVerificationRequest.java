@@ -19,7 +19,10 @@ public class PaymentVerificationRequest {
     String buyerName;
     String buyerPhone;
     Timestamp payTime;
-    int quotationNo;
+    int estimationNo;
     int memberNo;
     String payContent;
+    int channelNum;
+
+
 }

@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemProQuotation {
+public class MemProEstimation {
     Member member;
     Professional professional;
-    Quotation quotation;
+    Estimation estimation;
 }
