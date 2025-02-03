@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QnAWithReply {
-        private QnA qna;
-        private QnAReply qnaReply;
+public class MemPay {
+    Member member;
+    Pay pay;
 }

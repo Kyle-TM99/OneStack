@@ -26,7 +26,14 @@
                 <div class="profile-section">
                     <div class="row align-items-center mb-3">
                         <div class="col">
-                            <i class="bi bi-award"></i> <span th:text="${session.member.stackName}"></span>
+                            <i class="bi bi-award"></i> 
+                            <th:block th:if="${session.member.memberType == 1}">
+                                <span>전문가</span>
+                            </th:block>
+                            <th:block th:unless="${session.member.memberType == 1}">
+                                <span>일반회원</span>
+                            </th:block>
+                            <span th:text="${session.member.stackName}"></span>
                             <h2 th:text="${session.member.nickname + '님'}"></h2>
                         </div>
                     </div>
@@ -107,11 +114,11 @@
                     <a href="#" class="nav-link active" data-content="payment">
                         <i class="bi bi-credit-card me-2"></i>내역
                     </a>
-                    <a href="#" class="nav-link" data-content="Request">
-                        <i class="bi bi-credit-card me-2"></i>견적 요청
-                    </a>
+                    <th:block th:if="${session.member.memberType == 1}">
+                        <a href="#" class="nav-link" data-content="Request">
+                            <i class="bi bi-credit-card me-2"></i>견적 요청
+                        </a>
 
-                    <th:block th:if="${session.member.memberType == 2}">
                         <a href="#" class="nav-link" data-content="portfolio">
                             <i class="bi bi-credit-card me-2"></i>포트폴리오 관리
                         </a>
@@ -126,34 +133,6 @@
                     <a href="#" class="nav-link" data-content="profile">
                         <i class="bi bi-person me-2"></i>내 정보
                     </a>
-                </div>
-
-                <div class="my-3 info-container">
-                    <div class="row">
-                        <div>
-                            <i class="bi bi-info-circle"> 안내</i>
-                        </div>
-                        <th:block th:if="${session.member.memberType == 1}">
-                            <div class="profile-section">
-                                <div class="row align-items-center mt-3">
-                                    <h4 th:text="${session.member.nickname + '님이 보낸 견적을 읽었습니다.'}"></h4>
-                                </div>
-                                <div class="row">
-                                    <button class="btn custom-button w-100 mt-5">확인하기</button>
-                                </div>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${session.member.memberType == 2}">
-                            <div class="profile-section">
-                                <div class="row align-items-center mt-3">
-                                        <h4 th:text="${session.member.nickname + '님에게서 견적이 들어왔습니다.'}"></h4>
-                                    </div>
-                                    <div class="row">
-                                        <button class="btn custom-button w-100 mt-5">확인하기</button>
-                                    </div>
-                                </div>
-                        </th:block>
-                    </div>
                 </div>
 
                 <button class="btn custom-button2 w-100 mt-5">전문가 전환 <i class="bi bi-arrow-repeat"></i></button>

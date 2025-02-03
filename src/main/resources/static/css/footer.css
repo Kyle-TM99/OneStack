@@ -1,3 +1,46 @@
+/* 푸터 전용 스타일 */
+footer.site-footer {
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+    color: #6c757d;
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    .footer-contact h2 {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .footer-nav {
+        display: flex;
+        gap: 4rem;
+    }
+
+    .nav-column h3 {
+        font-size: 1rem;
+        color: #343a40;
+        margin-bottom: 1rem;
+    }
+
+    .nav-column ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .nav-column a {
+        color: #6c757d;
+        text-decoration: none;
+        font-size: 0.9rem;
+        line-height: 2;
+    }
+
+    /* 기존의 모든 스타일에 footer.site-footer 선택자 추가 */
+}
+
 .footer {
     background-color: #fff;
     padding: 40px 0;

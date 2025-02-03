@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberWithQnA {
-	private Member member;
-	private QnA qna;
+public class MemProEstimation {
+    Member member;
+    Professional professional;
+    Estimation estimation;
 }

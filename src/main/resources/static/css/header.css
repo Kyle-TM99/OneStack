@@ -1,3 +1,51 @@
+/* 헤더 전용 스타일 */
+header.navbar-header {
+  /* 메인 메뉴 스타일 */
+  .main-menu {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* 서브메뉴 스타일 */
+  .submenu-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    min-width: 600px;
+    max-width: 800px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    margin-top: 1px;
+    z-index: 1000;
+  }
+
+  .navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .nav-link.px-3 {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  /* 나머지 스타일들도 header.navbar-header 안에 중첩 */
+  .right-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* 기존의 모든 스타일에 header.navbar-header 선택자 추가 */
+}
+
 /* 메인 메뉴 스타일 */
 .main-menu {
   position: relative;
@@ -13,18 +61,18 @@
   width: 100%;
   min-width: 600px;
   max-width: 800px;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease-in-out;
-  margin-top: 1px;
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  margin-top: 1px;
+  z-index: 1000;
 }
 
-/* 서브메뉴 표시 클래스 */
+/* 서브메뉴 표시 상태 */
 .submenu-container.show {
   opacity: 1;
   visibility: visible;
@@ -83,52 +131,6 @@
 .nav-link.px-3 {
   padding-top: 20px !important;
   padding-bottom: 20px !important;
-}
-
-/* 모달 스타일 */
-.modal {
-  background: none !important;
-}
-
-.modal .modal-dialog {
-  position: fixed;
-  left: auto;
-  top: 60px;
-  margin: 0;
-  width: 350px;
-}
-
-.modal .modal-content {
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.modal .modal-header {
-  padding: 15px 20px;
-}
-
-.modal .modal-title {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.modal .modal-body {
-  padding: 0;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-/* 채팅 및 알림 아이템 스타일 */
-.chat-item,
-.notification-item {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.chat-item:hover,
-.notification-item:hover {
-  background-color: #f8f9fa;
 }
 
 /* 뱃지 스타일 */
@@ -226,188 +228,127 @@
   border-radius: 4px; /* 모서리 둥글게 */
   transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 */
 }
-/* 메인 메뉴 스타일 */
-.main-menu {
-  position: relative;
-  width: 100%;
-  overflow: visible;
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
-/* 서브메뉴 표시 클래스 */
+.category-header h6 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.category-header h6:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.development-submenu, .data-submenu {
+    padding-left: 16px;
+}
+
+.development-submenu a, .data-submenu a {
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+/* 왼쪽 메뉴 컨테이너 */
+.left-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* 서브메뉴 컨테이너 */
+.submenu-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    min-width: 600px;
+    max-width: 800px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+/* 서브메뉴 표시 상태 */
 .submenu-container.show {
-  opacity: 1;
-  visibility: visible;
+    opacity: 1;
+    visibility: visible;
 }
 
-/* 헤더 메뉴 호버 효과 */
-.left-menu .nav-link:hover {
-  color: #007bff;
-  background-color: rgba(0, 123, 255, 0.1);
-  border-radius: 4px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* 카테고리 헤더 아이콘 트랜지션 */
+.bi-chevron-down {
+    transition: transform 0.2s ease-in-out;
 }
 
-/* 서브메뉴 항목 스타일 */
-.submenu-container h6 {
-  padding: 10px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  margin: 0;
-  font-weight: bold;
-  color: #333;
-}
-
-.submenu-container .col-md-4 {
-  padding: 0 20px;
-  text-align: left;
-}
-
-.submenu-container .col-md-4 a {
-  display: block;
-  padding: 10px 15px;
-  color: #555;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.submenu-container .col-md-4 a:hover {
-  color: #007bff;
-  font-weight: bold;
-  background-color: rgba(0, 123, 255, 0.1);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .main-menu {
-    display: none;
-  }
-}
-
-/* navbar 스타일 */
-.navbar {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.nav-link.px-3 {
-  padding-top: 20px !important;
-  padding-bottom: 20px !important;
-}
-
-/* 모달 스타일 */
-.modal {
-  background: none !important;
-}
-
-.modal .modal-dialog {
-  position: fixed;
-  left: auto;
-  top: 60px;
-  margin: 0;
-  width: 350px;
-}
-
-.modal .modal-content {
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.modal .modal-header {
-  padding: 15px 20px;
-}
-
-.modal .modal-title {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.modal .modal-body {
-  padding: 0;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-/* 채팅 및 알림 아이템 스타일 */
-.chat-item,
-.notification-item {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.chat-item:hover,
-.notification-item:hover {
-  background-color: #f8f9fa;
-}
-
-/* 뱃지 스타일 */
-.badge.rounded-pill,
-.notification-item .badge {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.5rem;
-}
-
-/* 오른쪽 메뉴 스타일 */
-.right-menu {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.right-menu::after {
-  content: '';
-  height: 24px;
-  width: 1px;
-  background-color: #e5e7eb;
-  margin: 0 0.5rem;
-}
-
-/* 프로필 드롭다운 스타일 */
-.profile-link .fa-chevron-down {
-  font-size: 12px;
-  transition: transform 0.2s ease;
-}
-
-.profile-link[aria-expanded="true"] .fa-chevron-down {
-  transform: rotate(180deg);
-}
-
+/* 드롭다운 메뉴 스타일 */
 .dropdown-menu {
-  margin-top: 0.5rem;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: none;
+    position: absolute;
+    z-index: 1000;
 }
 
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+/* 드롭다운 메뉴 표시 상태 */
+.dropdown-menu.show {
+    display: block;
 }
 
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #3b82f6;
+/* 로그인 버튼 스타일 */
+.auth-buttons {
+    display: flex;
+    align-items: center;
 }
 
-.dropdown-item.text-danger:hover {
-  background-color: #fff5f5;
-  color: #dc3545;
+/* 로그인 버튼 스타일 */
+.auth-buttons .btn {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 20px;
+    transition: all 0.2s ease;
 }
 
-/* 버튼 간격 조정 */
-.btn-outline-secondary.btn-sm {
-  margin-right: 4px;
+/* 로그인 버튼 스타일 */
+.auth-buttons .btn-outline-primary {
+    border-color: #215EA3;
+    color: #215EA3;
 }
 
-/* 오른쪽 메뉴 호버 효과 */
-.right-menu .nav-link:hover {
-  color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.1);
-  border-radius: 4px;
+/* 로그인 버튼 호버 효과 */
+.auth-buttons .btn-outline-primary:hover {
+    background-color: #215EA3;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 94, 163, 0.2);
 }
 
-/* 아이콘 호버 효과 */
-.right-menu .nav-link i:hover {
-  color: #3b82f6;
-  transform: scale(1.1);
-  transition: color 0.2s ease, transform 0.2s ease;
+/* 로그인 버튼 스타일 */
+.auth-buttons .btn-primary {
+    background-color: #215EA3;
+    border-color: #215EA3;
+}
+
+/* 로그인 버튼 호버 효과 */
+.auth-buttons .btn-primary:hover {
+    background-color: #1b4d8a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 94, 163, 0.3);
+}
+
+/* 로그인 버튼 아이콘 스타일 */
+.auth-buttons .bi {
+    font-size: 0.9rem;
+    margin-right: 4px;
 }

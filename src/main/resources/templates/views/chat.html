@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+	 <link th:href="@{/css/chat.css}" rel="stylesheet">
+    <!-- FullCalendar 최신 버전 -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <!-- FullCalendar 한글 지원 -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/ko.global.min.js'></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <title>채팅방</title>
+    <!-- 포트원 결제 -->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<th:block layout:fragment="content">
+    <div th:if="${session.member}" 
+         th:data-member-id="${session.member.memberId}"
+         th:data-member-nickname="${session.member.nickname}"
+         th:data-member-social-type="${session.member.socialType}"
+         th:data-member-profile-image="${session.member.memberImage}"
+         style="display: none;">
+    </div>
+
+    <div class="chat-wrapper">
+        <div class="split-container">
+            <!-- 왼쪽: 채팅 영역 -->
+            <div class="chat-section">
+                <!-- 채팅방 헤더 --> 
+                <div class="chat-header">
+                    <div class="header-content">
+                        <div class="header-left">
+                            <h5 class="room-title" th:text="${room.roomName}">채팅방</h5>
+                            <div class="participant-info">
+                                <span class="participant" th:text="${estimation.memberNickname}"></span><span class="badge rounded-pill text-bg-primary">멤버</span>
+                                <span class="separator">·</span>
+                                <span class="participant" th:text="${estimation.proNickname}"></span><span class="badge rounded-pill text-bg-success">전문가</span>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            <!-- 방장(전문가) 권한 체크 -->
+                            <th:block th:if="${session.member.memberNo == room.roomAdmin}">
+                                <a class="header-icon" onclick="deleteRoom()" title="채팅방 삭제">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </th:block>
+                            <th:block th:if="${estimation.progress == 2}">
+                                <th:block th:if="${session.member.memberNo == estimation.memberNo}">
+                                    <a class="header-icon" title="결제">
+                                        <i id="payBtn" class="bi bi-credit-card-2-front"></i>
+                                    </a>
+                                </th:block>
+                            </th:block>
+                            <a class="header-icon" onclick="showEstimationModal()" title="요청서 확인">
+                                <i class="bi bi-clipboard"></i>
+                            </a>
+                            <a class="header-icon" onclick="leaveRoom()" title="나가기">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 채팅 메시지 영역 -->
+                <div class="chat-messages" id="messageArea">
+                    <!-- 기존 메시지 표시 -->
+                    <th:block th:each="msg : ${messages}">
+                        <!-- 시스템 메시지 (입장/퇴장) -->
+                        <div th:if="${msg.type == 'ENTER' or msg.type == 'LEAVE'}" class="message system">
+                            <div class="message-bubble" th:text="${msg.message}"></div>
+                        </div>
+                        <!-- 일반 채팅 메시지 -->
+                        <div th:unless="${msg.type == 'ENTER' or msg.type == 'LEAVE'}" 
+                             th:class="${msg.sender == session.member.memberId ? 'message sent' : 'message received'}">
+                            <div class="message-group">
+                                <!-- 받은 메시지일 경우에만 프로필 이미지 표시 -->
+                                <img th:if="${msg.sender != session.member.memberId}"
+                                     th:src="${msg.profileImage != null ? msg.profileImage : '/images/default-profile.png'}"
+                                     class="profile-image">
+                                <div class="message-content">
+                                    <div class="message-meta" th:if="${msg.sender != session.member.memberId}">
+                                        <strong th:text="${msg.nickname}"></strong>
+                                    </div>
+                                    <div class="message-bubble" th:text="${msg.message}"></div>
+                                    <div class="message-meta">
+                                        <span th:text="${#temporals.format(msg.sentAt, 'yyyy-MM-dd HH:mm')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+
+                <!-- 입력 영역 -->
+                <div class="chat-input-area">
+                    <form id="messageForm" onsubmit="sendMessage(event)">
+                        <div class="input-group">
+                            <input type="text" id="message" class="form-control" 
+                                   placeholder="메시지를 입력하세요..." autocomplete="off">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 게시판/캘린더 탭 영역 -->
+            <div class="side-section">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#boardTab" type="button">게시판</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#calendarTab" type="button">일정</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content">
+                    
+                    <!-- 게시판 탭 -->
+                    <div class="tab-pane fade show active" id="boardTab">
+                        <div class="board-container">
+                            <div class="board-header d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0">게시판</h5>
+                                <button class="btn btn-primary rounded-circle" onclick="openPostModal()">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
+                            <div class="board-list" id="boardList">
+                                <!-- 게시글이 여기에 동적으로 추가됨 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 캘린더 탭 -->
+                    <div class="tab-pane fade" id="calendarTab">
+                        <div class="calendar-container">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 요청서 확인 모달 -->
+        <div class="modal fade" id="estimationCheckModal" tabindex="-1" aria-labelledby="estimationModalLabel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="min-width: 500px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="estimationModalLabel">요청서 상세 내용</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="word-break: break-word;">
+                        <div class="estimation-details">
+                            <div class="mb-3">
+                                <h6 class="fw-bold">프로젝트 정보</h6>
+                                <div class="info-group">
+                                    <p><strong>카테고리:</strong> <span th:text="${estimation.categoryName}"></span></p>
+                                    <p>
+                                        <strong>견적 금액:</strong> 
+                                        <span id="estimationPrice" th:text="${#numbers.formatDecimal(estimation.estimationPrice, 0, 'COMMA', 0, 'POINT')}"></span>원
+                                        <!-- 전문가만 수정 가능하도록 -->
+                                        <th:block th:if="${session.member.memberNo == room.roomAdmin}">
+                                            <i class="bi bi-pencil-square" onclick="togglePriceEdit()" style="cursor: pointer; margin-left: 5px;"></i>
+                                        </th:block>
+                                    </p>
+                                    <!-- 금액 수정 폼 (기본적으로 숨김) -->
+                                    <div id="priceEditForm" style="display: none; margin-top: 10px;">
+                                        <div class="input-group">
+                                            <input type="number" id="newPrice" class="form-control" 
+                                                   th:value="${estimation.estimationPrice}" min="0" step="1000">
+                                            <button class="btn btn-primary" onclick="updateEstimationPrice()">수정</button>
+                                            <button class="btn btn-secondary" onclick="togglePriceEdit()">취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="fw-bold">프로젝트 내용</h6>
+                                <div class="content-box p-3 bg-light rounded" style="white-space: pre-wrap;">
+                                    <p th:text="${estimation.estimationContent}"></p>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="fw-bold">참여자 정보</h6>
+                                <div class="info-group">
+                                    <p><strong>의뢰인:</strong> <span th:text="${estimation.memberNickname}"></span></p>
+                                    <p><strong>전문가:</strong> <span th:text="${estimation.proNickname}"></span></p>
+                                </div>
+                            </div>
+                            <div th:if="${estimation.estimationMsg}" class="mb-3">
+                                <h6 class="fw-bold">전문가 메시지</h6>
+                                <div class="content-box p-3 bg-light rounded">
+                                    <p th:text="${estimation.estimationMsg}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- 전문가일 경우 견적 확인 버튼 표시 -->
+                        <th:block th:if="${session.member.memberNo == estimation.proNo}">
+                            <button th:if="${estimation.estimationCheck == 0}" 
+                                    type="button" 
+                                    class="btn btn-primary"
+                                    th:data-estimation-no="${estimation.estimationNo}"
+                                    id="confirmEstimationBtn"
+                                    onclick="confirmEstimation(this)">견적 확인</button>
+                        </th:block>
+                        
+                        <!-- 의뢰인일 경우 견적 확인 버튼 표시 -->
+                        <th:block th:if="${session.member.memberNo == estimation.memberNo}">
+                            <button th:if="${estimation.estimationCheck == 1 and estimation.progress == 1}" 
+                                    type="button" 
+                                    class="btn btn-primary"
+                                    th:data-estimation-no="${estimation.estimationNo}"
+                                    id="confirmEstimationByClientBtn"
+                                    onclick="confirmEstimationByClient(this)">견적 확인</button>
+                        </th:block>
+                        
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 일정 추가 모달 -->
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">일정 추가</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="eventForm">
+                            <div class="mb-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" id="eventTitle" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">시작 일시</label>
+                                <input type="datetime-local" class="form-control" id="eventStartDate" required
+                                       onchange="updateEndDateMin()">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">종료 일시</label>
+                                <input type="datetime-local" class="form-control" id="eventEndDate" required
+                                       min="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">설명</label>
+                                <textarea class="form-control" id="eventDescription" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="submitEvent()">저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게시글 작성 모달 -->
+        <div class="modal fade" id="postModal" tabindex="-1">
+            <div class="modal-dialog" style="max-width: 600px; width: 100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">게시글 작성</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="postForm">
+                            <div class="mb-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" id="postTitle" required 
+                                       style="word-break: break-all;">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">내용</label>
+                                <textarea class="form-control" id="postContent" rows="5" required 
+                                          style="word-break: break-all; white-space: pre-wrap; resize: vertical;"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="savePost()">저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 일정 상세보기 모달 -->
+        <div class="modal fade" id="eventDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 600px; width: 100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">일정 상세보기</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="mb-3">
+                                <label class="fw-bold h6 mb-2">제목</label>
+                                <p id="detailEventTitle" class="mb-3" style="word-break: break-all; white-space: pre-wrap;"></p>
+                                <label class="fw-bold h6 mb-2">시작 일시</label>
+                                <p id="detailEventStart" class="mb-3"></p>
+                                <label class="fw-bold h6 mb-2">종료 일시</label>
+                                <p id="detailEventEnd" class="mb-3"></p>
+                                <label class="fw-bold h6 mb-2">설명</label>
+                                <p id="detailEventDescription" class="mb-3" style="word-break: break-all; white-space: pre-wrap;"></p>
+                                <label class="fw-bold h6 mb-2">작성자</label>
+                                <p id="detailEventCreator" class="mb-3"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-danger" id="deleteEventBtn" style="display: none;">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 채팅방 정보를 hidden input으로 저장 -->
+        <input type="hidden" id="roomId" th:value="${room.roomId}">
+
+        <!-- 결제 요청서 모달 -->
+        <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="payModalLabel">결제 요청서</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div th:each="pay : ${payList}" class="memo">
+                            <div class="memo-header">
+                                <h3>견적서</h3>
+                                <p id="projectName">견적 번호: [[ ${pay.estimation.estimationNo} ]]</p>
+                            </div>
+                            <p id="memberNo" hidden>[[ ${pay.member.memberNo} ]]</p>
+                            <p id="memberPhone" hidden>[[ ${pay.member.phone} ]]</p>
+                            <p id="memberEmail" hidden>[[ ${pay.member.email} ]]</p>
+
+                            <table class="memo-table table">
+                                <tr>
+                                    <th>회원 이름</th>
+                                    <td id="memberName">[[${pay.member.name}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>견적 내용</th>
+                                    <td id="quotationContent">[[${pay.estimation.estimationContent}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>견적 금액</th>
+                                    <td id="projectPrice">₩[[${#numbers.formatDecimal(pay.estimation.estimationPrice, 0, 'COMMA', 0, 'POINT')}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>견적 확정일</th>
+                                    <td>[[${#temporals.format(pay.estimation.updatedAt, 'yyyy-MM-dd HH:mm:ss')}]]</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="payKakaoBtn" class="btn btn-warning">카카오페이</button>
+                        <button id="payKgBtn" class="btn btn-success">KG</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결제 완료 모달창 -->
+        <div class="modal fade" id="payDoneModal" tabindex="-1" aria-labelledby="payDoneModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="payDoneModalLabel">결제 영수증</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="memo">
+                            <div class="memo-header">
+                                <h3>견적서</h3>
+                                <p id="payNo">결제 번호: </p>  <!-- 결제 번호를 동적으로 변경 -->
+                            </div>
+
+                            <table class="memo-table table">
+                                <!-- 결제 정보를 동적으로 삽입할 부분 -->
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <!-- 필수 라이브러리 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 소켓 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    
+    <script th:inline="javascript">
+        const roomId = [[${room.roomId}]];
+        const currentUser = {
+            memberId: [[${session.member.memberId}]],
+            nickname: [[${session.member.nickname}]],
+            socialType: [[${session.member.socialType}]],
+            memberImage: [[${session.member.memberImage}]]
+        };
+        
+        // 웹소켓 연결
+        var sock = new SockJS('/ws-stomp');
+        var ws = Stomp.over(sock);
+        
+        // 연결 성공 시
+        ws.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            
+            // 채팅방 구독 - 실제 roomId 값을 사용
+            const destination = `/topic/chat/room/${roomId}`;
+            ws.subscribe(destination, function(message) {
+                var recv = JSON.parse(message.body);
+                displayMessage(recv);
+            });
+            
+            // 입장 메시지 전송
+            ws.send("/app/chat/message", {}, JSON.stringify({
+                type: 'ENTER',
+                roomId: roomId,
+                sender: currentUser.memberId,
+                nickname: currentUser.nickname,
+                message: currentUser.nickname + "님이 입장하셨습니다.",
+                sentAt: new Date()
+            }));
+        }, function(error) {
+            console.error('STOMP error: ' + error);
+            alert('채팅 서버 연결에 실패했습니다. 페이지를 새로고침해주세요.');
+        });
+        
+        // 메시지 전송
+        function sendMessage(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                ws.send("/app/chat/message", {}, JSON.stringify({
+                    type: 'TALK',
+                    roomId: roomId,
+                    sender: currentUser.memberId,
+                    nickname: currentUser.nickname,
+                    message: message,
+                    sentAt: new Date()
+                }));
+                messageInput.value = '';
+            }
+        }
+        
+        // 메시지 표시
+        function displayMessage(message) {
+            const messageArea = document.getElementById('messageArea');
+            const messageDiv = document.createElement('div');
+            
+            // 시스템 메시지 (입장/퇴장)
+            if (message.type === 'ENTER' || message.type === 'LEAVE') {
+                messageDiv.className = 'message system';
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">
+                        ${message.message}
+                    </div>
+                `;
+            } 
+            // 일반 채팅 메시지
+            else {
+                messageDiv.className = message.sender === currentUser.memberId ? 'message sent' : 'message received';
+                
+                if (message.sender === currentUser.memberId) {
+                    // 보낸 메시지
+                    messageDiv.innerHTML = `
+                        <div class="message-group">
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    ${message.message}
+                                </div>
+                                <div class="message-meta">
+                                    ${formatDate(new Date(message.sentAt))}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 받은 메시지
+                    messageDiv.innerHTML = `
+                        <div class="message-group">
+                            <img src="${message.profileImage || '/images/default-profile.png'}" class="profile-image">
+                            <div class="message-content">
+                                <div class="message-meta">
+                                    <strong>${message.nickname}</strong>
+                                </div>
+                                <div class="message-bubble">
+                                    ${message.message}
+                                </div>
+                                <div class="message-meta">
+                                    ${formatDate(new Date(message.sentAt))}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            messageArea.appendChild(messageDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+        
+        // 날짜 포맷
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+        
+        // 채팅방 나가기
+        function leaveRoom() {
+            if (confirm('채팅방을 나가시겠습니까?')) {
+                ws.send("/app/chat/message", {}, JSON.stringify({
+                    roomId: roomId,
+                    sender: currentUser.memberId,
+                    nickname: currentUser.nickname,
+                    message: currentUser.nickname + "님이 퇴장하셨습니다.",
+                    type: 'LEAVE'
+                }));
+                
+                ws.disconnect();
+                window.location.href = '/chat';
+            }
+        }
+
+        // 게시글 목록 로드 함수 수정
+        function loadPosts() {
+            fetch(`/api/chat/posts/${roomId}`)
+                .then(response => response.json())
+                .then(posts => {
+                    const boardList = document.querySelector('.board-list');
+                    if (!posts || posts.length === 0) {
+                        boardList.innerHTML = '<div class="text-center text-muted p-3">등록된 게시글이 없습니다.</div>';
+                        return;
+                    }
+                    
+                    boardList.innerHTML = posts.map(post => `
+                        <div class="board-item" data-post-id="${post.boardId}">
+                            <div class="post-header" onclick="togglePost(this)">
+                                <div class="post-title-area">
+                                    <h6 class="post-title" style="word-break: break-all; white-space: pre-wrap;">${post.boardTitle}</h6>
+                                </div>
+                                <div class="post-meta">
+                                    <span>${post.writerNickname || post.memberId}</span>
+                                    <span>${moment(post.joinedAt).format('YYYY-MM-DD')}</span>
+                                    ${post.memberId === currentUser.memberId ? 
+                                        `<button class="btn btn-sm btn-outline-danger" onclick="deletePost(${post.boardId}, event)">삭제</button>` : 
+                                        ''}
+                                </div>
+                            </div>
+                            <div class="post-content" style="word-break: break-all; white-space: pre-wrap;">${post.boardContent}</div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading posts:', error);
+                    const boardList = document.querySelector('.board-list');
+                    boardList.innerHTML = '<div class="text-center text-danger p-3">게시글 로드 중 오류가 발생했습니다.</div>';
+                });
+        }
+
+        // 게시글 토글 함수 추가
+        function togglePost(header) {
+            event.stopPropagation();
+            const item = header.closest('.board-item');
+            const wasActive = item.classList.contains('active');
+            
+            // 모든 활성화된 항목 닫기
+            document.querySelectorAll('.board-item.active').forEach(activeItem => {
+                if (activeItem !== item) {
+                    activeItem.classList.remove('active');
+                }
+            });
+            
+            // 클릭된 항목 토글
+            item.classList.toggle('active', !wasActive);
+        }
+
+        // 게시글 삭제 함수 수정
+        function deletePost(postId, event) {
+            event.stopPropagation(); // 이벤트 버블링 방지
+            if (confirm('게시글을 삭제하시겠습니까?')) {
+                fetch(`/api/chat/posts/${postId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadPosts();
+                    } else {
+                        alert(data.message || '게시글 삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('게시글 삭제에 실패했습니다.');
+                });
+            }
+        }
+
+        // 참여자 목록 업데이트 함수
+        function updateParticipantsList(participants) {
+            const participantsList = $('#participantsList');
+            participantsList.empty();
+            
+            $('#participantCount').text(participants.length);
+            
+            participants.forEach(function(participant) {
+                const isAdmin = participant.memberId === room.roomAdmin;
+                const adminBadge = isAdmin ? '<span class="badge bg-primary ms-1">방장</span>' : '';
+                
+                participantsList.append(`
+                    <div class="dropdown-item d-flex align-items-center">
+                        <img src="${participant.memberImage || '/images/default-profile.png'}" 
+                             class="rounded-circle me-2" 
+                             style="width: 30px; height: 30px;">
+                        <span>${participant.nickname}${adminBadge}</span>
+                    </div>
+                `);
+            });
+        }
+        
+        // 참여자 목록 토글 함수
+        function toggleParticipantsList() {
+            const sidebar = document.getElementById('participantsSidebar');
+            sidebar.classList.toggle('show');
+        }
+        
+        // 방 삭제 함수
+        function deleteRoom() {
+            if (!confirm('정말로 채팅방을 삭제하시겠습니까?\n모든 대화 내용이 삭제됩니다.')) {
+                return;
+            }
+            
+            $.ajax({
+                url: `/api/chat/room/${roomId}/delete`,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function(response) {
+                    if (response.success) {
+                        // 시스템 메시지가 표시될 시간을 주기 위해 잠시 대기
+                        setTimeout(() => {
+                            alert(response.message);
+                            window.location.href = '/chat';  // chat_list.html로 리다이렉트
+                        }, 1000);
+                    } else {
+                        alert(response.message || '채팅방 삭제에 실패했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('채팅방 삭제에 실패했습니다.');
+                }
+            });
+        }
+
+        // calendar 객체를 전역 변수로 선언
+        let calendar;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 게시글 목록 초기 로드
+            loadPosts();
+
+            const calendarEl = document.getElementById('calendar');
+            // calendar 객체 초기화
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth'
+                },
+                height: '100%',
+                locale: 'ko',
+                editable: true,
+                selectable: true,
+                businessHours: true,
+                dayMaxEvents: true,
+                nowIndicator: true,
+                navLinks: false,
+                fixedWeekCount: false,
+                showNonCurrentDates: false,
+                select: function(info) {
+                    // 선택한 날짜 정보를 모달에 설정
+                    document.getElementById('eventStartDate').value = moment(info.start).format('YYYY-MM-DDTHH:mm');
+                    document.getElementById('eventEndDate').value = moment(info.end).format('YYYY-MM-DDTHH:mm');
+                    
+                    // 모달 표시
+                    const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+                    eventModal.show();
+                },
+                events: function(info, successCallback, failureCallback) {
+                    $.ajax({
+                        url: `/api/chat/calendar/${roomId}`,
+                        type: 'GET',
+                        success: function(events) {
+                            const calendarEvents = events.map(event => {
+                                // 날짜를 직접 Date 객체로 변환
+                                const start = new Date(event.startDate);
+                                const end = new Date(event.endDate);
+                                return {
+                                    id: event.eventId,
+                                    title: event.title,
+                                    start: start,
+                                    end: end,
+                                    description: event.description,
+                                    allDay: event.all_day,
+                                    display: 'block',
+                                    backgroundColor: '#4A90E2',
+                                    borderColor: '#4A90E2',
+                                    textColor: '#ffffff',
+                                    extendedProps: {
+                                        description: event.description,
+                                        createdBy: event.createdBy
+                                    }
+                                };
+                            });
+                            console.log('변환된 이벤트:', calendarEvents); // 디버깅용
+                            successCallback(calendarEvents);
+                        },
+                        error: function(error) {
+                            console.error('일정 로드 실패:', error);
+                            failureCallback(error);
+                        }
+                    });
+                },
+                timeZone: 'local',
+                displayEventEnd: true,
+                slotMinTime: '00:00:00',
+                slotMaxTime: '24:00:00',
+                firstDay: 0,  // 일요일부터 시작
+                weekNumbers: false,  // 주차 표시 제거
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false,
+                    hour12: false
+                },
+                dayHeaderFormat: { weekday: 'short' },  // 요일 표시 형식
+                titleFormat: { year: 'numeric', month: 'long' },  // 달력 제목 형식
+                dayMaxEventRows: true,
+                showNonCurrentDates: false,
+                views: {
+                    dayGrid: {
+                        displayEventEnd: true,
+                        eventMaxStack: 3
+                    }
+                },
+                eventDidMount: function(info) {
+                    if (info.event.allDay) {
+                        info.el.style.backgroundColor = '#3788d8';
+                    }
+                },
+                eventClick: function(info) {
+                    const event = info.event;
+                    
+                    // 상세 정보 모달에 데이터 설정
+                    document.getElementById('detailEventTitle').textContent = event.title;
+                    document.getElementById('detailEventStart').textContent = 
+                        moment(event.start).format('YYYY년 MM월 DD일 HH:mm');
+                    document.getElementById('detailEventEnd').textContent = 
+                        moment(event.end).format('YYYY년 MM월 DD일 HH:mm');
+                    document.getElementById('detailEventDescription').textContent = 
+                        event.extendedProps.description || '설명 없음';
+                    document.getElementById('detailEventCreator').textContent = 
+                        event.extendedProps.createdBy || '알 수 없음';
+                    
+                    // 삭제 버튼 표시 여부 결정 (작성자인 경우에만)
+                    const deleteBtn = document.getElementById('deleteEventBtn');
+                    if (event.extendedProps.createdBy === currentUser.memberId) {
+                        deleteBtn.style.display = 'block';
+                        deleteBtn.onclick = () => deleteEvent(event.id);
+                    } else {
+                        deleteBtn.style.display = 'none';
+                    }
+                    
+                    // 모달 표시
+                    const modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+                    modal.show();
+                }
+            });
+            
+            calendar.render();
+            
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                if (e.target.getAttribute('data-bs-target') === '#calendarTab') {
+                    calendar.updateSize();
+                    calendar.refetchEvents();
+                }
+            });
+            
+            window.submitEvent = function() {
+                const title = document.getElementById('eventTitle').value.trim();
+                const description = document.getElementById('eventDescription').value.trim();
+                
+                const startDate = moment(document.getElementById('eventStartDate').value)
+                    .format('YYYY-MM-DDTHH:mm:ss');
+                const endDate = moment(document.getElementById('eventEndDate').value)
+                    .format('YYYY-MM-DDTHH:mm:ss');
+                
+                if (!title) {
+                    alert('일정 제목을 입력해주세요.');
+                    return;
+                }
+                
+                if (moment(endDate).isSameOrBefore(startDate)) {
+                    alert('종료 일시는 시작 일시보다 이후여야 합니다.');
+                    return;
+                }
+                
+                const eventData = {
+                    title: title,
+                    description: description,
+                    roomId: roomId,
+                    createdBy: currentUser.memberId,
+                    startDate: startDate,
+                    endDate: endDate,
+                    all_day: false
+                };
+                
+                console.log('전송할 데이터:', JSON.stringify(eventData, null, 2));
+                
+                $.ajax({
+                    url: '/api/chat/calendar',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(eventData),
+                    success: function(response) {
+                        if (response.success) {
+                            const eventModal = bootstrap.Modal.getInstance(document.getElementById('eventModal'));
+                            eventModal.hide();
+                            document.getElementById('eventForm').reset();
+                            setTimeout(() => {
+                                calendar.refetchEvents();
+                            }, 100);
+                            alert('일정이 추가되었습니다.');
+                        } else {
+                            alert(response.error || '일정 추가에 실패했습니다.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Response:', xhr.responseText);
+                        console.error('전송된 데이터:', JSON.stringify(eventData));
+                        alert('일정 추가에 실패했습니다.');
+                    }
+                });
+            };
+        });
+
+        // 게시글 작성 모달 열기
+        function openPostModal() {
+            $('#postModal').modal('show');
+        }
+        
+        // 게시글 저장
+        function savePost() {
+            const postTitle = document.getElementById('postTitle').value.trim();
+            const postContent = document.getElementById('postContent').value
+                .replace(/^\s+/gm, '')  // 각 줄 시작의 공백 제거
+                .replace(/\n\s*\n\s*/g, '\n\n')  // 여러 줄 공백을 두 줄로 제한
+                .trim();  // 앞뒤 공백 제거
+
+            const postData = {
+                roomId: roomId,
+                memberId: currentUser.memberId,
+                boardTitle: postTitle,
+                boardContent: postContent
+            };
+            
+            // 제목이나 내용이 비어있는지 확인
+            if (!postData.boardTitle || !postData.boardContent) {
+                alert('제목과 내용을 입력해주세요.');
+                return;
+            }
+            
+            fetch('/api/chat/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#postModal').modal('hide');
+                    document.getElementById('postForm').reset();
+                    loadPosts(); // 게시글 목록 새로고침
+                } else {
+                    alert(data.message || '게시글 저장에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('게시글 저장에 실패했습니다.');
+            });
+        }
+
+        // 요청서 모달 표시 함수
+        function showEstimationModal() {
+            const modal = new bootstrap.Modal(document.getElementById('estimationCheckModal'));
+            modal.show();
+        }
+
+        // 일정 삭제 함수
+        function deleteEvent(eventId) {
+            if (!confirm('이 일정을 삭제하시겠습니까?')) {
+                return;
+            }
+            
+            $.ajax({
+                url: `/api/chat/calendar/${eventId}`,
+                type: 'DELETE',
+                success: function(response) {
+                    if (response.success) {
+                        // 먼저 모달 닫기
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('eventDetailModal'));
+                        modal.hide();
+                        
+                        // 알림창 표시
+                        alert('일정이 삭제되었습니다.');
+                        
+                        // 캘린더 이벤트 새로고침 (이제 전역 calendar 객체에 접근 가능)
+                        calendar.refetchEvents();
+                    } else {
+                        alert(response.error || '일정 삭제에 실패했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('일정 삭제에 실패했습니다.');
+                }
+            });
+        }
+
+        function confirmEstimation(button) {
+            if(confirm('견적 내용을 확인하시겠습니까? 확인 후에는 수정이 불가능합니다.')) {
+                const estimationNo = button.getAttribute('data-estimation-no');
+                
+                fetch(`/api/estimation/${estimationNo}/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'PRO'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('견적이 확인되었습니다. 의뢰인의 확인을 기다립니다.');
+                        location.reload();
+                    } else {
+                        alert(data.message || '견적 확인 처리 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+        }
+
+        function confirmEstimationByClient(button) {
+            if(confirm('견적 내용을 확인하시겠습니까? 확인 후 결제 단계로 진행됩니다.')) {
+                const estimationNo = button.getAttribute('data-estimation-no');
+                
+                fetch(`/api/estimation/${estimationNo}/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'CLIENT'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('견적이 확인되었습니다. 결제를 진행해주세요.');
+                        document.getElementById('confirmEstimationByClientBtn').style.display = 'none';
+                        location.reload();
+                    } else {
+                        alert(data.message || '견적 확인 처리 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+        }
+
+        // 금액 수정 폼 토글
+        function togglePriceEdit() {
+            const priceEditForm = document.getElementById('priceEditForm');
+            priceEditForm.style.display = priceEditForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 견적 금액 업데이트
+        function updateEstimationPrice() {
+            const newPrice = document.getElementById('newPrice').value;
+            const estimationNo = /*[[${estimation.estimationNo}]]*/ '';
+            
+            if (!newPrice || newPrice < 0) {
+                alert('올바른 금액을 입력해주세요.');
+                return;
+            }
+
+            fetch(`/api/estimation/${estimationNo}/price`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    estimationPrice: newPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 화면 업데이트
+                    document.getElementById('estimationPrice').textContent = 
+                        new Intl.NumberFormat('ko-KR').format(newPrice);
+                    togglePriceEdit(); // 수정 폼 닫기
+                    alert('견적 금액이 수정되었습니다.');
+                } else {
+                    alert(data.message || '견적 금액 수정에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('견적 금액 수정 중 오류가 발생했습니다.');
+            });
+        }
+
+        /* 결제 버튼 상수화 */
+        const payButton = document.getElementById("payBtn");
+        const payKakaoBtn = document.getElementById("payKakaoBtn");
+        const payKgBtn = document.getElementById("payKgBtn");
+
+        /* 결제 버튼 클릭 시 결제창 모달 실행 */
+        payButton.addEventListener("click", function () {
+            let payModal = new bootstrap.Modal(document.getElementById("payModal"));
+            payModal.show();
+        });
+
+
+        /* 결제 버튼 클릭시 결제 함수 실행 */
+        payKakaoBtn.addEventListener("click", () => requestPayment(1));
+        payKgBtn.addEventListener("click", () => requestPayment(2));
+
+        /* 결제 함수 */
+        function requestPayment(channelNum) {
+
+            const IMP = window.IMP; // IMP 초기화 및 연동
+            IMP.init("imp80060870"); // 고객사 식별 코드(PortOne 콘솔 - 식별코드 - 고객사 식별코드)
+
+            const projectNumber = document.getElementById("projectName").textContent.replace(/[^0-9]/g, '');
+            const projectPrice = parseInt(document.getElementById("projectPrice").textContent.replace(/[₩,]/g, ''), 10);
+            const memberName = document.getElementById("memberName").textContent;
+            const memberPhone = document.getElementById("memberPhone").textContent;
+            const memberEmail = document.getElementById("memberEmail").textContent;
+            const memberNo = document.getElementById("memberNo").textContent;
+            const quotationContent = document.getElementById("quotationContent").textContent;
+            let channelKey;
+
+            if (channelNum == 1) {
+                channelKey = "channel-key-ecc4b522-d290-47ed-92c9-73ed6d22ab77";
+            } else if(channelNum == 2) {
+                channelKey = "channel-key-ad888640-2d53-49e2-924f-c653f7929d94";
+            }
+
+            console.log(projectNumber);
+            console.log(projectPrice);
+            console.log(memberName);
+            console.log(memberPhone);
+            console.log(memberEmail);
+            console.log(memberNo);
+            console.log(quotationContent);
+            console.log(channelKey);
+
+            IMP.request_pay({
+                channelKey: channelKey, // 채널 키 설정
+                pay_method: "card",
+                merchant_uid: `onestackPayment-${crypto.randomUUID()}`, // 상점에서 생성한 고유 주문번호
+                name: `원스택-${projectNumber}`,
+                amount: projectPrice,
+                buyer_name: memberName,
+                buyer_tel: memberPhone,
+                buyer_email: memberEmail
+            }, function (rsp) {
+                if (rsp.success) {
+                    // 서버에 결제 조회 요청
+                    fetch('/api/payment/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            payMethod: rsp.pay_method,
+                            paidAmount: rsp.paid_amount,
+                            buyerName: rsp.buyer_name,
+                            buyerPhone: rsp.buyer_tel,
+                            payTime: rsp.paid_at,
+                            estimationNo: projectNumber,
+                            memberNo: memberNo,
+                            payContent: quotationContent,
+                            channelNum: channelNum
+                        })
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error('결제 검증 실패');
+                        }
+                        return response.text(); // 서버에서 payNo 텍스트로 반환
+                    }).then(payNo => {
+                        alert('결제가 성공적으로 완료되었습니다.');
+
+                        // 결제 모달창 닫기
+                        $('#payModal').modal('hide');
+
+                        // 주문 완료 페이지로 이동하며 주문 번호 전달
+                        showPaymentCompleteModal(payNo);
+
+                        // 전문가 평균 가격 수정 및 견적 과정 수정
+                        updateProAveragePrice(payNo);
+
+                        // 영수증 모달창 닫히면 페이지 리로드
+                        $('#payDoneModal').on('hidden.bs.modal', function () {
+                            location.reload();
+                        });
+
+                    }).catch(error => {
+                        alert('결제 처리 중 오류가 발생했습니다: ' + error.message);
+                    });
+                } else {
+                    alert("결제 실패: " + rsp.error_msg);
+                }
+            });
+
+        };
+
+
+        /* 결제 완료 시 결제 영수증 모달 실행 */
+        function showPaymentCompleteModal(payNo) {
+            // 서버에 payNo를 보내 결제 정보를 받아옴
+            fetch(`/payDoneForm?payNo=${payNo}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('결제 정보 불러오기 실패');
+                }
+                return response.json();  // 서버에서 반환된 결제 정보를 JSON 형식으로 반환
+            }).then(payData => {
+                // 금액 포맷 (천 단위 , 추가)
+                const formattedPrice = new Intl.NumberFormat('ko-KR').format(payData.pay.payPrice);
+
+                // 결제 시간 포맷
+                const paymentDate = new Date(payData.pay.payDate);
+                const formattedDate = paymentDate.getFullYear() + '-' +
+                    String(paymentDate.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(paymentDate.getDate()).padStart(2, '0') + ' ' +
+                    String(paymentDate.getHours()).padStart(2, '0') + ':' +
+                    String(paymentDate.getMinutes()).padStart(2, '0') + ':' +
+                    String(paymentDate.getSeconds()).padStart(2, '0');
+
+                // 결제 정보를 모달에 동적으로 삽입
+                $('#payDoneModal .memo-header p').text(`결제 번호: ${payData.pay.payNo}`);
+                $('#payDoneModal .memo-table').html(`
+                    <tr>
+                        <th>견적서 번호</th>
+                        <td>${payData.pay.estimationNo}</td>
+                    </tr>
+                    <tr>
+                        <th>회원 이름</th>
+                        <td>${payData.member.name}</td>
+                    </tr>
+                    <tr>
+                        <th>견적 내용</th>
+                        <td>${payData.pay.payContent}</td>
+                    </tr>
+                    <tr>
+                        <th>결제 금액</th>
+                        <td>₩${formattedPrice}</td>
+                    </tr>
+                    <tr>
+                        <th>결제 방법</th>
+                        <td>${payData.pay.payType}</td>
+                    </tr>
+                    <tr>
+                        <th>결제 시간</th>
+                        <td>${formattedDate}</td>
+                    </tr>
+                `);
+
+                // 결제 완료 모달 띄우기
+                $('#payDoneModal').modal('show');
+            })
+                .catch(error => {
+                    alert('결제 정보를 불러오는 중 오류가 발생했습니다: ' + error.message);
+                });
+        }
+
+
+        /* 전문가 평균 가격 수정 */
+        function updateProAveragePrice(payNo) {
+            return fetch('/updateAveragePrice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payNo: payNo })
+            }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('전문가 평균 가격 수정 실패');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('전문가 평균 가격 수정 완료', data);
+                    return data;
+                })
+                .catch(error => {
+                    console.error('에러 발생:', error);
+                    throw error;
+                });
+        }
+
+
+    </script>
+</th:block>
+</html> 

@@ -98,7 +98,7 @@ public class ProfessionalController {
     }
 
 
-
+    /* 설문조사 페이지 */
     @GetMapping("/survey")
     public String getSurveyForm(@RequestParam("itemNo") int itemNo, Model model) {
         Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
@@ -106,6 +106,7 @@ public class ProfessionalController {
         return "views/surveypage";
     }
 
+    /* 전문가 정보 저장 */
     @GetMapping("/proConversion")
     public String getProConversion(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
@@ -119,6 +120,7 @@ public class ProfessionalController {
         return "views/proConversion";
     }
 
+    /* 전문가 정보 저장 */
     @PostMapping("/proConversion/save")
     @ResponseBody
     public ResponseEntity<?> saveProfessionalData(@RequestBody ProConversionRequest request) {

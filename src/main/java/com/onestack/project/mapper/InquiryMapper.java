@@ -3,7 +3,6 @@ package com.onestack.project.mapper;
 import com.onestack.project.domain.Inquiry;
 import com.onestack.project.domain.MemberWithInquiry;
 import com.onestack.project.domain.InquiryAnswer;
-import com.onestack.project.domain.ManagerWithInquiryAnswer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
