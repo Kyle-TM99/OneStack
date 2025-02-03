@@ -139,10 +139,46 @@
                 <when test="sort == 'rating'"> p.rate DESC </when>
                 <when test="sort == 'price_low'"> p.average_price ASC </when>
                 <when test="sort == 'price_high'"> p.average_price DESC </when>
-                <when test="sort == 'stack_high'"> m.stack DESC </when>
                 <otherwise> p.pro_date DESC </otherwise>
             </choose>
         </if>
+    </select>
+
+    <select id="getFilteredAndSortedProsWithPagination" parameterType="map" resultMap="MemProAdInfoCateResultMap">
+        SELECT *
+        FROM Member m JOIN Professional p
+        ON m.member_no = p.member_no
+        JOIN ProfessionalAdvancedInformation pa
+        ON p.pro_no = pa.pro_no
+        JOIN Category c
+        ON pa.item_no = c.item_no
+        WHERE
+        <if test="appType != null and !appType.isEmpty()">
+            <foreach collection="appType" item="type" separator=" AND ">
+                ${type.field} = #{type.value}
+            </foreach>
+        </if>
+        <if test="itemNo != null">
+            <choose>
+                <when test="appType != null and !appType.isEmpty()">
+                    AND pa.item_no = #{itemNo}
+                </when>
+                <otherwise>
+                    pa.item_no = #{itemNo}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="sort != null and !sort.isEmpty()">
+            ORDER BY
+            <choose>
+                <when test="sort == 'review'"> p.review_count DESC </when>
+                <when test="sort == 'rating'"> p.rate DESC </when>
+                <when test="sort == 'price_low'"> p.average_price ASC </when>
+                <when test="sort == 'price_high'"> p.average_price DESC </when>
+                <otherwise> p.pro_date DESC </otherwise>
+            </choose>
+        </if>
+        LIMIT #{size} OFFSET #{offset}
     </select>
 
     <insert id="submitEstimation" parameterType="Estimation">
