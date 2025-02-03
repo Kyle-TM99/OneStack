@@ -1,9 +1,6 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.MemPay;
-import com.onestack.project.domain.MemProEstimation;
-import com.onestack.project.domain.Pay;
-import com.onestack.project.domain.PaymentVerificationRequest;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
 import com.onestack.project.service.ProService;
@@ -15,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -102,6 +100,17 @@ public class PayController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/payReceipt/{memberNo}")
+    public String payReceipt(Model model, @PathVariable("memberNo") int memberNo) {
+        List<MemPay> recipetList = payService.getReceipt(memberNo);
+        int payCount = payService.getMemPayCount(memberNo);
+
+        model.addAttribute("recipetList", recipetList);
+        model.addAttribute("payCount", payCount);
+        return "views/payReceiptForm";
+    }
+
 
 
 

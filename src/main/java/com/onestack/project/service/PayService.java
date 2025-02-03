@@ -172,5 +172,14 @@ public class PayService {
         return payMapper.findByPayNo(payNo);
     }
 
+    // 결제 내역 가져오기
+    public List<MemPay> getReceipt(int memberNo) {
+        return payMapper.getReceipt(memberNo);
+    }
+
+    // 결제 횟수 가져오기
+    public int getMemPayCount(int memberNo) {
+        return payMapper.getMemPayCount(memberNo);
+    }
 
 }
