@@ -1,5 +1,7 @@
 package com.onestack.project.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,11 @@ public class ReviewService {
   // 리뷰 작성
   public void createReview(Review review) {
     reviewMapper.createReview(review);
+  }
+
+  // 리뷰 조회
+  public List<Review> getReviewList(int proNo) {
+    return reviewMapper.getReviewList(proNo);
   }
   
 }

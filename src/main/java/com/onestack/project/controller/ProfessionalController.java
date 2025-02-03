@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ProfessionalService;
+import com.onestack.project.service.ReviewService;
 import com.onestack.project.service.SurveyService;
 
 import jakarta.servlet.http.HttpSession;
@@ -37,8 +38,12 @@ public class ProfessionalController {
     @Autowired
     private SurveyService surveyService;
 
+    @Autowired
+    private ReviewService reviewService;
+
 	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
 	@GetMapping("/findPro")
+
 	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
 
 		Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
@@ -74,14 +79,23 @@ public class ProfessionalController {
     /* 견적 요청서 작성 */
 	@PostMapping("/submitEstimation")
 	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
-
-		proService.submitEstimation(estimation);
-
-		return "redirect:/doneEstimation";
+		try {
+			// 견적 정보 설정
+			estimation.setProNo(proNo);
+			estimation.setProgress(0); // 초기 상태 (요청)
+			
+			// 견적 저장
+			proService.submitEstimation(estimation);
+			
+			return "redirect:/estimationDoneForm";
+		} catch (Exception e) {
+			log.error("견적 요청 중 오류 발생", e);
+			return "redirect:/error";
+		}
 	}
 
     /* 견적 요청 완료 페이지 */
-    @GetMapping("/doneEstimation")
+    @GetMapping("/estimationDoneForm")
     public String estimationDoneForm() {
         return "views/estimationDoneForm";
     }
@@ -91,8 +105,9 @@ public class ProfessionalController {
     @GetMapping("/proDetail")
     public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
-
+        List<Review> reviewList = reviewService.getReviewList(proNo);
         model.addAttribute("proList", proList);
+        model.addAttribute("reviewList", reviewList);
 
         return "views/proDetail";
     }

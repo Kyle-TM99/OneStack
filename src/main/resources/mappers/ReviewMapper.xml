@@ -9,4 +9,25 @@
     VALUES (#{proNo}, #{memberNo}, #{reviewContent}, #{reviewRate})
   </insert>
 
+  <!-- 리뷰 조회 -->
+  <select id="getReviewList" resultMap="ReviewWithMemberMap">
+    SELECT r.*, m.nickname 
+    FROM Review r
+    JOIN Member m ON r.member_no = m.member_no
+    WHERE r.pro_no = #{proNo}
+    ORDER BY r.review_date DESC
+  </select>
+
+  <!-- Review와 Member 정보를 매핑하기 위한 resultMap -->
+  <resultMap id="ReviewWithMemberMap" type="Review">
+    <id property="reviewNo" column="review_no"/>
+    <result property="proNo" column="pro_no"/>
+    <result property="memberNo" column="member_no"/>
+    <result property="reviewContent" column="review_content"/>
+    <result property="reviewRate" column="review_rate"/>
+    <result property="reviewDate" column="review_date" javaType="java.util.Date"/>
+    <result property="reviewActivation" column="review_activation"/>
+    <result property="memberNickname" column="nickname"/>
+  </resultMap>
+
 </mapper>

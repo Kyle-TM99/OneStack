@@ -32,6 +32,8 @@ public class EstimationController {
     private final ChatService chatService;  // ChatService 주입
     private final SimpMessagingTemplate messagingTemplate;
     
+
+    // 견적 페이지
     @GetMapping("/estimation")
     public String showEstimationPage(
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
