@@ -17,22 +17,6 @@
         </div>
     </div>
 
-    <!-- 탭 섹션 -->
-    <div class="row my-5">
-        <div class="col-md d-flex align-items-center justify-content-center">
-            <div class="sort-control float-end">
-                <label class="sort-option">
-                    <input type="radio" name="sort" checked>
-                    <a href="/community" class="text-center me-5 text-decoration-none fw-bold">Community</a>
-                </label>
-                <label class="sort-option">
-                    <input type="radio" name="sort">
-                    <a href="/QnA" class="text-center ms-5 text-decoration-none">Q&A</a>
-                </label>
-            </div>
-        </div>
-    </div>
-
     <!-- 검색 및 필터 섹션 -->
     <div class="row my-5">
         <div class="col-md-3 d-flex align-items-center justify-content-center">
@@ -63,8 +47,13 @@
         </div>
         <div class="col-md-3 d-flex align-items-center justify-content-center">
             <div class="segment-control float-end">
-                <input type="radio" name="order" value="latest" th:checked="${order == 'latest' || order == null}" onchange="changeOrder(this.value)">
-                <input type="radio" name="order" value="recommend" th:checked="${order == 'recommend'}" onchange="changeOrder(this.value)">
+                <!-- 라디오 버튼과 라벨 연결 수정 -->
+                <input type="radio" name="order" id="sort-latest" value="latest"
+                       th:checked="${order == 'latest' || order == null}"
+                       onchange="changeOrder(this.value)">
+                <input type="radio" name="order" id="sort-recommend" value="recommend"
+                       th:checked="${order == 'recommend'}"
+                       onchange="changeOrder(this.value)">
                 <label for="sort-latest">최신순</label>
                 <label for="sort-recommend">추천순</label>
                 <div class="segment-indicator"></div>
@@ -261,21 +250,35 @@
 
     <script th:inline="javascript">
         function changeOrder(value) {
+            // 현재 URL 가져오기
             let currentUrl = new URL(window.location.href);
             let searchParams = currentUrl.searchParams;
 
-            // 현재 URL의 파라미터들을 모두 유지
+            // 정렬 방식 변경
+            searchParams.set('order', value);
+
+            // 페이지 1로 초기화
+            searchParams.set('pageNum', '1');
+
+            // 기존 검색 파라미터 유지
             let type = /*[[${type}]]*/ '';
             let keyword = /*[[${keyword}]]*/ '';
-
-            let newUrl = `/community?order=${value}`;
             if(type && keyword) {
-                newUrl += `&type=${type}&keyword=${keyword}`;
+                searchParams.set('type', type);
+                searchParams.set('keyword', keyword);
             }
-            newUrl += '&pageNum=1';  // 정렬 변경시 1페이지로
 
-            window.location.href = newUrl;
+            // 새로운 URL로 이동
+            window.location.href = currentUrl.toString();
         }
+        // 페이지 로드 시 정렬 상태 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const order = new URLSearchParams(window.location.search).get('order') || 'latest';
+            const radioButton = document.querySelector(`input[name="order"][value="${order}"]`);
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+        });
     </script>
 
 </th:block>

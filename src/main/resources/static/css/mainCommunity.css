@@ -1,3 +1,45 @@
+.segment-control {
+    position: relative;
+    display: inline-flex;
+    background: #f1f1f1;
+    border-radius: 20px;
+    padding: 2px;
+}
+
+.segment-control input[type="radio"] {
+    display: none;
+}
+
+.segment-control label {
+    position: relative;
+    z-index: 1;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 18px;
+    transition: color 0.3s ease;
+}
+
+.segment-control input[type="radio"]:checked + label {
+    color: #fff;
+}
+
+.segment-indicator {
+    position: absolute;
+    height: 100%;
+    border-radius: 18px;
+    background: #215EA3;
+    transition: transform 0.3s ease;
+}
+
+/* 선택된 라디오 버튼에 따라 인디케이터 위치 조정 */
+.segment-control input[type="radio"]:first-child:checked ~ .segment-indicator {
+    transform: translateX(0);
+}
+
+.segment-control input[type="radio"]:last-child:checked ~ .segment-indicator {
+    transform: translateX(100%);
+}
+
 #orderSelect {
     width: auto;
     min-width: 100px;
