@@ -1,5 +1,6 @@
 package com.onestack.project.controller;
 
+import com.onestack.project.domain.ChatMessage;
 import com.onestack.project.domain.ChatRoom;
 import com.onestack.project.domain.Estimation;
 import com.onestack.project.domain.Member;
@@ -7,6 +8,8 @@ import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ChatService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ public class EstimationController {
     
     private final MemberService memberService;
     private final ChatService chatService;  // ChatService 주입
+    private final SimpMessagingTemplate messagingTemplate;
     
     @GetMapping("/estimation")
     public String showEstimationPage(
@@ -73,8 +78,8 @@ public class EstimationController {
         Map<String, Object> response = new HashMap<>();
         try {
             Member member = (Member) session.getAttribute("member");
-            // progress를 4(거절)로 업데이트
-            memberService.updateEstimationProgress(estimationNo, 4);
+            // progress를 5(거절)로 업데이트
+            memberService.updateEstimationProgress(estimationNo, 5);
             
             // 현재 페이지의 새로운 견적 목록 조회
             List<Estimation> newEstimations = memberService.proEstimation(member.getMemberNo());
@@ -108,7 +113,7 @@ public class EstimationController {
             
             // 3. 채팅방 생성
             ChatRoom chatRoom = new ChatRoom();
-            chatRoom.setRoomName("회원 : " + estimation.getMemberNickname() + " 전문가 : " + member.getNickname());
+            chatRoom.setRoomName(estimation.getMemberNickname() + " 님이 " + member.getNickname() + " 님에게 요청한 " + estimation.getCategoryName() + " 프로젝트");
             chatRoom.setMemberNo(estimation.getMemberNo());
             chatRoom.setProNo(member.getMemberNo());
             chatRoom.setEstimationNo(estimationNo);
@@ -140,14 +145,51 @@ public class EstimationController {
         
         try {
             String confirmType = request.get("type");
+            String roomId = request.get("roomId");
+            ChatRoom chatRoom = chatService.findRoom(roomId);
+
+            Member member = memberService.getMemberByNo(chatRoom.getMemberNo());
+            Member pro = memberService.getMemberByNo(chatRoom.getProNo());
             
             if ("PRO".equals(confirmType)) {
                 // 전문가 확인 처리
                 memberService.confirmEstimationByPro(estimationNo);
+
+                // 시스템 메시지 생성
+                ChatMessage systemMessage = new ChatMessage();
+                systemMessage.setRoomId(roomId);
+                systemMessage.setSender(pro.getMemberId());
+                systemMessage.setNickname(pro.getNickname());
+                systemMessage.setType("SYSTEM");
+                systemMessage.setMessage("전문가가 견적 요청을 수락하였습니다.");
+                systemMessage.setSentAt(LocalDateTime.now());
+
+                // DB에 시스템 메시지 저장
+                chatService.saveMessage(systemMessage);
+
+                // 시스템 메시지를 웹소켓으로 전송
+                messagingTemplate.convertAndSend("/topic/chat/room/" + roomId, systemMessage);
+                
                 response.put("success", true);
             } else if ("CLIENT".equals(confirmType)) {
-                // 의뢰인 확인 처리 - 결제 단계로 진행
+                // 의뢰인 확인 처리
                 memberService.confirmEstimationByClient(estimationNo);
+
+                // 시스템 메시지 생성
+                ChatMessage systemMessage = new ChatMessage();
+                systemMessage.setRoomId(roomId);
+                systemMessage.setSender(member.getMemberId());
+                systemMessage.setNickname(member.getNickname());
+                systemMessage.setType("SYSTEM");
+                systemMessage.setMessage("회원이 견적 요청을 수락하였습니다. 결제를 진행해주세요.");
+                systemMessage.setSentAt(LocalDateTime.now());
+
+                // DB에 시스템 메시지 저장
+                chatService.saveMessage(systemMessage);
+
+                // 시스템 메시지를 웹소켓으로 전송
+                messagingTemplate.convertAndSend("/topic/chat/room/" + roomId, systemMessage);
+                
                 response.put("success", true);
             }
         } catch (Exception e) {

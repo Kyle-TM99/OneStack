@@ -56,6 +56,13 @@
                                     </a>
                                 </th:block>
                             </th:block>
+                            <th:block th:if="${estimation.progress == 3}">
+                                <th:block th:if="${session.member.memberNo == estimation.memberNo}">
+                                    <a class="header-icon" title="리뷰 작성">
+                                        <i id="reviewBtn" class="bi bi-star"></i>
+                                    </a>
+                                </th:block>
+                            </th:block>
                             <a class="header-icon" onclick="showEstimationModal()" title="요청서 확인">
                                 <i class="bi bi-clipboard"></i>
                             </a>
@@ -66,16 +73,51 @@
                     </div>
                 </div>
 
+                <!-- 리뷰 작성 모달 -->
+                <div class="modal fade" id="reviewModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">리뷰 작성</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="reviewForm" onsubmit="event.preventDefault(); submitReview();">
+                                    <div class="review-rating-container text-center mb-4">
+                                        <p class="rating-label mb-2">서비스는 어떠셨나요?</p>
+                                        <div class="rating">
+                                            <i class="bi bi-star" data-rating="1"></i>
+                                            <i class="bi bi-star" data-rating="2"></i>
+                                            <i class="bi bi-star" data-rating="3"></i>
+                                            <i class="bi bi-star" data-rating="4"></i>
+                                            <i class="bi bi-star" data-rating="5"></i>
+                                        </div>
+                                        <input type="hidden" id="reviewRate" name="reviewRate">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="reviewContent" class="form-label">리뷰 내용</label>
+                                        <textarea class="form-control" id="reviewContent" rows="4" 
+                                                placeholder="서비스 경험을 자세히 들려주세요."></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">리뷰 등록</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 채팅 메시지 영역 -->
                 <div class="chat-messages" id="messageArea">
                     <!-- 기존 메시지 표시 -->
                     <th:block th:each="msg : ${messages}">
                         <!-- 시스템 메시지 (입장/퇴장) -->
-                        <div th:if="${msg.type == 'ENTER' or msg.type == 'LEAVE'}" class="message system">
+                        <div th:if="${msg.type == 'ENTER' or msg.type == 'LEAVE' or msg.type == 'SYSTEM'}" class="message system">
                             <div class="message-bubble" th:text="${msg.message}"></div>
                         </div>
                         <!-- 일반 채팅 메시지 -->
-                        <div th:unless="${msg.type == 'ENTER' or msg.type == 'LEAVE'}" 
+                        <div th:unless="${msg.type == 'ENTER' or msg.type == 'LEAVE' or msg.type == 'SYSTEM'}" 
                              th:class="${msg.sender == session.member.memberId ? 'message sent' : 'message received'}">
                             <div class="message-group">
                                 <!-- 받은 메시지일 경우에만 프로필 이미지 표시 -->
@@ -414,19 +456,19 @@
 </th:block>
 
 <th:block layout:fragment="script">
-    <!-- 필수 라이브러리 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 소켓 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     
     <script th:inline="javascript">
         const roomId = [[${room.roomId}]];
+        const estimation = /*[[${estimation}]]*/ null;
         const currentUser = {
             memberId: [[${session.member.memberId}]],
             nickname: [[${session.member.nickname}]],
             socialType: [[${session.member.socialType}]],
-            memberImage: [[${session.member.memberImage}]]
+            memberImage: [[${session.member.memberImage}]],
+            memberNo: /*[[${member.memberNo}]]*/ null
         };
         
         // 웹소켓 연결
@@ -444,15 +486,23 @@
                 displayMessage(recv);
             });
             
-            // 입장 메시지 전송
-            ws.send("/app/chat/message", {}, JSON.stringify({
-                type: 'ENTER',
-                roomId: roomId,
-                sender: currentUser.memberId,
-                nickname: currentUser.nickname,
-                message: currentUser.nickname + "님이 입장하셨습니다.",
-                sentAt: new Date()
-            }));
+            // 새로고침 여부 확인
+            const isReload = sessionStorage.getItem('isConnected_' + roomId);
+            
+            if (!isReload) {
+                // 최초 입장 시에만 입장 메시지 전송
+                ws.send("/app/chat/message", {}, JSON.stringify({
+                    type: 'ENTER',
+                    roomId: roomId,
+                    sender: currentUser.memberId,
+                    nickname: currentUser.nickname,
+                    message: currentUser.nickname + "님이 입장하셨습니다.",
+                    sentAt: new Date()
+                }));
+                
+                // 연결 상태 저장
+                sessionStorage.setItem('isConnected_' + roomId, 'true');
+            }
         }, function(error) {
             console.error('STOMP error: ' + error);
             alert('채팅 서버 연결에 실패했습니다. 페이지를 새로고침해주세요.');
@@ -483,7 +533,7 @@
             const messageDiv = document.createElement('div');
             
             // 시스템 메시지 (입장/퇴장)
-            if (message.type === 'ENTER' || message.type === 'LEAVE') {
+            if (message.type === 'ENTER' || message.type === 'LEAVE' || message.type === 'SYSTEM') {
                 messageDiv.className = 'message system';
                 messageDiv.innerHTML = `
                     <div class="message-bubble">
@@ -634,34 +684,6 @@
                     alert('게시글 삭제에 실패했습니다.');
                 });
             }
-        }
-
-        // 참여자 목록 업데이트 함수
-        function updateParticipantsList(participants) {
-            const participantsList = $('#participantsList');
-            participantsList.empty();
-            
-            $('#participantCount').text(participants.length);
-            
-            participants.forEach(function(participant) {
-                const isAdmin = participant.memberId === room.roomAdmin;
-                const adminBadge = isAdmin ? '<span class="badge bg-primary ms-1">방장</span>' : '';
-                
-                participantsList.append(`
-                    <div class="dropdown-item d-flex align-items-center">
-                        <img src="${participant.memberImage || '/images/default-profile.png'}" 
-                             class="rounded-circle me-2" 
-                             style="width: 30px; height: 30px;">
-                        <span>${participant.nickname}${adminBadge}</span>
-                    </div>
-                `);
-            });
-        }
-        
-        // 참여자 목록 토글 함수
-        function toggleParticipantsList() {
-            const sidebar = document.getElementById('participantsSidebar');
-            sidebar.classList.toggle('show');
         }
         
         // 방 삭제 함수
@@ -884,6 +906,48 @@
                     }
                 });
             };
+
+            // 리뷰 모달이 존재하는지 확인
+            const reviewModal = document.getElementById('reviewModal');
+            if (reviewModal) {
+                // 별점 선택 기능
+                document.querySelectorAll('.rating i').forEach(star => {
+                    star.addEventListener('click', function() {
+                        const rating = this.dataset.rating;
+                        document.getElementById('reviewRate').value = rating;
+                        
+                        // 별점 UI 업데이트
+                        document.querySelectorAll('.rating i').forEach(s => {
+                            if (s.dataset.rating <= rating) {
+                                s.classList.remove('bi-star');
+                                s.classList.add('bi-star-fill');
+                            } else {
+                                s.classList.remove('bi-star-fill');
+                                s.classList.add('bi-star');
+                            }
+                        });
+                    });
+                });
+
+                // 리뷰 버튼 클릭 시 모달 초기화
+                const reviewBtn = document.getElementById('reviewBtn');
+                if (reviewBtn) {
+                    reviewBtn.addEventListener('click', function() {
+                        // 폼 초기화
+                        document.getElementById('reviewForm').reset();
+                        document.getElementById('reviewRate').value = '';
+                        
+                        // 별점 UI 초기화
+                        document.querySelectorAll('.rating i').forEach(star => {
+                            star.classList.remove('bi-star-fill');
+                            star.classList.add('bi-star');
+                        });
+                        
+                        // 모달 표시
+                        new bootstrap.Modal(reviewModal).show();
+                    });
+                }
+            }
         });
 
         // 게시글 작성 모달 열기
@@ -982,7 +1046,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: 'PRO'
+                        type: 'PRO',
+                        roomId: roomId
                     })
                 })
                 .then(response => response.json())
@@ -1007,7 +1072,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: 'CLIENT'
+                        type: 'CLIENT',
+                        roomId: roomId
                     })
                 })
                 .then(response => response.json())
@@ -1261,6 +1327,69 @@
                 });
         }
 
+        // 리뷰 제출 함수는 전역 범위에 유지
+        function submitReview() {
+            const reviewRate = document.getElementById('reviewRate').value;
+            const reviewContent = document.getElementById('reviewContent').value;
+            
+            if (!reviewRate) {
+                alert('별점을 선택해주세요.');
+                return;
+            }
+            
+            if (!reviewContent.trim()) {
+                alert('리뷰 내용을 입력해주세요.');
+                return;
+            }
+            
+            // estimation이 없는 경우를 대비한 예외 처리 추가
+            if (!estimation || !estimation.proNo) {
+                alert('견적 정보를 찾을 수 없습니다.');
+                return;
+            }
+            
+            const reviewData = {
+                proNo: estimation.proNo,
+                memberNo: currentUser.memberNo,
+                reviewContent: reviewContent,
+                reviewRate: parseInt(reviewRate),
+                estimationNo: estimation.estimationNo,
+                roomId: roomId
+            };
+            
+            fetch('/api/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reviewData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('리뷰가 등록되었습니다.');
+                    const reviewModal = document.getElementById('reviewModal');
+                    const modal = bootstrap.Modal.getInstance(reviewModal);
+                    modal.hide();
+
+                    // 리뷰 작성 후 채팅방 초기화
+                    location.reload();
+                } else {
+                    alert(data.message || '리뷰 등록에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('리뷰 등록 중 오류가 발생했습니다.');
+            });
+        }
+
+        // 페이지 언로드(나가기) 시 세션 스토리지 제거
+        window.addEventListener('beforeunload', function(e) {
+            if (e.currentTarget.performance.navigation.type !== 1) {  // 새로고침이 아닐 경우
+                sessionStorage.removeItem('isConnected_' + roomId);
+            }
+        });
 
     </script>
 </th:block>
