@@ -71,7 +71,11 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr th:if="${#lists.isEmpty(inquiryList)}">
+                        <td colspan="4" class="text-center">문의한 문의글이 없습니다.</td>
+                    </tr>
                     <tr th:each="inquiry : ${inquiryList}">
+                        <!--th:if="${session.member.isAdmin == 1 or inquiry.inquiry.memberNo == session.member.memberNo}">-->
                         <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
                         <td class="post-title">
                             <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"

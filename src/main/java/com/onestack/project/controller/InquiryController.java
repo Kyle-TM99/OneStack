@@ -2,7 +2,6 @@ package com.onestack.project.controller;
 
 import com.onestack.project.domain.*;
 import com.onestack.project.service.InquiryService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.io.IOException;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
-
-import static java.lang.System.out;
 
 @Slf4j
 @Controller
@@ -36,10 +33,16 @@ public class InquiryController {
             @RequestParam(defaultValue = "10") int num,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
+            HttpSession session,
             Model model) {
 
-        // 문의글 목록 조회
+        Member member = (Member) session.getAttribute("member");
+        int memberNo = member.getMemberNo();
+        boolean isAdmin = member.isAdmin(); // isAdmin 값 가져오기
+
+        // isAdmin 값을 전달하여 문의글 조회
         List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(startRow, num, type, keyword);
+
         model.addAttribute("inquiryList", inquiryList);
 
         // 페이징 정보
@@ -51,7 +54,7 @@ public class InquiryController {
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 
-        return "inquiry/inquiryForm";
+        return "inquiry/inquiryForm"; // 뷰 이름
     }
 
     // 문의글 작성 폼으로 이동
@@ -87,12 +90,14 @@ public class InquiryController {
         model.addAttribute("inquiryAnswer", inquiryAnswer);
         return "inquiry/inquiryDetail";
     }
+
     // 문의글 삭제
     @PostMapping("/delete")
     public String deleteInquiry(@RequestParam("inquiryNo") int inquiryNo) {
         inquiryService.deleteInquiry(inquiryNo);
         return "redirect:/memberInquiry";
     }
+
     @PostMapping("/update")
     public String updateInquiry(@ModelAttribute Inquiry inquiry) {
         inquiryService.updateInquiry(inquiry);
@@ -108,8 +113,11 @@ public class InquiryController {
 
     @PostMapping("/addInquiryAnswer")
     @ResponseBody // AJAX 요청에 대한 응답을 JSON으로 반환
-    public ResponseEntity<String> addInquiryAnswer(@RequestBody InquiryAnswer inquiryAnswer) {
-        inquiryService.addInquiryAnswer(inquiryAnswer);
+    public ResponseEntity<String> addInquiryAnswer(@RequestBody InquiryAnswer inquiryAnswer, HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        boolean isAdmin = member.isAdmin(); // isAdmin 값 가져오기
+
+        inquiryService.addInquiryAnswer(inquiryAnswer, isAdmin);
         return ResponseEntity.ok("답변이 등록되었습니다.");
     }
 
@@ -128,6 +136,12 @@ public class InquiryController {
     public ResponseEntity<String> updateSatisfaction(@RequestParam int inquiryNo, @RequestParam boolean isSatisfied) {
         inquiryService.handleSatisfaction(inquiryNo, isSatisfied);
         return ResponseEntity.ok("문의글 상태가 업데이트되었습니다.");
+    }
+
+    @PostMapping("/memberInquiry/updateInquiryAnswer")
+    public String updateInquiryAnswer(@RequestBody InquiryAnswer inquiryAnswer) {
+        inquiryService.updateInquiryAnswer(inquiryAnswer);
+        return "답변이 수정되었습니다.";
     }
 
 }

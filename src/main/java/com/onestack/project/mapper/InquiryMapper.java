@@ -12,17 +12,14 @@ import java.util.Map;
 @Mapper
 public interface InquiryMapper {
 
-    // 문의글 목록 조회
-    List<MemberWithInquiry> getInquiry(@Param("startRow") int startRow,
-                                       @Param("num") int num,
-                                       @Param("type") String type,
-                                       @Param("keyword") String keyword);
+    // 문의글 목록 조회 (검색 조건, 페이징 포함)
+    List<MemberWithInquiry> getInquiry(Map<String, Object> params);
 
     // 검색 조건에 맞는 전체 문의글 수 조회
     int getInquiryCount(@Param("type") String type, @Param("keyword") String keyword);
 
     // 문의글 상세보기
-    public Inquiry getInquiryDetail(int inquiryNo);
+    Inquiry getInquiryDetail(int inquiryNo);
 
     // 문의글 작성
     void addInquiry(Inquiry inquiry);
