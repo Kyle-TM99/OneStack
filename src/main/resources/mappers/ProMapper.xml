@@ -132,7 +132,6 @@
                 </otherwise>
             </choose>
         </if>
-        -- 특정 카테고리 필터링
         <if test="sort != null and !sort.isEmpty()">
             ORDER BY
             <choose>

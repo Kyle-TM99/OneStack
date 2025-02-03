@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" style="scroll-behavior: smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>견적서</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="/css/pay.css" rel="stylesheet">
+  <!-- 포트원 결제 -->
+  <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+<div th:each="quotation : ${quotationList}"  class="memo">
+  <div class="memo-header">
+    <h1>견적서</h1>
+    <p id="projectName">견적 번호: [[ ${quotation.quotation.quotationNo} ]]</p>
+  </div>
+  <p id="memberNo" hidden>[[ ${quotation.member.memberNo} ]]</p>
+  <p id="memberPhone" hidden>[[ ${quotation.member.phone} ]]</p>
+  <p id="memberEmail" hidden>[[ ${quotation.member.email} ]]</p>
+
+  <table class="memo-table">
+    <tr>
+      <th>회원 이름</th>
+      <td id="memberName">[[${quotation.member.name}]]</td>
+    </tr>
+    <tr>
+      <th>전문가 이름</th>
+      <td>[[${quotation.professional.proNo}]]</td>
+    </tr>
+    <tr>
+      <th>견적 내용</th>
+      <td id="quotationContent">[[${quotation.quotation.quotationContent}]]</td>
+    </tr>
+    <tr>
+      <th>견적 금액</th>
+      <td id="projectPrice">₩[[${quotation.quotation.quotationPrice}]]</td>
+    </tr>
+    <tr>
+      <th>견적 확정일</th>
+      <td>[[${quotation.quotation.quotationRegDate}]]</td>
+    </tr>
+  </table>
+
+  <div class="memo-footer">
+    <button id="payKakaoBtn" class="btn-confirm">카카오페이</button>
+    <button id="payKgBtn" class="btn-confirm">KG</button>
+  </div>
+</div>
+
+<script src="/js/pay.js"></script>
+</body>
+</html>

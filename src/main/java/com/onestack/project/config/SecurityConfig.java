@@ -34,7 +34,8 @@ public class SecurityConfig {
 			// HTTP 요청에 대한 접근 권한 설정
 			.authorizeHttpRequests(auth -> auth
 				// Google 콜백 URL에 대한 접근을 명시적으로 허용
-				.requestMatchers("/login/**", "/oauth2/**", "/google/**", "/loginForm/**", "/**").permitAll()
+				.requestMatchers("/login/**", "/oauth2/**", "/google/**", "/loginForm/**", 
+							   "/chat/**", "/estimation/**", "/**").permitAll()
 				// 위에서 설정한 경로 외의 모든 요청은 인증된 사용자만 접근 가능
 				.anyRequest().authenticated()
 			)

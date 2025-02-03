@@ -99,14 +99,13 @@ function updateResults(pros, overallAveragePrice) {
     /* 직렬화한 데이터가 배열이 아닌 유사 배열이기에 Array.from()함수 필요 */
     Array.from(pros).forEach((pro) => {
         const proDiv = document.createElement("div");
-        proDiv.className = "card h-100 shadow-sm";
+        proDiv.className = "card h-100 shadow-sm mb-2";
         proDiv.innerHTML =
             '    <div class="row card-body" data-url="/proDetail?proNo=' + pro.professional.proNo + '">' +
             '      <div class="col-10">' +
             '        <div>' +
             '          <h5 class="card-title mb-2">' + pro.member.name + '</h5>' +
             '          <span class="card-subtitle text-muted mb-2">' + pro.category.itemTitle + '</span> <br>' +
-            '          <span class="badge bg-primary me-2 mb-2">' + pro.member.stackName + '</span>' +
             '          <span class="badge bg-success">' + pro.professional.career + '</span> <br>' +
             '          <span class="card-text">' + pro.professional.selfIntroduction + '</span> <br>' +
             '          <i class="bi bi-star-fill text-warning"></i>' +

@@ -3,7 +3,7 @@ package com.onestack.project.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -11,30 +11,40 @@ import java.util.List;
 public class ChatRoom {
     private String roomId;
     private String roomName;
-    private String createdBy;
-    private String roomAdmin;
-    private String roomPassword;
+    private int memberNo;    // 일반 회원 ID
+    private int proNo;       // 전문가 ID
+    private int estimationNo;   // 견적 번호
     private int maxUsers;
-    private int currentUsers;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     private List<ChatMessage> recentMessages;
+    private int roomAdmin;   // 방장 ID (전문가 ID로 설정)
+    
+    // 견적 관련 필드 추가
+    private String estimationContent;  // 견적 내용
+    private String memberNickname;     // 일반 회원 닉네임
+    private String proNickname;        // 전문가 닉네임
+    
+    private int progress;  // 채팅방 진행 상태 (0: 대기중, 2: 진행중)
+    
+    private String lastMessage;  // 마지막 메시지 내용
+    private LocalDateTime updatedAt;  // 마지막 업데이트 시간
+    private int unreadCount;     // 읽지 않은 메시지 수
     
     @Override
     public String toString() {
         return "ChatRoom{" +
                 "roomId='" + roomId + '\'' +
                 ", roomName='" + roomName + '\'' +
-                ", createdBy='" + createdBy + '\'' +
-                ", roomAdmin='" + roomAdmin + '\'' +
+                ", memberNo=" + memberNo +
+                ", proNo=" + proNo +
+                ", estimationNo=" + estimationNo +
                 ", maxUsers=" + maxUsers +
-                ", currentUsers=" + currentUsers +
                 ", createdAt=" + createdAt +
+                ", roomAdmin=" + roomAdmin +
+                ", estimationContent='" + estimationContent + '\'' +
+                ", memberNickname='" + memberNickname + '\'' +
+                ", proNickname='" + proNickname + '\'' +
                 '}';
-    }
-    
-    // 비밀번호 설정 여부 확인
-    public boolean isPrivate() {
-        return roomPassword != null && !roomPassword.isEmpty();
     }
 
     public void setRecentMessages(List<ChatMessage> recentMessages) {

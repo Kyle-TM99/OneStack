@@ -254,7 +254,7 @@ public class MemberController {
 
             member.setSocial(false);
             member.setSocialType("none");
-            member.setMemberImage("/images/defaultProfile.png");
+            member.setMemberImage("/images/default-profile.png");
 
 
 

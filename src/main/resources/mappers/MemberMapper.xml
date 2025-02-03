@@ -56,15 +56,6 @@
 		<result property="communityBoardLike" column="community_board_like"/>
 	</resultMap>
 
-	<resultMap id="qnaMap" type="QnA">
-		<id property="qnaBoardNo" column="qna_board_no"/>
-		<result property="qnaBoardTitle" column="qna_board_title"/>
-		<result property="qnaBoardContent" column="qna_board_content"/>
-		<result property="qnaBoardRegDate" column="qna_board_reg_date"/>
-		<result property="qnaView" column="qna_view"/>
-		<result property="qnaBoardLike" column="qna_board_like"/>
-		<result property="qnaAdoptionStatus" column="qna_adoption_status"/>
-	</resultMap>
 
 	<resultMap id="communityReplyMap" type="CommunityReply">
 		<id property="communityReplyNo" column="community_reply_no"/>
@@ -75,18 +66,7 @@
 		<result property="communityReplyActivation" column="community_reply_activation"/>
 	</resultMap>
 
-	<resultMap id="qnaReplyMap" type="QnAReply">
-		<id property="qnaReplyNo" column="qna_reply_no"/>
-		<result property="qnaBoardNo" column="qna_board_no"/>
-		<result property="memberNo" column="member_no"/>
-		<result property="qnaBoardTitle" column="qna_board_title"/>
-		<result property="qnaReplyContent" column="qna_reply_content"/>
-		<result property="qnaReplyRegDate" column="qna_reply_reg_date"/>
-		<result property="qnaReplyAdoption" column="qna_reply_adoption"/>
-		<result property="qnaReplyLike" column="qna_reply_like"/>
-		<result property="qnaReplyActivation" column="qna_reply_activation"/>
-		<result property="writerName" column="writer_name"/>
-	</resultMap>
+
 
 	<resultMap id="portfolioMap" type="Portfolio">
 		<id property="portfolioNo" column="portfolio_no"/>
@@ -150,11 +130,7 @@
 		<association property="community" javaType="Community" resultMap="communityMap"/>
 	</resultMap>
 
-	<!-- QnA ResultMap -->
-	<resultMap id="memberWithQnAMap" type="MemberWithQnA">
-		<association property="member" javaType="Member" resultMap="memberMap"/>
-		<association property="qna" javaType="QnA" resultMap="qnaMap" />
-	</resultMap>
+
 
 	<!-- community With CommunityReply -->
 	<resultMap id="ComWithComReply" type="ComWithComReply">
@@ -162,11 +138,7 @@
 		<association property="communityReply" javaType="CommunityReply" resultMap="communityReplyMap" />
 	</resultMap>
 
-	<!-- QnA With QnAReply -->
-	<resultMap id="QnAWithReply" type="QnAWithReply">
-		<association property="qna" javaType="QnA" resultMap="qnaMap" />
-		<association property="qnaReply" javaType="QnAReply" resultMap="qnaReplyMap" />
-	</resultMap>
+
 
 
 	<resultMap id="memberEstimation" type="MemberEstimation">
@@ -200,19 +172,27 @@
 	</update>
 
 	<!-- 회원이 요청한 견적 리스트 Estimation-->
-	<select id="memberEstimation" parameterType="int" resultMap="Estimation">
-		SELECT e.*, m.*
+	<select id="memberEstimation" parameterType="int" resultType="Estimation">
+		SELECT e.*,
+			   m.nickname as memberNickname,
+			   p.nickname as proNickname,
+			   c.item_title as categoryName
 		FROM Estimation e
-				 JOIN Member m ON e.member_no = m.member_no
+		JOIN Member m ON e.member_no = m.member_no
+		JOIN Member p ON e.pro_no = p.member_no
+		JOIN Category c ON e.item_no = c.item_no
 		WHERE e.member_no = #{memberNo}
+		ORDER BY e.estimation_no DESC
 	</select>
 
-	<!-- 전문가가 받은 견적 요청 리스트 Estimation-->
-	<select id="proEstimation" parameterType="int" resultMap="Estimation">
-		SELECT e.*, p.*
+	<!-- 전문가가 받은 견적 요청 리스트 조회 (대기 상태만) -->
+	<select id="proEstimation" resultType="Estimation">
+		SELECT e.*, m.name as memberName, m.nickname as memberNickname
 		FROM Estimation e
-				 JOIN Professional p ON e.pro_no = p.pro_no
+		JOIN Member m ON e.member_no = m.member_no
 		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0  <!-- 대기 상태인 것만 -->
+		ORDER BY e.estimation_no DESC
 	</select>
 
 	<select id="portfolio" parameterType="Portfolio">
@@ -220,6 +200,133 @@
 		FROM Portfolio
 		WHERE pro_no = #{proNo}
 	</select>
+
+<!--
+
+	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
+	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
+		SELECT
+			m.*, p.*, pi.*, pr.*
+		FROM
+			Member m
+				JOIN
+			Professional pr ON m.member_no = pr.member_no
+				JOIN
+			Portfolio p ON pr.pro_no = p.pro_no
+				JOIN
+			PortfolioImages pi ON p.portfolio_id = pi.portfolio_id
+		WHERE
+			m.member_type = 2;
+	</select>
+
+-->
+
+	<!-- 내역 조회를 위한 memberWithProfessional -->
+	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
+		SELECT m.*, p.*
+		FROM Member m
+				 JOIN Professional p ON m.member_no = p.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+	<!-- 회원별 작성한 리뷰 조회 -->
+	<select id="findMyReview" parameterType="int" resultType="Review">
+		SELECT *
+		FROM Review
+		WHERE member_no = #{memberNo}
+	</select>
+<!--
+
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
+	<select id="proReview" parameterType="int" resultMap="Review">
+		SELECT *
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+-->
+
+	<!-- 자신이 작성한 리뷰 수 조회 -->
+	<select id="findMyReviewCount" parameterType="int" resultType="int">
+		SELECT COUNT(review_no)
+		FROM Review
+		WHERE member_no = #{memberNo}
+	</select>
+<!--
+
+	&lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
+	<select id="proReviewCount" parameterType="int" resultMap="Review">
+		SELECT COUNT(review_no)
+		FROM Review
+		WHERE pro_no =#{proNo}
+		ORDER BY revire_date DESC
+	</select>
+-->
+
+
+	<!-- 회원별 작성한 게시글 조회 -->
+	<select id="memberMyPageCommunity" parameterType="int" resultMap="memberWithCommunityMap">
+		SELECT
+			m.*, c.*
+		FROM Member m
+				 JOIN Community c ON m.member_no = c.member_no
+		WHERE m.member_no = #{memberNo}
+		ORDER BY c.community_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 게시글 수 조회 -->
+	<select id="memberMyPageCommunityCount" parameterType="int" resultType="int">
+		SELECT COUNT(c.community_board_no)
+		FROM Member m
+				 JOIN Community c ON m.member_no = c.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+
+
+
+	<!-- 회원별 작성한 댓글 조회 -->
+	<select id="comWithComReply" parameterType="int" resultMap="ComWithComReply">
+		SELECT
+			c.*, cr.*
+		FROM Community c
+				 LEFT JOIN CommunityReply cr ON c.community_board_no = cr.community_board_no
+		WHERE c.member_no = #{memberNo}
+		ORDER BY c.community_board_reg_date DESC
+	</select>
+
+	<!-- 회원별 작성한 댓글 수 조회 -->
+	<select id="memberMyPageComReplyCount" parameterType="int" resultType="int">
+		SELECT COUNT(c.community_reply_no)
+		FROM CommunityReply c
+				 JOIN Member m ON c.member_no = m.member_no
+		WHERE m.member_no = #{memberNo}
+	</select>
+
+
+
+
+
+	<!-- 게시글 공감 조회 -->
+	<select id="memberMyPageCommunityLike" resultType="Community">
+		SELECT *
+		FROM community
+		WHERE member_no = #{memberNo}
+		  AND community_board_like > 0
+	</select>
+
+
+
+	<!-- 댓글 공감 조회 -->
+	<select id="memberMyPageComReplyLike" resultType="CommunityReply">
+		SELECT cr.*, c.community_board_title
+		FROM CommunityReply cr
+				 JOIN community c ON cr.community_board_no = c.community_board_no
+		WHERE cr.member_no = #{memberNo}
+		  AND cr.community_reply_like > 0
+	</select>
+
+
 
 	<!-- 회원 수정 -->
 	<update id="updateMember" parameterType="Member" >
@@ -266,8 +373,8 @@
 
 	<!-- 회원 가입 -->
 	<insert id="insertMember" parameterType="Member" useGeneratedKeys="true" keyProperty="memberNo">
-		INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date)
-		VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW())
+		INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_image)
+		VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW(), #{memberImage})
 	</insert>
 
 	<!-- ID 중복 체크 -->
@@ -396,5 +503,79 @@
 		DELETE FROM PasswordResetToken
 		WHERE token = #{token}
 	</delete>
+
+	<update id="updateEstimationProgress">
+		UPDATE Estimation
+		SET progress = #{progress},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<!-- 전체 견적 수 조회 -->
+	<select id="getEstimationCount" resultType="int">
+		SELECT COUNT(*)
+		FROM Estimation e
+		WHERE e.pro_no = #{proNo}
+		AND e.progress = 0
+	</select>
+
+	<!-- 페이지별 견적 목록 조회 -->
+	<select id="getEstimationsByPage" resultType="Estimation">
+		SELECT
+			e.*,
+			m.name as memberName,
+			m.nickname as memberNickname,
+			c.item_title as categoryName
+		FROM
+			Estimation e
+			JOIN Member m ON e.member_no = m.member_no
+			JOIN Category c ON e.item_no = c.item_no
+		WHERE
+			e.pro_no = #{proNo}
+			AND e.progress = 0
+		ORDER BY
+			e.estimation_no DESC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+
+	<!-- 회원 번호로 회원 정보 조회 -->
+	<select id="getMemberByNo" resultType="Member">
+		SELECT *
+		FROM Member
+		WHERE member_no = #{memberNo}
+	</select>
+
+	<!-- 견적 번호로 견적 정보 조회 -->
+	<select id="getEstimationByNo" resultType="Estimation">
+		SELECT
+			e.*,
+			m.nickname as memberNickname,
+			p.nickname as proNickname,
+			c.item_title as categoryName
+		FROM
+			estimation e
+			LEFT JOIN member m ON e.member_no = m.member_no
+			LEFT JOIN member p ON e.pro_no = p.member_no
+			LEFT JOIN category c ON e.item_no = c.item_no
+		WHERE
+			e.estimation_no = #{estimationNo}
+	</select>
+
+	<!-- 견적 확인 상태 업데이트 -->
+	<update id="updateEstimationCheck">
+		UPDATE Estimation
+		SET
+			estimation_check = #{estimationCheck},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
+
+	<update id="updateEstimationPrice">
+		UPDATE Estimation
+		SET
+			estimation_price = #{estimationPrice},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE estimation_no = #{estimationNo}
+	</update>
 
 </mapper>

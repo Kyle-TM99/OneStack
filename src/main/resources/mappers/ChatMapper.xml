@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kyletalk.sns.mapper.ChatMapper">
+<mapper namespace="com.onestack.project.mapper.ChatMapper">
 
     <!-- 채팅방 삭제 -->
     <delete id="deleteChatRoom" parameterType="String">
@@ -11,10 +11,8 @@
     <insert id="insertMessage" parameterType="ChatMessage">
         INSERT INTO chat_message 
             (room_id, sender, nickname, message, message_type, sent_at)
-        SELECT 
-            #{roomId}, #{sender}, #{nickname}, #{message}, #{type}, #{sentAt}
-        FROM chat_room
-        WHERE room_id = #{roomId}
+        VALUES 
+            (#{roomId}, #{sender}, #{nickname}, #{message}, #{type}, #{sentAt})
     </insert>
     
     <!-- 채팅방 최근 메시지 조회 -->
@@ -29,16 +27,16 @@
             sent_at as sentAt
         FROM chat_message
         WHERE room_id = #{roomId}
-        ORDER BY sent_at DESC
+        ORDER BY sent_at
         LIMIT #{limit}
     </select>
     
     <!-- 채팅방 생성 -->
     <insert id="createChatRoom" parameterType="ChatRoom">
         INSERT INTO chat_room 
-            (room_id, room_name, created_by, room_admin, room_password, max_users, current_users, created_at)
+            (room_id, room_name, member_no, pro_no, estimation_no, max_users, created_at, room_admin)
         VALUES 
-            (#{roomId}, #{roomName}, #{createdBy}, #{roomAdmin}, #{roomPassword}, #{maxUsers}, #{currentUsers}, #{createdAt})
+            (#{roomId}, #{roomName}, #{memberNo}, #{proNo}, #{estimationNo}, #{maxUsers}, #{createdAt}, #{proNo})
     </insert>
     
     <!-- 모든 채팅방 조회 -->
@@ -58,16 +56,22 @@
     <!-- 특정 채팅방 조회 -->
     <select id="getChatRoomById" resultType="ChatRoom">
         SELECT 
-            room_id as roomId,
-            room_name as roomName,
-            created_by as createdBy,
-            room_admin as roomAdmin,
-            room_password as roomPassword,
-            max_users as maxUsers,
-            current_users as currentUsers,
-            created_at as createdAt
-        FROM chat_room 
-        WHERE room_id = #{roomId}
+            cr.room_id as roomId,
+            cr.room_name as roomName,
+            cr.member_no as memberNo,
+            cr.pro_no as proNo,
+            cr.estimation_no as estimationNo,
+            cr.max_users as maxUsers,
+            cr.created_at as createdAt,
+            cr.room_admin as roomAdmin,
+            e.estimation_content as estimationContent,
+            m.nickname as memberNickname,
+            p.nickname as proNickname
+        FROM chat_room cr
+        JOIN estimation e ON cr.estimation_no = e.estimation_no
+        JOIN member m ON cr.member_no = m.member_no
+        JOIN member p ON cr.pro_no = p.member_no
+        WHERE cr.room_id = #{roomId}
     </select>
     
     <!-- 비밀번호 확인 -->
@@ -150,5 +154,60 @@
     <delete id="deleteAllParticipants" parameterType="String">
         DELETE FROM chat_room_participant WHERE room_id = #{roomId}
     </delete>
+    
+    <!-- 사용자가 참여중인 채팅방 목록 조회 -->
+    <select id="getMyChatRooms" resultType="ChatRoom">
+        SELECT 
+            cr.room_id as roomId,
+            cr.room_name as roomName,
+            cr.member_no as memberNo,
+            cr.pro_no as proNo,
+            cr.estimation_no as estimationNo,
+            cr.max_users as maxUsers,
+            cr.created_at as createdAt,
+            e.estimation_content as estimationContent,
+            m.nickname as memberNickname,
+            p.nickname as proNickname
+        FROM chat_room cr
+        JOIN estimation e ON cr.estimation_no = e.estimation_no
+        JOIN member m ON cr.member_no = m.member_no
+        JOIN member p ON cr.pro_no = p.member_no
+        WHERE cr.member_no = #{memberNo} OR cr.pro_no = #{memberNo}
+        ORDER BY cr.created_at DESC
+    </select>
+
+    <select id="getChatRoomList" resultType="ChatRoom">
+        SELECT 
+            cr.*,
+            m.nickname as memberNickname,
+            p.nickname as proNickname,
+            e.progress,
+            COALESCE(last_msg.message, '새로운 채팅방이 생성되었습니다.') as lastMessage,
+            COALESCE(last_msg.sent_at, cr.created_at) as updatedAt,
+            COUNT(CASE WHEN cm.is_read = 0 THEN 1 END) as unreadCount
+        FROM 
+            chat_room cr
+            JOIN member m ON cr.member_no = m.member_no
+            JOIN member p ON cr.pro_no = p.member_no
+            LEFT JOIN estimation e ON cr.estimation_no = e.estimation_no
+            LEFT JOIN (
+                SELECT room_id, message, sent_at
+                FROM chat_message cm1
+                WHERE sent_at = (
+                    SELECT MAX(sent_at)
+                    FROM chat_message cm2
+                    WHERE cm1.room_id = cm2.room_id
+                )
+            ) last_msg ON cr.room_id = last_msg.room_id
+            LEFT JOIN chat_message cm ON cr.room_id = cm.room_id
+        WHERE 
+            cr.member_no = #{memberNo} 
+            OR cr.pro_no = #{memberNo}
+        GROUP BY 
+            cr.room_id, cr.*, m.nickname, p.nickname, e.progress, 
+            last_msg.message, last_msg.sent_at
+        ORDER BY 
+            updatedAt DESC
+    </select>
     
 </mapper> 

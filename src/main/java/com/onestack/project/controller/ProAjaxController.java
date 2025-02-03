@@ -1,10 +1,9 @@
-package com.onestack.project.ajax;
+package com.onestack.project.controller;
 
 import com.onestack.project.domain.MemProAdInfoCate;
 import com.onestack.project.domain.Professional;
 import com.onestack.project.service.ProService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;

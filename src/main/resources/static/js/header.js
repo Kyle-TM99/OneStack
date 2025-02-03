@@ -1,103 +1,92 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // 왼쪽 메뉴 요소와 서브메뉴, 모달 창 관련 요소들 선택
+  // 메뉴 요소들 선택
   const leftMenu = document.querySelector('.left-menu');
+  const menuItems = document.querySelectorAll('[data-menu]');
   const submenuContainer = document.querySelector('.submenu-container');
-  const chatModal = document.getElementById('chatModal');
-  const notificationModal = document.getElementById('notificationModal');
-  const chatIcon = document.querySelector('.right-menu .nav-link:first-child');
-  const notificationIcon = document.querySelector('.right-menu .nav-link:last-child');
+  
+  let isHovering = false;
+  let timeoutId = null;
 
-  // 왼쪽 메뉴에 마우스를 올렸을 때 서브메뉴를 표시
-  leftMenu.addEventListener('mouseenter', function() {
-    submenuContainer.classList.add('show');  // 서브메뉴를 보이게 함
-  });
-
-  // 왼쪽 메뉴에서 마우스를 떼었을 때 서브메뉴를 숨김
-  leftMenu.addEventListener('mouseleave', function(e) {
-    if (!e.relatedTarget || !e.relatedTarget.closest('.submenu-container')) {
-      submenuContainer.classList.remove('show');  // 서브메뉴를 숨김
-    }
-  });
-
-  // 서브메뉴에 마우스를 올렸을 때 서브메뉴를 계속 표시
-  submenuContainer.addEventListener('mouseenter', function() {
-    submenuContainer.classList.add('show');
-  });
-
-  // 서브메뉴에서 마우스를 떼었을 때 서브메뉴를 숨김
-  submenuContainer.addEventListener('mouseleave', function() {
-    submenuContainer.classList.remove('show');
-  });
-
-  // 채팅 아이콘 클릭 시 채팅 모달을 띄우는 코드
-  chatIcon?.addEventListener('click', function(e) {
-    e.preventDefault();  // 기본 동작 방지
-    const chatModalInstance = new bootstrap.Modal(chatModal, { backdrop: false });
-    chatModalInstance.show();  // 채팅 모달을 표시
-  });
-
-  // 알림 아이콘 클릭 시 알림 모달을 띄우는 코드
-  notificationIcon?.addEventListener('click', function(e) {
-    e.preventDefault();  // 기본 동작 방지
-    const notificationModalInstance = new bootstrap.Modal(notificationModal, { backdrop: false });
-    notificationModalInstance.show();  // 알림 모달을 표시
-  });
-
-  // 모달 위치를 아이콘의 중앙에 맞추기 위한 함수
-  const adjustModalPosition = (modalElement, iconElement) => {
-    modalElement.addEventListener('show.bs.modal', function () {
-      const modalDialog = this.querySelector('.modal-dialog');
-      const rect = iconElement.getBoundingClientRect();  // 아이콘의 위치와 크기
-      const iconAbsoluteCenter = rect.left + (rect.width / 2);  // 아이콘의 중앙
-      const modalWidth = 350;  // 모달의 너비
-
-      modalDialog.style.position = 'fixed';  // 고정 위치로 설정
-      modalDialog.style.width = `${modalWidth}px`;  // 모달 너비 설정
-      modalDialog.style.left = `${iconAbsoluteCenter - (modalWidth / 2)}px`;  // 아이콘의 중앙에 모달을 맞춤
-      modalDialog.style.margin = '0';  // 여백 제거
-      modalDialog.style.transform = 'none';  // 변형 설정 해제
+  // 메뉴 아이템 호버 이벤트
+  menuItems.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      clearTimeout(timeoutId);
+      isHovering = true;
+      
+      // 모든 메뉴 아이템의 활성 상태 제거
+      menuItems.forEach(mi => mi.classList.remove('active'));
+      // 현재 메뉴 아이템 활성화
+      this.classList.add('active');
+      
+      // 서브메뉴 표시
+      submenuContainer.style.opacity = '1';
+      submenuContainer.style.visibility = 'visible';
     });
-  };
-
-  // 채팅 모달과 알림 모달에 대해 각각 위치 조정 함수 실행
-  adjustModalPosition(chatModal, chatIcon);
-  adjustModalPosition(notificationModal, notificationIcon);
-
-  // 모달 창 외부를 클릭하면 모달을 닫는 기능
-  document.addEventListener('click', function(e) {
-    const closeModalIfOutsideClick = (modalElement, iconElement) => {
-      if (modalElement.classList.contains('show') &&
-          !e.target.closest('.modal-dialog') &&
-          !iconElement.contains(e.target)) {
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);  // 모달 인스턴스 가져오기
-        modalInstance.hide();  // 모달 닫기
-      }
-    };
-    closeModalIfOutsideClick(chatModal, chatIcon);  // 채팅 모달 외부 클릭 시 닫기
-    closeModalIfOutsideClick(notificationModal, notificationIcon);  // 알림 모달 외부 클릭 시 닫기
   });
 
-  // 개발 카테고리 클릭 시 해당 서브메뉴 토글 (보이기/숨기기)
+  // left-menu 영역 호버 이벤트
+  leftMenu.addEventListener('mouseenter', function() {
+    clearTimeout(timeoutId);
+    isHovering = true;
+  });
+
+  leftMenu.addEventListener('mouseleave', function() {
+    isHovering = false;
+    
+    // 약간의 지연 후 서브메뉴 숨김 (마우스가 서브메뉴로 이동하는 시간 고려)
+    timeoutId = setTimeout(() => {
+      if (!isHovering) {
+        submenuContainer.style.opacity = '0';
+        submenuContainer.style.visibility = 'hidden';
+        menuItems.forEach(mi => mi.classList.remove('active'));
+      }
+    }, 200);
+  });
+
+  // 서브메뉴 컨테이너 호버 이벤트
+  submenuContainer.addEventListener('mouseenter', function() {
+    clearTimeout(timeoutId);
+    isHovering = true;
+  });
+
+  submenuContainer.addEventListener('mouseleave', function() {
+    isHovering = false;
+    submenuContainer.style.opacity = '0';
+    submenuContainer.style.visibility = 'hidden';
+    menuItems.forEach(mi => mi.classList.remove('active'));
+  });
+
+  // 개발 카테고리 토글
   const developmentHeader = document.getElementById('development-header');
   const developmentSubmenu = document.querySelector('.development-submenu');
+  
+  if (developmentHeader && developmentSubmenu) {
+    developmentHeader.addEventListener('click', function() {
+      const icon = this.querySelector('.bi-chevron-down');
+      if (developmentSubmenu.style.display === 'none' || !developmentSubmenu.style.display) {
+        developmentSubmenu.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        developmentSubmenu.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    });
+  }
 
-  developmentHeader.addEventListener('click', function() {
-    if (developmentSubmenu.style.display === 'none' || developmentSubmenu.style.display === '') {
-      developmentSubmenu.style.display = 'block';  // 서브메뉴 보이기
-    } else {
-      developmentSubmenu.style.display = 'none';  // 서브메뉴 숨기기
-    }
-  });
-
-  // 데이터 카테고리 클릭 시 해당 서브메뉴 토글 (보이기/숨기기)
+  // 데이터 카테고리 토글
   const dataHeader = document.getElementById('data-header');
   const dataSubmenu = document.querySelector('.data-submenu');
-
-  dataHeader.addEventListener('click', function() {
-    if (dataSubmenu.style.display === 'none' || dataSubmenu.style.display === '') {
-      dataSubmenu.style.display = 'block';  // 서브메뉴 보이기
-    } else {
-      dataSubmenu.style.display = 'none';  // 서브메뉴 숨기기
-    }
-  });
+  
+  if (dataHeader && dataSubmenu) {
+    dataHeader.addEventListener('click', function() {
+      const icon = this.querySelector('.bi-chevron-down');
+      if (dataSubmenu.style.display === 'none' || !dataSubmenu.style.display) {
+        dataSubmenu.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        dataSubmenu.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    });
+  }
 });

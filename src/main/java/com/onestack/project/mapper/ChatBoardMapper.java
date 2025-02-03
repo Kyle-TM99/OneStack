@@ -1,6 +1,6 @@
 package com.onestack.project.mapper;
 
-import com.kyletalk.sns.domain.ChatBoardEvent;
+import com.onestack.project.domain.ChatBoardEvent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

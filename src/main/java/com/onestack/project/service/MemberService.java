@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onestack.project.mapper.MemberMapper;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
@@ -39,13 +41,19 @@ public class MemberService {
     */
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
-        List<Estimation> result = memberMapper.proEstimation(proNo);
-        return result;
+        try {
+            return memberMapper.proEstimation(proNo);
+        } catch (Exception e) {
+            log.error("견적 요청 목록 조회 실패: {}", e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     // 회원이 요청한 견적 리스트 Estimation
     public List<Estimation> memberEstimation(int memberNo) {
+        log.info("Fetching estimations for member: {}", memberNo);
         List<Estimation> result = memberMapper.memberEstimation(memberNo);
+        log.info("Found {} estimations", result != null ? result.size() : 0);
         return result;
     }
 
@@ -55,6 +63,70 @@ public class MemberService {
         return result;
     }
 
+    // 회원별 review 리스트 조회
+    public List<Review> findMyReview(int memberNo) {
+        List<Review> result = memberMapper.findMyReview(memberNo);
+        return result;
+    }
+/*
+    // 회원별 review 리스트 조회
+    public List<Review> proReview(int proNo) {
+        List<Review> result = memberMapper.proReview(proNo);
+        return result;
+    }*/
+
+   /* public int proReviewCount(int proNo) {
+        return memberMapper.proReviewCount(proNo);
+    }
+*/
+    public int findMyReviewCount(int memberNo) {
+        return memberMapper.findMyReviewCount(memberNo);
+    }
+
+    // 회원별 게시글 리스트 조회
+    public List<MemberWithCommunity> memberMyPageCommunity(int memberNo) {
+        List<MemberWithCommunity> result = memberMapper.memberMyPageCommunity(memberNo);
+        if (result != null) {
+            result.forEach(item -> {
+                if (item != null) {
+                    System.out.println("Member: " + item.getMember());
+                    System.out.println("Community: " + item.getCommunity());
+                }
+            });
+        }
+        return result;
+    }
+
+    // 회원별 게시글 수 조회
+    public int memberMyPageCommunityCount(int memberNo) {
+        return memberMapper.memberMyPageCommunityCount(memberNo);
+    }
+
+
+    // 회원별 질문글 수 조회
+    public int memberMyPageQnACount(int memberNo) {
+        return memberMapper.memberMyPageQnACount(memberNo);
+    }
+
+    // 회원별 댓글 수 조회
+    public int memberMyPageComReplyCount(int memberNo) {
+        return memberMapper.memberMyPageComReplyCount(memberNo);
+    }
+
+
+    // 회원별 답글 수 조회
+    public int memberMyPageQnAReplyCount(int memberNo) {
+        return memberMapper.memberMyPageQnAReplyCount(memberNo);
+    }
+
+    // 게시글 공감 조회
+    public List<Community> memberMyPageCommunityLike(int memberNo) {
+        return memberMapper.memberMyPageCommunityLike(memberNo);
+    }
+
+
+    // 댓글 공감 조회
+    public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
     public void updateMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -78,6 +150,10 @@ public class MemberService {
         }
     }
 
+
+
+
+    public void updateMember(Member member) {
     public void updateSocialMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -256,11 +332,11 @@ public class MemberService {
 
             String resetLink = "http://localhost:8080/resetPassword?token=" + token;
             String emailContent = String.format(
-                    "안녕하세요,\n\n" +
-                            "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +
-                            "이 링크는 24시간 동안 유효합니다.\n" +
-                            "본인이 요청하지 않았다면 이 이메일을 무시하시기 바랍니다.",
-                    resetLink
+                "안녕하세요,\n\n" +
+                "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +
+                "이 링크는 24시간 동안 유효합니다.\n" +
+                "본인이 요청하지 않았다면 이 이메일을 무시하시기 바랍니다.",
+                resetLink
             );
 
             SimpleMailMessage message = new SimpleMailMessage();
@@ -289,7 +365,7 @@ public class MemberService {
     }
 
 
-
+    
     public Integer getMemberById(String memberId) {
         int memberNo = memberMapper.findMemberNoByMemberId(memberId);
         return memberNo;
@@ -298,5 +374,62 @@ public class MemberService {
     public List<Portfolio> portfolio(int proNo) {
         List<Portfolio> result = memberMapper.portfolio(proNo);
         return result;
+    }
+
+    // 견적 상태 업데이트
+    public void updateEstimationProgress(int estimationNo, int progress) {
+        try {
+            memberMapper.updateEstimationProgress(estimationNo, progress);
+        } catch (Exception e) {
+            log.error("견적 상태 업데이트 실패: {}", e.getMessage());
+            throw new RuntimeException("견적 상태 업데이트에 실패했습니다.", e);
+        }
+    }
+
+    // 전체 견적 수 조회
+    public int getEstimationCount(int proNo) {
+        return memberMapper.getEstimationCount(proNo);
+    }
+
+    // 페이지별 견적 목록 조회
+    public List<Estimation> getEstimationsByPage(int proNo, int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        return memberMapper.getEstimationsByPage(proNo, offset, pageSize);
+    }
+
+    // 견적 번호로 견적 정보 조회
+    public Estimation getEstimationByNo(int estimationNo) {
+        return memberMapper.getEstimationByNo(estimationNo);
+    }
+
+    // 회원 번호로 회원 정보 조회
+    public Member getMemberByNo(int memberNo) {
+        return memberMapper.getMemberByNo(memberNo);
+    }
+
+    @Transactional
+    public void confirmEstimationByPro(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+
+        // 전문가 확인 상태로 변경
+        memberMapper.updateEstimationCheck(estimationNo, 1);
+    }
+
+    @Transactional
+    public void confirmEstimationByClient(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+
+        // 의뢰인 확인 완료 및 결제 단계로 변경
+        memberMapper.updateEstimationProgress(estimationNo, 2);  // 결제 단계로 변경
+    }
+
+    public void updateEstimationPrice(int estimationNo, int estimationPrice) {
+        memberMapper.updateEstimationPrice(estimationNo, estimationPrice);
     }
 }
