@@ -59,5 +59,6 @@ gradle-app.setting
 /.settings
 .classpath
 .project
+.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java
