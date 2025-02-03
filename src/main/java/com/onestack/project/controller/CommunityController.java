@@ -223,6 +223,8 @@ public class CommunityController {
         return "redirect:community";
     }
 
+
+
     /* 자유게시판 수정 */
     @GetMapping("/communityUpdateForm")
     public String communityUpdateForm(@RequestParam("communityBoardNo") int communityBoardNo, Model model,
