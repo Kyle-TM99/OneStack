@@ -157,18 +157,26 @@
                     <div class="col-auto">
                         <h6 class="card-subtitle mb-2 text-muted" th:text="${reply.nickname}">작성자</h6>
                     </div>
-                        <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete"
-                             th:if="${session.member != null && session.member.memberNo == reply.memberNo}">
-                            <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
-                            <div class="dropdown-menu communityDropdown" style="display: none;">
-                                <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
-                                <form action="/replyDelete" method="post" style="display:inline;">
-                                    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                                    <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
-                                    <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
-                                </form>
-                                <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
-                            </div>
+                    <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete">
+                        <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                        <div class="dropdown-menu communityDropdown" style="display: none;">
+                            <!-- 수정하기, 삭제하기: 작성자일 경우만 보이기 -->
+                            <a class="dropdown-item communityDropdownItem"
+                               th:if="${session.member != null && session.member.memberNo == reply.memberNo}"
+                               href="#">수정하기</a>
+
+                            <form action="/replyDelete" method="post" style="display:inline;">
+                                <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
+                                <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
+                                <button type="submit" class="dropdown-item communityDropdownItem"
+                                        th:if="${session.member != null && session.member.memberNo == reply.memberNo}">삭제하기</button>
+                            </form>
+
+                            <!-- 신고하기: 작성자와 다를 경우만 보이기 -->
+                            <a class="dropdown-item communityDropdownItem"
+                               th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
+                               href="/">신고하기</a>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
