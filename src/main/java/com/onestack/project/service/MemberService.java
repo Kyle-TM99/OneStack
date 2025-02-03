@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onestack.project.mapper.MemberMapper;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
@@ -39,13 +41,19 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 */
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
-       List<Estimation> result = memberMapper.proEstimation(proNo);
-       return result;
+        try {
+            return memberMapper.proEstimation(proNo);
+        } catch (Exception e) {
+            log.error("견적 요청 목록 조회 실패: {}", e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     // 회원이 요청한 견적 리스트 Estimation
     public List<Estimation> memberEstimation(int memberNo) {
+        log.info("Fetching estimations for member: {}", memberNo);
         List<Estimation> result = memberMapper.memberEstimation(memberNo);
+        log.info("Found {} estimations", result != null ? result.size() : 0);
         return result;
     }
 
@@ -94,24 +102,10 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageCommunityCount(memberNo);
     }
 
-    // 회원별 질문글 조회
-    public List<MemberWithQnA> memberMyPageQnA(int memberNo) {
-        List<MemberWithQnA> result = memberMapper.memberMyPageQnA(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-            });
-        }
-        return result;
-    }
 
     // 회원별 질문글 수 조회
     public int memberMyPageQnACount(int memberNo) {
         return memberMapper.memberMyPageQnACount(memberNo);
-    }
-
-    // 회원별 댓글 조회
-    public List<ComWithComReply> comWithComReply(int memberNo) {
-        return memberMapper.comWithComReply(memberNo);
     }
 
     // 회원별 댓글 수 조회
@@ -119,10 +113,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageComReplyCount(memberNo);
     }
 
-    // 회원별 답글 조회
-    public List<QnAWithReply> qnaWithReply(int memberNo) {
-        return memberMapper.qnaWithReply(memberNo);
-    }
 
     // 회원별 답글 수 조회
     public int memberMyPageQnAReplyCount(int memberNo) {
@@ -134,10 +124,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberMapper.memberMyPageCommunityLike(memberNo);
     }
 
-    // 질문글 공감 조회
-    public List<QnA> memberMyPageQnALike(int memberNo) {
-        return memberMapper.memberMyPageQnALike(memberNo);
-    }
 
     // 댓글 공감 조회
     public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
@@ -152,10 +138,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         }
     }
 
-    // 답변 공감 조회
-    public List<QnAReply> memberMyPageQnAReplyLike(int memberNo) {
-        return memberMapper.memberMyPageQnAReplyLike(memberNo);
-    }
 
 
 
@@ -380,5 +362,62 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     public List<Portfolio> portfolio(int proNo) {
         List<Portfolio> result = memberMapper.portfolio(proNo);
         return result;
+    }
+
+    // 견적 상태 업데이트
+    public void updateEstimationProgress(int estimationNo, int progress) {
+        try {
+            memberMapper.updateEstimationProgress(estimationNo, progress);
+        } catch (Exception e) {
+            log.error("견적 상태 업데이트 실패: {}", e.getMessage());
+            throw new RuntimeException("견적 상태 업데이트에 실패했습니다.", e);
+        }
+    }
+
+    // 전체 견적 수 조회
+    public int getEstimationCount(int proNo) {
+        return memberMapper.getEstimationCount(proNo);
+    }
+
+    // 페이지별 견적 목록 조회
+    public List<Estimation> getEstimationsByPage(int proNo, int pageNum, int pageSize) {
+        int offset = (pageNum - 1) * pageSize;
+        return memberMapper.getEstimationsByPage(proNo, offset, pageSize);
+    }
+
+    // 견적 번호로 견적 정보 조회
+    public Estimation getEstimationByNo(int estimationNo) {
+        return memberMapper.getEstimationByNo(estimationNo);
+    }
+
+    // 회원 번호로 회원 정보 조회
+    public Member getMemberByNo(int memberNo) {
+        return memberMapper.getMemberByNo(memberNo);
+    }
+
+    @Transactional
+    public void confirmEstimationByPro(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+        
+        // 전문가 확인 상태로 변경
+        memberMapper.updateEstimationCheck(estimationNo, 1);
+    }
+
+    @Transactional
+    public void confirmEstimationByClient(int estimationNo) {
+        Estimation estimation = memberMapper.getEstimationByNo(estimationNo);
+        if (estimation == null) {
+            throw new RuntimeException("견적을 찾을 수 없습니다.");
+        }
+        
+        // 의뢰인 확인 완료 및 결제 단계로 변경
+        memberMapper.updateEstimationProgress(estimationNo, 2);  // 결제 단계로 변경
+    }
+
+    public void updateEstimationPrice(int estimationNo, int estimationPrice) {
+        memberMapper.updateEstimationPrice(estimationNo, estimationPrice);
     }
 }

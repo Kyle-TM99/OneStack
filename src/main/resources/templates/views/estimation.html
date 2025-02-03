@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <title>견적 관리</title>
+    <style>
+        .estimation-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .estimation-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .estimation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .estimation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .client-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .estimation-date {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .estimation-content {
+            margin: 20px 0;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .estimation-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .estimation-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-accept {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .btn-accept:hover {
+            background: #0284c7;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* 페이지네이션 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background: #fff;
+            color: #4b5563;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-link:hover {
+            background: #f1f5f9;
+        }
+
+        .page-item.active .page-link {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .no-estimations {
+            text-align: center;
+            padding: 60px 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-estimations i {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .no-estimations p {
+            font-size: 16px;
+            color: #6b7280;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<th:block layout:fragment="content">
+    <div class="estimation-container">
+        <h1 class="page-title">견적 관리</h1>
+        
+        <!-- 견적 목록 -->
+        <div class="estimation-list">
+            <!-- 견적이 없을 경우 표시할 메시지 -->
+            <div th:if="${#lists.isEmpty(estimations)}" class="no-estimations">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #9ca3af;"></i>
+                <p>신청된 견적이 존재하지 않습니다.</p>
+            </div>
+            
+            <!-- 견적이 있을 경우 목록 표시 -->
+            <div th:unless="${#lists.isEmpty(estimations)}" th:each="estimation : ${estimations}" class="estimation-card">
+                <div class="estimation-header">
+                    <div class="client-info">
+                        <div class="client-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div>
+                            <div class="client-name" th:text="${estimation.memberNickname}"></div>
+                            <div class="estimation-date" 
+                                 th:text="${#temporals.format(estimation.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+                        </div>
+                    </div>
+                    <span th:class="'status-badge ' + 
+                                  (${estimation.progress == 0 ? 'status-pending' : 
+                                    estimation.progress == 1 ? 'status-accepted' : 'status-rejected'})"
+                          th:text="${estimation.progress == 0 ? '대기중' : 
+                                   estimation.progress == 1 ? '매칭완료' : '거절'}">
+                    </span>
+                </div>
+                
+                <div class="estimation-details">
+                    <div class="detail-item">
+                        <span class="detail-label">카테고리</span>
+                        <span class="detail-value" th:text="${estimation.categoryName}"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">견적 금액</span>
+                        <span class="detail-value" 
+                              th:text="${#numbers.formatDecimal(estimation.estimationPrice, 0, 'COMMA', 0, 'POINT')} + '원'">
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="estimation-content" th:text="${estimation.estimationContent}"></div>
+                
+                <div class="estimation-actions">
+                    <button class="btn-action btn-accept" 
+                            th:onclick="'matchEstimation(' + ${estimation.estimationNo} + ')'">
+                        매칭하기
+                    </button>
+                    <button class="btn-action btn-reject"
+                            th:onclick="'rejectEstimation(' + ${estimation.estimationNo} + ')'">
+                        거절하기
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 페이지네이션 -->
+        <div th:if="${!estimations.isEmpty()}" class="pagination">
+            <th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+                <li th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'">
+                    <a th:href="@{/estimation(pageNum=${pageNum})}" 
+                       class="page-link" th:text="${pageNum}"></a>
+                </li>
+            </th:block>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        // 견적 매칭 처리
+        function matchEstimation(estimationNo) {
+            if (confirm('해당 견적을 매칭하시겠습니까?')) {
+                fetch(`/api/estimation/${estimationNo}/match`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('매칭이 완료되었습니다. 채팅방으로 이동합니다.');
+                        window.location.href = `/chat/room/${data.roomId}`;
+                    } else {
+                        alert(data.message || '매칭 처리에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('매칭 처리 중 오류가 발생했습니다.');
+                });
+            }
+        }
+
+        // 견적 거절 처리
+        function rejectEstimation(estimationNo) {
+            if (confirm('해당 견적을 거절하시겠습니까?')) {
+                fetch(`/api/estimation/${estimationNo}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload(); // 페이지 새로고침
+                    } else {
+                        alert(data.message || '견적 거절에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('견적 거절 중 오류가 발생했습니다.');
+                });
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

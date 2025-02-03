@@ -84,11 +84,6 @@
         <result property="itemTitle" column="item_title" />
         <result property="categoryNo" column="category_no" />
     </resultMap>
-
-	<resultMap id="ProPortfolioResultMap" type="com.onestack.project.domain.ProPortfolio">
-        <association property="professional" resultMap="ProfessionalResultMap" />
-        <association property="portfolio" resultMap="PortfolioResultMap" />
-    </resultMap>
     
     <resultMap id="MemProPortPaiCateResultMap" type="com.onestack.project.domain.MemProPortPaiCate">
         <association property="member" resultMap="MemberResultMap" />
@@ -228,20 +223,6 @@
 	WHERE member_no = #{memberNo}
 </update>
 
-<!-- 회원의 모든 QnA 게시글 비활성화 처리 -->
-<update id="disctivateQnA" parameterType="int">
-	UPDATE QnA
-	SET qna_board_activation = 0
-	WHERE member_no = #{memberNo}
-</update>
-
-<!-- 회원의 모든 QnA 댓글 비활성화 처리 -->
-<update id="disctivateQnAReply" parameterType="int">
-	UPDATE QnAReply
-	SET qna_reply_activation = 0
-	WHERE member_no = #{memberNo}
-</update>
-
 <!-- 회원 정지 해제 -->
 <update id = "unbanMember" parameterType = "int">
 	UPDATE Member
@@ -354,19 +335,6 @@
 	WHERE community_reply_activation = 0
 </select>
 
-<!-- 비활성화인 QnA 조회 -->
-<select id = "getDisactivedQnA" resultType = "QnA">
-	SELECT *
-	FROM QnA
-	WHERE qna_board_activation = 0
-</select>
-
-<!-- 비활성화인 QnA 댓글 조회 -->
-<select id = "getDisactivedQnAReply" resultType = "QnAReply">
-	SELECT *
-	FROM QnAReply
-	WHERE qna_reply_activation = 0
-</select>
 
 <!-- 비활성화인 리뷰 조회 -->
 <select id = "getDisactivedReview" resultType = "Review">
@@ -390,19 +358,7 @@
 	WHERE community_reply_no = #{communityReplyNo}
 </update>
 
-<!-- QnA 활성화/비활성화 -->
-<update id = "updateQnAActivation" parameterType ="map">
-	UPDATE QnA
-	SET qna_board_activation = #{status}
-	WHERE qna_board_no = #{qnaBoardNo}
-</update>
 
-<!-- QnA 댓글 활성화/비활성화 -->
-<update id = "updateQnAReplyActivation" parameterType ="map">
-	UPDATE QnAReply
-	SET qna_reply_activation = #{status}
-	WHERE qna_reply_no = #{qnaReplyNo}
-</update>
 
 
 

@@ -1,6 +1,5 @@
 package com.onestack.project.service;
 
-
 import com.onestack.project.domain.ChatBoardEvent;
 import com.onestack.project.mapper.ChatBoardMapper;
 import lombok.extern.slf4j.Slf4j;

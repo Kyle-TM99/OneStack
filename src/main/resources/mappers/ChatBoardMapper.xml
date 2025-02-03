@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kyletalk.sns.mapper.ChatBoardMapper">
+<mapper namespace="com.onestack.project.mapper.ChatBoardMapper">
     <insert id="insertBoard" parameterType="ChatBoardEvent">
         INSERT INTO chat_board_event (
             room_id, member_id, board_title, board_content
@@ -35,4 +35,5 @@
         DELETE FROM chat_board_event
         WHERE board_id = #{boardId}
     </delete>
+
 </mapper> 

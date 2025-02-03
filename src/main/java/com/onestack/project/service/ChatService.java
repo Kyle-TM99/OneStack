@@ -1,6 +1,5 @@
 package com.onestack.project.service;
 
-
 import com.onestack.project.domain.ChatMessage;
 import com.onestack.project.domain.ChatRoom;
 import com.onestack.project.domain.Member;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,36 +20,37 @@ public class ChatService {
     @Autowired
     private ChatMapper chatMapper;
 
-
     // 채팅방 삭제
     public void deleteChatRoom(String roomId) {
-        // 1. 채팅방의 모든 메시지 삭제
-        chatMapper.deleteAllMessages(roomId);
-        
-        // 2. 채팅방의 모든 참여자 정보 삭제
-        chatMapper.deleteAllParticipants(roomId);
-        
-        // 3. 채팅방 삭제
-        chatMapper.deleteChatRoom(roomId);
+        try {
+            // 1. 채팅방의 모든 메시지 삭제
+            chatMapper.deleteAllMessages(roomId);
+            // 2. 채팅방 삭제
+            chatMapper.deleteChatRoom(roomId);
+        } catch (Exception e) {
+            log.error("채팅방 삭제 실패: {}", e.getMessage());
+            throw new RuntimeException("채팅방 삭제에 실패했습니다.", e);
+        }
     }
     
     // 채팅방 목록 조회
-    public List<ChatRoom> getAllChatRooms() {
-        return chatMapper.getAllChatRooms();
-    }
+    // public List<ChatRoom> getAllChatRooms() {
+    //    return chatMapper.getAllChatRooms();
+    //}
 
     // 채팅방 생성
-    public String createRoom(ChatRoom room, Member member) {
-        room.setRoomId(UUID.randomUUID().toString());
-        room.setCreatedBy(member.getMemberId());
-        room.setRoomAdmin(member.getMemberId());
-        room.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        room.setCurrentUsers(1);
-        
-        chatMapper.createChatRoom(room);
-        chatMapper.addParticipant(room.getRoomId(), member.getMemberId());
-        
-        return room.getRoomId();
+    public String createRoom(ChatRoom room) {
+        try {
+            room.setRoomId(UUID.randomUUID().toString());
+            room.setMaxUsers(2);  // 1:1 채팅
+            room.setCreatedAt(LocalDateTime.now());
+            
+            chatMapper.createChatRoom(room);
+            return room.getRoomId();
+        } catch (Exception e) {
+            log.error("채팅방 생성 실패: {}", e.getMessage());
+            throw new RuntimeException("채팅방 생성에 실패했습니다.", e);
+        }
     }
 
     // 채팅방 비밀번호 확인
@@ -100,68 +101,62 @@ public class ChatService {
 
     // 채팅방 조회
     public ChatRoom findRoom(String roomId) {
-        // 1. 방 존재 여부 확인
-        ChatRoom room = chatMapper.getChatRoomById(roomId);
-        if (room == null) {
-            throw new RuntimeException("존재하지 않는 채팅방입니다.");
+        try {
+            ChatRoom room = chatMapper.getChatRoomById(roomId);
+            if (room == null) {
+                throw new RuntimeException("존재하지 않는 채팅방입니다.");
+            }
+            
+            // 최근 메시지 목록 조회 (최근 50개)
+            List<ChatMessage> recentMessages = chatMapper.getRecentMessages(roomId, 50);
+            room.setRecentMessages(recentMessages);
+            
+            return room;
+        } catch (Exception e) {
+            log.error("채팅방 조회 실패: {}", e.getMessage());
+            throw new RuntimeException("채팅방 조회에 실패했습니다.", e);
         }
-        
-        // 2. 최근 메시지 목록 조회
-        List<ChatMessage> recentMessages = chatMapper.getRecentMessages(roomId, 50);
-        room.setRecentMessages(recentMessages);
-        
-        // 3. 현재 참여자 수 조회
-        int participantCount = chatMapper.getParticipantCount(roomId);
-        room.setCurrentUsers(participantCount);
-        
-        return room;
     }
 
-    // 채팅 메시지 삽입
-    public void insertMessage(ChatMessage message) {
-        chatMapper.insertMessage(message);
-    }
-
-    // 채팅방 권한 양도
-    public void transferRoomAdmin(String roomId, String currentAdmin, String newAdmin) {
-        if (!isRoomAdmin(roomId, currentAdmin)) {
-            throw new RuntimeException("방장 권한이 없습니다.");
+    // 채팅 메시지 저장
+    public void saveMessage(ChatMessage message) {
+        try {
+            log.info("Saving message: {}", message);
+            chatMapper.insertMessage(message);
+        } catch (Exception e) {
+            log.error("메시지 저장 실패: {}", e.getMessage());
+            throw new RuntimeException("메시지 저장에 실패했습니다.", e);
         }
-        if (!isParticipant(roomId, newAdmin)) {
-            throw new RuntimeException("해당 사용자가 채팅방에 참여하지 않았습니다.");
-        }
-        chatMapper.transferRoomAdmin(roomId, currentAdmin, newAdmin);
-    }
-
-    // 채팅방 권한 확인
-    public boolean isRoomAdmin(String roomId, String memberId) {
-        return chatMapper.isRoomAdmin(roomId, memberId);
     }
 
     // 채팅방 참여자 확인
-    public boolean isParticipant(String roomId, String memberId) {
-        return chatMapper.isParticipant(roomId, memberId);
-    }
-
-    // 채팅방 참여자 추가
-    public void addParticipant(String roomId, String memberId) {
-        if (!isParticipant(roomId, memberId)) {
-            chatMapper.addParticipant(roomId, memberId);
-            int currentCount = chatMapper.getParticipantCount(roomId);
-            chatMapper.updateParticipantCount(roomId, currentCount);
+    public boolean isParticipant(String roomId, int memberNo) {
+        try {
+            ChatRoom room = chatMapper.getChatRoomById(roomId);
+            return room != null && (room.getMemberNo() == memberNo || room.getProNo() == memberNo);
+        } catch (Exception e) {
+            log.error("참여자 확인 실패: {}", e.getMessage());
+            throw new RuntimeException("참여자 확인에 실패했습니다.", e);
         }
     }
 
-    // 채팅방 참여자 제거
-    public void removeParticipant(String roomId, String memberId) {
-        if (isParticipant(roomId, memberId)) {
-            chatMapper.removeParticipant(roomId, memberId);
-            int currentCount = chatMapper.getParticipantCount(roomId);
-            if (currentCount == 0) {
-                chatMapper.deleteChatRoom(roomId);
-            } else {
-                chatMapper.updateParticipantCount(roomId, currentCount);
-            }
+    // 채팅방의 최근 메시지 조회
+    public List<ChatMessage> getRecentMessages(String roomId, int limit) {
+        try {
+            return chatMapper.getRecentMessages(roomId, limit);
+        } catch (Exception e) {
+            log.error("최근 메시지 조회 실패: {}", e.getMessage());
+            throw new RuntimeException("최근 메시지 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 사용자가 참여중인 채팅방 목록 조회
+    public List<ChatRoom> getMyChatRooms(int memberNo) {
+        try {
+            return chatMapper.getMyChatRooms(memberNo);
+        } catch (Exception e) {
+            log.error("채팅방 목록 조회 실패: {}", e.getMessage());
+            throw new RuntimeException("채팅방 목록 조회에 실패했습니다.", e);
         }
     }
 } 
