@@ -101,6 +101,7 @@
                                         <span><i class="bi bi-chat"></i> 댓글 <span >0</span></span>
                                         <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
                                         <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                                        <span th:text="${community.nickname != null ? community.nickname : '알 수 없음'}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -161,6 +162,7 @@
                                                 <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
                                                 <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
                                                 <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                                                <span th:text="${community.nickname != null ? community.nickname : '알 수 없음'}"></span>
                                             </div>
                                         </div>
                                     </div>
