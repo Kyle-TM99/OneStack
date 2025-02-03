@@ -43,18 +43,40 @@
             <div class="col-md-2"></div>
             <div class="col-md-8">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex">
-                        <select class="form-select me-2" style="width: 120px;" name="type">
-                            <option value="title">제목</option>
-                            <option value="content">내용</option>
-                        </select>
-                        <input type="text" class="form-control me-2" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
-                        <button type="submit" class="btn btn-primary">검색</button>
-                    </div>
+                    <form name="searchForm" id="searchForm" th:action="@{/memberInquiry}" method="get">
+                        <div class="d-flex">
+                            <select class="form-select me-2" style="width: 120px;" id="type" name="type">
+                                <option value="title" th:selected="${type == 'title'}">제목</option>
+                                <option value="content" th:selected="${type == 'content'}">내용</option>
+                            </select>
+                            <input type="text" class="form-control me-2" id="keyword" name="keyword" placeholder="검색어를 입력하세요" style="width: 250px;">
+                            <button type="submit" class="btn btn-primary">검색</button>
+                        </div>
+                    </form>
                     <div>
                         <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
                     </div>
                 </div>
+
+                <!--/* 검색 요청일 경우 */-->
+                <th:block th:if="${searchOption}">
+                    <div class="row my-4">
+                        <div class="col">
+                            <th:block th:if="${type == 'title'}">
+                                <div class="col text-center">
+                                    <span class="badge text-bg-info">제목</span> <i class="bi bi-activity"></i> <span class="badge bg-primary">[[${keyword}]]</span> 에 대한 검색 결과
+                                </div>
+                            </th:block>
+                            <th:block th:if="${type == 'content'}">
+                                <div class="col text-center">
+                                    <span class="badge text-bg-info">내용</span> <i class="bi bi-activity"></i> <span class="badge bg-primary">[[${keyword}]]</span> 에 대한 검색 결과
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </th:block>
+
+
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -71,25 +93,52 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${#lists.isEmpty(inquiryList)}">
-                        <td colspan="4" class="text-center">문의한 문의글이 없습니다.</td>
-                    </tr>
-                    <tr th:each="inquiry : ${inquiryList}">
-                        <!--th:if="${session.member.isAdmin == 1 or inquiry.inquiry.memberNo == session.member.memberNo}">-->
-                        <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
-                        <td class="post-title">
-                            <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                               th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                        </td>
-                        <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                        <td class="text-center">
-                                <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                    <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
-                                    <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
-                                    <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
-                                </span>
-                        </td>
-                    </tr>
+
+                        <!-- 문의한 문의글이 없는 경우 -->
+                        <th:block th:if="${#lists.isEmpty(inquiryList)}">
+                            <tr>
+                                <td colspan="4" class="text-center">문의한 문의글이 없습니다.</td>
+                            </tr>
+                        </th:block>
+                        <!-- 로그인 한 사람이 관리자인 경우 모든 문의글 조회 -->
+                        <th:block th:if="${session.member.isAdmin == 1}">
+                            <tr th:each="inquiry : ${inquiryList}">
+                                <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
+                                <td class="post-title">
+                                    <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                                       th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                                </td>
+                                <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
+                                <td class="text-center">
+                                    <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                        <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
+                                        <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
+                                        <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </th:block>
+                        <!-- 로그인한 사람이 관리자가 아닌 경우 자신이 문의한 문의글만 조회 -->
+                        <th:block th:if="${session.member.isAdmin != 1}">
+                            <tr th:each="inquiry : ${inquiryList}" th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
+                                <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
+                                <td class="post-title">
+                                    <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                                       th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                                </td>
+                                <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
+                                <td class="text-center">
+                                    <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                        <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
+                                        <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
+                                        <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </th:block>
+
+
+
                     </tbody>
                 </table>
                 <div class="col-md-2"></div>

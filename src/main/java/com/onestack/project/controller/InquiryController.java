@@ -49,6 +49,9 @@ public class InquiryController {
         int totalCount = inquiryService.getInquiryCount(type, keyword);
         int totalPages = (totalCount + num - 1) / num;
 
+        boolean searchOption = (type != null && !type.isEmpty() && keyword != null && !keyword.isEmpty());
+
+        model.addAttribute("searchOption", searchOption);
         model.addAttribute("currentPage", startRow / num + 1);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("type", type);
