@@ -18,12 +18,33 @@ public interface CommunityMapper {
     void updateCommunityReply(CommunityReply communityReply);
     void deleteCommunityReply(int communityReplyNo);
 
-    void increaseLike(@Param("communityBoardNo") int communityBoardNo, @Param("memberNo") int memberNo);
-    void increaseDislike(@Param("communityBoardNo") int communityBoardNo, @Param("memberNo") int memberNo);
+
+    // 회원의 추천 이력 조회
+    String getMemberRecommendType(@Param("communityBoardNo") int communityBoardNo,
+                                  @Param("memberNo") int memberNo);
+
+    // 좋아요 증가
+    void increaseLike(int communityBoardNo);
+
+    // 좋아요 감소
     void decreaseLike(int communityBoardNo);
+
+    // 싫어요 증가
+    void increaseDislike(int communityBoardNo);
+
+    // 싫어요 감소
     void decreaseDislike(int communityBoardNo);
 
-    public List<Community> selectCommunity(int communityBoardNo);
+    // 추천 이력 추가
+    void insertRecommend(@Param("communityBoardNo") int communityBoardNo,
+                         @Param("memberNo") int memberNo,
+                         @Param("recommendType") String recommendType);
+
+    // 추천 이력 삭제
+    void deleteRecommend(@Param("communityBoardNo") int communityBoardNo,
+                         @Param("memberNo") int memberNo);
+
+
 
     // 커뮤니티 상세 정보 및 댓글 리스트 조회
     List<Community> getCommunityAll(@Param("communityBoardNo") int communityBoardNo);

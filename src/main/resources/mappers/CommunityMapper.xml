@@ -24,45 +24,54 @@
 	</select>
 
 
+	<!-- 회원의 추천 이력 조회 -->
+	<select id="getMemberRecommendType" resultType="String">
+		SELECT recommend_type
+		FROM CommunityRecommend
+		WHERE community_board_no = #{communityBoardNo}
+		  AND member_no = #{memberNo}
+	</select>
+
 	<!-- 좋아요 증가 -->
 	<update id="increaseLike">
-		UPDATE community
-		SET community_board_like = community_board_like + 1,
-			community_board_dislike =
-				CASE
-					WHEN community_board_dislike > 0
-						THEN community_board_dislike - 1
-					ELSE 0
-					END
-		WHERE community_board_no = #{communityBoardNo} AND member_no != #{memberNo}
+		UPDATE Community
+		SET community_board_like = community_board_like + 1
+		WHERE community_board_no = #{communityBoardNo}
 	</update>
 
-	<!-- 싫어요 증가 -->
-	<update id="increaseDislike">
-		UPDATE community
-		SET community_board_dislike = community_board_dislike + 1,
-			community_board_like =
-				CASE
-					WHEN community_board_like > 0
-						THEN community_board_like - 1
-					ELSE 0
-					END
-		WHERE community_board_no = #{communityBoardNo} AND member_no != #{memberNo}
-	</update>
-
-	<!-- 좋아요 취소 -->
+	<!-- 좋아요 감소 -->
 	<update id="decreaseLike">
-		UPDATE community
+		UPDATE Community
 		SET community_board_like = GREATEST(community_board_like - 1, 0)
 		WHERE community_board_no = #{communityBoardNo}
 	</update>
 
-	<!-- 싫어요 취소 -->
+	<!-- 싫어요 증가 -->
+	<update id="increaseDislike">
+		UPDATE Community
+		SET community_board_dislike = community_board_dislike + 1
+		WHERE community_board_no = #{communityBoardNo}
+	</update>
+
+	<!-- 싫어요 감소 -->
 	<update id="decreaseDislike">
-		UPDATE community
+		UPDATE Community
 		SET community_board_dislike = GREATEST(community_board_dislike - 1, 0)
 		WHERE community_board_no = #{communityBoardNo}
 	</update>
+
+	<!-- 추천 이력 추가 -->
+	<insert id="insertRecommend">
+		INSERT INTO CommunityRecommend (community_board_no, member_no, recommend_type)
+		VALUES (#{communityBoardNo}, #{memberNo}, #{recommendType})
+	</insert>
+
+	<!-- 추천 이력 삭제 -->
+	<delete id="deleteRecommend">
+		DELETE FROM CommunityRecommend
+		WHERE community_board_no = #{communityBoardNo}
+		  AND member_no = #{memberNo}
+	</delete>
 
 
 

@@ -5,6 +5,7 @@ import com.onestack.project.mapper.CommunityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -27,33 +28,46 @@ public class CommunityService {
         return communityMapper.replyCount(communityBoardNo);
     }
 
-
-    public Map<String, Object> handleRecommend(int communityBoardNo, String recommendType, boolean isCancel, int memberNo) {
+    @Transactional
+    public Map<String, Object> handleRecommend(int communityBoardNo, String recommendType, int memberNo) {
+        // 게시글 조회
         Community community = communityMapper.getCommunity(communityBoardNo);
 
-        // 이미 추천한 상태인지 확인
-        boolean hasRecommended = false;
-        if ("LIKE".equals(recommendType)) {
-            hasRecommended = community.getCommunityBoardLike() > 0 &&
-                    community.getMemberNo().equals(memberNo);
-        } else {
-            hasRecommended = community.getCommunityBoardDislike() > 0 &&
-                    community.getMemberNo().equals(memberNo);
+        // 본인 게시글 체크
+        if (community.getMemberNo().equals(memberNo)) {
+            throw new IllegalStateException("자신의 게시글에는 추천할 수 없습니다.");
         }
 
-        // 이미 추천한 경우 취소, 아닌 경우 추천 처리
-        if (hasRecommended) {
+        // 현재 추천 상태 확인
+        String currentRecommendType = communityMapper.getMemberRecommendType(communityBoardNo, memberNo);
+
+        if (currentRecommendType == null) {
+            // 새로운 추천
+            if ("LIKE".equals(recommendType)) {
+                communityMapper.increaseLike(communityBoardNo);
+            } else {
+                communityMapper.increaseDislike(communityBoardNo);
+            }
+            communityMapper.insertRecommend(communityBoardNo, memberNo, recommendType);
+        } else if (currentRecommendType.equals(recommendType)) {
+            // 같은 유형 클릭 시 추천 취소
             if ("LIKE".equals(recommendType)) {
                 communityMapper.decreaseLike(communityBoardNo);
             } else {
                 communityMapper.decreaseDislike(communityBoardNo);
             }
+            communityMapper.deleteRecommend(communityBoardNo, memberNo);
         } else {
+            // 다른 유형으로 변경
             if ("LIKE".equals(recommendType)) {
-                communityMapper.increaseLike(communityBoardNo, memberNo);
+                communityMapper.decreaseDislike(communityBoardNo);
+                communityMapper.increaseLike(communityBoardNo);
             } else {
-                communityMapper.increaseDislike(communityBoardNo, memberNo);
+                communityMapper.decreaseLike(communityBoardNo);
+                communityMapper.increaseDislike(communityBoardNo);
             }
+            communityMapper.deleteRecommend(communityBoardNo, memberNo);
+            communityMapper.insertRecommend(communityBoardNo, memberNo, recommendType);
         }
 
         // 업데이트된 정보 조회
@@ -63,8 +77,7 @@ public class CommunityService {
                 "success", true,
                 "likeCount", updatedCommunity.getCommunityBoardLike(),
                 "dislikeCount", updatedCommunity.getCommunityBoardDislike(),
-                "memberNo", memberNo,
-                "hasRecommended", !hasRecommended  // 추천 상태가 변경된 후의 상태
+                "currentRecommendType", recommendType
         );
     }
 

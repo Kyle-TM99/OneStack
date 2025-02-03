@@ -55,7 +55,6 @@ public class CommunityController {
     public ResponseEntity<?> handleRecommend(
             @RequestParam int communityBoardNo,
             @RequestParam String recommendType,
-            @RequestParam boolean isCancel,
             HttpSession session) {
 
         Member member = (Member) session.getAttribute("member");
@@ -68,15 +67,10 @@ public class CommunityController {
             Map<String, Object> result = communityService.handleRecommend(
                     communityBoardNo,
                     recommendType,
-                    isCancel,
                     member.getMemberNo()
             );
 
-            if ((boolean) result.get("success")) {
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.badRequest().body(result);
-            }
+            return ResponseEntity.ok(result);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("message", e.getMessage()));

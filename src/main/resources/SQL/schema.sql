@@ -195,6 +195,23 @@ CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY K
                              CONSTRAINT community_board_no_communityReply_fk FOREIGN KEY (community_board_no) REFERENCES Community(community_board_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- CommunityRecommend - 커뮤니티 추천
+CREATE TABLE CommunityRecommend (
+                                    community_board_no INTEGER NOT NULL,
+                                    member_no INTEGER NOT NULL,
+                                    recommend_type VARCHAR(10) NOT NULL, -- 'LIKE' 또는 'DISLIKE'
+                                    recommend_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                    PRIMARY KEY (community_board_no, member_no),
+                                    CONSTRAINT member_no_communityRecommend_fk
+                                        FOREIGN KEY (member_no)
+                                            REFERENCES Member(member_no)
+                                            ON DELETE CASCADE,
+                                    CONSTRAINT community_board_no_communityRecommend_fk
+                                        FOREIGN KEY (community_board_no)
+                                            REFERENCES Community(community_board_no)
+                                            ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- QnA - 질문 게시판
 CREATE TABLE IF NOT EXISTS QnA (qna_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	  member_no INTEGER NOT NULL,
