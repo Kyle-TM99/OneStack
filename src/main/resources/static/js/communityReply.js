@@ -244,36 +244,62 @@ $(document).ready(function() {
         });
     });
 
+    // 댓글 삭제 폼 제출 이벤트 처리
+    $(document).on('submit', 'form[action="/replyDelete"]', function(e) {
+        e.preventDefault(); // 기본 폼 제출 방지
 
-    // 삭제 이벤트
-    $(document).on('submit', '.communityReplyDelete form', function(e) {
-        e.preventDefault();
-        if (!confirm('정말 삭제하시겠습니까?')) return;
+        if (!confirm('댓글을 삭제하시겠습니까?')) {
+            return false;
+        }
 
-        const replyNo = $(this).find('input[name="communityReplyNo"]').val();
-        const replyRow = $(this).closest('.row.mt-4');
+        const form = $(this);
+        const replyNo = form.find('input[name="communityReplyNo"]').val();
+        const memberNo = form.find('input[name="memberNo"]').val();
+        const replyElement = form.closest('.reply-item'); // 삭제할 댓글의 부모 요소
 
         $.ajax({
-            type: 'DELETE',
-            url: '/community/reply',
-            data: { communityReplyNo: replyNo },
-            success: function() {
-                replyRow.remove();
-                // 댓글 수 업데이트
-                const commentCount = $('.bi-chat').next('span');
-                if (commentCount.length) {
-                    const currentCount = parseInt(commentCount.text());
-                    commentCount.text(Math.max(0, currentCount - 1));
-                }
+            type: 'POST',
+            url: '/replyDelete',
+            data: {
+                communityReplyNo: replyNo,
+                memberNo: memberNo
+            },
+            success: function(response) {
+                // 댓글 요소 삭제
+                replyElement.remove();
+
+                // 댓글 수 감소
+                let replyCount = parseInt($('.reply-count').text());
+                $('.reply-count').text(replyCount - 1);
+
+                // 드롭다운 메뉴 닫기
+                $('.dropdown-menu').hide();
+
+                alert('댓글이 삭제되었습니다.');
             },
             error: function(xhr) {
                 if (xhr.status === 401) {
                     alert('로그인이 필요합니다.');
+                } else if (xhr.status === 403) {
+                    alert('삭제 권한이 없습니다.');
                 } else {
-                    alert('댓글 삭제에 실패했습니다.');
+                    alert('댓글 삭제 중 오류가 발생했습니다.');
                 }
             }
         });
     });
 
+    // 드롭다운 메뉴 토글 함수
+    window.toggleDropdown = function(element) {
+        const dropdownMenu = $(element).siblings('.dropdown-menu');
+        $('.dropdown-menu').not(dropdownMenu).hide();
+        dropdownMenu.toggle();
+    };
+
+    // 문서 클릭 시 드롭다운 메뉴 닫기
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.dropdown-container').length) {
+            $('.dropdown-menu').hide();
+        }
+    });
 });

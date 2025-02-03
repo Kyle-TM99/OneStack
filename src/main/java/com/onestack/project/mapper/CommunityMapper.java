@@ -16,7 +16,7 @@ public interface CommunityMapper {
 
     void insertCommunityReply(CommunityReply communityReply);
     void updateCommunityReply(CommunityReply communityReply);
-    void deleteCommunityReply(int communityReplyNo);
+    void deleteCommunityReply(int communityReplyNo, int memberNo);
 
 
     // 회원의 추천 이력 조회
@@ -85,7 +85,7 @@ public interface CommunityMapper {
     int getCommunityBoardCount(Map<String, Object> params);
 
     // 커뮤니티 게시글 상세 조회
-    Community getCommunityDetail(int communityBoardNo);
+    Community getCommunityDetail(@Param("communityBoardNo") int communityBoardNo);
 
     // 커뮤니티 게시글 작성
     int addCommunity(Community community);

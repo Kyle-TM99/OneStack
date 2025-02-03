@@ -81,22 +81,6 @@ public class CommunityService {
         );
     }
 
-    public Map<String, Object> getRecommendStatus(int communityBoardNo, int memberNo) {
-        Community community = communityMapper.getCommunity(communityBoardNo);
-
-        boolean hasLiked = community.getCommunityBoardLike() > 0 &&
-                community.getMemberNo().equals(memberNo);
-        boolean hasDisliked = community.getCommunityBoardDislike() > 0 &&
-                community.getMemberNo().equals(memberNo);
-
-        return Map.of(
-                "likeCount", community.getCommunityBoardLike(),
-                "dislikeCount", community.getCommunityBoardDislike(),
-                "hasLiked", hasLiked,
-                "hasDisliked", hasDisliked
-        );
-    }
-
     public void addCommunityReply(CommunityReply communityReply) {
         communityMapper.insertCommunityReply(communityReply);
     }
@@ -105,9 +89,11 @@ public class CommunityService {
         communityMapper.updateCommunityReply(communityReply);
     }
 
-    public void deleteCommunityReply(int communityReplyNo) {
-        communityMapper.deleteCommunityReply(communityReplyNo);
+    public void deleteCommunityReply(int communityReplyNo, int memberNo) {
+        communityMapper.deleteCommunityReply(communityReplyNo, memberNo);
     }
+
+
 
 
     public Map<String, Object> getCommunityDetail(int communityBoardNo) {
@@ -120,8 +106,10 @@ public class CommunityService {
             }
 
             result.put("community", community);
+            result.put("nickname", community.getNickname());  // 작성자 닉네임 추가
 
         } catch (Exception e) {
+            // 예외 처리
         }
 
         return result;

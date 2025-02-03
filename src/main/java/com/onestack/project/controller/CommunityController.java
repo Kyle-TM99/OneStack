@@ -80,23 +80,30 @@ public class CommunityController {
         }
     }
 
-    @DeleteMapping("/community/reply")
+    @PostMapping("/replyDelete")
     @ResponseBody
     public ResponseEntity<?> deleteReply(
             @RequestParam("communityReplyNo") int communityReplyNo,
+            @RequestParam("memberNo") int memberNo,
             HttpSession session) {
 
-        Member member = (Member) session.getAttribute("member");
-        if (member == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        Member loginMember = (Member) session.getAttribute("member");
+
+        // 로그인 체크
+        if (loginMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        // 작성자 본인 확인
+        if (loginMember.getMemberNo() != memberNo) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
         }
 
         try {
-            communityService.deleteCommunityReply(communityReplyNo);
-            return ResponseEntity.ok().build();
+            communityService.deleteCommunityReply(communityReplyNo, memberNo);
+            return ResponseEntity.ok().body("success");
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 삭제 중 오류가 발생했습니다.");
         }
     }
 
@@ -151,6 +158,7 @@ public class CommunityController {
     }
 
 
+
     @GetMapping("/communityDetail")
     public String communityDetail(
             @RequestParam(value = "communityBoardNo", required = false) Integer communityBoardNo,
@@ -161,29 +169,32 @@ public class CommunityController {
             @RequestParam(value = "type", defaultValue = "null") String type,
             @RequestParam(value = "keyword", defaultValue = "null") String keyword) {
 
-        // 세션 체크를 먼저 수행
+        // 세션 체크
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
-            return "redirect:/login";  // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/login";
         }
-
-        Map<String, Object> result = communityService.getCommunityDetail(communityBoardNo);
-        int replyCount = communityService.replyCount(communityBoardNo);
 
         // communityBoardNo가 null인 경우 pathVariable에서 가져오기
         if (communityBoardNo == null) {
             communityBoardNo = pathVariableCommunityBoardNo;
         }
 
-        // 커뮤니티 상세 정보 가져오기 (로그인한 사용자의 memberNo 전달)
+        // 커뮤니티 상세 정보 가져오기
         Community community = communityService.getCommunity(communityBoardNo, true, member.getMemberNo());
         if (community == null) {
-            return "error"; // 오류 페이지로 리다이렉트
+            return "error";
         }
+
+        // 댓글 수 조회
+        int replyCount = communityService.replyCount(communityBoardNo);
+
+        // 상세 정보 조회 (작성자 닉네임 포함)
+        Map<String, Object> result = communityService.getCommunityDetail(communityBoardNo);
 
         model.addAttribute("replyCount", replyCount);
         model.addAttribute("community", community);
-        model.addAttribute("htmlContent", result.get("htmlContent"));
+        model.addAttribute("nickname", community.getNickname());
         model.addAttribute("pageNum", pageNum);
 
         // 검색 옵션 처리
@@ -194,7 +205,7 @@ public class CommunityController {
             model.addAttribute("keyword", keyword);
         }
 
-        model.addAttribute("member", member); // 모델에 member 추가
+        model.addAttribute("member", member);
 
         // 댓글 리스트 가져오기
         List<Community> replyList = communityService.replyList(communityBoardNo);
