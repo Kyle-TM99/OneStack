@@ -64,22 +64,26 @@
                         <img src="https://placehold.co/100x100" alt="전문가 포트폴리오" class="img-fluid mt-3">
                     </div>
 
+
                     <!-- 리뷰 목록 -->
                     <div class="review-list" id="review">
-                        <h4 class="mt-5 font-weight-bold" style="font-size: 1.3em;">리뷰 목록</h4>
-                        <div class="review-item">
+                        <h4 class="mt-5 font-weight-bold" style="font-size: 1.3em;">최근 리뷰 목록</h4>
+                        <div class="review-item my-3" th:each="review, status: ${reviewList}" >
                             <div class="review-header">
-                                <span class="review-rating">⭐️⭐️⭐️⭐️⭐️</span>
-                                <span class="ml-2 pl-2 border-left text-secondary small">작성자 이름</span>
-                                <span class="review-dateml-2 pl-2 border-left text-secondary small">상세 카테고리</span>
-                                <span class="review-date float-right text-secondary small">작성일자</span>
+                               <span class="review-rating" style="color: gold; font-size: 1.2rem;">
+                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <i th:class="${i <= review.review.reviewRate} ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                                    </th:block>
+                                </span>
+                                <span class="ml-2 pl-2 border-left text-secondary small">[[ ${review.member.nickname} ]]</span>
+                                <span class="review-date ml-2 pl-2 border-left text-secondary small"
+                                      th:text="${#dates.format(review.review.reviewDate, 'yyyy-MM-dd')}"></span>
                             </div>
                             <div class="review-content">
-                                <p class="mb-2 ml-1 mt-3">리뷰 내용</p>
+                                <p class="mb-2 ml-1 mt-3">[[ ${review.review.reviewContent} ]]</p>
                             </div>
                         </div>
                     </div>
-
                     <!-- 리뷰 목록 -->
                     <!--      <div class="review-summary border-top mt-4" id="review">
                               <div class="d-flex mt-3">
@@ -122,6 +126,8 @@
 
                 </div>
             </div>
+
+
 
             <!-- 메뉴 바 -->
             <div class="col-md-3">

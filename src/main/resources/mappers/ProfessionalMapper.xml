@@ -57,7 +57,18 @@
         <result property="quotationPrice" column="quotation_price" />
         <result property="quotationRegDate" column="quotation_reg_date" />
     </resultMap>
-	
+
+	<resultMap id="ReviewResultMap" type="com.onestack.project.domain.Review">
+		<id property="reviewNo" column="review_no" />
+		<result property="proNo" column="pro_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="reviewContent" column="review_content" />
+		<result property="reviewRate" column="review_rate" />
+		<result property="reviewDate" column="review_date" />
+		<result property="reviewActivation" column="review_activation" />
+	</resultMap>
+
+
    	<resultMap id="MemberWithProfessionalResultMap" type="com.onestack.project.domain.MemberWithProfessional">
 		<association property="member" resultMap="MemberResultMap" />
 	    <association property="professional" resultMap="ProfessionalResultMap" />
@@ -66,6 +77,12 @@
 	<resultMap id="MemberWithQutationResultMap" type="com.onestack.project.domain.MemberWithQuotation">
 		<association property="member" resultMap="MemberResultMap" />
 	    <association property="quotation" resultMap="QuotationResultMap" />
+	</resultMap>
+
+	<resultMap id="ProReviewResultMap" type="com.onestack.project.domain.ProReview">
+		<association property="member" resultMap="MemberResultMap" />
+		<association property="professional" resultMap="ProfessionalResultMap" />
+		<association property="review" resultMap="ReviewResultMap" />
 	</resultMap>
 
 <!-- 전문가 신청 -->
@@ -110,11 +127,18 @@
 </select>
 
 <!-- 전문가 리뷰 조회 -->
-<select id = "getProReview" parameterType = "int" resultType = "Review">
-	SELECT *
-	FROM Review
-	WHERE pro_no = #{proNo}
-</select>
+	<select id="getProReview" parameterType="int" resultMap="ProReviewResultMap">
+		SELECT p.*, r.*, m.*
+		FROM Professional p
+				 JOIN Review r
+					  ON p.pro_no = r.pro_no
+				 JOIN Member m
+					  ON r.member_no = m.member_no
+		WHERE r.pro_no = #{proNo}
+		ORDER BY r.review_date DESC
+		LIMIT 5
+	</select>
+
 
 
 

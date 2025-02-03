@@ -192,3 +192,38 @@ VALUES (1, 1, '로그인이 안돼요', '비밀번호를 입력했는데 로그�
 (6, 6, '계정 해킹 의심', '다른 사람이 제 계정을 사용한 흔적이 있습니다.', NOW(), NULL, '답변 중', 0),
 (7, 7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
 (8, 8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
+
+
+-- 리뷰 더미 데이터 --
+INSERT IGNORE INTO Review (review_no, pro_no, member_no, review_content, review_rate, review_date, review_activation)
+VALUES
+    (1, 1, 4, '기획 외주 너무 잘 만들어주셨어요.', 4, '2025-02-03 12:34:56', 1),
+    (2, 1, 5, '기획 외주의 신이야...', 5, '2024-12-13 10:00:00', 1),
+    (3, 1, 6, '기획 프로젝트 별론데요?', 1, '2025-01-02 14:30:00', 1),
+    (4, 1, 7, '다음에 또 부탁드릴게요', 5, '2024-02-01 09:00:00', 1),
+    (5, 1, 8, '마음에 안들어', 2, '2025-02-03 12:34:56', 1),
+    (6, 1, 9, '좋아요~', 4, '2025-01-18 16:45:00', 1);
+
+UPDATE Review
+SET review_date = '2025-02-03 12:34:56'
+WHERE review_no = 1;
+
+UPDATE Review
+SET review_date = '2024-12-13 10:00:00'
+WHERE review_no = 2;
+
+UPDATE Review
+SET review_date = '2025-01-02 14:30:00'
+WHERE review_no = 3;
+
+UPDATE Review
+SET review_date = '2024-02-01 09:00:00'
+WHERE review_no = 4;
+
+UPDATE Review
+SET review_date = '2025-02-03 12:34:56'
+WHERE review_no = 5;
+
+UPDATE Review
+SET review_date = '2025-01-18 16:45:00'
+WHERE review_no = 6;

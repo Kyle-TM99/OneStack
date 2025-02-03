@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.onestack.project.mapper.ProfessionalMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @Slf4j
@@ -77,5 +76,10 @@ public class ProfessionalService {
     public List<MemberWithProfessional> getPro2(int proNo) {
         return professionalMapper.getPro2(proNo);
     }
-    
+
+    /* 전문가 리뷰 조회 */
+    public List<ProReview> getProReview(int proNo) {
+        return professionalMapper.getProReview(proNo);
+    }
+
 }

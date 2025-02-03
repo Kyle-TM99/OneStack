@@ -1,12 +1,8 @@
 package com.onestack.project.mapper;
 
-import com.onestack.project.domain.MemberWithProfessional;
-import com.onestack.project.domain.Professional;
-import com.onestack.project.domain.ProfessionalAdvancedInformation;
-import com.onestack.project.domain.Portfolio;
+import com.onestack.project.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -24,6 +20,9 @@ public interface ProfessionalMapper {
 
     // 전문가 정보 조회
     public List<MemberWithProfessional> getPro2(@Param("proNo") int proNo);
+
+    // 전문가 리뷰 조회
+    public List<ProReview> getProReview(@Param("proNo") int proNo);
 
     void updateMemberType(@Param("memberType") int memberType, @Param("memberNo")int memberNo);
 

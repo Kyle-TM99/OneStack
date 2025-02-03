@@ -18,7 +18,6 @@ import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ProfessionalService;
 import com.onestack.project.service.SurveyService;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -91,8 +90,10 @@ public class ProfessionalController {
     @GetMapping("/proDetail")
     public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
+        List<ProReview> reviewList = professionalService.getProReview(proNo);
 
         model.addAttribute("proList", proList);
+        model.addAttribute("reviewList", reviewList);
 
         return "views/proDetail";
     }
