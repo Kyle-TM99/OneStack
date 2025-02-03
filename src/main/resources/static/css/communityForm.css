@@ -1,0 +1,69 @@
+/* 기본적인 페이지 설정 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* 폼 컨테이너 스타일 */
+.form-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* 폼 헤더 스타일 */
+.form-header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.form-header p {
+    font-size: 16px;
+    color: #6c757d;
+}
+
+/* 링크 홈 스타일 */
+.link-home {
+    text-decoration: none;
+    color: #0056b3;
+    transition: color 0.3s ease;
+}
+
+.link-home:hover {
+    color: #003366;
+}
+
+/* 폼 입력 필드 스타일 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group .form-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-group .form-control {
+    height: 45px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 16px;
+    padding-left: 12px;
+}
+
+.form-group .form-control:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Quill 에디터 스타일 */
+.quill-editor {
+    height: 400px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: #fafafa;
+}

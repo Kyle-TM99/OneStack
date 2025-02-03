@@ -32,9 +32,10 @@
             <div class="col-auto dropdown-container communityDropdownContainer">
                 <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
                 <div class="dropdown-menu communityDropdown" style="display: none;">
+                    <!-- 수정하기 링크 수정 -->
                     <a class="dropdown-item communityDropdownItem"
                        th:if="${session.member != null and session.member.memberNo == community.memberNo}"
-                       th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo})}">
+                       th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo}, memberNo=${session.member.memberNo})}">
                         수정하기
                     </a>
                     <form th:action="@{/delete}" method="post" style="display:inline;">
@@ -68,7 +69,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mb-5">
             <div class="col">
                 <hr class="my-4 opacity-25">
             </div>

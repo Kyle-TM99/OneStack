@@ -196,9 +196,11 @@
 	<!-- 자유게시판 수정하기 -->
 	<update id="updateCommunity" parameterType="Community">
 		UPDATE Community
-		SET community_board_title = #{communityBoardTitle}, community_board_content = #{communityBoardContent},
+		SET community_board_title = #{communityBoardTitle},
+			community_board_content = #{communityBoardContent},
 			community_board_reg_date = SYSDATE()
-		WHERE community_board_no = #{communityBoardNo} AND member_no = #{memberNo}
+		WHERE community_board_no = #{communityBoardNo}
+		  AND member_no = #{memberNo}
 	</update>
 
 	<!-- 자우게시판 삭제하기 -->

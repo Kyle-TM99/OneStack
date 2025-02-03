@@ -93,6 +93,15 @@ public class CommunityService {
         communityMapper.deleteCommunityReply(communityReplyNo, memberNo);
     }
 
+    // 게시글 수정 폼을 위한 데이터 조회
+    public Community getCommunityForUpdate(int communityBoardNo, int memberNo) {
+        Community community = communityMapper.getCommunity(communityBoardNo);
+        if (community == null || community.getMemberNo() != memberNo) {
+            return null;
+        }
+        return community;
+    }
+
 
 
 
