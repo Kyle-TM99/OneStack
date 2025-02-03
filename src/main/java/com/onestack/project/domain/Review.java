@@ -16,7 +16,14 @@ public class Review {
     private int proNo;
     private int memberNo;
     private String reviewContent;
+    // 리뷰 평점
     private int reviewRate;
     private Timestamp reviewDate;
     private byte reviewActivation;
+
+    // 견적 번호
+    private int estimationNo;
+
+    // 채팅방 번호
+    private String roomId;
 }

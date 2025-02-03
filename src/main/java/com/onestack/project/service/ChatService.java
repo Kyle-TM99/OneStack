@@ -53,51 +53,6 @@ public class ChatService {
         }
     }
 
-    // 채팅방 비밀번호 확인
-    public void verifyAndJoinRoom(String roomId, String password, Member member) {
-        String storedPassword = chatMapper.getRoomPassword(roomId);
-        if (storedPassword == null || !storedPassword.equals(password)) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-        }
-        
-        chatMapper.addParticipant(roomId, member.getMemberId());
-        int currentCount = chatMapper.getParticipantCount(roomId);
-        chatMapper.updateParticipantCount(roomId, currentCount);
-    }
-
-    // 채팅방 참여자 조회
-    public List<Member> getRoomParticipants(String roomId) {
-        return chatMapper.getRoomParticipants(roomId);
-    }
-
-    // 채팅방 나가기
-    public void leaveRoom(String roomId, Member member) {
-        // 참여자인지 확인
-        boolean isParticipant = chatMapper.isParticipant(roomId, member.getMemberId());
-        if (!isParticipant) {
-            throw new RuntimeException("해당 채팅방의 참여자가 아닙니다.");
-        }
-
-        // 방장인지 확인
-        boolean isAdmin = chatMapper.isRoomAdmin(roomId, member.getMemberId());
-        if (isAdmin) {
-            throw new RuntimeException("방장은 방을 나갈 수 없습니다. 먼저 방장을 위임해주세요.");
-        }
-        
-        // 참여자 제거
-        chatMapper.removeParticipant(roomId, member.getMemberId());
-
-        // 참여자 수 업데이트
-        int currentCount = chatMapper.getParticipantCount(roomId);
-        
-        // 참여자 수가 0이면 채팅방 삭제
-        if (currentCount == 0) {
-            chatMapper.deleteChatRoom(roomId);
-        } else {
-            // 참여자 수 업데이트
-            chatMapper.updateParticipantCount(roomId, currentCount);
-        }
-    }
 
     // 채팅방 조회
     public ChatRoom findRoom(String roomId) {
@@ -121,7 +76,6 @@ public class ChatService {
     // 채팅 메시지 저장
     public void saveMessage(ChatMessage message) {
         try {
-            log.info("Saving message: {}", message);
             chatMapper.insertMessage(message);
         } catch (Exception e) {
             log.error("메시지 저장 실패: {}", e.getMessage());
