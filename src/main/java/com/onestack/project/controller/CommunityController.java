@@ -80,7 +80,10 @@ public class CommunityController {
 
     @DeleteMapping("/community/reply")
     @ResponseBody
-    public ResponseEntity<?> deleteReply(@RequestParam("communityReplyNo") int communityReplyNo, HttpSession session) {
+    public ResponseEntity<?> deleteReply(
+            @RequestParam("communityReplyNo") int communityReplyNo,
+            HttpSession session) {
+
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -97,25 +100,29 @@ public class CommunityController {
 
     @PatchMapping("/community/reply")
     @ResponseBody
-    public ResponseEntity<?> updateCommunityReply(@RequestBody CommunityReply communityReply, HttpSession session) {
+    public ResponseEntity<?> updateCommunityReply(
+            @RequestBody CommunityReply communityReply,
+            HttpSession session) {
+
         Member member = (Member) session.getAttribute("member");
         if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
-            // 권한 체크 추가
+            // 권한 체크
             if (member.getMemberNo() != communityReply.getMemberNo()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
             communityService.updateCommunityReply(communityReply);
-            return ResponseEntity.ok(communityReply);  // 수정된 댓글 정보 반환
+            return ResponseEntity.ok(communityReply);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @PostMapping("/community/reply")
     @ResponseBody

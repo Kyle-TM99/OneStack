@@ -3,6 +3,7 @@
       layout:decorate="~{layouts/main_layout}">
 
 <head>
+    <link th:href="@{/css/mainCommunity.css}" rel="stylesheet">
     <link th:href="@{/css/community.css}" rel="stylesheet">
 </head>
 
@@ -206,5 +207,32 @@
                         </a>
                     </th:block>
                 </div>
+
+    <div class="row">
+        <div class="col">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
+                    </li>
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'"
+                        class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}" th:href="@{|?pageNum=${num}|}"
+                               class="page-link"></a>
+                        </th:block>
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage + pageGroup}|}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
 </th:block>
 </html>

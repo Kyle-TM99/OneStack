@@ -84,13 +84,6 @@
 		ORDER BY cr.community_reply_reg_date DESC
 	</select>
 
-	<select id="getCommunityReply" resultType="CommunityReply">
-		SELECT cr.*, m.*
-		FROM CommunityReply cr
-				 JOIN Member m ON cr.member_no = m.member_no
-		WHERE cr.community_reply_no = #{communityReplyNo}
-	</select>
-
 	<select id="getCommunityAll" resultType="com.onestack.project.domain.Community">
 		SELECT
 			cr.*, m.*, c.*

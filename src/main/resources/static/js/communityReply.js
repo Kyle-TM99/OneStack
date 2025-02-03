@@ -96,38 +96,60 @@ $(document).ready(function() {
             data: JSON.stringify({
                 communityBoardNo: $(this).find('input[name="communityBoardNo"]').val(),
                 memberNo: $(this).find('input[name="memberNo"]').val(),
-                communityReplyContent: $(this).find('textarea[name="communityReplyContent"]').val()
+                communityReplyContent: $(this).find('input[name="communityReplyContent"]').val()
             }),
             contentType: 'application/json',
             success: function(response) {
-                $('#replyForm').after(`
-        <div class="row mt-4">
-            <div class="col-auto dropdown-container communityDropdownContainer">
-                <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
-                <div class="dropdown-menu communityDropdown" style="display: none;">
-                    <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
-                    <form action="#" method="post" style="display:inline;">
-                        <input type="hidden" name="communityReplyNo" value="${response.communityReplyNo}"/>
-                        <input type="hidden" name="memberNo" value="${response.memberNo}"/>
-                        <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
-                    </form>
-                    <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card mb-2">
-                    <div class="card-body">
+                const newReply = `
+    <div class="row mt-4" id="replyList">
+        <div class="card mb-2">
+            <div class="card-body">
+                <form>
+                    <input type="hidden" name="communityReplyNo" value="${response.communityReplyNo}">
+                    <input type="hidden" name="communityBoardNo" value="${response.communityBoardNo}">
+                    <input type="hidden" name="memberNo" value="${response.memberNo}">
+                    <input type="hidden" name="communityReplyActivation" value="1">
+                </form>
+                <div class="row d-flex justify-content-between">
+                    <div class="col-auto">
                         <h6 class="card-subtitle mb-2 text-muted">${response.nickname}</h6>
-                        <p class="card-text">${response.communityReplyContent}</p>
-                        <div class="d-flex gap-2 text-muted">
-                            <small>${response.communityReplyRegDate}</small>
+                    </div>
+                    <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete">
+                        <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                        <div class="dropdown-menu communityDropdown" style="display: none;">
+                            <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
+                            <form action="/replyDelete" method="post" style="display:inline;">
+                                <input type="hidden" name="communityReplyNo" value="${response.communityReplyNo}"/>
+                                <input type="hidden" name="memberNo" value="${response.memberNo}"/>
+                                <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
+                            </form>
+                            <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="card-text">${response.communityReplyContent}</p>
+                </div>
+                <div class="row">
+                    <div class="d-flex gap-2 text-muted">
+                        <small>${response.communityReplyRegDate}</small>
                     </div>
                 </div>
             </div>
         </div>
-    `);
+    </div>`;
+
+                // replyForm 다음에 새 댓글 추가
+                $('#replyForm').closest('.row.mt-4').after(newReply);
+
+                // 폼 초기화
                 $('#replyForm')[0].reset();
+
+                // 댓글 수 업데이트
+                const commentCount = $('.bi-chat').next('span');
+                if (commentCount.length) {
+                    commentCount.text(parseInt(commentCount.text()) + 1);
+                }
             },
             error: function(xhr, status, error) {
                 alert('댓글 등록에 실패했습니다. 다시 시도해 주세요.');
@@ -138,42 +160,62 @@ $(document).ready(function() {
         });
     });
 
-    // 수정하기 클릭 이벤트
+    $("#replyForm").on("submit", function() {
+        if($("#communityBoardTitle").val().length <= 0) {
+            alert("댓글 내용이 입력되지 않았습니다.\n댓글을 입력해주세요");
+            $("#communityReplyContent").focus();
+            return false;
+        }
+    });
+
+// 수정하기 클릭 이벤트
     $(document).on('click', '.communityDropdownItem[href="#"]', function(e) {
         e.preventDefault();
-        const replyContainer = $(this).closest('.row');
-        const replyContent = replyContainer.find('.card-text').text().trim();
-        const form = replyContainer.find('.card-body form');
-        const replyNo = form.find('input[name="communityReplyNo"]').val();
-        const boardNo = form.find('input[name="communityBoardNo"]').val();
-        const memberNo = form.find('input[name="memberNo"]').val();
+        const replyRow = $(this).closest('.row.mt-4');
+        const replyContent = replyRow.find('.card-text').text().trim();
+        const replyForm = replyRow.find('form').first();
 
-        // 댓글 내용을 수정 가능한 텍스트 영역으로 변경
-        replyContainer.find('.card-text').html(`
-        <textarea class="form-control edit-reply">${replyContent}</textarea>
-        <div class="mt-2">
-            <button class="btn btn-primary btn-sm save-edit" 
-                    data-reply-no="${replyNo}"
-                    data-board-no="${boardNo}"
-                    data-member-no="${memberNo}">저장</button>
-            <button class="btn btn-secondary btn-sm cancel-edit" 
-                    data-original-content="${replyContent}">취소</button>
+        const replyData = {
+            replyNo: replyForm.find('input[name="communityReplyNo"]').val(),
+            boardNo: replyForm.find('input[name="communityBoardNo"]').val(),
+            memberNo: replyForm.find('input[name="memberNo"]').val()
+        };
+
+        // 수정 폼으로 변경
+        replyRow.find('.card-text').html(`
+        <div class="edit-form">
+            <textarea class="form-control mb-2">${replyContent}</textarea>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm save-reply" 
+                        data-reply-no="${replyData.replyNo}"
+                        data-board-no="${replyData.boardNo}"
+                        data-member-no="${replyData.memberNo}">저장</button>
+                <button class="btn btn-secondary btn-sm cancel-reply" 
+                        data-original-content="${replyContent}">취소</button>
+            </div>
         </div>
     `);
+
+        // 드롭다운 메뉴 닫기
+        $('.communityDropdown').hide();
     });
 
 // 수정 취소
-    $(document).on('click', '.cancel-edit', function() {
-        const replyContainer = $(this).closest('.row');
+    $(document).on('click', '.cancel-reply', function() {
         const originalContent = $(this).data('original-content');
-        replyContainer.find('.card-text').text(originalContent);
+        $(this).closest('.card-text').html(originalContent);
     });
 
 // 수정 저장
-    $(document).on('click', '.save-edit', function() {
+    $(document).on('click', '.save-reply', function() {
         const $this = $(this);
-        const replyContainer = $this.closest('.row');
-        const newContent = replyContainer.find('textarea').val();
+        const replyRow = $this.closest('.row.mt-4');
+        const newContent = replyRow.find('textarea').val().trim();
+
+        if (!newContent) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+        }
 
         const replyData = {
             communityReplyNo: $this.data('reply-no'),
@@ -188,37 +230,49 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(replyData),
             success: function(response) {
-                replyContainer.find('.card-text').html(newContent);
+                replyRow.find('.card-text').html(newContent);
             },
-            error: function(xhr, status, error) {
-                console.error('Error:', xhr.responseText);
-                alert('댓글 수정에 실패했습니다.');
-                // 실패시 원래 내용으로 복구
-                const originalContent = replyContainer.find('textarea').val();
-                replyContainer.find('.card-text').text(originalContent);
+            error: function(xhr) {
+                if (xhr.status === 401) {
+                    alert('로그인이 필요합니다.');
+                } else if (xhr.status === 403) {
+                    alert('수정 권한이 없습니다.');
+                } else {
+                    alert('댓글 수정에 실패했습니다.');
+                }
+                replyRow.find('.card-text').html($this.closest('.edit-form').find('.cancel-reply').data('original-content'));
             }
         });
     });
 
-    // 삭제하기 클릭 이벤트
+
+    // 삭제 이벤트
     $(document).on('submit', '.communityReplyDelete form', function(e) {
         e.preventDefault();
         if (!confirm('정말 삭제하시겠습니까?')) return;
 
         const replyNo = $(this).find('input[name="communityReplyNo"]').val();
-        const replyContainer = $(this).closest('.row');
+        const replyRow = $(this).closest('.row.mt-4');
 
         $.ajax({
             type: 'DELETE',
             url: '/community/reply',
-            data: {
-                communityReplyNo: replyNo
-            },
+            data: { communityReplyNo: replyNo },
             success: function() {
-                replyContainer.remove();
+                replyRow.remove();
+                // 댓글 수 업데이트
+                const commentCount = $('.bi-chat').next('span');
+                if (commentCount.length) {
+                    const currentCount = parseInt(commentCount.text());
+                    commentCount.text(Math.max(0, currentCount - 1));
+                }
             },
-            error: function() {
-                alert('댓글 삭제에 실패했습니다.');
+            error: function(xhr) {
+                if (xhr.status === 401) {
+                    alert('로그인이 필요합니다.');
+                } else {
+                    alert('댓글 삭제에 실패했습니다.');
+                }
             }
         });
     });

@@ -123,56 +123,64 @@
         </div>
 
 
+
         <div class="row mt-4">
-                <div class="d-flex gap-2">
-                    <form id="replyForm">
-                        <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
-                        <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
-                        <textarea class="form-control" rows="3" placeholder="댓글을 입력하세요" name="communityReplyContent"></textarea>
-                        <button type="submit" class="btn btn-primary align-self-start">등록</button>
-                    </form>
+            <div class="col">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <form id="replyForm" class="d-flex gap-2">
+                            <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
+                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+                            <div class="flex-grow-1">
+                                <input type="text" class="form-control" placeholder="댓글을 입력하세요" name="communityReplyContent"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary">등록</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
         </div>
+
 
         <!-- 댓글 목록 -->
         <th:block th:if="${not #lists.isEmpty(replyList)}">
             <div class="row mt-4" id="replyList" th:each="reply : ${replyList}">
-
-                <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete"
-                     th:if="${session.member != null && session.member.memberNo == reply.memberNo}">
-                    <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
-                    <div class="dropdown-menu communityDropdown" style="display: none;">
-                        <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
-                        <form action="/replyDelete" method="post" style="display:inline;">
-                            <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                            <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
-                            <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
-                        </form>
-                        <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
+        <div class="card mb-2">
+            <div class="card-body">
+                <form>
+                    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}">
+                    <input type="hidden" name="communityBoardNo" th:value="${reply.communityBoardNo}">
+                    <input type="hidden" name="memberNo" th:value="${reply.memberNo}">
+                    <input type="hidden" name="communityReplyActivation" value="1">
+                </form>
+                <div class="row d-flex justify-content-between">
+                    <div class="col-auto">
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${reply.nickname}">작성자</h6>
                     </div>
-                </div>
-
-                <div class="col">
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <form>
-                                <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}">
-                                <input type="hidden" name="communityBoardNo" th:value="${reply.communityBoardNo}">
-                                <input type="hidden" name="memberNo" th:value="${reply.memberNo}">
-                                <input type="hidden" name="communityReplyActivation" value="1">
-                            </form>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${reply.nickname}">작성자</h6>
-                                    <p class="card-text" th:text="${reply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
-                                    <div class="d-flex gap-2 text-muted">
-                                        <small th:text="${#dates.format(reply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
-                                    </div>
-                                </div>
+                        <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete"
+                             th:if="${session.member != null && session.member.memberNo == reply.memberNo}">
+                            <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                            <div class="dropdown-menu communityDropdown" style="display: none;">
+                                <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
+                                <form action="/replyDelete" method="post" style="display:inline;">
+                                    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
+                                    <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
+                                    <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>
+                                </form>
+                                <a class="dropdown-item communityDropdownItem" href="#">신고하기</a>
                             </div>
-                        </div>
                     </div>
                 </div>
+                <div class="row">
+                    <p class="card-text" th:text="${reply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
+                </div>
+                <div class="row">
+                    <div class="d-flex gap-2 text-muted">
+                        <small th:text="${#dates.format(reply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                    </div>
+                </div>
+            </div>
+        </div>
             </div>
         </th:block>
     </th:block>
