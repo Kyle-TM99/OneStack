@@ -2,8 +2,6 @@ package com.onestack.project.mapper;
 
 import com.onestack.project.domain.Community;
 import com.onestack.project.domain.CommunityReply;
-import com.onestack.project.domain.MemberWithCommunity;
-import com.onestack.project.domain.MemberWithCommunityReply;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,6 +10,9 @@ import java.util.Map;
 
 @Mapper
 public interface CommunityMapper {
+
+    /* 댓글 수 조회 */
+    int replyCount(int communityBoardNo);
 
     void insertCommunityReply(CommunityReply communityReply);
     void updateCommunityReply(CommunityReply communityReply);
@@ -33,8 +34,9 @@ public interface CommunityMapper {
     public List<Community> selectMemberWithCommunityReplies(int communityBoardNo);
 
     // 자유게시판 리스트 조회
-    public List<Community> communityList(@Param("startRow") int startRow, @Param("num") int num,
-                                         @Param("type") String type, @Param("keyword") String keyword);
+    public List<Community> communityList(Map<String, Object> params);
+
+
 
     // 페이징네이션을 위한 전체 게시글 수
     public int getCommunityCount(@Param("type") String type, @Param("keyword") String keyword);
@@ -80,4 +82,6 @@ public interface CommunityMapper {
     void incrementCommunityReadCount(int communityBoardNo);
 
     int getCommunityCount();
+
+    List<Community> communityList(int startRow, int pageSize, String type, String keyword, String order);
 }

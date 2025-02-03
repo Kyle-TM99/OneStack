@@ -55,7 +55,7 @@
 
         <div class="row d-flex justify-content-between">
             <div class="col-auto">
-                <span th:text="${community.memberNo}">작성자</span>
+                <span th:text="${nickname}">작성자</span>
             </div>
             <div class="col-auto">
                 <span class="text-muted ms-2">조회수 <span th:text="${community.communityView}">0</span></span>
@@ -94,7 +94,7 @@
             </div>
         </div>
 
-        <div class="row d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 col-auto">
                 <!-- 좋아요 버튼 -->
                 <span id="communityBoardLike" class="recommend-btn"
@@ -118,7 +118,7 @@
             싫어요 <span class="dislike-count" th:text="${community.communityBoardDislike}">0</span>
         </span>
             </div>
-            <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
+            <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${replyCount}">0</span></span>
             </div>
         </div>
 

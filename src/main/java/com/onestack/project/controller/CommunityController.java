@@ -159,6 +159,7 @@ public class CommunityController {
             @RequestParam(value = "keyword", defaultValue = "null") String keyword) {
 
         Map<String, Object> result = communityService.getCommunityDetail(communityBoardNo);
+        int replyCount = communityService.replyCount(communityBoardNo);
 
         // communityBoardNo가 null인 경우 pathVariable에서 가져오기
         if (communityBoardNo == null) {
@@ -171,6 +172,7 @@ public class CommunityController {
             return "error"; // 오류 페이지로 리다이렉트
         }
 
+        model.addAttribute("replyCount", replyCount);
         model.addAttribute("community", community);
         model.addAttribute("htmlContent", result.get("htmlContent"));
         model.addAttribute("pageNum", pageNum);
@@ -403,11 +405,25 @@ public class CommunityController {
         return result;
     }
 
-    // 커뮤니티 게시글 목록 조회
     @GetMapping("/community")
-    public String communityList(Model model, @RequestParam(required = false) String type, @RequestParam(required = false) String keyword) {
-        Map<String, Object> data = communityService.communityList(1, type, keyword);
+    public String communityList(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                @RequestParam(value = "type", required = false) String type,
+                                @RequestParam(value = "keyword", required = false) String keyword,
+                                @RequestParam(value = "order", defaultValue = "latest") String order,
+                                Model model) {
+        // searchOption 처리 로직 추가
+        boolean searchOption = (type != null && !type.isEmpty() &&
+                keyword != null && !keyword.isEmpty());
+
+        Map<String, Object> data = communityService.communityList(pageNum, type, keyword, order);
+
+        model.addAttribute("searchOption", searchOption);
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("order", order);
         model.addAllAttributes(data);
+
         return "board/community";
     }
 

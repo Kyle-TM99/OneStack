@@ -43,6 +43,7 @@
         <div class="col-md-6 d-flex align-items-center justify-content-center">
             <form name="searchForm" id="searchForm" action="community" class="row justify-content-center my-3">
                 <div class="d-flex align-items-center">
+                    <input type="hidden" name="order" th:value="${order}">
                     <input type="text" name="keyword" class="search-bar" placeholder="검색어를 입력하세요" style="border: 2px solid #215EA3; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
                     <input type="submit" value="검색" class="search-button" style="margin-left: -50px; border: none; background: none; cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -53,8 +54,8 @@
                     </input>
                     <div class="col-auto">
                         <select name="type" class="form-select">
-                            <option value="communityBoardTitle">제목</option>
-                            <option value="communityBoardContent">내용</option>
+                            <option value="communityBoardTitle" th:selected="${type == 'communityBoardTitle'}">제목</option>
+                            <option value="communityBoardContent" th:selected="${type == 'communityBoardContent'}">내용</option>
                         </select>
                     </div>
                 </div>
@@ -62,10 +63,10 @@
         </div>
         <div class="col-md-3 d-flex align-items-center justify-content-center">
             <div class="segment-control float-end">
-                <input type="radio" name="sort" id="sort-popular" checked>
-                <input type="radio" name="sort" id="sort-recommended">
-                <label for="sort-popular">최신순</label>
-                <label for="sort-recommended">추천순</label>
+                <input type="radio" name="order" value="latest" th:checked="${order == 'latest' || order == null}" onchange="changeOrder(this.value)">
+                <input type="radio" name="order" value="recommend" th:checked="${order == 'recommend'}" onchange="changeOrder(this.value)">
+                <label for="sort-latest">최신순</label>
+                <label for="sort-recommend">추천순</label>
                 <div class="segment-indicator"></div>
             </div>
         </div>
@@ -213,13 +214,14 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:if="${ startPage > pageGroup }">
-                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
+                        <a class="page-link" th:href="@{/community(pageNum=${startPage - 1}, type=${type}, keyword=${keyword}, order=${order})}">Pre</a>
                     </li>
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
                         th:classappend="${num == currentPage} ? 'active'"
                         class="page-item" aria-current="page">
                         <th:block th:if="${num != currentPage}">
-                            <a th:text="${num}" th:href="@{|?pageNum=${num}|}"
+                            <a th:text="${num}"
+                               th:href="@{/community(pageNum=${num}, type=${type}, keyword=${keyword}, order=${order})}"
                                class="page-link"></a>
                         </th:block>
                         <th:block th:unless="${num != currentPage}">
@@ -227,12 +229,54 @@
                         </th:block>
                     </li>
                     <li class="page-item" th:if="${endPage < pageCount}">
-                        <a class="page-link" th:href="@{|?pageNum=${startPage + pageGroup}|}">Next</a>
+                        <a class="page-link"
+                           th:href="@{/community(pageNum=${endPage + 1}, type=${type}, keyword=${keyword}, order=${order})}">Next</a>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
+
+    <!-- communityWrite.js 스크립트 포함 -->
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/communityWrite.js}"></script>
+        <script th:src="@{/js/communityReply.js}"></script>
+        <script th:src="@{/js/header.js}"></script>
+        <script>
+            // 이미지 로딩 에러 처리
+            document.querySelectorAll('.ql-editor img').forEach(img => {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    console.log('이미지 로딩 실패:', this.src);
+                };
+            });
+
+            // 링크 새 창에서 열기
+            document.querySelectorAll('.ql-editor a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+        </script>
+    </th:block>
+
+    <script th:inline="javascript">
+        function changeOrder(value) {
+            let currentUrl = new URL(window.location.href);
+            let searchParams = currentUrl.searchParams;
+
+            // 현재 URL의 파라미터들을 모두 유지
+            let type = /*[[${type}]]*/ '';
+            let keyword = /*[[${keyword}]]*/ '';
+
+            let newUrl = `/community?order=${value}`;
+            if(type && keyword) {
+                newUrl += `&type=${type}&keyword=${keyword}`;
+            }
+            newUrl += '&pageNum=1';  // 정렬 변경시 1페이지로
+
+            window.location.href = newUrl;
+        }
+    </script>
 
 </th:block>
 </html>

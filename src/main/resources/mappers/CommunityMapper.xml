@@ -16,6 +16,13 @@
 		<result property="communityReplyCount" column="community_reply_count" />
 	</resultMap>
 
+	<!-- 댓글 수 조회-->
+	<select id="replyCount" resultType="int">
+		SELECT COUNT(*)
+		FROM CommunityReply
+		WHERE community_board_no = #{communityBoardNo}
+	</select>
+
 
 	<!-- 좋아요 증가 -->
 	<update id="increaseLike">
@@ -94,31 +101,40 @@
 		ORDER BY cr.community_reply_reg_date DESC
 	</select>
 
-	<!-- 자유게시판 리스트 조회-->
 	<select id="communityList" parameterType="map" resultType="Community">
 		SELECT *
 		FROM Community
 		<where>
-			<if test="type == 'communityBoardTitle'">
+			<if test="type == 'communityBoardTitle' and keyword != null and keyword != ''">
 				community_board_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="type == 'communityBoardContent'">
+			<if test="type == 'communityBoardContent' and keyword != null and keyword != ''">
 				community_board_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
-		ORDER BY community_board_no DESC
+		<choose>
+			<when test="order == 'latest'">
+				ORDER BY community_board_reg_date DESC
+			</when>
+			<when test="order == 'recommend'">
+				ORDER BY (community_board_like - community_board_dislike) DESC,
+				community_board_reg_date DESC
+			</when>
+			<otherwise>
+				ORDER BY community_board_reg_date DESC
+			</otherwise>
+		</choose>
 		LIMIT #{startRow}, #{num}
 	</select>
 
-	<!-- 페이징네이션을 위핸 전체 게시글 수 -->
-	<select id="getCommunityCount">
-		SELECT COUNT(community_board_no)
+	<select id="getCommunityCount" resultType="int">
+		SELECT COUNT(*)
 		FROM Community
 		<where>
-			<if test="type == 'communityBoardTitle'">
+			<if test="type == 'communityBoardTitle' and keyword != null and keyword != ''">
 				community_board_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="type == 'communityBoardContent'">
+			<if test="type == 'communityBoardContent' and keyword != null and keyword != ''">
 				community_board_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>

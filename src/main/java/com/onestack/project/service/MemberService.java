@@ -30,15 +30,6 @@ public class MemberService {
 
     private final JavaMailSender mailSender;
 
-
-    /*
-
-    // 전문가 마이페이지에서 포트폴리오 조회
-    public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
-        List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
-        return result;
-    }
-    */
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
         try {
@@ -57,39 +48,8 @@ public class MemberService {
         return result;
     }
 
-
-    // 회원별 review 리스트 조회
-    public List<Review> findMyReview(int memberNo) {
-        List<Review> result = memberMapper.findMyReview(memberNo);
-        return result;
-    }
-/*
-    // 회원별 review 리스트 조회
-    public List<Review> proReview(int proNo) {
-        List<Review> result = memberMapper.proReview(proNo);
-        return result;
-    }*/
-
-   /* public int proReviewCount(int proNo) {
-        return memberMapper.proReviewCount(proNo);
-    }
-*/
     public int findMyReviewCount(int memberNo) {
         return memberMapper.findMyReviewCount(memberNo);
-    }
-
-    // 회원별 게시글 리스트 조회
-    public List<MemberWithCommunity> memberMyPageCommunity(int memberNo) {
-        List<MemberWithCommunity> result = memberMapper.memberMyPageCommunity(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-                if (item != null) {
-                    System.out.println("Member: " + item.getMember());
-                    System.out.println("Community: " + item.getCommunity());
-                }
-            });
-        }
-        return result;
     }
 
     // 회원별 게시글 수 조회
