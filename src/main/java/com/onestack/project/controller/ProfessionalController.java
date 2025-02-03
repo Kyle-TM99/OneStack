@@ -205,10 +205,18 @@ public class ProfessionalController {
 
     // 포트폴리오 상세보기
     @GetMapping("/portfolio/portfolioDetail")
-    public String getPortfolioDetail(@RequestParam("portfolioNo") int portfolioNo, Model model) {
-        Portfolio portfolio = professionalService.getPortfolioById(portfolioNo); // 단일 객체 반환
-        model.addAttribute("portfolio", portfolio);
-        return "views/portfolioDetail";  // 템플릿 경로 맞추기
+    public String getPortfolioDetail(@RequestParam("portfolioNo") int portfolioNo, Model model, HttpSession session) {
+        // 포트폴리오 상세 정보 가져오기
+        MemProPortPaiCate portfolioDetail = professionalService.getPortfolioDetail(portfolioNo);
+
+        // 세션에서 로그인한 회원 정보 가져오기
+        Member sessionMember = (Member) session.getAttribute("member");
+        model.addAttribute("sessionMember", sessionMember);
+
+        // 모델에 데이터 추가
+        model.addAttribute("portfolio", portfolioDetail);
+
+        return "views/portfolioDetail"; // Thymeleaf 뷰 반환
     }
 
     // 포트폴리오 수정

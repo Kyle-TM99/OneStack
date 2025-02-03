@@ -91,6 +91,38 @@
 		<result property="portfolioFile10" column="portfolio_file10"/>
 	</resultMap>
 
+	<resultMap id="portfolioDetailMap" type="com.onestack.project.domain.MemProPortPaiCate">
+		<association property="member" javaType="com.onestack.project.domain.Member">
+			<result column="member_no" property="memberNo"/>
+			<result column="name" property="name"/>
+		</association>
+		<association property="professional" javaType="com.onestack.project.domain.Professional">
+			<result column="pro_no" property="proNo"/>
+			<result column="self_introduction" property="selfIntroduction"/>
+			<result column="career" property="career"/>
+			<result column="award_career" property="awardCareer"/>
+			<result column="contactable_time" property="contactableTime"/>
+		</association>
+		<association property="portfolio" javaType="com.onestack.project.domain.Portfolio">
+			<result column="portfolio_no" property="portfolioNo"/>
+			<result column="portfolio_title" property="portfolioTitle"/>
+			<result column="portfolio_content" property="portfolioContent"/>
+			<result column="thumbnail_image" property="thumbnailImage"/>
+			<result column="portfolio_file1" property="portfolioFile1"/>
+			<result column="portfolio_file2" property="portfolioFile2"/>
+			<result column="portfolio_file3" property="portfolioFile3"/>
+		</association>
+		<association property="category" javaType="com.onestack.project.domain.Category">
+			<result column="category_no" property="categoryNo"/>
+			<result column="item_title" property="itemTitle"/>
+		</association>
+		<association property="professionalAdvancedInformation" javaType="com.onestack.project.domain.ProfessionalAdvancedInformation">
+			<result column="pro_answer1" property="proAnswer1"/>
+			<result column="pro_answer2" property="proAnswer2"/>
+			<result column="pro_answer3" property="proAnswer3"/>
+		</association>
+	</resultMap>
+
  <!-- 전문가 신청 -->
 <insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
 		INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, contactable_time, average_price, review_count)
@@ -126,8 +158,26 @@
 	WHERE portfolio_no = #{portfolioNo}
 </select>
 
+<!--MemProPortPaiCate 조회-->
+	<select id="getPortfolioDetail" resultMap="portfolioDetailMap">
+		SELECT
+		m.member_no, m.name,
+		p.pro_no, p.self_introduction, p.career, p.award_career, p.contactable_time,
+		pf.portfolio_no, pf.portfolio_title, pf.portfolio_content, pf.thumbnail_image,
+		pf.portfolio_file1, pf.portfolio_file2, pf.portfolio_file3,
+		c.category_no, c.item_title,
+		pai.pro_answer1, pai.pro_answer2, pai.pro_answer3
+		FROM Portfolio pf
+		JOIN Professional p ON pf.pro_no = p.pro_no
+		JOIN Member m ON p.member_no = m.member_no
+		JOIN Category c ON p.category_no = c.category_no
+		LEFT JOIN ProfessionalAdvancedInformation pai ON p.pro_no = pai.pro_no
+		WHERE pf.portfolio_no = #{portfolioNo}
+		LIMIT 1
+	</select>
 
-<!-- 전문가 고급 정보 추가 -->
+
+	<!-- 전문가 고급 정보 추가 -->
 <insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
 	INSERT INTO ProfessionalAdvancedInformation(pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
 	VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
@@ -242,6 +292,7 @@
 	WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
 </select>
 
+	<!--회원 본인 포트폴리오 정보 조회-->
 	<select id="getPortfolioEntityById" resultType="Portfolio" parameterType="int">
 		SELECT
 		portfolio_no AS portfolioNo,
@@ -298,5 +349,6 @@
 		pro_answer5 = #{proAnswer5}
 		WHERE pro_advanced_no = #{proAdvancedNo}
 	</update>
+
 
 </mapper>

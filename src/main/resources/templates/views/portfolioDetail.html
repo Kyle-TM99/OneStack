@@ -1,98 +1,91 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--      layout:decorate="~{layouts/main_layout}">-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
 
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>포트폴리오 상세보기</title>-->
-<!--<style>-->
+<head>
+    <meta charset="UTF-8">
+    <title>포트폴리오 상세보기</title>
+    <link rel="stylesheet" th:href="@{/css/portfolioDetail.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/portfolioDetail.js}"></script>
+</head>
 
-<!--</style>-->
-<!--</head>-->
+<body>
+<div class="layout-container">
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="card portfolio-card shadow-lg">
+                <div class="card-body">
 
-<!--<body>-->
-<!--<div class="layout-container">-->
-<!--<div layout:fragment="content">-->
-<!--    <div class="container mt-4">-->
-<!--        <h2 class="mb-4" th:text="${portfolio.portfolioTitle}"></h2>-->
+                    <!-- 포트폴리오 제목 -->
+                    <h2 class="text-center portfolio-title" th:text="${portfolio.portfolio.portfolioTitle}"></h2>
 
-<!--        <div class="row">-->
-<!--            &lt;!&ndash; 포트폴리오 이미지 슬라이드 &ndash;&gt;-->
-<!--            <div class="col-md-6">-->
-<!--                <div id="portfolioCarousel" class="carousel slide" data-bs-ride="carousel">-->
-<!--                    <div class="carousel-inner">-->
-<!--                        &lt;!&ndash; 썸네일 이미지 (첫 번째 아이템으로 설정) &ndash;&gt;-->
-<!--                        <div class="carousel-item active">-->
-<!--                            <img th:src="${portfolio.thumbnailImage}" class="d-block w-100 rounded" alt="썸네일 이미지">-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash; 포트폴리오 파일 이미지 (슬라이드) &ndash;&gt;-->
-<!--                        <div class="portfolio-files mt-4">-->
-<!--                            <h4>포트폴리오 파일</h4>-->
-<!--                            <div class="row">-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile1 != null and portfolio.portfolioFile1 != ''}" th:src="${portfolio.portfolioFile1}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile2 != null and portfolio.portfolioFile2 != ''}" th:src="${portfolio.portfolioFile2}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile3 != null and portfolio.portfolioFile3 != ''}" th:src="${portfolio.portfolioFile3}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile4 != null and portfolio.portfolioFile4 != ''}" th:src="${portfolio.portfolioFile4}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile5 != null and portfolio.portfolioFile5 != ''}" th:src="${portfolio.portfolioFile5}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile6 != null and portfolio.portfolioFile6 != ''}" th:src="${portfolio.portfolioFile6}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile7 != null and portfolio.portfolioFile7 != ''}" th:src="${portfolio.portfolioFile7}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile8 != null and portfolio.portfolioFile8 != ''}" th:src="${portfolio.portfolioFile8}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile9 != null and portfolio.portfolioFile9 != ''}" th:src="${portfolio.portfolioFile9}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                                <div class="col-md-4">-->
-<!--                                    <img th:if="${portfolio.portfolioFile10 != null and portfolio.portfolioFile10 != ''}" th:src="${portfolio.portfolioFile10}" class="img-fluid mb-3" alt="포트폴리오 이미지">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                    <div class="row">
+                        <!-- 포트폴리오 이미지 -->
+                        <div class="col-md-6">
+                            <div class="portfolio-images">
+                                <img th:src="${portfolio.portfolio.thumbnailImage}" class="main-image img-fluid rounded shadow-lg" alt="썸네일 이미지">
 
-<!--                    </div>-->
-<!--                    &lt;!&ndash; 슬라이드 컨트롤 &ndash;&gt;-->
-<!--                    <button class="carousel-control-prev" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="prev">-->
-<!--                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
-<!--                    </button>-->
-<!--                    <button class="carousel-control-next" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="next">-->
-<!--                        <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--            </div>-->
+                                <!-- 이미지 갤러리 -->
+                                <div class="portfolio-gallery">
+                                    <h5 class="gallery-title">포트폴리오 이미지</h5>
+                                    <div class="gallery-container">
+                                        <div th:each="i : ${#numbers.sequence(1, 10)}" class="file-item">
+                                            <img th:with="file=${portfolio['portfolioFile' + i]}"
+                                                 th:if="${file != null and file != ''}"
+                                                 th:src="${file}"
+                                                 class="img-thumbnail shadow-sm gallery-img"
+                                                 alt="포트폴리오 이미지">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<!--            &lt;!&ndash; 포트폴리오 상세 내용 &ndash;&gt;-->
-<!--            <div class="col-md-6">-->
-<!--                <div class="info-section">-->
-<!--                    <p><strong>전문가:</strong> <span th:text="${portfolio.professionalName}"></span></p>-->
-<!--                    <p><strong>전문 분야:</strong> <span th:text="${portfolio.categoryName}"></span></p>-->
-<!--                    <p><strong>자기소개:</strong> <span th:text="${portfolio.selfIntroduction}"></span></p>-->
-<!--                    <p><strong>연락 가능 시간:</strong> <span th:text="${portfolio.contactableTime}"></span></p>-->
-<!--                    <p><strong>경력:</strong> <span th:text="${portfolio.career}"></span></p>-->
-<!--                    <p><strong>수상 경력:</strong> <span th:text="${portfolio.awardCareer}"></span></p>-->
-<!--                    <p><strong>포트폴리오 내용:</strong> <span th:text="${portfolio.portfolioContent}"></span></p>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--</div>-->
+                        <!-- 포트폴리오 정보 -->
+                        <div class="col-md-6">
+                            <div class="info-section">
+                                <p><strong>회원 이름:</strong> <span th:text="${portfolio.member.name}"></span></p>
+                                <p><strong>전문 분야:</strong> <span th:text="${portfolio.category.itemTitle}"></span></p>
+                                <p><strong>자기소개:</strong> <span th:text="${portfolio.Professional.selfIntroduction}"></span></p>
+                                <p><strong>연락 가능 시간:</strong> <span th:text="${portfolio.Professional.contactableTime}"></span></p>
+                                <p><strong>경력:</strong></p>
+                                <ul>
+                                    <li th:each="career : ${portfolio.Professional.career.split(',')}" th:text="${career}"></li>
+                                </ul>
+                                <p><strong>수상 경력:</strong></p>
+                                <ul>
+                                    <li th:each="award : ${portfolio.Professional.awardCareer.split(',')}" th:text="${award}"></li>
+                                </ul>
+                                <p><strong>포트폴리오 설명:</strong> <span th:text="${portfolio.portfolio.portfolioContent}"></span></p>
+                            </div>
+                        </div>
+                    </div>
 
-<!--&lt;!&ndash; Bootstrap JS 추가 &ndash;&gt;-->
-<!--<script th:src="@{/js/bootstrap.bundle.min.js}"></script>-->
+                    <!-- 버튼 섹션 -->
+                    <div class="button-group">
+                        <a href="/portfolioList" class="btn btn-secondary">목록으로</a>
+                        <a th:if="${session.member.memberNo == portfolio.professional.memberNo}"
+                           th:href="@{/editPortfolio(portfolioNo=${portfolio.portfolio.portfolioNo})}"
+                           class="btn btn-primary">수정</a>
+                        <button th:if="${session.member.memberNo == portfolio.professional.memberNo}"
+                                class="btn btn-danger" id="deletePortfolioBtn">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!--</body>-->
-<!--</html>-->
+<script>
+    // 이미지 클릭 시 확대 (Lightbox 효과)
+    $(document).ready(function() {
+        $(".gallery-img").click(function() {
+            $(".main-image").attr("src", $(this).attr("src"));
+        });
+    });
+</script>
+
+</body>
+</html>

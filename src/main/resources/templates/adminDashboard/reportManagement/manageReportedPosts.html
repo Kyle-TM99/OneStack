@@ -26,7 +26,7 @@
                 <th scope="col">관리</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="memberTableBody">
             <tr th:each="report : ${reportsList}" th:if="${report.reportsStatus == 0}" th:attr="data-report-no=${report.reportsNo},data-target-id=${report.reportedMemberNo}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${report.reportsNo}">신고 번호</td>
@@ -58,7 +58,7 @@
     <!-- 페이지네이션을 하단에 고정 -->
     <div class="mt-3">
         <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center my-3">
+            <ul class="pagination justify-content-center my-3" id="pagination">
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>

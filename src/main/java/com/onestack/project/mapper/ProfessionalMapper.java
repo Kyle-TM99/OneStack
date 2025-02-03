@@ -7,6 +7,7 @@ import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Mapper
 public interface ProfessionalMapper {
@@ -47,6 +48,7 @@ public interface ProfessionalMapper {
 
     int getItemNoByPortfolio(int portfolioNo);
 
+    MemProPortPaiCate getPortfolioDetail(@Param("portfolioNo") int portfolioNo);
 
     // ✅ 전문가 정보 업데이트
     Portfolio getPortfolioEntityById(@Param("portfolioNo") int portfolioNo);

@@ -129,7 +129,7 @@
                 <th scope="col">정지 사유</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="memberTableBody">
             <tr th:each="member : ${member}" th:if="${member.memberStatus == 1 or member.memberStatus == 2}">
                 <td><input type="checkbox"/></td>
                 <td th:text="${member.name}">이름</td>
@@ -157,7 +157,7 @@
     <!-- 페이지네이션을 하단에 고정 -->
     <div class=" mt-3">
         <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center my-3">
+            <ul class="pagination justify-content-center my-3" id="pagination">
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
