@@ -34,7 +34,7 @@
 						THEN community_board_dislike - 1
 					ELSE 0
 					END
-		WHERE community_board_no = #{communityBoardNo}
+		WHERE community_board_no = #{communityBoardNo} AND member_no != #{memberNo}
 	</update>
 
 	<!-- 싫어요 증가 -->
@@ -47,7 +47,7 @@
 						THEN community_board_like - 1
 					ELSE 0
 					END
-		WHERE community_board_no = #{communityBoardNo}
+		WHERE community_board_no = #{communityBoardNo} AND member_no != #{memberNo}
 	</update>
 
 	<!-- 좋아요 취소 -->
@@ -145,6 +145,7 @@
 		UPDATE Community
 		SET community_view = community_view + 1
 		WHERE community_board_no = #{communityBoardNo}
+		  AND member_no != #{memberNo}
 	</update>
 
 	<!-- 자유게시판 상세보기 조회-->

@@ -35,10 +35,18 @@ public class CommunityController {
     private CommunityService communityService;
 
     @GetMapping("/detail/{communityBoardNo}")
-    public String getCommunityDetail(@PathVariable int communityBoardNo, Model model) {
-        Community community = communityService.getCommunity(communityBoardNo, true);
+    public String getCommunityDetail(@RequestParam(value = "communityBoardNo") int communityBoardNo,
+                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                     HttpSession session,
+                                     Model model) {
+        Member member = (Member) session.getAttribute("member");
+        int memberNo = member != null ? member.getMemberNo() : 0;
+
+        Community community = communityService.getCommunity(communityBoardNo, true, memberNo);
         // community.communityBoardContent에는 Quill에서 생성된 HTML이 저장되어 있어야 함
         model.addAttribute("community", community);
+        model.addAttribute("pageNum", pageNum);
+
         return "board/communityDetail";
     }
 
@@ -153,10 +161,17 @@ public class CommunityController {
     public String communityDetail(
             @RequestParam(value = "communityBoardNo", required = false) Integer communityBoardNo,
             @PathVariable(value = "communityBoardNo", required = false) Integer pathVariableCommunityBoardNo,
-            Model model, HttpSession session,
+            Model model,
+            HttpSession session,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "type", defaultValue = "null") String type,
             @RequestParam(value = "keyword", defaultValue = "null") String keyword) {
+
+        // 세션 체크를 먼저 수행
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/login";  // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+        }
 
         Map<String, Object> result = communityService.getCommunityDetail(communityBoardNo);
         int replyCount = communityService.replyCount(communityBoardNo);
@@ -166,8 +181,8 @@ public class CommunityController {
             communityBoardNo = pathVariableCommunityBoardNo;
         }
 
-        // 커뮤니티 상세 정보 가져오기
-        Community community = communityService.getCommunity(communityBoardNo, true);
+        // 커뮤니티 상세 정보 가져오기 (로그인한 사용자의 memberNo 전달)
+        Community community = communityService.getCommunity(communityBoardNo, true, member.getMemberNo());
         if (community == null) {
             return "error"; // 오류 페이지로 리다이렉트
         }
@@ -185,8 +200,6 @@ public class CommunityController {
             model.addAttribute("keyword", keyword);
         }
 
-        // 세션에서 member 가져오기
-        Member member = (Member) session.getAttribute("member");
         model.addAttribute("member", member); // 모델에 member 추가
 
         // 댓글 리스트 가져오기
@@ -208,10 +221,11 @@ public class CommunityController {
     /* 자유게시판 수정 */
     @GetMapping("/communityUpdateForm")
     public String communityUpdateForm(@RequestParam("communityBoardNo") int communityBoardNo, Model model,
+                                      @RequestParam(value = "memberNo") int memberNo,
                                       @RequestParam(value="pageNum", defaultValue="1") int pageNum,
                                       @RequestParam(value="type", defaultValue="null") String type,
                                       @RequestParam(value="keyword", defaultValue="null") String keyword) {
-        Community community = communityService.getCommunity(communityBoardNo, false);
+        Community community = communityService.getCommunity(communityBoardNo, false, memberNo);
         boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
 
         model.addAttribute("pageNum", pageNum);

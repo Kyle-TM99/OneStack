@@ -18,8 +18,8 @@ public interface CommunityMapper {
     void updateCommunityReply(CommunityReply communityReply);
     void deleteCommunityReply(int communityReplyNo);
 
-    void increaseLike(int communityBoardNo);
-    void increaseDislike(int communityBoardNo);
+    void increaseLike(@Param("communityBoardNo") int communityBoardNo, @Param("memberNo") int memberNo);
+    void increaseDislike(@Param("communityBoardNo") int communityBoardNo, @Param("memberNo") int memberNo);
     void decreaseLike(int communityBoardNo);
     void decreaseDislike(int communityBoardNo);
 
@@ -41,7 +41,7 @@ public interface CommunityMapper {
     // 페이징네이션을 위한 전체 게시글 수
     public int getCommunityCount(@Param("type") String type, @Param("keyword") String keyword);
 
-    public void incrementReadCount(int communityBoardNo);
+    public void incrementReadCount(@Param("communityBoardNo") int communityBoardNo, @Param("memberNo") int memberNo);
 
     // 자유게시판 상세보기 조회
     public Community getCommunity(int communityBoardNo);

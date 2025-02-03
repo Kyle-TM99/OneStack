@@ -50,9 +50,9 @@ public class CommunityService {
             }
         } else {
             if ("LIKE".equals(recommendType)) {
-                communityMapper.increaseLike(communityBoardNo);
+                communityMapper.increaseLike(communityBoardNo, memberNo);
             } else {
-                communityMapper.increaseDislike(communityBoardNo);
+                communityMapper.increaseDislike(communityBoardNo, memberNo);
             }
         }
 
@@ -184,12 +184,14 @@ public List<Community> getCommunityAll(int communityBoardNo) {
     }
 
     // 자유게시판 상세보기 조회
-    public Community getCommunity(int communityBoardNo, boolean isCount) {
+    public Community getCommunity(int communityBoardNo, boolean isCount, int memberNo) {
         if(isCount) {
-            communityMapper.incrementReadCount(communityBoardNo);
+            communityMapper.incrementReadCount(communityBoardNo, memberNo);
         }
         return communityMapper.getCommunity(communityBoardNo);
     }
+
+
 
 
 
