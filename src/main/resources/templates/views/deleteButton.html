@@ -24,7 +24,7 @@
       <form th:action="@{/reports}" method="post">
         <div class="modal-body">
           <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
-          <input type="hidden" name="reportedMemberNo" th:value="${member?.memberNo ?: 3}" />
+          <input type="hidden" name="reportedMemberNo" th:value="${member?.memberNo ?: 6}" />
 
           <div class="mb-3">
             <label for="reportsType" class="form-label">신고 유형</label>

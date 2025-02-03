@@ -28,6 +28,10 @@ public class SurveyService {
 	    modelMap.put("surveyList", surveyList);
 	    return modelMap;
 	}
+
+	public List<Survey> getSurveysByItem(int itemNo) {
+		return surveyMapper.getSurveysByItem(itemNo);
+	}
 	
 	public List<Category> getAllCategories() {
 	        return surveyMapper.getAllCategories();

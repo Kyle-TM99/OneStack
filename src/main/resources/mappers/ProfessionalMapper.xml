@@ -68,7 +68,7 @@
 	    <association property="quotation" resultMap="QuotationResultMap" />
 	</resultMap>
 
-	<resultMap id="PortfolioDetailResultMap" type="PortfolioDetail">
+	<resultMap id="PortfolioDetailResultMap" type="com.onestack.project.domain.PortfolioDetail">
 		<id property="portfolioNo" column="portfolio_no"/>
 		<result property="portfolioTitle" column="portfolio_title"/>
 		<result property="portfolioContent" column="portfolio_content"/>
@@ -159,18 +159,18 @@
 
 	<select id="getPortfolioById" parameterType="int" resultMap="PortfolioDetailResultMap">
 		SELECT DISTINCT
-		p.portfolio_no, p.pro_no, p.portfolio_title, p.portfolio_content, p.thumbnail_image,
-		p.portfolio_file1, p.portfolio_file2, p.portfolio_file3, p.portfolio_file4, p.portfolio_file5,
-		p.portfolio_file6, p.portfolio_file7, p.portfolio_file8, p.portfolio_file9, p.portfolio_file10,
-		pr.self_introduction, pr.contactable_time, pr.career, pr.award_career,
-		c.item_title AS category_name,
-		m.name AS professional_name
+			p.portfolio_no, p.pro_no, p.portfolio_title, p.portfolio_content, p.thumbnail_image,
+			p.portfolio_file1, p.portfolio_file2, p.portfolio_file3, p.portfolio_file4, p.portfolio_file5,
+			p.portfolio_file6, p.portfolio_file7, p.portfolio_file8, p.portfolio_file9, p.portfolio_file10,
+			pr.self_introduction, pr.contactable_time, pr.career, pr.award_career,
+			c.item_title AS category_name,
+			m.name AS professional_name
 		FROM Portfolio p
-		LEFT JOIN Professional pr ON p.pro_no = pr.pro_no
-		LEFT JOIN Member m ON pr.member_no = m.member_no
-		LEFT JOIN Category c ON pr.category_no = c.category_no
+				 LEFT JOIN Professional pr ON p.pro_no = pr.pro_no
+				 LEFT JOIN Member m ON pr.member_no = m.member_no
+				 LEFT JOIN Category c ON pr.category_no = c.category_no
 		WHERE p.portfolio_no = #{portfolioNo}
-		LIMIT 1
+			LIMIT 1
 	</select>
 
 
@@ -226,6 +226,13 @@
 	<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
 		SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
 	</select>
+
+	<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
+		SELECT item_no
+		FROM ProfessionalAdvancedInformation
+		WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+	</select>
+
 
 	<!-- ✅ 포트폴리오 업데이트 -->
 	<update id="updatePortfolio" parameterType="Portfolio">

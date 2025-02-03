@@ -1,12 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
-    if (window.editPortfolioScriptLoaded) return;
-    window.editPortfolioScriptLoaded = true;
+    if (window.portfolioEditScriptLoaded) return;
+    window.portfolioEditScriptLoaded = true;
 
     const categorySelect = document.getElementById("categoryNo");
     const itemSelect = document.getElementById("itemNo");
     const surveyContainer = document.getElementById("surveyContainer");
     const updateBtn = document.getElementById("updatePortfolioBtn");
     const portfolioForm = document.getElementById("portfolioForm");
+    const portfolioNoInput = document.getElementById("portfolioNo");
+
+    if (!categorySelect || !itemSelect || !surveyContainer || !updateBtn || !portfolioForm || !portfolioNoInput) {
+        console.error("필수 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    // ✅ 기존 데이터 유지
+    const savedCategory = categorySelect.getAttribute("data-db-value");
+    const savedItem = itemSelect.getAttribute("data-db-value");
 
     // ✅ 카테고리별 전문분야 목록
     const categoryOptions = {
@@ -29,7 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     };
 
-    // ✅ 카테고리 선택 시 해당하는 전문분야 표시
+    // ✅ 기존 데이터 로드
+    if (savedCategory) {
+        categorySelect.value = savedCategory;
+        updateItemOptions(savedCategory, savedItem);
+    }
+
     function updateItemOptions(selectedCategory, selectedItem = null) {
         itemSelect.innerHTML = '<option value="">전문분야 선택</option>';
         if (selectedCategory && categoryOptions[selectedCategory]) {
@@ -45,29 +60,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ✅ 초기 전문분야 목록 불러오기
-    if (categorySelect && itemSelect) {
-        const selectedCategory = categorySelect.value;
-        const selectedItem = document.getElementById("selectedItemNo").value;
-        updateItemOptions(selectedCategory, selectedItem);
+    // ✅ 카테고리 선택 시 해당하는 전문분야 표시
+    categorySelect.addEventListener("change", function () {
+        updateItemOptions(categorySelect.value);
+    });
 
-        categorySelect.addEventListener("change", function () {
-            updateItemOptions(this.value);
-        });
-    }
+    // ✅ 전문분야 변경 시 자동 리로드
+    itemSelect.addEventListener("change", function () {
+        location.href = `/editPortfolio?portfolioNo=${portfolioNoInput.value}&itemNo=${this.value}`;
+    });
 
-    // ✅ 포트폴리오 파일 추가 기능
-    document.getElementById('addFileButtonBtn').addEventListener('click', function () {
-        const portfolioFileContainer = document.getElementById('portfolioFileContainer');
-        const fileCount = portfolioFileContainer.querySelectorAll('input[type="file"]').length;
+    // ✅ 기존 파일 리스트 로드
+    const portfolioFileContainer = document.getElementById("portfolioFileContainer");
+    const existingFiles = JSON.parse(portfolioFileContainer.getAttribute("data-files-json") || "[]");
+    existingFiles.forEach(file => {
+        const fileElement = document.createElement("p");
+        fileElement.innerHTML = `📂 현재 파일: ${file} <button type="button" class="btn btn-danger btn-sm remove-btn" data-file="${file}">삭제</button>`;
+        portfolioFileContainer.appendChild(fileElement);
+    });
 
-        if (fileCount >= 10) {
+    // ✅ 파일 추가 기능
+    document.querySelector(".add-file-btn")?.addEventListener("click", function () {
+        if (portfolioFileContainer.querySelectorAll('input[type="file"]').length >= 10) {
             alert("최대 10개의 파일만 추가할 수 있습니다.");
             return;
         }
 
-        const newFileDiv = document.createElement('div');
-        newFileDiv.className = 'mb-3';
+        const newFileDiv = document.createElement("div");
+        newFileDiv.className = "mb-3";
         newFileDiv.innerHTML = `
             <input type="file" class="form-control portfolioFiles" name="portfolioFiles" accept="image/*">
             <button type="button" class="btn btn-danger btn-sm remove-btn mt-2">삭제</button>
@@ -75,65 +95,27 @@ document.addEventListener('DOMContentLoaded', function () {
         portfolioFileContainer.appendChild(newFileDiv);
     });
 
-    // ✅ 파일 삭제 기능 (이벤트 위임)
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-btn')) {
-            e.target.parentElement.remove();
+    // ✅ 기존 경력 데이터 로드
+    const careerContainer = document.getElementById("careerContainer");
+    careerContainer.querySelectorAll("input").forEach(input => {
+        input.value = input.getAttribute("data-db-value") || "";
+    });
+
+    // ✅ 기존 수상 경력 데이터 로드
+    const awardsContainer = document.getElementById("awardsContainer");
+    awardsContainer.querySelectorAll("input").forEach(input => {
+        input.value = input.getAttribute("data-db-value") || "";
+    });
+
+    // ✅ 삭제 버튼 이벤트
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-btn")) {
+            event.target.parentElement.remove();
         }
     });
 
-    // ✅ 썸네일 이미지 삭제 기능
-    document.querySelector('.remove-existing-thumbnail').addEventListener('click', function () {
-        if (confirm("썸네일 이미지를 삭제하시겠습니까?")) {
-            document.getElementById("currentThumbnail").textContent = "";
-        }
-    });
-
-    // ✅ 기존 포트폴리오 파일 삭제 기능
-    document.querySelectorAll('.remove-existing-file').forEach(button => {
-        button.addEventListener('click', function () {
-            if (confirm("이 파일을 삭제하시겠습니까?")) {
-                this.parentElement.remove();
-            }
-        });
-    });
-
-    // ✅ 경력 추가 기능
-    document.getElementById('addCareer').addEventListener('click', function () {
-        const careerContainer = document.getElementById('careerContainer');
-        const newCareerInput = document.createElement('div');
-        newCareerInput.className = 'd-flex mb-2';
-        newCareerInput.innerHTML = `
-            <input type="text" class="form-control" name="career">
-            <button type="button" class="btn btn-danger btn-sm remove-career ms-2">삭제</button>
-        `;
-        careerContainer.appendChild(newCareerInput);
-    });
-
-    // ✅ 수상 경력 추가 기능
-    document.getElementById('addAward').addEventListener('click', function () {
-        const awardContainer = document.getElementById('awardContainer');
-        const newAwardInput = document.createElement('div');
-        newAwardInput.className = 'd-flex mb-2';
-        newAwardInput.innerHTML = `
-            <input type="text" class="form-control" name="awardCareer">
-            <button type="button" class="btn btn-danger btn-sm remove-award ms-2">삭제</button>
-        `;
-        awardContainer.appendChild(newAwardInput);
-    });
-
-    // ✅ 경력 및 수상 경력 삭제 기능 (이벤트 위임)
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-career')) {
-            e.target.parentElement.remove();
-        }
-        if (e.target.classList.contains('remove-award')) {
-            e.target.parentElement.remove();
-        }
-    });
-
-    // ✅ 수정 완료 버튼 클릭 시 데이터 전송
-    updateBtn.addEventListener('click', async function () {
+    // ✅ 포트폴리오 수정 완료 버튼
+    updateBtn.addEventListener("click", async function () {
         const formData = new FormData(portfolioForm);
 
         try {
@@ -151,10 +133,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ✅ 취소 버튼 클릭 시 목록으로 이동
-    document.getElementById('cancelBtn').addEventListener('click', function () {
+    // ✅ 취소 버튼
+    document.getElementById("cancelBtn")?.addEventListener("click", function () {
         if (confirm("수정을 취소하시겠습니까?")) {
             window.location.href = "/portfolioList";
+        }
+    });
+
+    // ✅ 썸네일 삭제 기능
+    document.querySelector(".remove-thumbnail")?.addEventListener("click", function () {
+        if (confirm("썸네일을 삭제하시겠습니까?")) {
+            document.getElementById("currentThumbnail").textContent = "삭제됨";
+            document.getElementById("thumbnailImage").value = "";
         }
     });
 });

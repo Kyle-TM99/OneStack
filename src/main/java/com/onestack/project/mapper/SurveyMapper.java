@@ -17,4 +17,6 @@ public interface SurveyMapper {
 	
 	List<Category> getAllCategories();
 
+	List<Survey> getSurveysByItem(int itemNo);
+
 }

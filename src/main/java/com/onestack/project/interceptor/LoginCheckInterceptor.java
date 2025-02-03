@@ -33,12 +33,19 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 		// 세션에 isLogin란 이름의 속성이 없으면 로그인 상태가 아님
 		if(request.getSession().getAttribute("isLogin") == null) {
 			// 로그인 상태가 아니라면 로그인 폼으로 리다이렉트 시킨다.
-			response.sendRedirect("loginForm");
+			response.sendRedirect("/loginForm");
 			session.setAttribute("loginMsg", "로그인이 필요한 서비스");
 			return false;
 		}
 
 		Member member = (Member) session.getAttribute("member");
+
+
+		if (member == null) {
+			session.invalidate(); // 세션 삭제
+			response.sendRedirect("/loginForm?error=not_logged_in");
+			return false;
+		}
 		Member dbMember = memberMapper.getMember(member.getMemberId());
 		if (dbMember == null) {
 			session.invalidate(); // 세션 삭제

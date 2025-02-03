@@ -15,7 +15,6 @@
 <div layout:fragment="content">
   <div class="container portfolio-container mt-4">
     <h2 class="mb-4">📂 포트폴리오 관리</h2>
-
     <div class="d-flex justify-content-between align-items-center">
       <p class="text-muted">나의 포트폴리오를 관리하세요.</p>
       <button class="btn btn-primary" onclick="location.href='/portfolioList/addPortfolio'">
@@ -35,6 +34,9 @@
               <span class="badge bg-secondary" th:text="${portfolio.visibility == 1 ? '공개' : '비공개'}"></span>
 
               <div class="portfolio-actions d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-warning btn-sm me-2" onclick="editPortfolio(event, this)">
+                  <i class="bi bi-pencil"></i> 수정
+                </button>
                 <button class="btn btn-outline-danger btn-sm" onclick="deletePortfolio(event, this)">
                   <i class="bi bi-trash"></i> 삭제
                 </button>
@@ -48,6 +50,7 @@
 </div>
 <th:block layout:fragment="script">
   <script th:src="@{/js/portfolioList.js}"></script>
+  <script th:src="@{/js/header.js}"></script>
 </th:block>
 </body>
 </html>

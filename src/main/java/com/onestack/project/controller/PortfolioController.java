@@ -32,6 +32,12 @@ public class PortfolioController {
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
     private final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
 
+    @GetMapping("/getByItem")
+    public ResponseEntity<List<Survey>> getSurveyByItem(@RequestParam("itemNo") int itemNo) {
+        List<Survey> surveys = surveyService.getSurveysByItem(itemNo);
+        return ResponseEntity.ok(surveys);
+    }
+
     @PostMapping("/portfolio/upload")
     public ResponseEntity<Map<String, Object>> uploadFiles(
             @RequestParam("thumbnailImage") MultipartFile thumbnailImage,
