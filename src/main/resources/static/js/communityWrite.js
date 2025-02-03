@@ -62,6 +62,18 @@ quilljsediterInit();
 
 document.addEventListener("DOMContentLoaded", function() {
 
+    // 삭제 버튼 클릭 이벤트 처리
+    document.querySelectorAll('.delete-community-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            if (confirm('정말 삭제하시겠습니까?')) {
+                const form = this.closest('form');
+                form.submit();
+            }
+        });
+    });
+
     $("#updateForm").on("submit", function() {
         if($("#communityBoardTitle").val().length <= 0) {
             alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");

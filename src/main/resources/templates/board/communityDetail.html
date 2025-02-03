@@ -37,7 +37,8 @@
                        th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo})}">
                         수정하기
                     </a>
-                    <form action="#" th:action="@{/delete(communityBoardNo=${community.communityBoardNo})}" method="post" style="display:inline;">
+                    <form th:action="@{/delete}" method="post" style="display:inline;">
+                        <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
                         <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
                         <button type="submit" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
                             삭제하기
@@ -93,7 +94,7 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="row d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 col-auto">
                 <!-- 좋아요 버튼 -->
                 <span id="communityBoardLike" class="recommend-btn"
@@ -123,7 +124,6 @@
 
 
         <div class="row mt-4">
-            <div class="col">
                 <div class="d-flex gap-2">
                     <form id="replyForm">
                         <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
@@ -132,19 +132,18 @@
                         <button type="submit" class="btn btn-primary align-self-start">등록</button>
                     </form>
                 </div>
-            </div>
         </div>
 
         <!-- 댓글 목록 -->
         <th:block th:if="${not #lists.isEmpty(replyList)}">
             <div class="row mt-4" id="replyList" th:each="reply : ${replyList}">
 
-                <div class="col-auto dropdown-container communityDropdownContainer"
+                <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete"
                      th:if="${session.member != null && session.member.memberNo == reply.memberNo}">
                     <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
                     <div class="dropdown-menu communityDropdown" style="display: none;">
                         <a class="dropdown-item communityDropdownItem" href="#">수정하기</a>
-                        <form action="#" method="post" style="display:inline;">
+                        <form action="/replyDelete" method="post" style="display:inline;">
                             <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
                             <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
                             <button type="submit" class="dropdown-item communityDropdownItem">삭제하기</button>

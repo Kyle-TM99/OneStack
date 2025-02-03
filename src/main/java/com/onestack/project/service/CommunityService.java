@@ -3,9 +3,6 @@ package com.onestack.project.service;
 import com.onestack.project.domain.*;
 import com.onestack.project.mapper.CommunityMapper;
 import lombok.RequiredArgsConstructor;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +21,6 @@ public class CommunityService {
     // 페이징네이션 관련 상수
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
-
-    private final Parser parser = Parser.builder().build();
-    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
 
 
     public Map<String, Object> handleRecommend(int communityBoardNo, String recommendType, boolean isCancel, int memberNo) {
@@ -92,11 +86,7 @@ public class CommunityService {
                 return result;  // 게시글이 없는 경우 빈 Map 반환
             }
 
-            // 마크다운을 HTML로 변환
-            String htmlContent = convertMarkdownToHtml(community.getCommunityBoardContent());
-
             result.put("community", community);
-            result.put("htmlContent", htmlContent);
 
         } catch (Exception e) {
         }
@@ -104,14 +94,6 @@ public class CommunityService {
         return result;
     }
 
-    // 마크다운을 HTML로 변환하는 메서드 추가
-    // CommonMark 라이브러리를 사용하여 마크다운을 HTML로 변환
-    private String convertMarkdownToHtml(String markdown) {
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        return renderer.render(document);
-    }
 public List<Community> getCommunityAll(int communityBoardNo) {
     return communityMapper.getCommunityAll(communityBoardNo);
 }
@@ -223,13 +205,4 @@ public List<Community> getCommunityAll(int communityBoardNo) {
         communityMapper.deleteCommunity(communityBoardNo, memberNo);
     }
 
-
-
-    // 이전 글, 다음 글 조회
-    public Map<String, Object> getAdjacentPosts(int currentCommunityBoardNo) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("previousPost", communityMapper.getPreviousCommunity(currentCommunityBoardNo));
-        result.put("nextPost", communityMapper.getNextCommunity(currentCommunityBoardNo));
-        return result;
-    }
 }

@@ -171,30 +171,28 @@ CREATE TABLE IF NOT EXISTS Review (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Community - 커뮤니티
-CREATE TABLE IF NOT EXISTS Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	member_no INTEGER NOT NULL,
-	community_board_title VARCHAR(30) NOT NULL,
-	community_board_content   VARCHAR(1000) NOT NULL,
-	community_board_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	community_view   INTEGER DEFAULT 0 NOT NULL,
-	community_file   VARCHAR(100) NULL,
-	community_board_like INTEGER DEFAULT 0 NOT NULL,
-	community_board_dislike   INTEGER   DEFAULT 0 NOT NULL,
-	community_board_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
-	CONSTRAINT member_no_community_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
+CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                        member_no INTEGER NOT NULL,
+                        community_board_title VARCHAR(30) NOT NULL,
+                        community_board_content LONGTEXT NOT NULL,
+                        community_board_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                        community_view   INTEGER DEFAULT 0 NOT NULL,
+                        community_file   VARCHAR(100) NULL,
+                        community_board_like INTEGER DEFAULT 0 NOT NULL,
+                        community_board_dislike   INTEGER   DEFAULT 0 NOT NULL,
+                        community_board_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
+                        CONSTRAINT member_no_community_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CommunityReply - 커뮤니티 댓글
-CREATE TABLE IF NOT EXISTS CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	 community_board_no INTEGER NOT NULL,
-	 member_no INTEGER NOT NULL,
-	 community_reply_content   VARCHAR(500) NOT NULL,
-	 community_reply_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	 community_reply_like INTEGER DEFAULT 0 NOT NULL,
-	 community_reply_dislike   INTEGER DEFAULT 0 NOT NULL,
-	 community_reply_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
-	 CONSTRAINT member_no_communityReply_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
-	 CONSTRAINT community_board_no_communityReply_fk FOREIGN KEY (community_board_no) REFERENCES Community(community_board_no) ON DELETE CASCADE
+CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                             community_board_no INTEGER NOT NULL,
+                             member_no INTEGER NOT NULL,
+                             community_reply_content   VARCHAR(500) NOT NULL,
+                             community_reply_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             community_reply_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
+                             CONSTRAINT member_no_communityReply_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
+                             CONSTRAINT community_board_no_communityReply_fk FOREIGN KEY (community_board_no) REFERENCES Community(community_board_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- QnA - 질문 게시판

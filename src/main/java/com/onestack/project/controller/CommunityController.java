@@ -243,26 +243,44 @@ public class CommunityController {
 
 
     /* 자유게시판 삭제 */
-    @PostMapping("/delete")
-    public String deleteCommunity(RedirectAttributes reAttrs, HttpSession session, @RequestParam("communityBoardNo") int communityBoardNo,
+    @PostMapping("/delete")  // URL 패턴 수정
+    public String deleteCommunity(RedirectAttributes reAttrs,
+                                  @RequestParam("communityBoardNo") int communityBoardNo,
+                                  @RequestParam("memberNo") int memberNo,
+                                  HttpSession session,
                                   @RequestParam(value="pageNum", defaultValue="1") int pageNum,
                                   @RequestParam(value="type", defaultValue="null") String type,
                                   @RequestParam(value="keyword", defaultValue="null") String keyword) {
+
+        // 세션 체크
         Member member = (Member) session.getAttribute("member");
-        // 게시글 삭제
-        communityService.deleteCommunity(communityBoardNo, member.getMemberNo());
-        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
 
-        reAttrs.addAttribute("pageNum", pageNum);
-        reAttrs.addAttribute("searchOption", searchOption);
-
-        if(searchOption) {
-            reAttrs.addAttribute("type", type);
-            reAttrs.addAttribute("keyword", keyword);
+        // 권한 체크 추가
+        if (member == null || member.getMemberNo() != memberNo) {
+            reAttrs.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/community";
         }
 
+        try {
+            // 게시글 삭제
+            communityService.deleteCommunity(communityBoardNo, memberNo);
+            boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
 
-        return "redirect:/community";
+            reAttrs.addAttribute("pageNum", pageNum);
+            reAttrs.addAttribute("searchOption", searchOption);
+
+            if(searchOption) {
+                reAttrs.addAttribute("type", type);
+                reAttrs.addAttribute("keyword", keyword);
+            }
+
+            reAttrs.addFlashAttribute("message", "게시글이 성공적으로 삭제되었습니다.");
+            return "redirect:/community";
+
+        } catch (Exception e) {
+            reAttrs.addFlashAttribute("message", "게시글 삭제 중 오류가 발생했습니다.");
+            return "redirect:/community";
+        }
     }
 
 

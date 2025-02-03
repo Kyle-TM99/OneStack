@@ -201,7 +201,7 @@ $(document).ready(function() {
     });
 
     // 삭제하기 클릭 이벤트
-    $(document).on('submit', '.communityDropdownContainer form', function(e) {
+    $(document).on('submit', '.communityReplyDelete form', function(e) {
         e.preventDefault();
         if (!confirm('정말 삭제하시겠습니까?')) return;
 

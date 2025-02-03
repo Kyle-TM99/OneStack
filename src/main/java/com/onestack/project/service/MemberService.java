@@ -57,11 +57,6 @@ public class MemberService {
         return result;
     }
 
-    // myPage 내역 조회
-    public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
-        List<MemberWithProfessional> result = memberMapper.memberWithProfessional(memberNo);
-        return result;
-    }
 
     // 회원별 review 리스트 조회
     public List<Review> findMyReview(int memberNo) {
@@ -125,8 +120,9 @@ public class MemberService {
     }
 
 
-    // 댓글 공감 조회
-    public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
+
+
+
     public void updateMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -150,10 +146,6 @@ public class MemberService {
         }
     }
 
-
-
-
-    public void updateMember(Member member) {
     public void updateSocialMember(Member member) {
         try {
             log.info("Updating member: {}", member);
