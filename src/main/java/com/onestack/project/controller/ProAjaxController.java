@@ -25,11 +25,6 @@ public class ProAjaxController {
         int page = (int) requestData.get("page");
         int size = (int) requestData.get("size");
 
-        // 필터 조건이 없는 경우 기본값 지정
-        if (sort == null || sort.isEmpty()) {
-            sort = "default";
-        }
-
         // 필터 조건에 맞는 전문가 리스트 가져오기
         List<MemProAdInfoCate> pros = proService.getPaginatedFilteredAndSortedPros(appType, sort, itemNo, page, size);
 
@@ -45,8 +40,12 @@ public class ProAjaxController {
 
         String formattedAveragePrice = String.format("%,d", (long) overallAveragePrice);
 
+        // 더 불러올 데이터가 있는지 확인
+        boolean hasMore = pros.size() == size;
+
         Map<String, Object> response = new HashMap<>();
         response.put("pros", pros);
+        response.put("hasMore", hasMore);
         response.put("overallAveragePrice", formattedAveragePrice);
 
         return response;

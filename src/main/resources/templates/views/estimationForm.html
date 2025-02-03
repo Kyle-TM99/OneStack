@@ -27,15 +27,22 @@
         }
     </style>
     <script>
-        $(document).ready(function() {
-            $("#estimationPrice").on("keyup", function() {
-                let regExp = /[^0-9]/g;
-                let value = $(this).val();
+        $(document).ready(function () {
+            $("form").on("submit", function (e) {
+                let priceInput = $("#estimationPrice").val();
+                let numericValue = parseInt(priceInput, 10);
 
-                if(regExp.test(value)) {
-                    alert("숫자만 입력 가능합니다.");
-                    $(this).val(value.replace(regExp, ""));
+                // 값 검증
+                if (!priceInput || isNaN(numericValue) || numericValue < 1000 || numericValue > 2000000000) {
+                    alert("금액은 1000원 이상 20억원 이하의 값을 입력해야 합니다.");
+                    e.preventDefault(); // 제출 차단
                 }
+            });
+
+            // 숫자가 아닌 문자는 제거 (실시간 입력 시)
+            $("#estimationPrice").on("keyup", function () {
+                let value = $(this).val().replace(/[^0-9]/g, "");
+                $(this).val(value); // 숫자만 입력 가능
             });
         });
     </script>

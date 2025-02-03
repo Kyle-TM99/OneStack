@@ -4,6 +4,7 @@ import com.onestack.project.domain.*;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
 import com.onestack.project.service.ProService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -101,8 +102,10 @@ public class PayController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/payReceipt/{memberNo}")
-    public String payReceipt(Model model, @PathVariable("memberNo") int memberNo) {
+    @GetMapping("/payReceipt")
+    public String payReceipt(Model model, @SessionAttribute("member") Member member) {
+        int memberNo = member.getMemberNo();  // member 객체에서 memberNo 추출
+
         List<MemPay> recipetList = payService.getReceipt(memberNo);
         int payCount = payService.getMemPayCount(memberNo);
 
@@ -110,6 +113,9 @@ public class PayController {
         model.addAttribute("payCount", payCount);
         return "views/payReceiptForm";
     }
+
+
+
 
 
 
