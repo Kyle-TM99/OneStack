@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProfessionalMapper {
@@ -46,15 +47,16 @@ public interface ProfessionalMapper {
 
     int getItemNoByPortfolio(int portfolioNo);
 
-    // ✅ 포트폴리오 업데이트
-    void updatePortfolio(Portfolio portfolio);
 
     // ✅ 전문가 정보 업데이트
+    Portfolio getPortfolioEntityById(@Param("portfolioNo") int portfolioNo);
+
+    void updatePortfolio(Portfolio portfolio);
+
     void updateProfessional(Professional professional);
 
-    // ✅ 전문가 고급 정보 업데이트
     void updateProfessionalAdvancedInfo(ProfessionalAdvancedInformation advancedInfo);
 
-
+    Map<String, Object> getPortfolioFiles(@Param("portfolioNo") int portfolioNo);
 
 }

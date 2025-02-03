@@ -118,6 +118,15 @@
 	WHERE p.pro_no = #{proNo}
 </select>
 
+<!-- 포트폴리오 이미지 조회 -->
+<select id="getPortfolioFiles" parameterType="int" resultType="map">
+	SELECT portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
+	portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10
+	FROM Portfolio
+	WHERE portfolio_no = #{portfolioNo}
+</select>
+
+
 <!-- 전문가 고급 정보 추가 -->
 <insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
 	INSERT INTO ProfessionalAdvancedInformation(pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
@@ -217,26 +226,40 @@
 	WHERE portfolio_no = #{portfolioNo}
 </update>
 
-	<!-- ✅ 전문가 정보 조회 -->
-	<select id="getProfessionalByPortfolio" parameterType="int" resultType="Professional">
-		SELECT * FROM professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
-	</select>
+<!-- ✅ 전문가 정보 조회 -->
+<select id="getProfessionalByPortfolio" parameterType="int" resultType="Professional">
+	SELECT * FROM professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
 
-	<!-- ✅ 전문가 고급 정보 조회 -->
-	<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
-		SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
-	</select>
+<!-- ✅ 전문가 고급 정보 조회 -->
+<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
+	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
 
-	<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
-		SELECT item_no
-		FROM ProfessionalAdvancedInformation
-		WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
-	</select>
+<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
+	SELECT item_no
+	FROM ProfessionalAdvancedInformation
+	WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
 
+	<select id="getPortfolioEntityById" resultType="Portfolio" parameterType="int">
+		SELECT
+		portfolio_no AS portfolioNo,
+		pro_no AS proNo,
+		pro_advanced_no AS proAdvancedNo,
+		portfolio_title AS portfolioTitle,
+		portfolio_content AS portfolioContent,
+		thumbnail_image AS thumbnailImage,
+		portfolio_file1, portfolio_file2, portfolio_file3,
+		portfolio_file4, portfolio_file5, portfolio_file6,
+		portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10
+		FROM Portfolio
+		WHERE portfolio_no = #{portfolioNo}
+	</select>
 
 	<!-- ✅ 포트폴리오 업데이트 -->
 	<update id="updatePortfolio" parameterType="Portfolio">
-		UPDATE portfolio
+		UPDATE Portfolio
 		SET portfolio_title = #{portfolioTitle},
 		portfolio_content = #{portfolioContent},
 		thumbnail_image = #{thumbnailImage},
@@ -244,13 +267,18 @@
 		portfolio_file2 = #{portfolioFile2},
 		portfolio_file3 = #{portfolioFile3},
 		portfolio_file4 = #{portfolioFile4},
-		portfolio_file5 = #{portfolioFile5}
+		portfolio_file5 = #{portfolioFile5},
+		portfolio_file6 = #{portfolioFile6},
+		portfolio_file7 = #{portfolioFile7},
+		portfolio_file8 = #{portfolioFile8},
+		portfolio_file9 = #{portfolioFile9},
+		portfolio_file10 = #{portfolioFile10}
 		WHERE portfolio_no = #{portfolioNo}
 	</update>
 
 	<!-- ✅ 전문가 정보 업데이트 -->
 	<update id="updateProfessional" parameterType="Professional">
-		UPDATE professional
+		UPDATE Professional
 		SET category_no = #{categoryNo},
 		self_introduction = #{selfIntroduction},
 		career = #{career},
@@ -268,7 +296,7 @@
 		pro_answer3 = #{proAnswer3},
 		pro_answer4 = #{proAnswer4},
 		pro_answer5 = #{proAnswer5}
-		WHERE pro_no = #{proNo}
+		WHERE pro_advanced_no = #{proAdvancedNo}
 	</update>
 
 </mapper>

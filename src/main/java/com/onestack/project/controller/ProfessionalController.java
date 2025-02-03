@@ -162,6 +162,7 @@ public class ProfessionalController {
         return "views/portfolioManagement";
     }
 
+    // 포트폴리오 리스트 조회
     @GetMapping("/portfolioList")
     public String getPortfolioList(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
@@ -180,6 +181,7 @@ public class ProfessionalController {
         return "views/portfolioList";
     }
 
+    // 포트폴리오 추가
     @GetMapping("/portfolioList/addPortfolio")
     public String showAddPortfolioForm(HttpSession session, Model model,
                                        @RequestParam(value = "itemNo", required = false, defaultValue = "0") int itemNo) {
@@ -201,6 +203,7 @@ public class ProfessionalController {
         return "views/addPortfolio";
     }
 
+    // 포트폴리오 상세보기
     @GetMapping("/portfolio/portfolioDetail")
     public String getPortfolioDetail(@RequestParam("portfolioNo") int portfolioNo, Model model) {
         Portfolio portfolio = professionalService.getPortfolioById(portfolioNo); // 단일 객체 반환
@@ -208,10 +211,12 @@ public class ProfessionalController {
         return "views/portfolioDetail";  // 템플릿 경로 맞추기
     }
 
+    // 포트폴리오 수정
     @GetMapping("/editPortfolio")
     public String getEditPortfolioPage(
             @RequestParam("portfolioNo") int portfolioNo,
             Model model, HttpSession session) {
+
 
         log.info("📌 [editPortfolio] 요청 수신 - portfolioNo: {}", portfolioNo);
 
@@ -237,24 +242,23 @@ public class ProfessionalController {
         log.info("✅ 포트폴리오 데이터 로드 성공 - portfolioTitle: {}", portfolio.getPortfolioTitle());
         log.info("✅ 전문가 정보 로드 성공 - proNo: {}", professional.getProNo());
 
-        // ✅ 설문조사 데이터 가져오기
+        int categoryNo = professional.getCategoryNo();
         int itemNo = advancedInfo.getItemNo();
-//        List<SurveyWithCategory> surveyList = surveyService.getSurveys(itemNo);
-        log.info("✅ 사용된 itemNo: {}", itemNo);
 
-//        if (surveyList == null || surveyList.isEmpty()) {
-//            log.warn("⚠️ 설문조사 데이터가 없습니다. (itemNo: {})", itemNo);
-//        } else {
-//            log.info("✅ 설문조사 데이터 로드 성공 - 질문 개수: {}", surveyList.size());
-//        }
+        log.info("✅ 저장된 카테고리 번호: {}, 전문분야 번호: {}", categoryNo, itemNo);
+
+        Map<String, Object> surveyData = surveyService.getSurvey(itemNo);
+        log.info("✅ 설문조사 데이터 로드 완료 - 항목 개수: {}", surveyData.size());
+
+
 
         // ✅ 연락 가능 시간 파싱
         String contactableTime = professional.getContactableTime(); // 예: "오전 9시~오후 6시"
         String contactableTimeStart = "";
         String contactableTimeEnd = "";
 
-        if (contactableTime != null && contactableTime.contains("~")) {
-            String[] timeParts = contactableTime.split("~");
+        if (contactableTime != null && contactableTime.contains("-")) {
+            String[] timeParts = contactableTime.split("-");
             contactableTimeStart = timeParts.length > 0 ? timeParts[0].trim() : "";
             contactableTimeEnd = timeParts.length > 1 ? timeParts[1].trim() : "";
             log.info("✅ 연락 가능 시간 로드 성공 - 시작: {}, 종료: {}", contactableTimeStart, contactableTimeEnd);
@@ -262,12 +266,18 @@ public class ProfessionalController {
             log.warn("⚠️ 연락 가능 시간이 설정되지 않았습니다. (DB 값: {})", contactableTime);
         }
 
+        // ✅ 포트폴리오 파일 리스트 가져오기
+        List<String> portfolioFiles = professionalService.getPortfolioFiles(portfolioNo);
+        log.info("✅ 저장된 포트폴리오 파일 개수: {}", portfolioFiles.size());
+
         // ✅ 모델 속성 추가 (Thymeleaf에서 사용 가능)
+        model.addAttribute("selectedCategoryNo", categoryNo);
         model.addAttribute("portfolio", portfolio);
         model.addAttribute("professional", professional);
         model.addAttribute("advancedInfo", advancedInfo);
+        model.addAttribute("portfolioFiles", portfolioFiles);
+        model.addAllAttributes(surveyData);
         model.addAttribute("selectedItemNo", itemNo);
-//        model.addAttribute("surveyList", surveyList); // ✅ List<SurveyWithCategory>로 변경
         model.addAttribute("categories", surveyService.getAllCategories());
         model.addAttribute("contactableTimeStart", contactableTimeStart);
         model.addAttribute("contactableTimeEnd", contactableTimeEnd);
@@ -279,77 +289,31 @@ public class ProfessionalController {
     /**
      * ✅ 포트폴리오 수정 (업데이트 처리)
      */
-    @PostMapping("/editPortfolio/submit")
-    public String editPortfolio(
-            @RequestParam("portfolioNo") int portfolioNo,
-            @RequestParam("categoryNo") int categoryNo,
-            @RequestParam("itemNo") int itemNo,
-            @RequestParam("selfIntroduction") String selfIntroduction,
-            @RequestParam("contactableTimeStart") String contactableTimeStart,
-            @RequestParam("contactableTimeEnd") String contactableTimeEnd,
-            @RequestParam("career") String career,
-            @RequestParam("awardCareer") String awardCareer,
-            @RequestParam("portfolioTitle") String portfolioTitle,
-            @RequestParam("portfolioContent") String portfolioContent,
-            @RequestParam(value = "thumbnailImage", required = false) MultipartFile thumbnailImage,
-            @RequestParam(value = "portfolioFiles", required = false) MultipartFile[] portfolioFiles,
-            RedirectAttributes redirectAttributes) {
-
+    @PostMapping("/portfolio/update")
+    @ResponseBody
+    public ResponseEntity<?> updateProfessionalData(@RequestBody ProUpdateRequest request) {
         try {
-            // ✅ 기존 포트폴리오 가져오기
-            Portfolio existingPortfolio = professionalService.getPortfolioById(portfolioNo);
-            if (existingPortfolio == null) {
-                redirectAttributes.addFlashAttribute("error", "포트폴리오를 찾을 수 없습니다.");
-                return "redirect:/portfolioList";
-            }
+            log.info("📩 [updatePortfolio] 요청 수신: {}", request);
 
-            // ✅ 기존 전문가 정보 가져오기
-            Professional professional = professionalService.getProfessionalByPortfolio(portfolioNo);
-            ProfessionalAdvancedInformation advancedInfo = professionalService.getAdvancedInfoByPortfolio(portfolioNo);
+            // 빈 Survey Answer 제거
+            List<String> filteredAnswers = request.getSurveyAnswers().stream()
+                    .filter(answer -> answer != null && !answer.trim().isEmpty())
+                    .toList();
+            request.setSurveyAnswers(filteredAnswers);
 
-            // ✅ 포트폴리오 데이터 업데이트
-            existingPortfolio.setPortfolioTitle(portfolioTitle);
-            existingPortfolio.setPortfolioContent(portfolioContent);
+            log.info("✅ 정리된 Survey Answers: {}", filteredAnswers);
 
-            // ✅ 썸네일 업로드 (리눅스 이미지 서버 연동)
-            if (thumbnailImage != null && !thumbnailImage.isEmpty()) {
-                String newThumbnailUrl = portfolioController.uploadImage(thumbnailImage);
-                existingPortfolio.setThumbnailImage(newThumbnailUrl);
-            }
+            // 데이터 업데이트
+            professionalService.updateProConversionData(request);
 
-            // ✅ 포트폴리오 파일 리스트 선언 및 초기화
-            List<String> portfolioFileUrls = new ArrayList<>();
-
-            // ✅ 포트폴리오 파일 업로드 처리
-            Object fileUrlsObj = portfolioController.uploadFiles(thumbnailImage, portfolioFiles).getBody().get("portfolioFiles");
-            if (fileUrlsObj instanceof List) {
-                portfolioFileUrls = (List<String>) fileUrlsObj;
-            }
-
-            // ✅ 전문가 정보 업데이트
-            professional.setCategoryNo(categoryNo);
-            professional.setSelfIntroduction(selfIntroduction);
-            professional.setCareer(career);
-            professional.setAwardCareer(awardCareer);
-            professional.setContactableTime(contactableTimeStart + " - " + contactableTimeEnd);
-
-            // ✅ 전문가 고급정보 업데이트
-            advancedInfo.setItemNo(itemNo);
-
-            // ✅ 최종 업데이트 실행 (트랜잭션 적용)
-            professionalService.updatePortfolio(existingPortfolio, professional, advancedInfo, portfolioFileUrls);
-
-            redirectAttributes.addFlashAttribute("success", "포트폴리오가 수정되었습니다.");
+            log.info("✅ 포트폴리오 업데이트 완료 - portfolioNo: {}", request.getPortfolioNo());
+            return ResponseEntity.ok(Collections.singletonMap("message", "포트폴리오가 성공적으로 업데이트되었습니다."));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "포트폴리오 수정 중 오류가 발생했습니다.");
+            log.error("🚨 포트폴리오 업데이트 실패: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "업데이트 실패"));
         }
-
-        return "redirect:/portfolioList";
     }
-
-
-
-
 
     @DeleteMapping("/portfolio/delete")
     @ResponseBody
