@@ -106,8 +106,19 @@ public class ProfessionalController {
     public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
         List<Review> reviewList = reviewService.getReviewList(proNo);
+
+        int sum = 0;
+        int cnt = 0;
+        for(Review review : reviewList) {
+            sum += review.getReviewRate();
+            cnt++;
+        }
+
+        sum /= cnt;
+
         model.addAttribute("proList", proList);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("reviewRateAvg", sum);
 
         return "views/proDetail";
     }
