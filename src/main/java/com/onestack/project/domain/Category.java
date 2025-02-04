@@ -13,4 +13,5 @@ public class Category {
     private int itemNo;
     private String itemTitle;
     private int categoryNo;
+
 }

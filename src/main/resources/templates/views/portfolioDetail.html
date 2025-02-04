@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>포트폴리오 상세보기</title>
+    <link rel="stylesheet" th:href="@{/css/portfolioDetail.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/portfolioDetail.js}"></script>
+</head>
+
+<body>
+<div class="layout-container">
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="card portfolio-card shadow-lg">
+                <div class="card-body">
+
+                    <!-- 포트폴리오 제목 -->
+                    <h2 class="text-center portfolio-title" th:text="${portfolio.portfolio.portfolioTitle}"></h2>
+
+                    <div class="row">
+                        <!-- 포트폴리오 이미지 -->
+                        <div class="col-md-6">
+                            <div class="portfolio-images">
+                                <img th:src="${portfolio.portfolio.thumbnailImage}" class="main-image img-fluid rounded shadow-lg" alt="썸네일 이미지">
+
+                                <!-- 이미지 갤러리 -->
+                                <div class="portfolio-gallery">
+                                    <h5 class="gallery-title">포트폴리오 이미지</h5>
+                                    <div class="gallery-container">
+                                        <div th:each="i : ${#numbers.sequence(1, 10)}" class="file-item">
+                                            <img th:with="file=${portfolio['portfolioFile' + i]}"
+                                                 th:if="${file != null and file != ''}"
+                                                 th:src="${file}"
+                                                 class="img-thumbnail shadow-sm gallery-img"
+                                                 alt="포트폴리오 이미지">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 포트폴리오 정보 -->
+                        <div class="col-md-6">
+                            <div class="info-section">
+                                <p><strong>회원 이름:</strong> <span th:text="${portfolio.member.name}"></span></p>
+                                <p><strong>전문 분야:</strong> <span th:text="${portfolio.category.itemTitle}"></span></p>
+                                <p><strong>자기소개:</strong> <span th:text="${portfolio.Professional.selfIntroduction}"></span></p>
+                                <p><strong>연락 가능 시간:</strong> <span th:text="${portfolio.Professional.contactableTime}"></span></p>
+                                <p><strong>경력:</strong></p>
+                                <ul>
+                                    <li th:each="career : ${portfolio.Professional.career.split(',')}" th:text="${career}"></li>
+                                </ul>
+                                <p><strong>수상 경력:</strong></p>
+                                <ul>
+                                    <li th:each="award : ${#strings.arraySplit(portfolio.Professional.awardCareer, ',')}">
+                                        [[${award}]]
+                                    </li>
+                                </ul>
+                                <p><strong>포트폴리오 설명:</strong> <span th:text="${portfolio.portfolio.portfolioContent}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 섹션 -->
+                    <div class="button-group">
+                        <a href="/portfolioList" class="btn btn-secondary">목록으로</a>
+                        <a th:if="${session.member.memberNo == portfolio.professional.memberNo}"
+                           th:href="@{/editPortfolio(portfolioNo=${portfolio.portfolio.portfolioNo})}"
+                           class="btn btn-primary">수정</a>
+                        <button th:if="${session.member.memberNo == portfolio.professional.memberNo}"
+                                class="btn btn-danger" id="deletePortfolioBtn">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 이미지 클릭 시 확대 (Lightbox 효과)
+    $(document).ready(function() {
+        $(".gallery-img").click(function() {
+            $(".main-image").attr("src", $(this).attr("src"));
+        });
+    });
+</script>
+
+</body>
+</html>
