@@ -4,94 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>견적 요청서</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
-        .form-container {
-            background-color: #f9f9f9;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        body {
+            background-color: #f8f9fa;
         }
-        .form-container h3 {
+
+        .estimation-form {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-title {
+            color: #215EA3;
+            font-size: 26px;
+            font-weight: 600;
             text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
-        .btn-submit {
-            background-color: #007bff;
-            color: white;
+
+        .form-control:focus, .form-select:focus {
+            border-color: #215EA3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 94, 163, 0.15);
         }
-        .btn-submit:hover {
-            background-color: #0056b3;
+
+        textarea.form-control {
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #215EA3;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #1b4f8a;
+            transform: translateY(-1px);
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc3545;
         }
     </style>
-    <script>
-        $(document).ready(function () {
-            $("form").on("submit", function (e) {
-                let priceInput = $("#estimationPrice").val();
-                let numericValue = parseInt(priceInput, 10);
+</head>
+<body>
+    <div class="container">
+        <div class="estimation-form">
+            <h2 class="form-title">견적 요청서</h2>
+            <form id="estimationForm" action="/submitEstimation" method="POST">
+                <input type="hidden" id="memberNo" th:value="${session.member.memberNo}" name="memberNo">
+                <input type="hidden" id="proNo" th:value="${proNo}" name="proNo">
 
-                // 값 검증
-                if (!priceInput || isNaN(numericValue) || numericValue < 1000 || numericValue > 2000000000) {
-                    alert("금액은 1000원 이상 20억원 이하의 값을 입력해야 합니다.");
-                    e.preventDefault(); // 제출 차단
+                <div class="mb-3">
+                    <label for="itemNo" class="form-label required">카테고리</label>
+                    <select class="form-select" id="itemNo" name="itemNo" required>
+                        <option value="">카테고리를 선택해주세요</option>
+                        <option value="11">기획</option>
+                        <option value="12">웹</option>
+                        <option value="13">소프트웨어</option>
+                        <option value="14">안드로이드</option>
+                        <option value="15">iOS</option>
+                        <option value="16">게임</option>
+                        <option value="17">AI</option>
+                        <option value="18">QA 및 테스트</option>
+                        <option value="21">가공 및 라벨링</option>
+                        <option value="22">데이터 복구</option>
+                        <option value="23">크롤링</option>
+                        <option value="24">DB 구축</option>
+                        <option value="25">통계분석</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estimationContent" class="form-label required">견적 내용</label>
+                    <textarea class="form-control" id="estimationContent" name="estimationContent"
+                              placeholder="원하시는 서비스에 대해 자세히 설명해주세요." required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estimationPrice" class="form-label required">견적 희망 금액</label>
+                    <input type="text" class="form-control" id="estimationPrice" name="estimationPrice"
+                           placeholder="금액을 입력해주세요" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="estimationMsg" class="form-label">추가 요청사항</label>
+                    <textarea class="form-control" id="estimationMsg" name="estimationMsg"
+                              placeholder="추가로 요청하실 내용이나 문의사항이 있다면 작성해주세요."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">견적 요청하기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#estimationPrice").on("input", function() {
+                let value = $(this).val().replace(/[^0-9]/g, "");
+                if(value) {
+                    value = parseInt(value).toLocaleString();
                 }
+                $(this).val(value);
             });
 
-            // 숫자가 아닌 문자는 제거 (실시간 입력 시)
-            $("#estimationPrice").on("keyup", function () {
-                let value = $(this).val().replace(/[^0-9]/g, "");
-                $(this).val(value); // 숫자만 입력 가능
+            $("#estimationForm").on("submit", function(e) {
+                e.preventDefault();
+
+                let price = $("#estimationPrice").val().replace(/,/g, "");
+
+                let formData = new FormData(this);
+                formData.set("estimationPrice", price);
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: new URLSearchParams(formData).toString(),
+                    contentType: "application/x-www-form-urlencoded",
+                    success: function(response) {
+                        window.location.href = "/estimationDoneForm";
+                    },
+                    error: function(xhr, status, error) {
+                        alert("견적 요청 중 오류가 발생했습니다.");
+                        console.error("Error:", error);
+                    }
+                });
             });
         });
     </script>
-</head>
-<body>
-<div class="container mt-5">
-    <div class="form-container">
-        <h3>견적 요청서</h3>
-        <form action="/submitEstimation" method="POST">
-            <input id="memberNo" type="hidden" class="form-control" th:value = "${session.member.memberNo}" th:name="memberNo" ></input>
-            <input id="proNo" type="hidden" class="form-control" th:value = "${proNo}" th:name="proNo" ></input>
-            <select class="form-select mb-3" id="itemNo" name="itemNo" required>
-                <option value="" th:text="'카테고리 선택'"></option>
-                <option th:value="11" th:text="'기획'"></option>
-                <option th:value="12" th:text="'웹'" ></option>
-                <option th:value="13" th:text="'소프트웨어'" ></option>
-                <option th:value="14" th:text="'안드로이드'" ></option>
-                <option th:value="15" th:text="'iOS'" ></option>
-                <option th:value="16" th:text="'게임'"></option>
-                <option th:value="17" th:text="'AI'" ></option>
-                <option th:value="18" th:text="'QA 및 테스트'" ></option>
-                <option th:value="21" th:text="'가공 및 라벨링'" ></option>
-                <option th:value="22" th:text="'데이터 복구'" ></option>
-                <option th:value="23" th:text="'크롤링'" ></option>
-                <option th:value="24" th:text="'DB 구축'" ></option>
-                <option th:value="25" th:text="'통계분석'" ></option>
-            </select>
-            <div class="form-group">
-                <label for="estimationContent">견적 내용</label>
-                <textarea id="estimationContent" class="form-control" th:name="estimationContent" rows="4" placeholder="원하는 견적 내용을 입력해주세요." required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="estimationPrice">견적 희망 금액</label>
-                <input id="estimationPrice" type="text" class="form-control" th:name="estimationPrice" placeholder="예상 희망 금액을 입력해주세요." required>
-            </div>
-            <div class="form-group">
-                <label for="estimationMsg">기타 사항</label>
-                <textarea id="estimationMsg" class="form-control" th:name="estimationMsg" rows="3" placeholder="기타 요청 사항이나 조건을 입력해주세요."></textarea>
-            </div>
-            <div class="form-group text-center">
-                <button type="submit" class="btn btn-submit btn-block">견적 요청하기</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
-
-
 </body>
 </html>
