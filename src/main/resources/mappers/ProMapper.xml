@@ -150,5 +150,12 @@
         VALUES(#{memberNo}, #{proNo}, #{itemNo}, #{estimationContent}, #{estimationPrice}, #{estimationMsg})
     </insert>
 
+    <!-- 전문가 평점 업데이트 -->
+    <update id="updateProRating">
+        UPDATE Professional
+        SET rate = #{rate}
+        WHERE pro_no = #{proNo}
+    </update>
+
 
 </mapper>

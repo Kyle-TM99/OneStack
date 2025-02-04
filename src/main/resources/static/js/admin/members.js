@@ -1,5 +1,67 @@
-// 통합 스크립트 - 회원 관리 및 심사 관리 관련
+// 허용된 휴대폰 번호 앞자리 (국번)
+const validPrefixes = ["010", "011", "016", "017", "018", "019"];
 
+// 핸드폰 번호 자동 하이픈 적용 함수
+function formatPhoneNumber(phone) {
+    phone = phone.replace(/[^0-9]/g, ""); // 숫자 이외의 문자 제거
+
+    // 숫자 개수가 11자리를 초과하지 않도록 제한
+    if (phone.length > 11) {
+        phone = phone.substring(0, 11);
+    }
+
+    if (phone.length <= 3) {
+        return phone;
+    } else if (phone.length <= 7) {
+        return phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+    } else {
+        return phone.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
+    }
+}
+// 핸드폰 번호 입력 이벤트 핸들러 (숫자만 입력, 13자리 제한, 자동 하이픈 추가)
+function handlePhoneInput(event) {
+    let value = event.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
+
+    // 3자리 이상 입력되었을 때, 유효한 국번인지 체크
+    if (value.length >= 3) {
+        let prefix = value.substring(0, 3);
+        if (!validPrefixes.includes(prefix)) {
+            alert(`유효하지 않은 휴대폰 번호 앞자리입니다. (${validPrefixes.join(", ")})`);
+            event.target.value = "";
+            return;
+        }
+    }
+
+    // 숫자 개수를 11자리로 제한
+    if (value.length > 11) {
+        alert("핸드폰 번호는 11자리 숫자로 입력해야 합니다.");
+        value = value.substring(0, 11);
+    }
+
+    event.target.value = formatPhoneNumber(value);
+
+    // `-` 포함된 상태에서 13자리를 초과하면 입력 차단
+    if (event.target.value.length > 13) {
+        alert("핸드폰 번호는 '-' 포함 최대 13자리까지만 입력 가능합니다.");
+        event.target.value = event.target.value.substring(0, 13);
+    }
+}
+function handleMemberIdInput(event) {
+    let value = event.target.value;
+
+    // 1️⃣ 한글 및 특수문자 제거 (영문 + 숫자만 허용)
+    if (/[^a-zA-Z0-9]/.test(value)) {
+        alert("아이디는 영문과 숫자만 입력 가능합니다.");
+        event.target.value = value.replace(/[^a-zA-Z0-9]/g, ""); // 한글 및 특수문자 제거
+    }
+
+    // 2️⃣ 최대 길이 제한 적용 (50자)
+    if (value.length > 50) {
+        alert("아이디는 최대 50자까지 입력 가능합니다.");
+        setTimeout(() => { event.target.value = value.substring(0, 50); }, 10);
+    }
+}
+// 통합 스크립트 - 회원 관리 및 심사 관리 관련
 document.addEventListener('DOMContentLoaded', function () {
     initializeCommonEvents();
     initializeCheckboxes();
@@ -7,17 +69,73 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeScreeningManagement();
     initializeScreeningModification();
 
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.addedNodes.length) {
-                console.log('DOM changed, reinitializing components');
+    const inputFields = [
+        { id: "memberName", max: 30, type: "name" },
+        { id: "memberId", max: 50, type: "text" },
+        { id: "memberPass", max: 100, type: "text" },
+        { id: "nickname", max: 20, type: "text" },
+        { id: "zipcode", max: 5, type: "number" },
+        { id: "address", max: 50, type: "text" },
+        { id: "address2", max: 50, type: "text" },
+        { id: "memberEmail", max: 30, type: "text" },
+        { id: "phone", max: 13, type: "phone" }, // 핸드폰 입력 필드
+        { id: "stackName", max: 20, type: "text" }
+    ];
+
+   // ✅ `inputFields`를 사용하여 필드별 이벤트 적용
+       inputFields.forEach(field => {
+           const input = document.getElementById(field.id);
+           if (input) {
+               input.addEventListener("input", function () {
+                   let value = this.value;
+
+                   // 최대 길이 제한 적용
+                   if (value.length > field.max) {
+                       alert(`${field.id}은(는) 최대 ${field.max}자까지 입력 가능합니다.`);
+                       setTimeout(() => { this.value = value.substring(0, field.max); }, 10);
+                   }
+
+                   // 이름 (한글만 허용)
+                   if (field.type === "name" && /[^가-힣\s]/.test(value)) {
+                       alert("이름에는 숫자, 영문, 특수문자를 포함할 수 없습니다.");
+                       setTimeout(() => { this.value = value.replace(/[^가-힣\s]/g, ""); }, 10);
+                   }
+                   // 숫자만 입력 가능한 필드 체크
+                   if (field.type === "number" && /\D/.test(value)) {
+                       alert("숫자만 입력해주세요.");
+                       setTimeout(() => { this.value = value.replace(/\D/g, ""); }, 10);
+                   }
+               });
+           }
+       });
+           // ✅ 핸드폰 번호 입력 필드에 이벤트 리스너 등록 (중복 제거)
+           const phoneInput = document.getElementById("phone");
+           if (phoneInput) {
+               phoneInput.removeEventListener("input", handlePhoneInput);
+               phoneInput.addEventListener("input", handlePhoneInput);
+           }
+
+           // ✅ MutationObserver (중복 실행 방지)
+           const observer = new MutationObserver(function (mutations) {
+               let shouldReinitialize = false;
+               mutations.forEach(function (mutation) {
+                   if (mutation.addedNodes.length) {
+                       shouldReinitialize = true;
+                   }
+           const memberIdInput = document.getElementById("memberId");
+           if (memberIdInput) {
+               memberIdInput.removeEventListener("input", handleMemberIdInput); // 중복 방지
+               memberIdInput.addEventListener("input", handleMemberIdInput);
+           }
+               });
+           if (shouldReinitialize) {
+                console.log('DOM 변경 감지됨, 컴포넌트 재초기화');
                 initializeCheckboxes();
                 initializeMemberManagement();
                 initializeScreeningManagement();
                 initializeScreeningModification();
             }
         });
-    });
 
     const dashboardContent = document.getElementById('dashboard-content');
     if (dashboardContent) {
@@ -89,105 +207,203 @@ function initializeCheckboxes() {
     // 초기 버튼 상태 업데이트
     updateDeleteButton();
 }
-
-
-// 회원 관리 초기화 함수
 function initializeMemberManagement() {
     document.querySelectorAll('.member-edit-btn').forEach(button => {
         button.addEventListener('click', function () {
             const row = this.closest('tr');
-            const memberNo = row.getAttribute('data-member-no');
+
+            // `data-*` 속성을 사용하여 정확한 데이터 가져오기
             const memberData = {
-                name: row.cells[1].textContent,
-                id: row.cells[2].textContent,
-                type: row.cells[3].textContent,
-                email: row.cells[4].textContent,
-                status: row.cells[5].textContent,
-                joinDate: row.cells[6].textContent,
-                memberNo: memberNo // memberNo 추가
+                name: row.getAttribute('data-name'),
+                nickname: row.getAttribute('data-nickname'),
+                id: row.getAttribute('data-id'),
+                type: row.getAttribute('data-type'),
+                email: row.getAttribute('data-email'),
+                phone: row.getAttribute('data-phone'),
+                address: row.getAttribute('data-address'),
+                address2: row.getAttribute('data-address2'),
+                status: row.getAttribute('data-status'),
+                joinDate: row.getAttribute('data-join-date'),
+                banEndDate: row.getAttribute('data-ban-end-date'),
+                memberNo: row.getAttribute('data-member-no')
             };
-            console.log("memberData:", memberData);
+
+            console.log("바인딩된 memberData:", memberData);
             openMemberModal(memberData);
         });
     });
 
-   document.getElementById('editInformation')?.addEventListener('click', function () {
-       const memberNo = window.currentMemberNo;
-       if (!memberNo) {
-           alert('회원 번호가 누락되었습니다.');
-           return;
-       }
-       const updatedData = {
-           memberNo: memberNo,
-           type: document.getElementById('memberType').value,
-           status: document.getElementById('memberStatus').value
-       };
-       console.log('Updated member data:', updatedData);
+// 회원정보 수정
+ document.getElementById('editInformation')?.addEventListener('click', function () {
+     const memberNo = parseInt(window.currentMemberNo);
+     if (!memberNo) {
+         alert('회원 번호가 누락되었습니다.');
+         return;
+     }
 
-       // 서버로 데이터 전송
-       fetch('/adminPage/updateMember', {
-           method: 'POST',
-           headers: {
-               'Content-Type': 'application/json',
-           },
-           body: JSON.stringify(updatedData),
-       })
-       .then(response => {
-           if (!response.ok) {
-               throw new Error('Failed to update member.');
-           }
-           return response.json();
-       })
-       .then(data => {
-           console.log('Update successful:', data);
-           alert('회원 정보가 성공적으로 수정되었습니다.');
-       })
-       .catch(error => {
-           console.error('Error updating member:', error);
-           alert('수정 중 오류가 발생했습니다.');
-       });
-   });
-   }
+     const phoneInput = document.getElementById("phone");
+     if (phoneInput) {
+         phoneInput.setAttribute("maxlength", "13");
+         phoneInput.addEventListener("input", function () {
+             this.value = formatPhoneNumber(this.value);
+         });
+     }
+
+     const updatedData = {
+         memberNo: memberNo,
+         name: document.getElementById('memberName').value.trim(),
+         nickname: document.getElementById('nickname').value.trim(),
+         memberId: document.getElementById('memberId').value.trim(),
+         memberType: document.getElementById('memberType').value,  // 🔥 숫자로 변환
+         email: document.getElementById('memberEmail').value.trim(),
+         phone: phoneInput.value.trim(),
+         address: document.getElementById('address').value.trim(),
+         address2: document.getElementById('address2').value.trim(),
+         memberStatus: document.getElementById('memberStatus').value,
+         banEndDate: null
+     };
+
+    const banEndDateInput = document.getElementById("banEndDate").value.trim();
+
+    // 정지 상태일 경우, banEndDate 필수 입력
+    if (updatedData.memberStatus == "1") {
+        if (!banEndDateInput) {
+            alert("정지 종료일을 선택해주세요.");
+            return;
+        }
+        updatedData.banEndDate = banEndDateInput; // 🔥 'yyyy-MM-dd' 형식으로 전송
+    }
+
+     // 필수 입력값 확인
+     for (let key in updatedData) {
+         if (!updatedData[key] && key !== "banEndDate") {
+             alert(`${key} 값을 입력해주세요.`);
+             return;
+         }
+     }
+
+     console.log('Updated member data:', updatedData);
+
+     fetch('/adminPage/updateMember', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(updatedData),
+     })
+     .then(response => response.json())
+     .then(data => {
+         if (data.message.includes("실패")) {
+             alert(data.message);
+         } else {
+             alert(data.message);
+             location.reload();
+         }
+     })
+     .catch(error => {
+         console.error('Error updating member:', error);
+         alert("회원 정보 수정 중 오류 발생");
+     });
+ });
+}
 
 function openMemberModal(memberData) {
     window.currentMemberNo = memberData.memberNo;
-    document.getElementById('memberName').value = memberData.name;
-    document.getElementById('memberId').value = memberData.id;
-    document.getElementById('memberEmail').value = memberData.email;
-    document.getElementById('joinDate').value = memberData.joinDate;
+    document.getElementById('memberName').value = memberData.name?.trim() || "";
+    document.getElementById('nickname').value = memberData.nickname?.trim() || "";
+    document.getElementById('memberId').value = memberData.id?.trim() || "";
+    document.getElementById('memberEmail').value = memberData.email?.trim() || "";
 
-   console.log('memberData:', memberData);
 
-        // 회원 유형 처리
-        const memberTypeElement = document.getElementById('memberType');
+     // ✅ 핸드폰 번호 자동 형식 적용 및 이벤트 중복 제거
+     const phoneInput = document.getElementById('phone');
+     if (phoneInput) {
+         phoneInput.value = formatPhoneNumber(memberData.phone || "");
+
+         // 기존 이벤트 제거 후 새 이벤트 추가
+         phoneInput.removeEventListener("input", handlePhoneInput);
+         phoneInput.addEventListener("input", handlePhoneInput);
+      }
+    document.getElementById('address').value = memberData.address?.trim() || "";
+    document.getElementById('address2').value = memberData.address2?.trim() || "";
+
+
+    // 회원 유형
+    const memberTypeElement = document.getElementById('memberType');
         if (memberTypeElement) {
-            const memberTypeValue = memberData.type === '초보자' ? '0' :
-                                    memberData.type === '전문가' ? '1' : '2';
-            memberTypeElement.value = memberTypeValue;
+            const typeValue = memberData.type; // "0", "1", "2"
+            console.log("회원 유형 값 확인:", typeValue); // 디버깅 로그
+
+            if (typeValue == "0") {
+                memberTypeElement.value = "0"; // 초보자
+            } else if (typeValue == "1") {
+                memberTypeElement.value = "1"; // 전문가
+            } else {
+                memberTypeElement.value = "2"; // 심사중
+            }
         }
 
-        // 회원 상태 처리
+        // 회원 상태 (memberStatus)
         const memberStatusElement = document.getElementById('memberStatus');
         if (memberStatusElement) {
-            const memberStatusValue = memberData.status === '활성화' ? '0' :
-                                      memberData.status === '비활성화' ? '1' :
-                                      memberData.status === '정지' ? '2' : '3';
-            memberStatusElement.value = memberStatusValue;
+            const statusValue = memberData.status;
+            console.log("회원 상태 값 확인:", statusValue); // 디버깅 로그
+
+            if (statusValue == "0") {
+                memberStatusElement.value = "0"; // 활성화
+            } else if (statusValue == "1") {
+                memberStatusElement.value = "1"; // 비활성화
+            } else if (statusValue == "2") {
+                memberStatusElement.value = "2"; // 정지
+            } else {
+                memberStatusElement.value = "3"; // 탈퇴
+            }
+
+        // 기간 정지일 경우 정지 종료일 필드 표시
+        toggleBanDate();
+
+    }
+        document.getElementById('joinDate').value = memberData.joinDate;
+
+        // ✅ `banEndDate` 변환 (`yyyy-MM-dd HH:mm:ss` → `yyyy-MM-dd`)
+        if (memberData.banEndDate) {
+            let banDate = new Date(memberData.banEndDate);
+            let formattedDate = banDate.toISOString().split('T')[0]; // 🔥 'yyyy-MM-dd' 형식으로 변환
+            document.getElementById('banEndDate').value = formattedDate;
+        } else {
+            document.getElementById('banEndDate').value = ""; // 🚀 값이 없으면 비워둠
         }
 
-        // 콘솔 출력 확인
-        console.log('회원 유형 값:', memberTypeElement ? memberTypeElement.value : '선택자 오류');
-        console.log('회원 상태 값:', memberStatusElement ? memberStatusElement.value : '선택자 오류');
+        // ✅ 오늘 이후 날짜만 선택 가능하도록 설정
+        setMinBanDate();
 
-    document.getElementById('joinDate').value = memberData.joinDate;
+        // ✅ 모달 표시
+        const modalElement = document.getElementById('memberModal');
+        modalElement.classList.add('show');
+        modalElement.style.display = 'block';
+        document.body.classList.add('modal-open');
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
 
-    const modalElement = document.getElementById('memberModal');
-    modalElement.classList.add('show');
-    modalElement.style.display = 'block';
-    document.body.classList.add('modal-open');
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop fade show';
-    document.body.appendChild(backdrop);
+function setMinBanDate() {
+    const banEndDateInput = document.getElementById("banEndDate");
+    const today = new Date().toISOString().split("T")[0];
+    banEndDateInput.setAttribute("min", today);
+}
+
+function toggleBanDate() {
+    const statusSelect = document.getElementById("memberStatus");
+    const banDateContainer = document.getElementById("banDateContainer");
+    const banEndDateInput = document.getElementById("banEndDate");
+
+    if (statusSelect.value == "1") {
+        banDateContainer.style.display = "block";
+    } else {
+        banDateContainer.style.display = "none";
+        banEndDateInput.value = "";
+    }
 }
 
 // 심사 관리 초기화 함수

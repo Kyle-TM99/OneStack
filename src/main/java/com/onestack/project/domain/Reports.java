@@ -18,6 +18,11 @@ public class Reports {
     private String reportsType;
     private String reportsTarget;
     private String reportsReason;
-    private boolean reportsStatus;
+    private int reportsStatus;
     private Timestamp reportsDate;
+    private String reportsTargetLink;
+
+    private String reporterNickname;
+    private String reportedNickname;
+    private int reportedCount;
 }

@@ -111,4 +111,14 @@ public interface MemberMapper {
 	void updateEstimationCheck(@Param("estimationNo") int estimationNo, @Param("estimationCheck") int estimationCheck);
 
 	void updateEstimationPrice(@Param("estimationNo") int estimationNo, @Param("estimationPrice") int estimationPrice);
+
+	// 전문가 수 조회
+	int getProCount();
+
+	// 회원 수 조회
+	int getMemberCount();
+
+	// 완료된 외주 수 조회
+	int getMainEstimationCount();
+
 }

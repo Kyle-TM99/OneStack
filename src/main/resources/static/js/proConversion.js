@@ -222,25 +222,29 @@
 	               }
 
 				   // 업로드 요청
+                   // 📌 올바르게 수정된 코드
                    const uploadResponse = await fetch('/portfolio/upload', { method: 'POST', body: formData });
 
                    if (!uploadResponse.ok) {
                        throw new Error('파일 업로드 실패');
                    }
 
+                   // 📌 서버에서 받은 이미지 URL을 그대로 사용
                    const filePaths = await uploadResponse.json();
                    console.log('서버 응답:', filePaths);
 
-                   // 최종 데이터 준비
+                   const thumbnailImagePath = filePaths.thumbnailImage;  // ✅ 올바른 URL 사용
+                   const portfolioFilePaths = filePaths.portfolioFiles || []; // ✅ 올바른 URL 사용
+
+                   // ✅ 수정된 데이터 전달
                    const data = {
                        surveyAnswers,
                        portfolioTitle,
                        portfolioContent,
-                       thumbnailImagePath: filePaths.thumbnailImage,
-                       portfolioFilePaths: filePaths.portfolioFiles || [],
+                       thumbnailImagePath,
+                       portfolioFilePaths,
                    };
 
-                   // 데이터 전달
                    window.parent.postMessage(data, '*');
 
                    // UI 상태 갱신
@@ -286,8 +290,8 @@
 		   if (portfolioFilesDisplay) {
 		       if (portfolioFilePaths && portfolioFilePaths.length > 0) {
 		           portfolioFilesDisplay.innerHTML = portfolioFilePaths
-		               .map((filePath) => `<li><a href="/uploads/${filePath}" target="_blank">${filePath.split('/').pop()}</a></li>`)
-		               .join('');
+                       .map((filePath) => `<li><a href="${filePath}" target="_blank">${filePath.split('/').pop()}</a></li>`)
+                       .join('');
 		       } else {
 		           portfolioFilesDisplay.innerHTML = '<p>포트폴리오 파일이 없습니다.</p>';
 		       }

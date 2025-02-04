@@ -68,6 +68,16 @@
         <result property="portfolioFile10" column="portfolio_file10" />
     </resultMap>
 
+	<resultMap id="ProfessionalAdvancedInformationResultMap" type="com.onestack.project.domain.ProfessionalAdvancedInformation">
+		<id property="proAdvancedNo" column="proAdvanced_no" />
+		<result property="proNo" column="pro_no" />
+		<result property="itemNo" column="item_no" />
+		<result property="proAnswer1" column="pro_answer1" />
+		<result property="proAnswer2" column="pro_answer2" />
+		<result property="proAnswer3" column="pro_answer3" />
+		<result property="proAnswer4" column="pro_answer4" />
+		<result property="proAnswer5" column="pro_answer5" />
+	</resultMap>
 
     <resultMap id="CategoryResultMap" type="com.onestack.project.domain.Category">
         <id property="itemNo" column="item_no" />
@@ -75,11 +85,12 @@
         <result property="categoryNo" column="category_no" />
     </resultMap>
     
-    <resultMap id="MemProPortCateResultMap" type="com.onestack.project.domain.MemProPortCate">
+    <resultMap id="MemProPortPaiCateResultMap" type="com.onestack.project.domain.MemProPortPaiCate">
         <association property="member" resultMap="MemberResultMap" />
         <association property="professional" resultMap="ProfessionalResultMap" />
         <association property="portfolio" resultMap="PortfolioResultMap" />
-        <association property="category" resultMap="CategoryResultMap" />        
+        <association property="category" resultMap="CategoryResultMap" />
+		<association property="professionalAdvancedInformation" resultMap="ProfessionalAdvancedInformationResultMap" />
     </resultMap>
     
 <select id="getAllMember" resultType="Member">
@@ -92,38 +103,111 @@
 <select id = "getMember" parameterType = "int" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_no = #{memberNo}
+   WHERE member_id  = #{memberNo}
 </select>
 
-<!-- 회원 상태 변경 -->
-<update id="updateMember" parameterType="Map">
+<!-- 중복 검사 (본인 제외) -->
+<select id="checkDuplicateFields" parameterType="map" resultType="int">
+	SELECT COUNT(*)
+	FROM Member
+	WHERE (member_id = #{memberId} OR nickname = #{nickname} OR email = #{email} OR phone = #{phone})
+	AND member_no != #{memberNo}
+</select>
+
+<!-- 회원 정보 업데이트 (🔥 Map 기반 수정) -->
+<update id="updateMember" parameterType="map">
 	UPDATE Member
-	SET member_type = #{memberType},
-	    member_status = #{memberStatus}
-	WHERE member_No = #{memberNo}
+	SET name = #{name},
+	nickname = #{nickname},
+	member_id = #{memberId},
+	email = #{email},
+	phone = #{phone},
+	address = #{address},
+	address2 = #{address2},
+	member_type = #{memberType},
+	member_status = #{memberStatus},
+	ban_end_date = #{banEndDate}
+	WHERE member_no = #{memberNo}
+</update>
+	<!-- 신고 정보 저장 -->
+<insert id="addReports" parameterType="Reports">
+	INSERT INTO Reports (
+	member_no,
+	reported_member_no,
+	reports_type,
+	reports_target,
+	reports_reason,
+	reports_status,
+	reports_target_link
+	) VALUES (
+	#{memberNo},
+	#{reportedMemberNo},
+	#{reportsType},
+	#{reportsTarget},
+	#{reportsReason},
+	#{reportsStatus},
+	#{reportsTargetLink}
+	)
+</insert>
+
+<!-- 신고 대상 신고 횟수 증가 -->
+<update id="incrementReportedCount" parameterType="int">
+	UPDATE Member
+	SET reported_count = reported_count + 1
+	WHERE member_no = #{memberNo}
+</update>
+
+<!-- 신고 리스트 조회 -->
+<select id="getReports" resultType="Reports">
+	SELECT r.*,
+	m.nickname AS reporterNickname,
+	rm.nickname AS reportedNickname,
+	rm.reported_count AS reportedCount
+	FROM Reports r
+	JOIN Member m ON r.member_no = m.member_no
+	JOIN Member rm ON r.reported_member_no = rm.member_no
+	ORDER BY reports_date DESC
+</select>
+
+<!-- 게시물 비활성화 -->
+<update id="disableTarget" parameterType="map">
+	<choose>
+		<when test="type == 'community'">
+			UPDATE Community
+			SET community_board_activation = 0
+			WHERE community_board_no = #{targetId}
+		</when>
+		<when test="type == 'qna'">
+			UPDATE QnA
+			SET qna_board_activation = 0
+			WHERE qna_board_no = #{targetId}
+		</when>
+		<when test="type == 'reply'">
+			UPDATE CommunityReply
+			SET community_reply_activation = 0
+			WHERE community_reply_no = #{targetId}
+		</when>
+		<when test="type == 'review'">
+			UPDATE Review
+			SET review_activation = 0
+			WHERE review_no = #{targetId}
+		</when>
+	</choose>
 </update>
 
 <!-- 탈퇴 회원 조회 -->
-<select id = "getWithdrawalMember" resultType = "Member">
+<select id = "getWithdrawalMembers" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_type = 2
+   WHERE member_status = 3
 </select>
 
 <!-- 정지 회원 조회 -->
 <select id = "getBanMember" resultType = "Member">
    SELECT * 
    FROM Member 
-   WHERE member_type = 3
+   WHERE member_type = 2 and member_type = 1
 </select>
-
-<!-- 회원 정지 -->
-<update id = "banMember" parameterType = "map">
-	Update Member
-	SET member_type = 3,
-		ban_end_date = #{date}
-	WHERE member_no = #{memberNo}
-</update>
 
 <!-- 회원의 모든 커뮤니티 게시글 비활성화 처리 -->
 <update id="disactivateCommunity" parameterType="int">
@@ -147,11 +231,6 @@
 	WHERE member_no = #{memberNo}
 </update>
 
-
-
-
-
-
 <!-- 전문가 심사 처리 -->
 <update id="updateProStatus" parameterType="map">
     UPDATE Professional 
@@ -160,35 +239,20 @@
 </update>
 
 <!-- 회원, 전문가, 포트폴리오, 카테고리 -->
-<select id = "getMemProPortCate" parameterType = "int" resultMap = "MemProPortCateResultMap">
-	SELECT m.*, p.*, pf.*, c.*
+<select id = "getMemProPortPaiCate" parameterType = "int" resultMap = "MemProPortPaiCateResultMap">
+	SELECT m.*, p.*, pf.*, c.*, pai.*
 	FROM Member m JOIN Professional p
 			ON m.member_no = p.member_no
 		JOIN Portfolio pf
 			ON p.pro_no = pf.pro_no
+	    JOIN ProfessionalAdvancedInformation pai
+	    	ON pf.pro_no = pai.pro_no
 		JOIN Category c
-			ON p.category_no = c.category_no
+			ON pai.item_no = c.item_no
     ORDER BY p.pro_date DESC
 </select>
 
 
-
-
-
-
-<!-- 신고 내역 조회 -->
-<select id = "getReports" resultType = "Reports">
-	SELECT *
-	FROM Reports
-	<where>	
-		<if test = "type == 'before'">
-			reports_status = 0
-		</if>
-		<if test = "type == 'after'">
-			reports_status = 1
-		</if>
-	</where>
-</select>
 
 <!-- 신고 처리 전환 -->
 <update id = "updateReportsStatus" parameterType ="map">
@@ -196,6 +260,65 @@
 	SET reports_status = #{status}
 	WHERE reports_no = #{reportsNo}
 </update>
+
+<!-- 회원 기간 정지 -->
+	<update id="suspendMember">
+		UPDATE Member
+		SET member_status = 1,
+		ban_end_date =
+		CASE
+		WHEN #{banEndDate} IS NOT NULL THEN #{banEndDate}
+		ELSE NULL
+		END
+		WHERE member_no = #{memberNo};
+	</update>
+
+
+<!-- 회원 기간 정지 자동해제 -->
+<update id="releaseSuspendMember">
+	UPDATE Member
+	SET member_status = 0,
+	ban_end_date = NULL
+	WHERE member_status = 2
+	AND ban_end_date IS NOT NULL
+	AND ban_end_date &lt; NOW();
+</update>
+
+<!-- QnA 게시글 비활성화 -->
+<update id="disableQna">
+	UPDATE QnA
+	SET  qna_board_activation = 0
+	WHERE qna_board_no = #{qnaBoardNo}
+</update>
+
+<!-- 커뮤니티 게시글 비활성화 -->
+<update id="disableCommunity">
+	UPDATE Community
+	SET community_board_activation = 0
+	WHERE community_board_no = #{communityBoardNo}
+</update>
+
+<!-- 커뮤니티 댓글 비활성화 -->
+<update id="disableCommunityReply">
+	UPDATE CommunityReply
+	SET community_reply_activation = 0
+	WHERE community_reply_no = #{communityReplyNo}
+</update>
+
+<!-- QnA 댓글 비활성화 -->
+<update id="disableQnaReply">
+	UPDATE QnAReply
+	SET qna_reply_activation = 0
+	WHERE qna_reply_no = #{qnaReplyNo}
+</update>
+
+<!-- 리뷰 비활성화 -->
+<update id="disableReview">
+	UPDATE Review
+	SET review_activation = 0
+	WHERE review_no = #{reviewNo}
+</update>
+
 
 
 <!-- 비활성화인 커뮤니티 조회 -->
@@ -234,31 +357,6 @@
 	SET community_reply_activation = #{status}
 	WHERE community_reply_no = #{communityReplyNo}
 </update>
-
-
-
-<!-- 리뷰 활성화/비활성화 -->
-<update id = "updateReviewActivation" parameterType ="map">
-	UPDATE Review
-	SET review_activation = #{status}
-	WHERE review_no = #{reviewNo}
-</update>
-
-
-
-
-<!-- 신고 -->
-<insert id = "reports" parameterType = "Reports" useGeneratedKeys = "true" keyProperty = "reportsNo">
-	INSERT INTO REPORTS(member_no, reports_type, reports_target, reports_reason)
-	VALUES (#{memberNo}, #{reportsType}, #{reportsTarget}, #{reportsReason})
-</insert>
-
-<!-- 신고 횟수 증가 -->
-<select id = "incrementReportedCount" parameterType = "int">
-	UPDATE Member
-	SET reported_count = reported_count + 1
-	WHERE member_no = #{memberNo}
-</select>
 
 
 

@@ -68,7 +68,62 @@
 	    <association property="quotation" resultMap="QuotationResultMap" />
 	</resultMap>
 
-<!-- 전문가 신청 -->
+	<resultMap id="PortfolioDetailResultMap" type="com.onestack.project.domain.PortfolioDetail">
+		<id property="portfolioNo" column="portfolio_no"/>
+		<result property="portfolioTitle" column="portfolio_title"/>
+		<result property="portfolioContent" column="portfolio_content"/>
+		<result property="thumbnailImage" column="thumbnail_image"/>
+		<result property="selfIntroduction" column="self_introduction"/>
+		<result property="contactableTime" column="contactable_time"/>
+		<result property="career" column="career"/>
+		<result property="awardCareer" column="award_career"/>
+		<result property="categoryName" column="category_name"/>
+		<result property="professionalName" column="professional_name"/>
+		<result property="portfolioFile1" column="portfolio_file1"/>
+		<result property="portfolioFile2" column="portfolio_file2"/>
+		<result property="portfolioFile3" column="portfolio_file3"/>
+		<result property="portfolioFile4" column="portfolio_file4"/>
+		<result property="portfolioFile5" column="portfolio_file5"/>
+		<result property="portfolioFile6" column="portfolio_file6"/>
+		<result property="portfolioFile7" column="portfolio_file7"/>
+		<result property="portfolioFile8" column="portfolio_file8"/>
+		<result property="portfolioFile9" column="portfolio_file9"/>
+		<result property="portfolioFile10" column="portfolio_file10"/>
+	</resultMap>
+
+	<resultMap id="portfolioDetailMap" type="com.onestack.project.domain.MemProPortPaiCate">
+		<association property="member" javaType="com.onestack.project.domain.Member">
+			<result column="member_no" property="memberNo"/>
+			<result column="name" property="name"/>
+		</association>
+		<association property="professional" javaType="com.onestack.project.domain.Professional">
+			<result column="pro_no" property="proNo"/>
+			<result column="self_introduction" property="selfIntroduction"/>
+			<result column="career" property="career"/>
+			<result column="award_career" property="awardCareer"/>
+			<result column="contactable_time" property="contactableTime"/>
+		</association>
+		<association property="portfolio" javaType="com.onestack.project.domain.Portfolio">
+			<result column="portfolio_no" property="portfolioNo"/>
+			<result column="portfolio_title" property="portfolioTitle"/>
+			<result column="portfolio_content" property="portfolioContent"/>
+			<result column="thumbnail_image" property="thumbnailImage"/>
+			<result column="portfolio_file1" property="portfolioFile1"/>
+			<result column="portfolio_file2" property="portfolioFile2"/>
+			<result column="portfolio_file3" property="portfolioFile3"/>
+		</association>
+		<association property="category" javaType="com.onestack.project.domain.Category">
+			<result column="category_no" property="categoryNo"/>
+			<result column="item_title" property="itemTitle"/>
+		</association>
+		<association property="professionalAdvancedInformation" javaType="com.onestack.project.domain.ProfessionalAdvancedInformation">
+			<result column="pro_answer1" property="proAnswer1"/>
+			<result column="pro_answer2" property="proAnswer2"/>
+			<result column="pro_answer3" property="proAnswer3"/>
+		</association>
+	</resultMap>
+
+ <!-- 전문가 신청 -->
 <insert id = "addPro" parameterType = "Professional" useGeneratedKeys = "true" keyProperty = "proNo">
 		INSERT INTO Professional (member_no, category_no, self_introduction, career, award_career, contactable_time, average_price, review_count)
         VALUES (#{memberNo}, #{categoryNo}, #{selfIntroduction}, #{career}, #{awardCareer}, #{contactableTime}, #{averagePrice}, #{reviewCount})
@@ -95,7 +150,34 @@
 	WHERE p.pro_no = #{proNo}
 </select>
 
-<!-- 전문가 고급 정보 추가 -->
+<!-- 포트폴리오 이미지 조회 -->
+<select id="getPortfolioFiles" parameterType="int" resultType="map">
+	SELECT portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
+	portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10
+	FROM Portfolio
+	WHERE portfolio_no = #{portfolioNo}
+</select>
+
+<!--MemProPortPaiCate 조회-->
+	<select id="getPortfolioDetail" resultMap="portfolioDetailMap">
+		SELECT
+		m.member_no, m.name,
+		p.pro_no, p.self_introduction, p.career, p.award_career, p.contactable_time,
+		pf.portfolio_no, pf.portfolio_title, pf.portfolio_content, pf.thumbnail_image,
+		pf.portfolio_file1, pf.portfolio_file2, pf.portfolio_file3,
+		c.category_no, c.item_title,
+		pai.pro_answer1, pai.pro_answer2, pai.pro_answer3
+		FROM Portfolio pf
+		JOIN Professional p ON pf.pro_no = p.pro_no
+		JOIN Member m ON p.member_no = m.member_no
+		JOIN Category c ON p.category_no = c.category_no
+		LEFT JOIN ProfessionalAdvancedInformation pai ON p.pro_no = pai.pro_no
+		WHERE pf.portfolio_no = #{portfolioNo}
+		LIMIT 1
+	</select>
+
+
+	<!-- 전문가 고급 정보 추가 -->
 <insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
 	INSERT INTO ProfessionalAdvancedInformation(pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
 	VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
@@ -126,6 +208,31 @@
 		AND visibility = 1
 </select>
 
+<!-- 포트폴리오 리스트 조회 -->
+	<select id="getPortfoliosByMember" parameterType="int" resultType="Portfolio">
+		SELECT p.*
+		FROM Portfolio p
+		JOIN Professional pr ON p.pro_no = pr.pro_no
+		WHERE pr.member_no = #{memberNo}
+	</select>
+
+	<select id="getPortfolioById" parameterType="int" resultMap="PortfolioDetailResultMap">
+		SELECT DISTINCT
+			p.portfolio_no, p.pro_no, p.portfolio_title, p.portfolio_content, p.thumbnail_image,
+			p.portfolio_file1, p.portfolio_file2, p.portfolio_file3, p.portfolio_file4, p.portfolio_file5,
+			p.portfolio_file6, p.portfolio_file7, p.portfolio_file8, p.portfolio_file9, p.portfolio_file10,
+			pr.self_introduction, pr.contactable_time, pr.career, pr.award_career,
+			c.item_title AS category_name,
+			m.name AS professional_name
+		FROM Portfolio p
+				 LEFT JOIN Professional pr ON p.pro_no = pr.pro_no
+				 LEFT JOIN Member m ON pr.member_no = m.member_no
+				 LEFT JOIN Category c ON pr.category_no = c.category_no
+		WHERE p.portfolio_no = #{portfolioNo}
+			LIMIT 1
+	</select>
+
+
 <!-- 포트폴리오 추가 -->
 <insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
         INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,
@@ -138,18 +245,29 @@
                 #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
 </insert>
 
-<!-- 포트폴리오 수정 -->
-<update id = "updatePortfolio" parameterType = "Portfolio">
-	UPDATE Portfolio
-	SET portfolio_title = #{portfolioTitle}, portfolio_content = #{portfolioContent}
-	WHERE portfolio_no = #{portfolioNo}
-</update>
-
 <!-- 포트폴리오 삭제 -->
-<delete id = "deletePortfolio" parameterType = "int">
-	DELETE FROM Portfolio
-	WHERE portfolio_no = #{portfolioNo}
+<delete id="deletePortfolio">
+	DELETE FROM Portfolio WHERE portfolio_no = #{portfolioNo}
 </delete>
+
+<!-- 전문가 고급 정보 삭제 -->
+<delete id="deleteProfessionalAdvancedInfo">
+	DELETE FROM ProfessionalAdvancedInformation WHERE pro_advanced_no = #{proAdvancedNo}
+</delete>
+
+<!-- 전문가 삭제 (해당 전문가가 마지막 포트폴리오일 경우만 삭제) -->
+<delete id="deleteProfessional">
+	DELETE FROM Professional
+	WHERE pro_no = #{proNo}
+	AND NOT EXISTS (SELECT 1 FROM Portfolio WHERE pro_no = #{proNo})
+</delete>
+
+<!-- 포트폴리오 번호로 전문가 번호 및 전문가 고급 정보 번호 조회 -->
+<select id="getProfessionalInfoByPortfolio" resultType="ProfessionalInfo">
+	SELECT pro_no, pro_advanced_no
+	FROM Portfolio
+	WHERE portfolio_no = #{portfolioNo}
+</select>
 
 <!-- 포트폴리오 공개/비공개 -->
 <update id = "updatePortfolioStatus" parameterType ="map">
@@ -157,5 +275,80 @@
 	SET visibility = #{status}
 	WHERE portfolio_no = #{portfolioNo}
 </update>
+
+<!-- ✅ 전문가 정보 조회 -->
+<select id="getProfessionalByPortfolio" parameterType="int" resultType="Professional">
+	SELECT * FROM professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
+
+<!-- ✅ 전문가 고급 정보 조회 -->
+<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
+	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
+
+<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
+	SELECT item_no
+	FROM ProfessionalAdvancedInformation
+	WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+</select>
+
+	<!--회원 본인 포트폴리오 정보 조회-->
+	<select id="getPortfolioEntityById" resultType="Portfolio" parameterType="int">
+		SELECT
+		portfolio_no AS portfolioNo,
+		pro_no AS proNo,
+		pro_advanced_no AS proAdvancedNo,
+		portfolio_title AS portfolioTitle,
+		portfolio_content AS portfolioContent,
+		thumbnail_image AS thumbnailImage,
+		portfolio_file1, portfolio_file2, portfolio_file3,
+		portfolio_file4, portfolio_file5, portfolio_file6,
+		portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10
+		FROM Portfolio
+		WHERE portfolio_no = #{portfolioNo}
+	</select>
+
+	<!-- ✅ 포트폴리오 업데이트 -->
+	<update id="updatePortfolio" parameterType="Portfolio">
+		UPDATE Portfolio
+		SET portfolio_title = #{portfolioTitle},
+		portfolio_content = #{portfolioContent},
+		thumbnail_image = #{thumbnailImage},
+		portfolio_file1 = #{portfolioFile1},
+		portfolio_file2 = #{portfolioFile2},
+		portfolio_file3 = #{portfolioFile3},
+		portfolio_file4 = #{portfolioFile4},
+		portfolio_file5 = #{portfolioFile5},
+		portfolio_file6 = #{portfolioFile6},
+		portfolio_file7 = #{portfolioFile7},
+		portfolio_file8 = #{portfolioFile8},
+		portfolio_file9 = #{portfolioFile9},
+		portfolio_file10 = #{portfolioFile10}
+		WHERE portfolio_no = #{portfolioNo}
+	</update>
+
+	<!-- ✅ 전문가 정보 업데이트 -->
+	<update id="updateProfessional" parameterType="Professional">
+		UPDATE Professional
+		SET category_no = #{categoryNo},
+		self_introduction = #{selfIntroduction},
+		career = #{career},
+		award_career = #{awardCareer},
+		contactable_time = #{contactableTime}
+		WHERE pro_no = #{proNo}
+	</update>
+
+	<!-- ✅ 전문가 고급 정보 업데이트 -->
+	<update id="updateProfessionalAdvancedInfo" parameterType="ProfessionalAdvancedInformation">
+		UPDATE ProfessionalAdvancedInformation
+		SET item_no = #{itemNo},
+		pro_answer1 = #{proAnswer1},
+		pro_answer2 = #{proAnswer2},
+		pro_answer3 = #{proAnswer3},
+		pro_answer4 = #{proAnswer4},
+		pro_answer5 = #{proAnswer5}
+		WHERE pro_advanced_no = #{proAdvancedNo}
+	</update>
+
 
 </mapper>
