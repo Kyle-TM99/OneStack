@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ProfessionalService;
+import com.onestack.project.service.ReviewService;
 import com.onestack.project.service.SurveyService;
 
 import jakarta.servlet.http.HttpSession;
@@ -43,53 +44,63 @@ public class ProfessionalController {
     private SurveyService surveyService;
 
     @Autowired
-    private PortfolioController portfolioController;
+    private ReviewService reviewService;
 
-    /* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
-    @GetMapping("/findPro")
-    public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
+	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
+	@GetMapping("/findPro")
 
-        Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
-        Map<String, Object> proModelMap = proService.getMemProAdCateInfo(itemNo);
+	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
 
-        List<MemProAdInfoCate> proList = (List<MemProAdInfoCate>) proModelMap.get("proList");
+		Map<String, Object> surveyModelMap = proService.getFilter(itemNo);
+		Map<String, Object> proModelMap = proService.getMemProAdCateInfo(itemNo);
 
-        double overallAveragePrice = proList.stream()  // proList에서 스트림 처리
-                .map(MemProAdInfoCate::getProfessional)  // MemProAdInfoCate에서 Professional 객체 추출
-                .mapToDouble(Professional::getAveragePrice)  // Professional 객체에서 평균 가격 추출
-                .average()  // 평균 계산
-                .orElse(0.0);
+		List<MemProAdInfoCate> proList = (List<MemProAdInfoCate>) proModelMap.get("proList");
 
-        String formattedAveragePrice = String.format("%,d", (long) overallAveragePrice);
+		double overallAveragePrice = proList.stream()  // proList에서 스트림 처리
+				.map(MemProAdInfoCate::getProfessional)  // MemProAdInfoCate에서 Professional 객체 추출
+				.mapToDouble(Professional::getAveragePrice)  // Professional 객체에서 평균 가격 추출
+				.average()  // 평균 계산
+				.orElse(0.0);
 
-        model.addAllAttributes(surveyModelMap);
-        model.addAllAttributes(proModelMap);
-        model.addAttribute("itemNo", itemNo);
-        model.addAttribute("overallAveragePrice", formattedAveragePrice);
+		String formattedAveragePrice = String.format("%,d", (long) overallAveragePrice);
 
-        return "views/findPro";
-    }
+		model.addAllAttributes(surveyModelMap);
+		model.addAllAttributes(proModelMap);
+		model.addAttribute("itemNo", itemNo);
+		model.addAttribute("overallAveragePrice", formattedAveragePrice);
+
+		return "views/findPro";
+	}
 
     /* 견적 요청서 폼 */
-    @GetMapping("/estimationForm")
-    public String getEstimationForm(Model model, @RequestParam(value = "proNo") int proNo) {
+	@GetMapping("/estimationForm")
+	public String getEstimationForm(Model model, @RequestParam(value = "proNo") int proNo) {
 
-        model.addAttribute("proNo", proNo);
+		model.addAttribute("proNo", proNo);
 
-        return "views/estimationForm";
-    }
+		return "views/estimationForm";
+	}
 
     /* 견적 요청서 작성 */
-    @PostMapping("/submitEstimation")
-    public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+	@PostMapping("/submitEstimation")
+	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+		try {
+			// 견적 정보 설정
+			estimation.setProNo(proNo);
+			estimation.setProgress(0); // 초기 상태 (요청)
 
-        proService.submitEstimation(estimation);
+			// 견적 저장
+			proService.submitEstimation(estimation);
 
-        return "redirect:/doneEstimation";
-    }
+			return "redirect:/estimationDoneForm";
+		} catch (Exception e) {
+			log.error("견적 요청 중 오류 발생", e);
+			return "redirect:/error";
+		}
+	}
 
     /* 견적 요청 완료 페이지 */
-    @GetMapping("/doneEstimation")
+    @GetMapping("/estimationDoneForm")
     public String estimationDoneForm() {
         return "views/estimationDoneForm";
     }
@@ -99,8 +110,9 @@ public class ProfessionalController {
     @GetMapping("/proDetail")
     public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
-
+        List<Review> reviewList = reviewService.getReviewList(proNo);
         model.addAttribute("proList", proList);
+        model.addAttribute("reviewList", reviewList);
 
         return "views/proDetail";
     }

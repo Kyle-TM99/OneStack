@@ -947,4 +947,90 @@
 .content-box p {
     margin-bottom: 0;
     white-space: pre-line;
+}
+
+/* 리뷰 모달 스타일 */
+#reviewModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+#reviewModal .modal-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+}
+
+#reviewModal .modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+#reviewModal .modal-body {
+    padding: 1.5rem;
+}
+
+.review-rating-container {
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.rating-label {
+    font-size: 1.1rem;
+    color: #475569;
+    margin-bottom: 1rem;
+}
+
+.rating {
+    font-size: 2rem;
+    color: #cbd5e1;
+}
+
+.rating i {
+    margin: 0 0.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating i:hover,
+.rating i.bi-star-fill {
+    color: #fbbf24;
+}
+
+#reviewModal .form-label {
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+#reviewModal .form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: border-color 0.2s;
+}
+
+#reviewModal .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: none;
+}
+
+#reviewModal .btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    padding: 0.75rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+#reviewModal .btn-primary:hover {
+    background-color: #2563eb;
+}
+
+#reviewModal textarea {
+    resize: none;
+    min-height: 120px;
 } 

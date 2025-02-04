@@ -107,7 +107,6 @@
 										</th:block>
 										<!-- 로그인한 경우에만 보이는 버튼들 -->
 										<th:block th:if="${session.isLogin}">
-											<span class="me-2" th:text="${session.member.nickname + '님 환영합니다'}"></span>
 											<div class="dropdown">
 												<a href="#" class="profile-link d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
 													<img th:src="${session.member != null ? session.member.memberImage : '/images/default-profile.png'}" 
@@ -117,7 +116,10 @@
 													<i class="fas fa-chevron-down small text-muted"></i>
 												</a>
 												<ul class="dropdown-menu dropdown-menu-end">
-													<li><a class="dropdown-item" href="/myPage">마이페이지</a></li>
+													<strong><li><h6 class="dropdown-item-text">[[${session.member.nickname}]]</h6></li></strong>
+													<li><hr class="dropdown-divider"></li>
+														<li><a class="dropdown-item" href="/#">고객 문의</a></li>
+
 													<!-- 관리자 페이지 버튼 -->
 													<th:block th:if="${session.member != null && session.member.isAdmin()}">
 														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
