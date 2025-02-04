@@ -45,4 +45,7 @@ public interface PayMapper {
     // 결제 횟수 가져오기
     public int getMemPayCount(@Param("memberNo") int memberNo);
 
+    // 전문가 고용 횟수 증가
+    public void updateStudentCount(@Param("proNo") int proNo);
+
 }

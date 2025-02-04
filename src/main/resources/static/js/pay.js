@@ -69,10 +69,10 @@ function requestPayment(channelNum) {
                     throw new Error('결제 검증 실패');
                 }
                 return response.text(); // 서버에서 quotationNo를 텍스트로 반환
-            }).then(quotationNo => {
+            }).then(payNo => {
                 alert('결제가 성공적으로 완료되었습니다.');
                 // 주문 완료 페이지로 이동하며 주문 번호 전달
-                location.href = `/payDoneForm?quotationNo=${quotationNo}`;
+                location.href = `/payDoneForm?payNo=${payNo}`;
             }).catch(error => {
                     alert('결제 처리 중 오류가 발생했습니다: ' + error.message);
                 });

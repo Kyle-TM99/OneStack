@@ -79,6 +79,12 @@ public class PayController {
             Pay pay1 = new Pay();
             int payNo = payService.getPayNo(estimationNo);
 
+            // proNo 가져오기
+            int proNo = payService.findByEstimationNo(estimationNo);
+
+            // 전문가 고용 수 증가
+            payService.updateStudentCount(proNo);
+
 
             return ResponseEntity.ok(String.valueOf(payNo));
         }

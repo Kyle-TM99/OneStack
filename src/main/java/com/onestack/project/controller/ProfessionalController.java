@@ -106,12 +106,13 @@ public class ProfessionalController {
 
         int sum = 0;
         int cnt = 0;
-        for(Review review : reviewList) {
-            sum += review.getReviewRate();
-            cnt++;
+        if(reviewList != null && reviewList.size() > 0) {
+            for(Review review : reviewList) {
+                sum += review.getReviewRate();
+                cnt++;
+            }
+            sum /= cnt;
         }
-
-        sum /= cnt;
 
         model.addAttribute("proList", proList);
         model.addAttribute("reviewList", reviewList);
