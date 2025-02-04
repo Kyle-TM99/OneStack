@@ -20,7 +20,7 @@
         </form>
         <div class="row mt-5">
             <div class="col-md">
-                <a href="#" th:onclick="@{|location.href='communityList?pageNum=${pageNum}'|}" style="text-decoration: none; color: inherit;">
+                <a href="#" th:onclick="@{|location.href='community?pageNum=${pageNum}&type=${type}&keyword=${keyword}'|}" style="text-decoration: none; color: inherit;">
                     <span class="fw-bold">자유 게시판</span>
                 </a>
             </div>

@@ -48,9 +48,6 @@ public class MemberService {
         return result;
     }
 
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
-    }
 
     // 회원별 게시글 수 조회
     public int memberMyPageCommunityCount(int memberNo) {
@@ -58,10 +55,6 @@ public class MemberService {
     }
 
 
-    // 회원별 질문글 수 조회
-    public int memberMyPageQnACount(int memberNo) {
-        return memberMapper.memberMyPageQnACount(memberNo);
-    }
 
     // 회원별 댓글 수 조회
     public int memberMyPageComReplyCount(int memberNo) {

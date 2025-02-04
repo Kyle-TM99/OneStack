@@ -22,27 +22,10 @@ public interface MemberMapper {
 	// 회원이 요청한 견적 리스트 Estimation
 	public List<Estimation> memberEstimation(int memberNo);
 
-	// 전문가 myPage에서 포트폴리오 관리
-	//public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo);
-
-	// myPage에서 내역 조회
-	public List<MemberWithProfessional> memberWithProfessional(int memberNo);
-
-	// 회원별 작성 리뷰 조회
-	public List<Review> findMyReview(int memberNo);
-	public List<Review> proReview(int proNo);
-	// 회원별 작성 리뷰 수 조회
-	public int findMyReviewCount(int memberNo);
-	public int proReviewCount(int proNo);
-
-	// 회원별 작성 게시글 조회
-	public List<MemberWithCommunity> memberMyPageCommunity(int memberNo);
 
 	// 회원별 작성 게시글 수 조회
 	public int memberMyPageCommunityCount(int memberNo);
 
-	// 회원별 작성 질문글 수 조회
-	public int memberMyPageQnACount(int memberNo);
 
 	// 회원별 작성 댓글 수 조회
 	public int memberMyPageComReplyCount(int memberNo);
@@ -53,8 +36,6 @@ public interface MemberMapper {
 	// 회원별 작성 게시글 공감 조회
 	public List<Community> memberMyPageCommunityLike(int memberNo);
 
-	// 회원별 작성 댓글 공감 조회
-	public List<CommunityReply> memberMyPageComReplyLike(int memberNo);
 
 	// 회원 정보 업데이트
 	public void updateMember(Member member);
@@ -62,8 +43,6 @@ public interface MemberMapper {
 	// 소셜 회원 정보 업데이트
 	public void updateSocialMember(Member member);
 
-	// 회원 정보 비밀번호 수정
-	public void updateMemberMyPagePass(Member member);
 
 
 	public List<Map<String, Object>> myPageLikedCommunity(int memberNo);

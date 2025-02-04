@@ -1,76 +1,77 @@
+// 중복 선언을 피하기 위해 첫 번째 위치에서만 선언하고 이후에는 재사용
 let isSubmitting = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-        const recommendBtns = document.querySelectorAll('.recommend-btn');
+    const recommendBtns = document.querySelectorAll('.recommend-btn');
 
-        recommendBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const isAuthor = this.getAttribute('data-is-author') === 'true';
+    recommendBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const isAuthor = this.getAttribute('data-is-author') === 'true';
 
-                if (isAuthor) {
-                    alert('본인 게시글에는 추천/비추천을 할 수 없습니다.');
-                    return;
-                }
+            if (isAuthor) {
+                alert('본인 게시글에는 추천/비추천을 할 수 없습니다.');
+                return;
+            }
 
-                const boardNo = this.getAttribute('data-board-no');
-                const isLike = this.id === 'communityBoardLike';
-                const isActive = this.classList.contains('active');
-                const otherBtn = isLike ?
-                    document.getElementById('communityBoardDislike') :
-                    document.getElementById('communityBoardLike');
+            const boardNo = this.getAttribute('data-board-no');
+            const isLike = this.id === 'communityBoardLike';
+            const isActive = this.classList.contains('active');
+            const otherBtn = isLike ?
+                document.getElementById('communityBoardDislike') :
+                document.getElementById('communityBoardLike');
 
-                if (!isActive && otherBtn.classList.contains('active')) {
-                    alert(`이미 ${isLike ? '비추천' : '추천'}하셨습니다. 취소 후 다시 시도해주세요.`);
-                    return;
-                }
+            if (!isActive && otherBtn.classList.contains('active')) {
+                alert(`이미 ${isLike ? '비추천' : '추천'}하셨습니다. 취소 후 다시 시도해주세요.`);
+                return;
+            }
 
-                $.ajax({
-                    url: '/community/recommend',
-                    type: 'POST',
-                    data: {
-                        communityBoardNo: boardNo,
-                        recommendType: isLike ? 'LIKE' : 'DISLIKE',
-                        isCancel: isActive
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // 현재 버튼 업데이트
-                            const currentIcon = btn.querySelector('i');
-                            const currentCount = btn.querySelector('span');
+            $.ajax({
+                url: '/community/recommend',
+                type: 'POST',
+                data: {
+                    communityBoardNo: boardNo,
+                    recommendType: isLike ? 'LIKE' : 'DISLIKE',
+                    isCancel: isActive
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // 현재 버튼 업데이트
+                        const currentIcon = btn.querySelector('i');
+                        const currentCount = btn.querySelector('span');
 
-                            btn.classList.toggle('active');
-                            if (isLike) {
-                                currentIcon.className = btn.classList.contains('active') ?
-                                    'bi bi-heart-fill text-danger' : 'bi bi-heart';
-                                currentCount.textContent = response.likeCount;
+                        btn.classList.toggle('active');
+                        if (isLike) {
+                            currentIcon.className = btn.classList.contains('active') ?
+                                'bi bi-heart-fill text-danger' : 'bi bi-heart';
+                            currentCount.textContent = response.likeCount;
 
-                                // 싫어요 버튼 초기화
-                                otherBtn.classList.remove('active');
-                                otherBtn.querySelector('i').className = 'bi bi-hand-thumbs-down';
-                                otherBtn.querySelector('span').textContent = response.dislikeCount;
-                            } else {
-                                currentIcon.className = btn.classList.contains('active') ?
-                                    'bi bi-hand-thumbs-down-fill text-primary' : 'bi bi-hand-thumbs-down';
-                                currentCount.textContent = response.dislikeCount;
-
-                                // 좋아요 버튼 초기화
-                                otherBtn.classList.remove('active');
-                                otherBtn.querySelector('i').className = 'bi bi-heart';
-                                otherBtn.querySelector('span').textContent = response.likeCount;
-                            }
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 401) {
-                            alert('로그인이 필요한 기능입니다.');
-                            window.location.href = '/login';
+                            // 싫어요 버튼 초기화
+                            otherBtn.classList.remove('active');
+                            otherBtn.querySelector('i').className = 'bi bi-hand-thumbs-down';
+                            otherBtn.querySelector('span').textContent = response.dislikeCount;
                         } else {
-                            alert(xhr.responseJSON?.message || '오류가 발생했습니다.');
+                            currentIcon.className = btn.classList.contains('active') ?
+                                'bi bi-hand-thumbs-down-fill text-primary' : 'bi bi-hand-thumbs-down';
+                            currentCount.textContent = response.dislikeCount;
+
+                            // 좋아요 버튼 초기화
+                            otherBtn.classList.remove('active');
+                            otherBtn.querySelector('i').className = 'bi bi-heart';
+                            otherBtn.querySelector('span').textContent = response.likeCount;
                         }
                     }
-                });
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        alert('로그인이 필요한 기능입니다.');
+                        window.location.href = '/login';
+                    } else {
+                        alert(xhr.responseJSON?.message || '오류가 발생했습니다.');
+                    }
+                }
             });
         });
+    });
 // 드롭다운 토글 함수
 function toggleDropdown(element) {
     const dropdownMenu = $(element).siblings('.communityDropdown');
@@ -82,11 +83,11 @@ $(document).ready(function() {
     $('#replyForm').off('submit').on('submit', function (event) {
         event.preventDefault();
 
-        if (isSubmitting) {
+        if (window.isSubmitting) {
             return false;
         }
 
-        isSubmitting = true;
+        window.isSubmitting = true;
 
         $.ajax({
             type: 'POST',
@@ -157,7 +158,7 @@ $(document).ready(function() {
                 alert('댓글 등록에 실패했습니다. 다시 시도해 주세요.');
             },
             complete: function () {
-                isSubmitting = false;
+                window.isSubmitting = false;
             }
         });
     });
@@ -302,15 +303,9 @@ $(document).ready(function() {
 
     // 드롭다운 메뉴 토글 함수
     window.toggleDropdown = function(element) {
-        const dropdownMenu = $(element).siblings('.dropdown-menu');
-        $('.dropdown-menu').not(dropdownMenu).hide();
+        const dropdownMenu = $(element).siblings('.communityDropdown');
+        $('.communityDropdown').not(dropdownMenu).hide();
         dropdownMenu.toggle();
     };
 
-    // 문서 클릭 시 드롭다운 메뉴 닫기
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('.dropdown-container').length) {
-            $('.dropdown-menu').hide();
-        }
-    });
 });

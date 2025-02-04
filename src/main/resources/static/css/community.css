@@ -314,10 +314,10 @@
     color: #ff6b6b !important;
 }
 
-#communityBoardLike.active .like-count {
-    color: #ff6b6b;
-    font-weight: bold;
-}
+/*#communityBoardLike.active .like-count {*/
+/*    color: #ff6b6b;*/
+/*    font-weight: bold;*/
+/*}*/
 
 /* 싫어요 버튼 활성화 상태 */
 #communityBoardDislike.active {
@@ -329,10 +329,10 @@
     color: #5c7cfa !important;
 }
 
-#communityBoardDislike.active .dislike-count {
+/*#communityBoardDislike.active .dislike-count {
     color: #5c7cfa;
     font-weight: bold;
-}
+}*/
 
 /* 아이콘 스타일 */
 .recommend-btn i {
