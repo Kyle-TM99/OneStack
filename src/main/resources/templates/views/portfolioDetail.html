@@ -56,7 +56,9 @@
                                 </ul>
                                 <p><strong>수상 경력:</strong></p>
                                 <ul>
-                                    <li th:each="award : ${portfolio.Professional.awardCareer.split(',')}" th:text="${award}"></li>
+                                    <li th:each="award : ${#strings.arraySplit(portfolio.Professional.awardCareer, ',')}">
+                                        [[${award}]]
+                                    </li>
                                 </ul>
                                 <p><strong>포트폴리오 설명:</strong> <span th:text="${portfolio.portfolio.portfolioContent}"></span></p>
                             </div>

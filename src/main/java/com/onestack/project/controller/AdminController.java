@@ -5,6 +5,7 @@ import java.util.Map;
 
 
 import com.onestack.project.domain.Reports;
+import com.onestack.project.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import com.onestack.project.domain.Member;
 import com.onestack.project.service.AdminService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -27,12 +29,14 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/delete")
     public String delete(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
-        String memberId = member.getMemberId();
-        if(member == null) {
+        boolean isAdmin = member.isAdmin();
+        if(! isAdmin) {
             return "redirect:/loginForm";
         }
         model.addAttribute("member",member);
@@ -40,10 +44,19 @@ public class AdminController {
     }
 
     @GetMapping("/adminPage")
-	 public String adminPage() {
+    public String adminPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        Member member = (Member) session.getAttribute("member");
 
-         return "layouts/admin_layout"; // admin_layout.html을 기본 템플릿으로 사용
-	 }
+        if (member == null || member.getMemberId() == null) {
+            return "redirect:/loginForm";
+        }
+        if (!member.isAdmin()) {
+            return "redirect:/loginForm";
+        }
+        model.addAttribute("member", memberService.getMember(member.getMemberId()));
+        return "layouts/admin_layout"; // admin_layout.html을 기본 템플릿으로 사용
+    }
+
 	 
 	@GetMapping("/members")
     public String getMembersDashboard(Model model) {

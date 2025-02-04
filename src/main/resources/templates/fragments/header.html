@@ -124,6 +124,9 @@
 													<th:block th:if="${session.member != null && session.member.isAdmin()}">
 														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
 													</th:block>
+													<th:block th:if="${session.member != null && session.member.memberType == 1}">
+														<li><a class="dropdown-item text-manager" href="/portfolioList">포트폴리오 관리</a></li>
+													</th:block>
 													<li><hr class="dropdown-divider"></li>
 													<th:block th:if="${session.member != null}">
 														<th:block th:if="${session.member.socialType == 'none'}">
