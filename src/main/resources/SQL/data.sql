@@ -203,27 +203,3 @@ VALUES
     (4, 1, 7, '다음에 또 부탁드릴게요', 5, '2024-02-01 09:00:00', 1),
     (5, 1, 8, '마음에 안들어', 2, '2025-02-03 12:34:56', 1),
     (6, 1, 9, '좋아요~', 4, '2025-01-18 16:45:00', 1);
-
-UPDATE Review
-SET review_date = '2025-02-03 12:34:56'
-WHERE review_no = 1;
-
-UPDATE Review
-SET review_date = '2024-12-13 10:00:00'
-WHERE review_no = 2;
-
-UPDATE Review
-SET review_date = '2025-01-02 14:30:00'
-WHERE review_no = 3;
-
-UPDATE Review
-SET review_date = '2024-02-01 09:00:00'
-WHERE review_no = 4;
-
-UPDATE Review
-SET review_date = '2025-02-03 12:34:56'
-WHERE review_no = 5;
-
-UPDATE Review
-SET review_date = '2025-01-18 16:45:00'
-WHERE review_no = 6;
