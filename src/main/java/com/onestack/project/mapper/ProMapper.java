@@ -25,4 +25,6 @@ public interface ProMapper {
     /* 견적 요청서 작성 */
     public void submitEstimation(Estimation estimation);
 
+    /* 전문가 평점 업데이트 */
+    public void updateProRating(int rate,int proNo);
 }

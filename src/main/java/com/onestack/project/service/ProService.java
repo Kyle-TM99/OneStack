@@ -55,6 +55,10 @@ public class ProService {
         proMapper.submitEstimation(estimation);
     }
 
+    /* 전문가 평점 업데이트 */
+    public void updateProRating(int rate, int proNo) {
+        proMapper.updateProRating(rate, proNo);
+    }
 
 
 }
