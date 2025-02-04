@@ -29,4 +29,5 @@ public class Review {
     
     // 회원 닉네임 필드 추가
     private String memberNickname;
+    private String proNickname;
 }

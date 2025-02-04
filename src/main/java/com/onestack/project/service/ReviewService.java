@@ -24,5 +24,10 @@ public class ReviewService {
   public List<Review> getReviewList(int proNo) {
     return reviewMapper.getReviewList(proNo);
   }
+
+  // 메인 페이지 리뷰 조회
+  public List<Review> getMainReviewList(int num1, int num2) {
+    return reviewMapper.getMainReviewList(num1, num2);
+  }
   
 }

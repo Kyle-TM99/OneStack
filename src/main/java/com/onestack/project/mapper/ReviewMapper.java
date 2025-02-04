@@ -14,5 +14,8 @@ public interface ReviewMapper {
 
   // 리뷰 조회
   List<Review> getReviewList(int proNo);
+
+  // 메인 페이지 리뷰 조회
+  List<Review> getMainReviewList(int num1, int num2);
   
 }
