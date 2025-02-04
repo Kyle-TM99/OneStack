@@ -118,7 +118,7 @@
         <if test="appType != null and !appType.isEmpty()">
             AND (
             <foreach collection="appType" item="type" separator=" AND ">
-                ${type.field} = #{type.value}
+                pa.${type.field} = #{type.value}
             </foreach>
             )
         </if>
@@ -148,7 +148,7 @@
         <if test="appType != null and !appType.isEmpty()">
             AND (
             <foreach collection="appType" item="type" separator=" AND ">
-                ${type.field} = #{type.value}
+                pa.${type.field} = #{type.value}
             </foreach>
             )
         </if>
