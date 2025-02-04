@@ -150,4 +150,24 @@
         WHERE pro_no = #{proNo}
     </update>
 
+    <select id = "getReceipt" parameterType = "int" resultMap="MemPayResultMap">
+        SELECT p.*, m.*
+        FROM Pay p JOIN Member m
+                ON p.member_no = m.member_no
+        WHERE p.member_no = #{memberNo}
+    </select>
+
+    <select id="getMemPayCount" parameterType="int" resultType="int">
+        SELECT count(pay_no)
+        FROM Member m JOIN Pay p
+            ON m.member_no = p.member_no
+        WHERE p.member_no = #{memberNo}
+    </select>
+
+    <update id="updateStudentCount" parameterType="int">
+        UPDATE Professional
+        SET student_count = student_count + 1
+        WHERE pro_no = #{proNo}
+    </update>
+
 </mapper>

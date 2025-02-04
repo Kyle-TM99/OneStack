@@ -36,9 +36,6 @@ public class AdminController {
     public String delete(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
         boolean isAdmin = member.isAdmin();
-        if(! isAdmin) {
-            return "redirect:/loginForm";
-        }
         model.addAttribute("member",member);
         return "views/deleteButton";
     }

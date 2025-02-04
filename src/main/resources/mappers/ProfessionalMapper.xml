@@ -57,7 +57,7 @@
         <result property="quotationPrice" column="quotation_price" />
         <result property="quotationRegDate" column="quotation_reg_date" />
     </resultMap>
-	
+
    	<resultMap id="MemberWithProfessionalResultMap" type="com.onestack.project.domain.MemberWithProfessional">
 		<association property="member" resultMap="MemberResultMap" />
 	    <association property="professional" resultMap="ProfessionalResultMap" />
