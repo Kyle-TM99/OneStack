@@ -157,11 +157,12 @@
 	</update>
 
 	<!-- 문의 답변 조회 -->
-	<select id="getInquiryAnswer" parameterType="int" resultMap="InquiryAnswerResultMap">
-		SELECT *
-		FROM InquiryAnswer
-		WHERE inquiry_no = #{inquiryNo}
-		ORDER BY inquiry_answer_reg_date DESC
+	<select id="getInquiryAnswer" parameterType="int" resultType="InquiryAnswer">
+		SELECT i.*, m.nickname
+		FROM InquiryAnswer i JOIN Member m
+			ON i.member_no = m.member_no
+		WHERE i.inquiry_no = #{inquiryNo}
+		ORDER BY i.inquiry_answer_reg_date DESC
 	</select>
 
 	<!-- 문의 답변 추가 -->

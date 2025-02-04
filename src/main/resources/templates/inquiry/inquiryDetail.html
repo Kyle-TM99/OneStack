@@ -52,92 +52,110 @@
                 <div class="col-md-8">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="fw-bold" th:text="${inquiry.inquiryTitle}">문의 제목</h2>
-                        <span class="ml-2 border-left pl-2 text-secondary small" th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}"></span>
-                    </div>
-                    <p class="my-4" th:text="${inquiry.inquiryContent}">문의 내용</p>
-
-                    <!-- 파일 정보 출력 -->
-                    <div th:if="${inquiry.inquiryFile != null}" class="g-0 mt-3">
-                        <div class="g-0">
-                            <p class="g-0">첨부 파일 :
-                                <a th:href="@{/files/{filename}(filename=${inquiry.inquiryFile})}" th:text="${inquiry.inquiryFile}" class="btn btn-link"></a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-2"></div>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn update-btn" type="button" id="detailUpdate" title="수정하기" th:if="${inquiry.inquiryStatus != '답변 완료' && session.member.isAdmin == 1}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn delete-btn" type="button" id="detailDelete" title="삭제하기" th:if="${inquiry.inquiryStatus != '답변 완료'}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
+                    <span class="ml-2 border-left pl-2 text-secondary small" th:text="${#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}"></span>
                 </div>
+                <p class="my-4" th:text="${inquiry.inquiryContent}">문의 내용</p>
 
-                <!-- 답변 영역 -->
-                <div class="row g-0 mt-3">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <div class="fw-bold mb-3 fs-3">답변
-                            <!-- 답변이 없을 경우 메시지 출력 -->
-                            <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="text-center fs-6">
-                                관리자의 답변을 기다려 주세요.
-                            </div>
+                <!-- 파일 정보 출력 -->
+                 <!-- <div th:if="${inquiry.inquiryFile != null}" class="g-0 mt-3">
+                    <div class="g-0">
+                        <p class="g-0">첨부 파일 :
+                            <a th:href="@{/files/{filename}(filename=${inquiry.inquiryFile})}" th:text="${inquiry.inquiryFile}" class="btn btn-link"></a>
+                        </p>
+                    </div>
+                </div> -->
+
+                <div class="col-md-2"></div>
+                <div class="d-flex justify-content-end">
+                    <!-- 수정하기 버튼 -->
+                    <button class="btn update-btn" type="button" id="detailUpdate" title="수정하기" th:if="${inquiry.inquiryStatus != '답변 완료' && session.member.isAdmin != 1}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <!-- 삭제하기 버튼 -->
+                    <button class="btn delete-btn" type="button" id="detailDelete" title="삭제하기" th:if="${inquiry.inquiryStatus != '답변 완료' && session.member.isAdmin != 1}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- 답변 영역 -->
+            <div class="row g-0 mt-3">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="fw-bold mb-3 fs-3">답변
+                        <!-- 답변이 존재하지 않거나 관리자일 경우 : 만족/불만족 버튼 미출력 -->
+                        <th:block th:if="${#lists.isEmpty(inquiryAnswer)}">
                             <!-- 만족 버튼 -->
-                            <button id="satisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="만족" th:if="${inquiry.inquiryStatus != '답변 완료' && session.member.isAdmin != 1}">
-                                <i class="fas fa-thumbs-up"></i>
+                            <button id="satisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="만족"
+                                    th:if="${inquiry.inquiryStatus == '답변 완료' || session.member.isAdmin == 1}">
+                            <i class="fas fa-thumbs-up"></i>
                             </button>
                             <!-- 불만족 버튼 -->
-                            <button id="dissatisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="불만족" th:if="${inquiry.inquiryStatus != '답변 완료' && session.member.isAdmin != 1}">
+                            <button id="dissatisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="불만족"
+                                    th:if="${inquiry.inquiryStatus == '답변 완료' || session.member.isAdmin == 1}">
+
                                 <i class="fas fa-thumbs-down"></i>
                             </button>
-                        </div>
-                        <div class="row g-0 mb-2" th:each="inquiryAnswer : ${inquiryAnswer}">
-                            <!-- 내가 남긴 답변 내용 -->
-                            <th:block th:if="${inquiryAnswer.memberNo == session.member.memberNo}">
-                                <div class="text-start border-bottom my-2">
-                                    <p class="m-0" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
-                                    <span class="ml-2 border-left pl-2 text-secondary small"
-                                          th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy-MM-dd HH:mm')}">답변 작성 시간</span>
-<!--                                    <button class="btn btn-warning editAnswerButton" data-answer-no="${inquiryAnswer.inquiryAnswerNo}">수정</button>-->
-<!--                                    <textarea class="form-control review-textarea" rows="3" style="display:none;" placeholder="수정할 답변을 입력하세요"></textarea>-->
-                                </div>
-                            </th:block>
-                            <!-- 관리자가 남긴 답변 내용 -->
-                            <th:block th:if="${inquiryAnswer.memberNo != session.member.memberNo}">
-                                <div class="text-end border-bottom my-2">
-                                    <p class="m-0" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
-                                    <span class="ml-2 border-left pl-2 text-secondary small"
-                                          th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy-MM-dd HH:mm')}">답변 작성 시간</span>
-                                </div>
-                            </th:block>
-                        </div>
-                        <div class="col-md-2"></div>
+                        </th:block>
                     </div>
-                </div>
+                    <!-- 답변이 없을 경우 메시지 출력 -->
+                    <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="d-flex justify-content-center align-items-center text-center fs-6" style="height: 100px;">
+                        관리자의 답변을 기다려 주세요.
+                    </div>
 
-                <!-- 답변 작성 폼 영역 -->
-                <div class="row g-0 mt-3" th:if="${inquiry.inquiryStatus != '답변 완료'}">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8 mt-3">
-                        <div class="review-form" id="reviewForm">
-                            <div class="form-group">
-                                <textarea class="form-control review-textarea" id="reviewText" rows="3" placeholder="답변을 작성하세요" required></textarea>
+                    <div class="row g-0 mb-2" th:each="inquiryAnswer : ${inquiryAnswer}">
+                        <!-- 내가 남긴 답변 내용 -->
+                        <th:block th:if="${inquiryAnswer.memberNo == session.member.memberNo}">
+                            <div class="text-start border-bottom my-2">
+                                <span class="m-0">
+                                    <span th:text="${inquiryAnswer.nickname}">작성자 닉네임</span> |
+                                    <span class="text-secondary small"
+                                          th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy-MM-dd HH:mm:ss')}">답변 작성 시간</span>
+                                </span>
+                                <p class="mb-1" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
+                                <!-- 댓글 수정 버튼 -->
+                                <!-- <button class="btn btn-warning editAnswerButton" data-answer-no="${inquiryAnswer.inquiryAnswerNo}">수정</button>-->
+                                <!-- <textarea class="form-control review-textarea" rows="3" style="display:none;" placeholder="수정할 답변을 입력하세요"></textarea>-->
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="d-flex justify-content-end align-items-center mb-3 mt-3">
-                                <button type="button" class="btn btn-primary" id="submitAnswer">답변 등록</button>
+                        </th:block>
+                        <!-- 관리자가 남긴 답변 내용 -->
+                        <th:block th:if="${inquiryAnswer.memberNo != session.member.memberNo}">
+                            <div class="text-start border-bottom my-2">
+                                <span class="m-0">
+                                    <span th:text="${inquiryAnswer.nickname}">작성자 닉네임</span> |
+                                    <span class="text-secondary small"
+                                          th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy-MM-dd HH:mm:ss')}">답변 작성 시간</span>
+                                </span>
+                                <p class="m-0" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
                             </div>
-                        </div>
+                        </th:block>
                     </div>
                     <div class="col-md-2"></div>
                 </div>
-
             </div>
+
+            <!-- 답변 작성 폼 영역 -->
+            <div class="row g-0 mt-3" th:if="${inquiry.inquiryStatus != '답변 완료'}">
+                <div class="col-md-2"></div>
+                <div class="col-md-8 mt-3">
+                    <div class="review-form" id="reviewForm">
+                        <div class="form-group">
+                            <textarea class="form-control review-textarea" id="reviewText" rows="3" placeholder="답변을 작성하세요" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-flex justify-content-end align-items-center mb-3 mt-3">
+                            <button type="button" class="btn btn-primary" id="submitAnswer">답변 등록</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
         </div>
-        <script th:src="@{/js/inquiry.js}"></script>
     </div>
+    <script th:src="@{/js/inquiry.js}"></script>
+</div>
 </body>
 </html>

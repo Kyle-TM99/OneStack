@@ -32,70 +32,26 @@ $(function() {
                 const currentDate = new Date();
                 // 새로운 답변을 DOM에 추가
                 const newAnswerHtml = `
-        <div class="row g-0 mb-2">
-            <th:block>
-                <div class="text-start">
-                    <p class="m-0">${answerContent}</p>
-                    <span class="ml-2 border-left pl-2 text-secondary small">
-                        ${currentDate.toLocaleString()}
-                    </span>
-                </div>
-            </th:block>
-        </div>
-    `;
+                    <div class="row g-0 mb-2">
+                        <div class="text-start border-bottom">
+                            <p class="m-0">${answerContent}</p>
+                            <span class="ml-2 border-left pl-2 text-secondary small">
+                                ${currentDate.toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                `;
 
-                // 모든 답변의 시간을 비교하여 가장 최근 답변 찾기
-                let latestAnswer = null;
-                let latestTime = new Date(0); // 1970년 1월 1일
-
-                $('.col-md-8 .row.g-0.mb-2').each(function() {
-                    const timeStr = $(this).find('.text-secondary').text().trim();
-                    const answerTime = new Date(timeStr);
-                    if (answerTime > latestTime) {
-                        latestTime = answerTime;
-                        latestAnswer = $(this);
-                    }
-                });
-
-                // 가장 최근 답변 뒤에 새로운 답변 추가
-                if (latestAnswer) {
-                    latestAnswer.after(newAnswerHtml);
-                } else {
-                    // 답변이 없는 경우 h3 태그 다음에 추가
-                    $('.col-md-8 h3.fw-bold.mb-3').after(newAnswerHtml);
-                }
+                // 새로운 답변을 <div class="fw-bold mb-3 fs-3"> 뒤에 추가
+                $('.fw-bold.mb-3.fs-3').after(newAnswerHtml);
 
                 $("#reviewText").val(''); // 텍스트 영역 초기화
             },
             error: function(xhr, status, error) {
-                alert("답변 등록에 실패했습니다.");
+                alert("답변창이 비어있습니다.\n답변을 입력해주세요.");
             }
         });
     });
-
-    function updateSatisfaction(inquiryNo, isSatisfied, memberNo) {
-        console.log("inquiryNo:", inquiryNo); // inquiryNo 값 확인
-        console.log("isSatisfied:", isSatisfied); // isSatisfied 값 확인
-        console.log("memberNo:", memberNo); // memberNo 값 확인
-
-        $.ajax({
-            url: '/memberInquiry/inquiry/satisfaction',
-            type: 'POST',
-            data: {
-                inquiryNo: inquiryNo,
-                isSatisfied: isSatisfied,
-                memberNo: memberNo
-            },
-            success: function(response) {
-                alert(response);
-                location.reload(); // 페이지 새로 고침
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText); // 오류 메시지 출력
-                alert("업데이트에 실패했습니다.");
-            }
-        });
-    }
 
 // 만족 버튼 클릭 시
     $("#satisfactionButton").on("click", function() {

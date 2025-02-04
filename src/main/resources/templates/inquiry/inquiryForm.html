@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}" lang="">
 <head>
     <style>
         img {
@@ -12,6 +14,13 @@
         }
         .post-title:hover {
             color: #0d6efd;
+            font-weight: bold;
+        }
+        .inquiry-title {
+            transition: color 0.2s ease;
+        }
+        .inquiry-title:hover {
+            color: #0d6efd !important;
             font-weight: bold;
         }
     </style>
@@ -41,7 +50,7 @@
 
         <div class="row g-0 mt-5">
             <div class="col-md-2"></div>
-            <div class="col-md-8">
+            <div class="col-md-8 border-bottom">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <form name="searchForm" id="searchForm" th:action="@{/memberInquiry}" method="get">
                         <div class="d-flex">
@@ -54,13 +63,13 @@
                         </div>
                     </form>
                     <div>
-                        <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-secondary">문의하기</a>
+                        <a th:href="@{/memberInquiry/inquiryWrite}" class="btn btn-success">문의하기</a>
                     </div>
                 </div>
 
-                <!--/* 검색 요청일 경우 */-->
+                <!-- 검색 요청일 경우 -->
                 <th:block th:if="${searchOption}">
-                    <div class="row my-4">
+                    <div class="row my-5">
                         <div class="col">
                             <th:block th:if="${type == 'title'}">
                                 <div class="col text-center">
@@ -76,77 +85,116 @@
                     </div>
                 </th:block>
 
-
             </div>
             <div class="col-md-1"></div>
         </div>
+
         <div class="row g-0">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <table class="table mb-5">
-                    <thead>
-                    <tr>
-                        <th scope="col" style="width: 10%; font-weight: bold;" class="text-center">번호</th>
-                        <th scope="col" style="width: 40%; font-weight: bold;" class="text-center">제목</th>
-                        <th scope="col" style="width: 30%; font-weight: bold;" class="text-center">작성일</th>
-                        <th scope="col" style="width: 15%; font-weight: bold;" class="text-center">답변상태</th>
-                    </tr>
-                    </thead>
-                    <tbody>
 
-                        <!-- 문의한 문의글이 없는 경우 -->
-                        <th:block th:if="${#lists.isEmpty(inquiryList)}">
-                            <tr>
-                                <td colspan="4" class="text-center">문의한 문의글이 없습니다.</td>
-                            </tr>
-                        </th:block>
-                        <!-- 로그인 한 사람이 관리자인 경우 모든 문의글 조회 -->
-                        <th:block th:if="${session.member.isAdmin == 1}">
-                            <tr th:each="inquiry : ${inquiryList}">
-                                <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
-                                <td class="post-title">
-                                    <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                <!-- 일반요청이면서 내용물이 존재할 경우 -->
+                <th:block th:if="${not searchOption and not #lists.isEmpty(inquiryList)}">
+                    <!-- 로그인한 사람이 관리자인 경우 -->
+                    <th:block th:if="${session.member.isAdmin == true}">
+                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                            <div class="col-10">
+                                <a class="text-decoration-none fs-4 inquiry-title" style="color: #000000;"
+                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                            </div>
+                            <div class="col-2 text-center">
+                                <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                    <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
+                                    <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
+                                    <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
+                                </span>
+                            </div>
+                        </div>
+                    </th:block>
+                    <!-- 로그인한 사람이 일반 회원인 경우-->
+                    <th:block th:if="${session.member.isAdmin == false}">
+                    <!--<div class="row text-center py-3" th:if="${#lists.isEmpty(inquiryList.?[memberNo == session.member.memberNo])}">-->
+                        <!--<div class="col">문의한 문의글이 없습니다. 문의글을 등록해보세요.</div>-->
+                    <!--</div>-->
+                        <div class="row align-items-center mb-3 py-2"
+                             th:each="inquiry : ${inquiryList}"
+                             th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
+                            <div class="col-10">
+                                <a class="text-decoration-none fs-4 inquiry-title" style="color: #000000;"
+                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                            </div>
+                            <div class="col-2 text-center">
+                                <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                    <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
+                                    <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
+                                    <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
+                                </span>
+                            </div>
+                        </div>
+                    </th:block>
+                </th:block>
+
+                <!-- 일반 요청이면서 게시글이 없는 경우 -->
+                <th:block th:if="${not searchOption and #lists.isEmpty(inquiryList)}">
+                    <div class="row text-center py-3 d-flex justify-content-center my-4" style="width: 100%;">
+                        문의글이 존재하지 않습니다. 문의글을 작성해주세요.
+                    </div>
+                </th:block>
+
+                <!-- 검색 요청이면서 게시글이 존재하는 경우 -->
+                <th:block th:if="${searchOption and not #lists.isEmpty(inquiryList)}">
+                    <!-- 로그인한 사람이 관리자인 경우 -->
+                    <th:block th:if="${session.member.isAdmin == true}">
+                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                            <div class="col-10">
+                                <a class="text-decoration-none fs-4 inquiry-title" style="color: #000000;"
+                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
+                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                            </div>
+                            <div class="col-2 text-center">
+                                <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                    <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
+                                    <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
+                                    <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
+                                </span>
+                            </div>
+                        </div>
+                    </th:block>
+                    <!-- 로그인한 사람이 일반 회원인 경우 -->
+                    <th:block th:if="${session.member.isAdmin == false}">
+                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                            <th:block th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
+                                <div class="col-10">
+                                    <a class="text-decoration-none fs-4 inquiry-title" style="color: #000000;"
+                                       th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
                                        th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                </td>
-                                <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                                <td class="text-center">
+                                </div>
+                                <div class="col-2 text-center">
                                     <span th:switch="${inquiry.inquiry.inquiryStatus}">
                                         <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
                                         <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
                                         <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
                                     </span>
-                                </td>
-                            </tr>
-                        </th:block>
-                        <!-- 로그인한 사람이 관리자가 아닌 경우 자신이 문의한 문의글만 조회 -->
-                        <th:block th:if="${session.member.isAdmin != 1}">
-                            <tr th:each="inquiry : ${inquiryList}" th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
-                                <td class="text-center" th:text="${inquiry.inquiry.inquiryNo}">번호</td>
-                                <td class="post-title">
-                                    <a class="text-decoration-none" style="color: #000000;" th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                       th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                </td>
-                                <td class="text-center" th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                                <td class="text-center">
-                                    <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                        <span th:case="'답변 대기'" class="badge bg-secondary">답변 대기</span>
-                                        <span th:case="'답변 중'" class="badge bg-primary">답변 중</span>
-                                        <span th:case="'답변 완료'" class="badge bg-success">답변 완료</span>
-                                    </span>
-                                </td>
-                            </tr>
-                        </th:block>
+                                </div>
+                            </th:block>
+                        </div>
+                    </th:block>
+                </th:block>
 
+                <!--검색요청이면서 게시글이 없는 경우-->
+                <th:block th:if="${searchOption and #lists.isEmpty(inquiryList)}">
+                    <div class="row text-center py-3 d-flex justify-content-center my-4" style="width: 100%;">
+                        "[[${keyword}]]"가 포함된 게시글이 존재하지 않습니다. 다른 검색어를 입력해주세요.
+                    </div>
+                </th:block>
 
-
-                    </tbody>
-                </table>
-                <div class="col-md-2"></div>
             </div>
+            <div class="col-md-2"></div>
         </div>
     </div>
     <div class="col-md-2"></div>
-</div>
 </div>
 </body>
 </html>

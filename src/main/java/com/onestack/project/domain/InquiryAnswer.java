@@ -18,5 +18,7 @@ public class InquiryAnswer {
 	private String inquiryAnswerContent;
 	private Timestamp inquiryAnswerRegDate;
 	private String inquiryAnswerFile;
+
+	private String nickname;
 }
 
