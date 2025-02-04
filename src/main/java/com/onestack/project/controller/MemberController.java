@@ -40,7 +40,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
-/*
+
     @PostMapping("/updateMember")
     public String updateMember(HttpSession session, Member member,
                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
@@ -86,7 +86,7 @@ public class MemberController {
             log.error("회원 정보 수정 실패: {}", e.getMessage());
             return "redirect:/updateMemberForm?error=update";
         }
-    }*/
+    }
 
 /*
 
