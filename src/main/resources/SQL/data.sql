@@ -31,8 +31,8 @@ VALUES
     (29, '전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0,'/images/default-profile.png'),
     (30, '전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0,'/images/default-profile.png');
 
-INSERT IGNORE INTO Member (member_no, name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin)
-   VALUES(31, '관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1);
+INSERT IGNORE INTO Member (member_no, name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin, member_image)
+   VALUES(31, '관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1, '/images/admin.png');
 
 INSERT IGNORE INTO Professional (pro_no, member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
