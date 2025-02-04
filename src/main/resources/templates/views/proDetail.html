@@ -161,6 +161,9 @@
 <body>
     <div layout:fragment="content">
         <div th:each="pro, status: ${proList}" class="container py-5">
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+            <input type="hidden" name="reportedMemberNo" th:value="${pro.professional.memberNo}" />
+
             <div class="row">
                 <!-- 메인 컨텐츠 -->
                 <div class="col-lg-9">
@@ -171,7 +174,7 @@
                                 <img th:src="${pro.member.memberImage}" alt="전문가 프로필">
                             </div>
                             <div class="profile-info">
-                                <h3 class="mb-2">[[${pro.member.nickname}]]</h3>
+                                <h3 class="mb-2">[[${pro.member.nickname}]] &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; <i id="reporstBtn" class="bi-exclamation-triangle text-danger "></i> </h3>
                                 <div class="stats-container">
                                     <div class="stat-item">
                                         <i class="bi bi-person-check"></i>
@@ -274,10 +277,67 @@
                 </div>
             </div>
         </div>
+
+        <!-- 신고 모달 -->
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/reports}" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+                            <input type="hidden" name="reportedMemberNo" th:value="${member?.memberNo ?: 6}" />
+
+                            <div class="mb-3">
+                                <label for="reportsType" class="form-label">신고 유형</label>
+                                <select id="reportsType" name="reportsType" class="form-select">
+                                    <option value="community">자유게시판</option>
+                                    <option value="member">회원</option>
+                                    <option value="reply">댓글</option>
+                                    <option value="review">리뷰</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reportsTarget" class="form-label">신고 항목</label>
+                                <select id="reportsTarget" name="reportsTarget" class="form-select">
+                                    <option value="욕설">욕설</option>
+                                    <option value="광고">광고</option>
+                                    <option value="스팸">스팸</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reportsReason" class="form-label">신고 사유</label>
+                                <textarea id="reportsReason" name="reportsReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-primary" onclick="submitReport()">신고 접수</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <th:block layout:fragment="script">
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script th:src="@{/js/reports.js}"></script>
+        <script>
+            const reporstBtn = document.getElementById("reporstBtn");
+            const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
+            reporstBtn.addEventListener("click", function() {
+                reportModal.show();
+            });
+        </script>
         <script>
             const btnEstimation2 = document.getElementById("btnEstimation2");
             btnEstimation2.addEventListener("click", estimationForm);
