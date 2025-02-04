@@ -16,6 +16,7 @@
             <p class="text-muted mt-3 mb-5 text-center">쉽고 간편한 외주 서비스</p>
             <div class="card" style="width: 100%; max-width: 500px;">
                 <form action="/updateMember" name="memberUpdateForm" method="post" id="memberUpdateForm" enctype="multipart/form-data">
+                    <input type="hidden" id="currentMemberNo" th:value="${session.member.memberNo}">
                     <div class="row mb-4">
                         <div class="col-12">
                             <div class="profile-image-wrapper text-center">
@@ -39,23 +40,24 @@
                             <label for="name">&nbsp;이름 *</label>
                             <input id="name" name="name" type="text" class="form-control mb-2"
                                    th:value="${session.member.name}"
-                                   th:readonly="${session.socialType == 'google' or session.socialType == 'kakao'}"
+                                   th:readonly="${session.member.socialType == 'google' or session.member.socialType == 'kakao'}"
                                    maxlength="5" required>
                             <small id="nameMessage" class="form-text"></small>
                             <small class="text-muted d-block">최대 5자까지 입력 가능합니다.</small>
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="form-field">
-                            <label for="memberId">&nbsp;아이디 *</label>
-                            <input id="memberId" name="memberId" type="text" class="form-control mb-2"
-                                   th:value="${session.member.memberId}"
-                                   th:readonly="${session.socialType == 'google' or session.socialType == 'kakao'}"
-                                   required>
-                            <small id="memberIdMessage" class="form-text"></small>
+                    <th:block th:unless="${session.member.socialType == 'google' or session.member.socialType == 'kakao'}">
+                        <div class="row mb-3">
+                            <div class="form-field">
+                                <label for="memberId">&nbsp;아이디 *</label>
+                                <input id="memberId" name="memberId" type="text" class="form-control mb-2"
+                                       th:value="${session.member.memberId}"
+                                       required>
+                                <small id="memberIdMessage" class="form-text"></small>
+                            </div>
                         </div>
-                    </div>
+                    </th:block>
 
                     <div class="row mb-3">
                         <div class="form-field">
@@ -100,7 +102,7 @@
                             <div class="form-field">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="emailGet" name="emailGet"
-                                           th:checked="${session.member.emailGet ? 'checked' : ''}">
+                                           th:checked="${session.member.emailGet == 1 ? 'checked' : ''}">
                                     <label class="form-check-label" for="emailGet">이메일 수신에 동의합니다.</label>
                                 </div>
                             </div>
@@ -140,7 +142,7 @@
                             <input type="text" class="form-control mb-2" id="address2" name="address2" th:value="${session.member.address2}" required>
                         </div>
                     </div>
-                    <th:block th:unless="${session.socialType == 'google' or session.socialType == 'kakao'}">
+                    <th:block th:unless="${session.member.socialType == 'google' or session.member.socialType == 'kakao'}">
                         <button type="button" class="btn custom-button w-100" id="changePasswordBtnShow">비밀번호 변경</button>
                     </th:block>
 
@@ -190,9 +192,8 @@
 
 </div>
 <th:block layout:fragment="script">
-<script th:src="@{/js/join.js}"></script>
-    <script th:src="@{/js/memberMyPage.js}"></script>
-<script th:src="@{/js/addjoin.js}"></script>
+    <script th:src="@{/js/join.js}"></script>
+    <script th:src="@{/js/editMember.js}"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </th:block>
 </body>
