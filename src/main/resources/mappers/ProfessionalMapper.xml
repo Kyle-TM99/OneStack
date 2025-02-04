@@ -278,7 +278,7 @@
 
 <!-- ✅ 전문가 정보 조회 -->
 <select id="getProfessionalByPortfolio" parameterType="int" resultType="Professional">
-	SELECT * FROM professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
+	SELECT * FROM Professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
 </select>
 
 <!-- ✅ 전문가 고급 정보 조회 -->

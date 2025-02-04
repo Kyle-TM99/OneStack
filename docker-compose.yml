@@ -23,14 +23,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=1
     container_name: onestack
     ports:
       - "1234:8080"
-    volumes:
-      - ./src/main/resources/static:/app/static
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - /usr/share/nginx/html/images:/usr/share/nginx/html/images
     networks:
       - onestack-network
 
@@ -40,5 +42,3 @@ networks:
 
 volumes:
   mysql_data:
-  image_data:
-  
