@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MemProPortCate {
-	private Member member;
-	private Professional professional;
-	private Portfolio portfolio;
-	private Category category;
+@NoArgsConstructor
+public class ProfessionalInfo {
+    private int proNo;
+    private int proAdvancedNo;
+
 }

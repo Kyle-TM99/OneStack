@@ -1,0 +1,53 @@
+/* 포트폴리오 리스트 컨텐츠 영역 높이 고정 */
+.portfolio-container {
+    min-height: 600px; /* 최소 높이 설정 */
+    padding-bottom: 40px; /* 푸터와 여백 확보 */
+}
+
+/* 포트폴리오 카드 스타일 */
+.portfolio-card {
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 카드 높이 균일하게 설정 */
+}
+
+.portfolio-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 카드 내부 디자인 */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* 버튼 스타일 */
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn-outline-warning, .btn-outline-danger {
+    border-radius: 20px;
+}

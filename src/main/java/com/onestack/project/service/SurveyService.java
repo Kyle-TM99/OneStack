@@ -1,9 +1,11 @@
 package com.onestack.project.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.onestack.project.domain.Survey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,14 @@ public class SurveyService {
 	    modelMap.put("surveyList", surveyList);
 	    return modelMap;
 	}
+
+	public List<Survey> getSurveysByItem(int itemNo) {
+		return surveyMapper.getSurveysByItem(itemNo);
+	}
 	
-	    public List<Category> getAllCategories() {
+	public List<Category> getAllCategories() {
 	        return surveyMapper.getAllCategories();
 	    }
-	}
+
+}
 
