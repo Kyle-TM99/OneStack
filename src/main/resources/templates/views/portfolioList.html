@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
-
 <head>
   <meta charset="UTF-8">
   <title>포트폴리오 관리</title>
-
-  <!-- Custom CSS -->
   <link th:href="@{/css/portfolioList.css}" rel="stylesheet">
-</head>
+<!--  &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--  &lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
 
+</head>
 <body>
 <div layout:fragment="content">
   <div class="container portfolio-container mt-4">
@@ -21,18 +21,15 @@
         <i class="bi bi-plus-circle"></i> 포트폴리오 추가
       </button>
     </div>
-
-    <!-- 포트폴리오 리스트 -->
     <div class="row mt-4">
       <div class="col-md-4 d-flex" th:each="portfolio : ${portfolioList}">
-        <div class="portfolio-card w-100" th:attr="data-portfolio-id=${portfolio.portfolioNo}" onclick="viewPortfolioDetail(this)">
+        <div class="portfolio-card w-100" th:attr="data-portfolio-id=${portfolio.portfolioNo}" data-bs-toggle="modal" data-bs-target="#portfolioModal">
           <div class="card shadow-sm">
             <img th:src="${portfolio.thumbnailImage}" class="card-img-top" alt="포트폴리오 이미지">
             <div class="card-body">
               <h5 class="card-title" th:text="${portfolio.portfolioTitle}"></h5>
               <p class="card-text text-muted" th:text="${#strings.abbreviate(portfolio.portfolioContent, 50)}"></p>
               <span class="badge bg-secondary" th:text="${portfolio.visibility == 1 ? '공개' : '비공개'}"></span>
-
               <div class="portfolio-actions d-flex justify-content-end mt-3">
                 <button class="btn btn-outline-warning btn-sm me-2" onclick="editPortfolio(event, this)">
                   <i class="bi bi-pencil"></i> 수정
@@ -48,9 +45,67 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="portfolioModal" tabindex="-1" aria-labelledby="portfolioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="portfolioModalLabel">포트폴리오 상세보기</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div id="portfolioCarousel" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img th:src="${portfolio.thumbnailImage}" class="d-block w-100" alt="썸네일 이미지">
+                </div>
+                <div th:each="i : ${#numbers.sequence(1, 10)}" class="carousel-item">
+                  <img th:src="${portfolio['portfolioFile' + i]}" class="d-block w-100" alt="포트폴리오 이미지">
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+          <div class="portfolio-card w-100"
+               th:attr="data-portfolio-id=${portfolio.portfolioNo},
+              data-title=${portfolio.portfolioTitle},
+              data-content=${portfolio.portfolioContent},
+              data-thumbnail=${portfolio.thumbnailImage},
+              data-images=${portfolio.portfolioFile1} + ',' + ${portfolio.portfolioFile2} + ',' + ${portfolio.portfolioFile3} + ',' + ${portfolio.portfolioFile4} + ',' + ${portfolio.portfolioFile5} + ',' + ${portfolio.portfolioFile6} + ',' + ${portfolio.portfolioFile7} + ',' + ${portfolio.portfolioFile8} + ',' + ${portfolio.portfolioFile9} + ',' + ${portfolio.portfolioFile10}"
+               onclick="openPortfolioModal(this)">
+
+
+          <div class="card shadow-sm">
+              <img th:src="${portfolio.thumbnailImage}" class="card-img-top" alt="포트폴리오 이미지">
+              <div class="card-body">
+                <h5 class="card-title" th:text="${portfolio.portfolioTitle}"></h5>
+                <p class="card-text text-muted" th:text="${#strings.abbreviate(portfolio.portfolioContent, 50)}"></p>
+                <div class="portfolio-actions d-flex justify-content-end mt-3">
+                  <button class="btn btn-outline-warning btn-sm me-2" onclick="editPortfolio(event, this)">
+                    <i class="bi bi-pencil"></i> 수정
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" onclick="deletePortfolio(event, this)">
+                    <i class="bi bi-trash"></i> 삭제
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <th:block layout:fragment="script">
   <script th:src="@{/js/portfolioList.js}"></script>
-  <script th:src="@{/js/header.js}"></script>
 </th:block>
 </body>
 </html>

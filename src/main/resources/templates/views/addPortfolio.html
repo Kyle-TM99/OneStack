@@ -60,13 +60,13 @@
                             </div>
 
                             <!-- 자기소개 -->
-                        <div class="mb-3">
+                        <div class="mb-3" th:if="${member.memberType != 1}">
                             <label for="selfIntroduction" class="form-label"><i class="fas fa-user"></i> 자기소개 *</label>
                             <textarea class="form-control" id="selfIntroduction" name="selfIntroduction" rows="3" required></textarea>
                         </div>
 
                         <!-- 연락 가능 시간 -->
-                        <div class="mb-3">
+                        <div class="mb-3" th:if="${member.memberType != 1}">
                             <label class="form-label"><i class="fas fa-clock"></i> 연락 가능 시간 *</label>
                             <div class="d-flex gap-2">
                                 <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
@@ -112,7 +112,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-field my-3">
+                        <div class="form-field my-3" th:if="${member.memberType != 1}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label for="career">경력 *</label>
                                 <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
@@ -122,7 +122,7 @@
                             </div>
                         </div>
 
-                        <div class="form-field my-3">
+                        <div class="form-field my-3" th:if="${member.memberType != 1}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label for="awardCareer">수상경력 *</label>
                                 <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>

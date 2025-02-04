@@ -357,7 +357,7 @@
 		        }
 
 		        alert('심사 요청이 완료되었습니다.');
-				window.location.href = "/main";
+				window.location.href = "/mainPage";
 		    } catch (error) {
 		        console.error('오류 발생:', error);
 		        alert('심사 요청 중 오류가 발생했습니다.');

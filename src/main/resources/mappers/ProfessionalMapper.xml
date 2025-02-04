@@ -176,6 +176,11 @@
 		LIMIT 1
 	</select>
 
+<!--전문가 유저 확인-->
+	<select id="findByMemberNo">
+		SELECT * FROM Professional WHERE member_no = #{memberNo}
+	</select>
+
 
 	<!-- 전문가 고급 정보 추가 -->
 <insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">

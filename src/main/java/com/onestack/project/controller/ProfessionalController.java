@@ -187,22 +187,35 @@ public class ProfessionalController {
 
     // 포트폴리오 리스트 조회
     @GetMapping("/portfolioList")
-    public String getPortfolioList(HttpSession session, Model model) {
+    public String getPortfolioList(HttpSession session,
+                                   @RequestParam(value = "portfolioNo", required = false, defaultValue = "0") int portfolioNo,
+                                   Model model) {
         Member member = (Member) session.getAttribute("member");
-        Integer memberNo = member.getMemberNo();
 
-        // memberNo가 세션에서 가져와지는지 확인하는 디버깅 로그 추가
+        // 세션에서 member가 null인 경우 로그인 페이지로 리다이렉트
+        if (member == null) {
+            return "redirect:/loginForm";
+        }
+
+        Integer memberNo = member.getMemberNo();
         if (memberNo == null) {
             return "redirect:/loginForm";
         }
 
+        MemProPortPaiCate portfolioDetail = null;
+        if (portfolioNo != 0) { // portfolioNo가 전달된 경우에만 조회
+            portfolioDetail = professionalService.getPortfolioDetail(portfolioNo);
+        }
+
         List<Portfolio> portfolioList = professionalService.getPortfoliosByMember(memberNo);
-        System.out.println(" 조회된 포트폴리오 개수: " + portfolioList.size());
+        System.out.println("조회된 포트폴리오 개수: " + portfolioList.size());
 
         model.addAttribute("portfolioList", portfolioList);
+        model.addAttribute("portfolio", portfolioDetail);
 
         return "views/portfolioList";
     }
+
 
     // 포트폴리오 추가
     @GetMapping("/portfolioList/addPortfolio")

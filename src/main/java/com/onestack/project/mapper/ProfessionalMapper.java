@@ -30,6 +30,9 @@ public interface ProfessionalMapper {
     // 포트폴리오 조회
     List<Portfolio> getPortfoliosByMember(@Param("memberNo") int memberNo);
 
+    // 전문가 여부 확인
+    Professional findByMemberNo(@Param("memberNo") int memberNo);
+
 
     //포트폴리오/전문가고급정보/전문가 삭제
     void deletePortfolio(int portfolioNo);

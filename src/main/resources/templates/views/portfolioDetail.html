@@ -7,13 +7,10 @@
     <meta charset="UTF-8">
     <title>포트폴리오 상세보기</title>
     <link rel="stylesheet" th:href="@{/css/portfolioDetail.css}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script th:src="@{/js/portfolioDetail.js}"></script>
 </head>
 
 <body>
-<div class="layout-container">
-    <div layout:fragment="content">
+<div layout:fragment="content">
         <div class="container mt-5">
             <div class="card portfolio-card shadow-lg">
                 <div class="card-body">
@@ -80,14 +77,19 @@
     </div>
 </div>
 
-<script>
-    // 이미지 클릭 시 확대 (Lightbox 효과)
-    $(document).ready(function() {
-        $(".gallery-img").click(function() {
-            $(".main-image").attr("src", $(this).attr("src"));
-        });
-    });
-</script>
 
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/portfolioDetail.js}"></script>
+    <script>
+        // 이미지 클릭 시 확대 (Lightbox 효과)
+        $(document).ready(function() {
+            $(".gallery-img").click(function() {
+                $(".main-image").attr("src", $(this).attr("src"));
+            });
+        });
+    </script>
+    <!--  <script th:src="@{/js/header.js}" defer></script>-->
+</th:block>
 </body>
 </html>
