@@ -143,6 +143,10 @@ $(document).ready(function() {
                 // 폼 초기화
                 $('#replyForm')[0].reset();
 
+                if(response) {
+                    location.reload(); // 성공 시 페이지 새로고침
+                }
+
                 // 댓글 수 업데이트
                 const commentCount = $('.bi-chat').next('span');
                 if (commentCount.length) {
@@ -229,6 +233,9 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(replyData),
             success: function(response) {
+                if(response) {
+                    location.reload(); // 성공 시 페이지 새로고침
+                }
                 replyRow.find('.card-text').html(newContent);
             },
             error: function(xhr) {
@@ -267,6 +274,10 @@ $(document).ready(function() {
             success: function(response) {
                 // 댓글 요소 삭제
                 replyElement.remove();
+
+                if(response === "success") {
+                    location.reload(); // 성공 시 페이지 새로고침
+                }
 
                 // 댓글 수 감소
                 let replyCount = parseInt($('.reply-count').text());

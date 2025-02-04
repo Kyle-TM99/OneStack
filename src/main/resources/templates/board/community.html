@@ -100,7 +100,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mt-2">
+                            <div class="col-12 mt-3">
                                 <div class="d-flex justify-content-between">
                                     <!-- 댓글, 좋아요, 싫어요 -->
                                     <div class="d-flex gap-3">
@@ -142,7 +142,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mt-2">
+                            <div class="col-12 mt-4">
                                 <div class="d-flex justify-content-between">
                                     <!-- 댓글, 좋아요, 싫어요 -->
                                     <div class="d-flex gap-3">
@@ -163,33 +163,36 @@
             </th:block>
         </div>
 
-    <div class="row my-5">
-        <div class="col">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:if="${ startPage > pageGroup }">
-                        <a class="page-link" th:href="@{/community(pageNum=${startPage - 1}, type=${type}, keyword=${keyword}, order=${order})}">Pre</a>
-                    </li>
-                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
-                        th:classappend="${num == currentPage} ? 'active'"
-                        class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
-                            <a th:text="${num}"
-                               th:href="@{/community(pageNum=${num}, type=${type}, keyword=${keyword}, order=${order})}"
-                               class="page-link"></a>
-                        </th:block>
-                        <th:block th:unless="${num != currentPage}">
-                            <span th:text="${num}" class="page-link"></span>
-                        </th:block>
-                    </li>
-                    <li class="page-item" th:if="${endPage < pageCount}">
-                        <a class="page-link"
-                           th:href="@{/community(pageNum=${endPage + 1}, type=${type}, keyword=${keyword}, order=${order})}">Next</a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="row">
+            <div class="col">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- 이전 페이지 -->
+                        <li class="page-item" th:if="${startPage > pageGroup}">
+                            <a class="page-link" th:href="@{/community(pageNum=${startPage - 1}, type=${type}, keyword=${keyword}, order=${order})}">Pre</a>
+                        </li>
+
+                        <!-- 페이지 번호 -->
+                        <li th:each="num : ${#numbers.sequence(startPage, endPage)}"
+                            th:class="${num == currentPage} ? 'active page-item' : 'page-item'">
+                            <th:block th:if="${pageCount > 0}"> <!-- 수정된 부분 -->
+                                <a th:if="${num != currentPage}"
+                                   th:text="${num}"
+                                   th:href="@{/community(pageNum=${num}, type=${type}, keyword=${keyword}, order=${order})}"
+                                   class="page-link"></a>
+                                <span th:if="${num == currentPage}" th:text="${num}" class="page-link"></span>
+                            </th:block>
+                        </li>
+
+                        <!-- 다음 페이지 -->
+                        <li class="page-item" th:if="${endPage < pageCount}">
+                            <a class="page-link"
+                               th:href="@{/community(pageNum=${endPage + 1}, type=${type}, keyword=${keyword}, order=${order})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
 
     <!-- communityWrite.js 스크립트 포함 -->
     <th:block layout:fragment="script">
@@ -212,6 +215,7 @@
             });
         </script>
     </th:block>
+    </div>
 
     <script th:inline="javascript">
         function changeOrder(value) {
