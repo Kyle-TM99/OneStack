@@ -36,9 +36,16 @@
     SELECT *  FROM Category
 </select>
 
+<!-- 특정 카테고리에 속하는 전문분야(item) 리스트 조회 -->
+<select id="getItemsByCategory" parameterType="int" resultType="Category">
+    SELECT * FROM Category WHERE category_no = #{categoryNo}
+</select>
 
-
-
-
+<select id="getSurveysByItem" parameterType="int" resultType="com.onestack.project.domain.Survey">
+    SELECT survey_no, item_no, survey_question, survey_option
+    FROM Survey
+    WHERE item_no = #{itemNo}
+    ORDER BY survey_no ASC
+</select>
 
 </mapper>

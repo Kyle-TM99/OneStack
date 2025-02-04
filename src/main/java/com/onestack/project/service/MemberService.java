@@ -311,7 +311,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             log.error("소셜계정은 비밀번호 변경할 수 없습니다. - 소셜 여부: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
-        
+
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken(memberId, token);
         
@@ -419,5 +419,20 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 
     public void updateEstimationPrice(int estimationNo, int estimationPrice) {
         memberMapper.updateEstimationPrice(estimationNo, estimationPrice);
+    }
+
+    // 전문가 수 조회
+    public int getProCount() {
+        return memberMapper.getProCount();
+    }
+
+    // 회원 수 조회
+    public int getMemberCount() {
+        return memberMapper.getMemberCount();
+    }
+
+    // 완료된 외주 수 조회
+    public int getMainEstimationCount() {
+        return memberMapper.getMainEstimationCount();
     }
 }

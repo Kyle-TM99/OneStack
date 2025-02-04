@@ -44,11 +44,21 @@ public class ProService {
         return proMapper.getFilteredAndSortedPros(appType, sort, itemNo);
     }
 
+    /* 필터링 조건과 정렬 조건에 따른 전문가 리스트 반환 - 무한스크롤용 */
+    public List<MemProAdInfoCate> getPaginatedFilteredAndSortedPros(List<String> appType, String sort, int itemNo, int page, int size) {
+        int offset = (page - 1) * size; // 페이지네이션을 위한 오프셋 계산
+        return proMapper.getFilteredAndSortedProsWithPagination(appType, sort, itemNo, offset, size);
+    }
+
     /* 견적 요청서 작성 */
     public void submitEstimation(Estimation estimation) {
         proMapper.submitEstimation(estimation);
     }
 
+    /* 전문가 평점 업데이트 */
+    public void updateProRating(int rate, int proNo) {
+        proMapper.updateProRating(rate, proNo);
+    }
 
 
 }

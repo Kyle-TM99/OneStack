@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onestack.project.mapper.ReviewMapper">
+
+  <!-- Review와 Member 정보를 매핑하기 위한 resultMap -->
+  <resultMap id="Review" type="Review">
+    <id property="reviewNo" column="review_no"/>
+    <result property="proNo" column="pro_no"/>
+    <result property="memberNo" column="member_no"/>
+    <result property="reviewContent" column="review_content"/>
+    <result property="reviewRate" column="review_rate"/>
+    <result property="reviewDate" column="review_date" javaType="java.util.Date"/>
+    <result property="reviewActivation" column="review_activation"/>
+    <result property="memberNickname" column="nickname"/>
+    <result property="proNickname" column="pronickname"/>
+  </resultMap>
+
+  <!-- 리뷰 작성 -->
+  <insert id="createReview" parameterType="Review">
+    INSERT INTO Review (pro_no, member_no, review_content, review_rate)
+    VALUES (#{proNo}, #{memberNo}, #{reviewContent}, #{reviewRate})
+  </insert>
+
+  <!-- 리뷰 조회 -->
+  <select id="getReviewList" resultMap="Review">
+    SELECT r.*, m.nickname 
+    FROM Review r
+    JOIN Member m ON r.member_no = m.member_no
+    WHERE r.pro_no = #{proNo}
+    ORDER BY r.review_date DESC
+    LIMIT 10
+  </select>
+
+  <!-- 메인페이지 리뷰 조회 -->
+  <select id="getMainReviewList" resultMap="Review">
+    SELECT r.*, m.nickname, p.nickname AS pronickname
+    FROM Review r
+    JOIN Member m ON r.member_no = m.member_no
+    JOIN Member p ON r.pro_no = p.member_no
+    ORDER BY r.review_rate DESC
+    LIMIT #{num1} OFFSET #{num2}
+  </select>
+
+</mapper>

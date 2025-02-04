@@ -26,4 +26,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*")  // 모든 출처 허용 (개발용)
                 .withSockJS();
     }
-} 
+}

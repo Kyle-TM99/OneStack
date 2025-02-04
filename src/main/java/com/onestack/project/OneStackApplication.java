@@ -10,4 +10,6 @@ public class OneStackApplication {
 		SpringApplication.run(OneStackApplication.class, args);
 	}
 
+	//  initialize process
+
 }

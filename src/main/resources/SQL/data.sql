@@ -31,8 +31,8 @@ VALUES
     (29, '전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0,'/images/default-profile.png'),
     (30, '전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 2, 0,'/images/default-profile.png');
 
-INSERT IGNORE INTO Member (member_no, name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin)
-   VALUES(31, '관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1);
+INSERT IGNORE INTO Member (member_no, name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_type, member_status, is_admin, member_image)
+   VALUES(31, '관리자', 'admin1', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'admin', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'admin@example.com', 1, '010-1217-5546', SYSDATE(), 1, 0, 1, '/images/admin.png');
 
 INSERT IGNORE INTO Professional (pro_no, member_no, category_no, self_introduction, career, award_career, student_count, rate, professor_status, screening_msg, contactable_time, average_price, review_count)
 VALUES
@@ -182,6 +182,51 @@ VALUES(1, 11, 1, '의뢰할 기획서 종류를 선택해주세요.', '요구사
       (26, 25, 1, '통계분석을 원하는 서비스를 선택해주세요.', '데이터 분석, 통계 모델링, 기타'),
       (27, 25, 2, '원하는 분석 프로그램을 선택해주세요.', 'SPSS, R, Python, 엑셀, 무관');
 
+-- 회원 문의글 더미 데이터 --
+INSERT IGNORE INTO Inquiry (inquiry_no, member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
+VALUES (1, 1, '로그인이 안돼요', '비밀번호를 입력했는데 로그인이 되지 않습니다.', NOW(), NULL, '답변 대기', 0),
+(2, 2, '회원 정보 수정', '전화번호 변경을 요청합니다.', NOW(), NULL, '답변 중', 0),
+(3, 3, '결제 오류', '결제가 완료되지 않고 오류가 발생했습니다.', NOW(), NULL, '답변 완료', 1),
+(4, 4, '상품 문의', '해당 상품의 배송 일정이 궁금합니다.', NOW(), NULL, '답변 대기', 0),
+(5, 5, '쿠폰 사용법', '프로모션 쿠폰은 어디에서 사용할 수 있나요?', NOW(), NULL, '답변 대기', 0),
+(6, 6, '계정 해킹 의심', '다른 사람이 제 계정을 사용한 흔적이 있습니다.', NOW(), NULL, '답변 중', 0),
+(7, 7, '환불 요청', '구매한 상품이 마음에 들지 않습니다. 환불 요청합니다.', NOW(), NULL, '답변 중', 0),
+(8, 8, '배송 상태 확인', '제 주문이 아직 도착하지 않았습니다. 확인 부탁드립니다.', NOW(), NULL, '답변 완료', 1);
+
+
+-- 리뷰 더미 데이터 --
+INSERT IGNORE INTO Review (review_no, pro_no, member_no, review_content, review_rate, review_date, review_activation)
+VALUES
+    (1, 1, 4, '기획 외주 너무 잘 만들어주셨어요.', 4, '2025-02-03 12:34:56', 1),
+    (2, 1, 5, '기획 외주의 신이야...', 5, '2024-12-13 10:00:00', 1),
+    (3, 1, 6, '기획 프로젝트 별론데요?', 1, '2025-01-02 14:30:00', 1),
+    (4, 1, 7, '다음에 또 부탁드릴게요', 5, '2024-02-01 09:00:00', 1),
+    (5, 1, 8, '마음에 안들어', 2, '2025-02-03 12:34:56', 1),
+    (6, 1, 9, '좋아요~', 4, '2025-01-18 16:45:00', 1);
+
+UPDATE Review
+SET review_date = '2025-02-03 12:34:56'
+WHERE review_no = 1;
+
+UPDATE Review
+SET review_date = '2024-12-13 10:00:00'
+WHERE review_no = 2;
+
+UPDATE Review
+SET review_date = '2025-01-02 14:30:00'
+WHERE review_no = 3;
+
+UPDATE Review
+SET review_date = '2024-02-01 09:00:00'
+WHERE review_no = 4;
+
+UPDATE Review
+SET review_date = '2025-02-03 12:34:56'
+WHERE review_no = 5;
+
+UPDATE Review
+SET review_date = '2025-01-18 16:45:00'
+WHERE review_no = 6;
 -- 회원 문의글 데이터 --
 INSERT IGNORE INTO Inquiry (member_no, inquiry_title, inquiry_content, inquiry_reg_date, inquiry_file, inquiry_status, inquiry_satisfaction)
 VALUES (1, '회원가입 오류 문의', '회원가입 시 오류가 발생합니다. 어떻게 해결할 수 있나요?', NOW(), NULL, '답변 대기', NULL),

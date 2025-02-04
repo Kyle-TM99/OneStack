@@ -63,7 +63,7 @@
                             <label for="selfIntroduction">자기소개 *</label>
                             <input type="text" class="form-control" id="selfIntroduction" name="selfIntroduction" required>
                             <small class="text-muted d-block">자기소개를 10자 이상 입력해주세요.</small>
-                        </div>           
+                        </div>
                         <!-- 연락 가능 시간 -->
 						<div class="form-field mt-3">
 						    <label for="contactableTimeStart">연락 가능 시간 *</label>
@@ -89,7 +89,7 @@
 						            <option value="오후 9시">오후 9시</option>
 						            <option value="오후 10시">오후 10시</option>
 						        </select>
-						
+
 						        <!-- 종료 시간 -->
 						        <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
 						            <option value="" hidden>종료 시간</option>
@@ -152,7 +152,7 @@
 								<div id="thumbnailImageDisplay" class="text-muted mb-5" >
 									<div th:text="${thumbnailImage}"></div>
 								</div>
-								
+
 								<!-- 포트폴리오 파일 표시 -->
 								<label for="portfolioFile1">포트폴리오 이미지</label>
 								<ul id="portfolioFilesDisplay" class="text-muted">
@@ -194,6 +194,6 @@
 	<th:block layout:fragment="script">
         <script th:src="@{/js/proConversion.js}" defer></script>
         <script th:src="@{/js/header.js}"></script>
-    </th:block> 
+    </th:block>
 </body>
 </html>

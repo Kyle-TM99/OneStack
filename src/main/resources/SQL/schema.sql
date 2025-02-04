@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS onestack;
-CREATE DATABASE IF NOT EXISTS onestack;
-USE onestack;
-
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,
@@ -271,8 +267,9 @@ CREATE TABLE IF NOT EXISTS ManagerLog (log_no INTEGER AUTO_INCREMENT PRIMARY KEY
 CREATE TABLE IF NOT EXISTS Reports (reports_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	member_no INTEGER NOT NULL,
 	reported_member_no INTEGER NOT NULL,
-	reports_type ENUM('community', 'qna', 'reply', 'review') NOT NULL,
+	reports_type ENUM('community', 'member', 'reply', 'review') NOT NULL,
 	reports_target VARCHAR(100)   NOT NULL,
+	reports_target_link VARCHAR(500)   NOT NULL,
 	reports_reason VARCHAR(100) NOT NULL,
 	reports_status TINYINT DEFAULT 0 NOT NULL, -- 0(처리 전) 1(처리 완료)
 	reports_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

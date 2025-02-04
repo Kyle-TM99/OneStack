@@ -9,7 +9,7 @@
 					<!-- 로고 영역 -->
 					<div class="col-2">
 						<a class="navbar-brand d-flex align-items-center" href="/mainPage">
-							<img src="https://placehold.co/110x40" alt="Logo">
+							<img src="/images/onestack.png" alt="Logo" style="width: 70px; height: 40px;">
 						</a>
 					</div>
 
@@ -19,9 +19,9 @@
 							<div class="d-flex justify-content-between align-items-center">
 								<!-- 왼쪽 메뉴 -->
 								<div class="left-menu">
-									<a href="#" class="nav-link px-3" data-menu="findPro">고수 찾기</a>
-									<a href="#" class="nav-link px-3" data-menu="community">커뮤니티</a>
-
+									<a href="#" class="nav-link px-3 fw-bold" data-menu="findPro">고수 찾기</a>
+									<a href="#" class="nav-link px-3 fw-bold" data-menu="community">커뮤니티</a>
+									
 									<!-- 통합 서브메뉴 -->
 									<div class="submenu-container">
 										<div class="container">
@@ -67,18 +67,21 @@
 													<h6 class="fw-bold mb-3">커뮤니티</h6>
 													<div class="d-flex flex-column gap-2">
 														<a href="community" class="text-decoration-none text-secondary">자유 게시판</a>
-														<a href="QnA" class="text-decoration-none text-secondary">질문 게시판</a>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-
+								
 								<!-- 오른쪽 메뉴 -->
 								<div class="d-flex align-items-center gap-3">
 									<th:block th:if="${session.isLogin}">
 										<div class="right-menu d-flex">
+											<a th:href="@{/payReceipt}" class="nav-link px-3 d-flex align-items-center">
+												<i class="bi bi-credit-card-2-front me-1"></i>
+												<span>결제 내역</span>
+											</a>
 											<a th:href="@{/chat}" class="nav-link px-3 d-flex align-items-center">
 												<i class="bi bi-chat-right me-1"></i>
 												<span>채팅</span>
@@ -107,21 +110,34 @@
 										</th:block>
 										<!-- 로그인한 경우에만 보이는 버튼들 -->
 										<th:block th:if="${session.isLogin}">
-											<span class="me-2" th:text="${session.member.nickname + '님 환영합니다'}"></span>
 											<div class="dropdown">
 												<a href="#" class="profile-link d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-													<img th:src="${session.member != null ? session.member.memberImage : '/images/default-profile.png'}"
-														 alt="프로필"
-														 class="rounded-circle"
+													<img th:src="${session.member != null ? session.member.memberImage : '/images/default-profile.png'}" 
+														 alt="프로필" 
+														 class="rounded-circle" 
 														 style="width: 32px; height: 32px;">
 													<i class="fas fa-chevron-down small text-muted"></i>
 												</a>
 												<ul class="dropdown-menu dropdown-menu-end">
+													<strong><li><h6 class="dropdown-item-text text-center fs-5">[[${session.member.nickname}]]</h6></li></strong>
+													<th:block th:if="${session.member.memberType == 0}">
+														<li class="dropdown-item-text text-center text-muted">일반 회원</li>
+													</th:block>
+													<th:block th:if="${session.member.memberType == 1}">
+														<li class="dropdown-item-text text-center text-muted">전문가 회원</li>
+													</th:block>
+													<th:block th:if="${session.member.memberType == 2}">
+														<li class="dropdown-item-text text-center text-muted">전문가 심사중</li>
+													</th:block>
 													<li><hr class="dropdown-divider"></li>
-													<li><a class="dropdown-item" href="/memberInquiry">고객 문의</a></li>
+														<li><a class="dropdown-item" href="/#">고객 문의</a></li>
+
 													<!-- 관리자 페이지 버튼 -->
 													<th:block th:if="${session.member != null && session.member.isAdmin()}">
 														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
+													</th:block>
+													<th:block th:if="${session.member != null && session.member.memberType == 1}">
+														<li><a class="dropdown-item text-manager" href="/portfolioList">포트폴리오 관리</a></li>
 													</th:block>
 													<li><hr class="dropdown-divider"></li>
 													<th:block th:if="${session.member != null}">
@@ -147,6 +163,6 @@
 			</div>
 		</nav>
 	</header>
-	<script th:src="@{/js/header.js}"></script>
+		<script th:src="@{/js/header.js}"></script>
 </div>
 </html>
