@@ -19,6 +19,12 @@ public interface ProMapper {
     /* 필터링 조건과 정렬 조건에 따른 전문가 리스트 반환 */
     public List<MemProAdInfoCate> getFilteredAndSortedPros(@Param("appType") List<String> appType, @Param("sort") String sort, @Param("itemNo") int itemNo);
 
+    /* 필터링 조건과 정렬 조건에 따른 전문가 리스트 반환 - 무한스크롤용 */
+    public List<MemProAdInfoCate> getFilteredAndSortedProsWithPagination(@Param("appType") List<String> appType, @Param("sort") String sort, @Param("itemNo") int itemNo, @Param("offset") int offset, @Param("size") int size);
+
     /* 견적 요청서 작성 */
     public void submitEstimation(Estimation estimation);
+
+    /* 전문가 평점 업데이트 */
+    public void updateProRating(int rate,int proNo);
 }

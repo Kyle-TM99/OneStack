@@ -3,6 +3,7 @@
       layout:decorate="~{layouts/main_layout}" lang="ko">
 <head>
     <link th:href="@{/css/findForm.css}" rel="stylesheet">
+    <link th:href="@{/css/mainStyle.css}" rel="stylesheet">
 </head>
 <div layout:fragment="content">
     <div class="container mt-5">
@@ -78,7 +79,6 @@
                             <option value="rating">평점 높은순</option>
                             <option value="price_low">가격 낮은순</option>
                             <option value="price_high">가격 높은순</option>
-                            <option value="stack_high">스택 높은순</option>
                         </select>
                     </div>
                 </div>
@@ -104,11 +104,10 @@
                                     </div>
                                     <div class="col-2 align-items-center">
                                         <div class = "row ms-1 mb-4">
-                                            <img src="profile-image.jpg" class="rounded-circle"
-                                                 style="width: 100px; height: 100px;" alt="프로필">
+                                            <img  class="rounded-circle" style="width: 100px; height: 100px;" alt="프로필" th:src="${pro.member.memberImage}">
                                         </div>
                                         <div class = "row">
-                                            <button type="button" class="btn custom-button" id = "btnEstimation" th:attr="data-pro-no=${pro.professional.proNo}">견적 요청</button>
+                                            <button type="button" class="btn custom-button" id = "btnEstimation" style="background-color: #215EA3">견적 요청</button>
                                         </div>
                                     </div>
                                 </div>
@@ -116,6 +115,7 @@
                         </div>
                     </div>
                 </div>
+                <div class = target></div>
 
             </div>
         </div>

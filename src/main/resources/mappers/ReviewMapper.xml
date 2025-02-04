@@ -29,6 +29,7 @@
     JOIN Member m ON r.member_no = m.member_no
     WHERE r.pro_no = #{proNo}
     ORDER BY r.review_date DESC
+    LIMIT 10
   </select>
 
   <!-- 메인페이지 리뷰 조회 -->

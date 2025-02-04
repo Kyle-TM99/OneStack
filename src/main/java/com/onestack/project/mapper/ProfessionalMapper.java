@@ -24,6 +24,9 @@ public interface ProfessionalMapper {
     // 전문가 정보 조회
     public List<MemberWithProfessional> getPro2(@Param("proNo") int proNo);
 
+    // 전문가 리뷰 조회
+    public List<ProReview> getProReview(@Param("proNo") int proNo);
+
     // 전문가 심사신청시 멤버타입 업데이트
     void updateMemberType(@Param("memberType") int memberType, @Param("memberNo")int memberNo);
 

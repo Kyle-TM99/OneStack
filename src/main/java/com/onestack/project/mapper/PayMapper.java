@@ -39,4 +39,13 @@ public interface PayMapper {
     // 전문가 외주 갯수 가져오기
     public int getPayCount(@Param("proNo") int proNo);
 
+    // 결제 내역 가져오기
+    public List<MemPay> getReceipt(@Param("memberNo") int memberNo);
+
+    // 결제 횟수 가져오기
+    public int getMemPayCount(@Param("memberNo") int memberNo);
+
+    // 전문가 고용 횟수 증가
+    public void updateStudentCount(@Param("proNo") int proNo);
+
 }

@@ -420,4 +420,19 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     public void updateEstimationPrice(int estimationNo, int estimationPrice) {
         memberMapper.updateEstimationPrice(estimationNo, estimationPrice);
     }
+
+    // 전문가 수 조회
+    public int getProCount() {
+        return memberMapper.getProCount();
+    }
+
+    // 회원 수 조회
+    public int getMemberCount() {
+        return memberMapper.getMemberCount();
+    }
+
+    // 완료된 외주 수 조회
+    public int getMainEstimationCount() {
+        return memberMapper.getMainEstimationCount();
+    }
 }

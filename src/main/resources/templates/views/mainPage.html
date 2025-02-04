@@ -130,25 +130,93 @@
 	.carousel-control-next {
 		right: -20px;
 	}
+
+	@keyframes float {
+		0% { transform: translateY(0px); }
+		50% { transform: translateY(-10px); }
+		100% { transform: translateY(0px); }
+	}
+
+	.btn-lg {
+		padding: 12px 24px;
+		font-weight: 500;
+	}
+
+	.lead {
+		font-size: 1.25rem;
+		line-height: 1.6;
+	}
+
+	/* 반응형 조정 */
+	@media (max-width: 991.98px) {
+		.hero {
+			padding: 60px 0;
+			text-align: center;
+		}
+		
+		.col-lg-6 .d-flex {
+			justify-content: center;
+		}
+		
+		.row.mt-5 {
+			max-width: 400px;
+			margin: 2rem auto;
+		}
+	}
 </style>
 </head>
 
 <body>
 
 	<th:block layout:fragment="content">
-		<!-- Hero Section -->
-		<header class="hero">
-			<div class="container text-center">
-				<h1 class="display-4 mb-4">
-					<span class="fw-bold text-primary">ONE STACK </span>과 함께<br>
-					당신의 프로젝트를 시작하세요
-				</h1>
-				<p class="lead mb-5">전문가와 함께하는 맞춤형 IT 서비스</p>
-				<div class="search-container d-flex justify-content-center">
-					<input type="text" placeholder="어떤 서비스를 찾으시나요?" class="form-control">
-					<button class="btn" style="margin-left: -50px;">
-						<i class="bi bi-search text-primary"></i>
-					</button>
+		<!-- Header Section -->
+		<header class="hero position-relative overflow-hidden">
+			<div class="container">
+
+				<div class="row align-items-center">
+					<!-- 왼쪽 텍스트 영역 -->
+					<div class="col-lg-6 mb-5 mb-lg-0">
+						<h1 class="display-4 fw-bold mb-4">
+							IT 프로젝트의 시작,<br>
+							<span class="text-primary fw-bold">ONE STACK</span>과 함께
+						</h1>
+						<p class="lead mb-4 text-secondary">
+							검증된 IT 전문가와 함께<br>
+							당신의 프로젝트를 성공적으로 완성하세요
+						</p>
+						
+						<!-- 통계 지표 -->
+						<div class="row mt-5">
+							<div class="col-4">
+								<h3 class="fw-bold mb-1">[[${proCount}]]</h3>
+								<p class="text-muted">등록 전문가</p>
+							</div>
+							<div class="col-4">
+								<h3 class="fw-bold mb-1">[[${memberCount}]]</h3>
+								<p class="text-muted">사용하는 이용자</p>
+							</div>
+							<div class="col-4">
+								<h3 class="fw-bold mb-1">[[${estimationCount}]]</h3>
+								<p class="text-muted">완료 프로젝트</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- 오른쪽 이미지/아이콘 영역 -->
+					<div class="col-lg-6 position-relative">
+						<div class="position-relative">
+							<!-- 떠다니는 아이콘들 -->
+							<div class="position-absolute" style="top: 10%; left: 10%; animation: float 3s ease-in-out infinite;">
+								<i class="bi bi-code-square text-primary" style="font-size: 2.5rem;"></i>
+							</div>
+							<div class="position-absolute" style="top: 20%; right: 15%; animation: float 4s ease-in-out infinite;">
+								<i class="bi bi-laptop text-success" style="font-size: 2rem;"></i>
+							</div>
+							<div class="position-absolute" style="bottom: 15%; left: 20%; animation: float 3.5s ease-in-out infinite;">
+								<i class="bi bi-phone text-info" style="font-size: 2rem;"></i>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</header>
@@ -345,9 +413,9 @@
 			<div class="container">
 				<div class="row align-items-center">
 					<div class="col-lg-6">
-						<h3 class="section-title">전문가로 시작하세요</h3>
+						<h3 class="section-title">전문가로 전환하세요</h3>
 						<p class="lead mb-4">OneStack에서 새로운 기회를 만나보세요</p>
-						<button class="custom-button" onclick="location.href='/loginForm'">지금 시작하기</button>
+						<button class="custom-button" onclick="location.href='/loginForm'">전문가 전환하기</button>
 					</div>
 					<div class="col-lg-6">
 						<div class="col-12 mb-3">
@@ -365,9 +433,8 @@
 							<div class="card">
 								<div class="body">
 									<div class="text m-3">
-										<div class="title" style="font-weight: bold;">매출 관리 도구</div>
-										<p class="body-text-for">전문가 마이 페이지에서 내 매출을 한 눈에 확인하고
-											관리해보세요!</p>
+										<div class="title" style="font-weight: bold;">외주 가격 비교</div>
+										<p class="body-text-for">합리적으로 외주 가격을 비교해보세요!</p>
 									</div>
 								</div>
 							</div>

@@ -101,19 +101,19 @@
 
                 <div class="mb-3">
                     <label for="estimationContent" class="form-label required">견적 내용</label>
-                    <textarea class="form-control" id="estimationContent" name="estimationContent" 
+                    <textarea class="form-control" id="estimationContent" name="estimationContent"
                               placeholder="원하시는 서비스에 대해 자세히 설명해주세요." required></textarea>
                 </div>
 
                 <div class="mb-3">
                     <label for="estimationPrice" class="form-label required">견적 희망 금액</label>
-                    <input type="text" class="form-control" id="estimationPrice" name="estimationPrice" 
+                    <input type="text" class="form-control" id="estimationPrice" name="estimationPrice"
                            placeholder="금액을 입력해주세요" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="estimationMsg" class="form-label">추가 요청사항</label>
-                    <textarea class="form-control" id="estimationMsg" name="estimationMsg" 
+                    <textarea class="form-control" id="estimationMsg" name="estimationMsg"
                               placeholder="추가로 요청하실 내용이나 문의사항이 있다면 작성해주세요."></textarea>
                 </div>
 
@@ -134,12 +134,12 @@
 
             $("#estimationForm").on("submit", function(e) {
                 e.preventDefault();
-                
+
                 let price = $("#estimationPrice").val().replace(/,/g, "");
-                
+
                 let formData = new FormData(this);
                 formData.set("estimationPrice", price);
-                
+
                 $.ajax({
                     url: $(this).attr("action"),
                     type: "POST",
