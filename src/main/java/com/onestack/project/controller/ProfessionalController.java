@@ -166,14 +166,19 @@ public class ProfessionalController {
                     .toList();
             request.setSurveyAnswers(filteredAnswers);
 
-            // 데이터 저장
+            // 데이터 저장 (중복된 itemNo 체크 포함)
             professionalService.saveProConversionData(request);
 
             return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
+        } catch (IllegalStateException e) {
+            // 같은 itemNo를 선택한 전문가가 있을 경우 409 Conflict 반환
+            log.warn("중복된 itemNo: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("message", "이미 같은 전문 분야를 선택한 전문가가 존재합니다."));
         } catch (Exception e) {
             log.error("전문가 데이터 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "저장 실패"));
+                    .body(Collections.singletonMap("message", "저장 실패"));
         }
     }
 
@@ -339,7 +344,7 @@ public class ProfessionalController {
         try {
             log.info("📩 [updatePortfolio] 요청 수신: {}", request);
 
-            // 빈 Survey Answer 제거
+            // ✅ 빈 Survey Answer 제거
             List<String> filteredAnswers = request.getSurveyAnswers().stream()
                     .filter(answer -> answer != null && !answer.trim().isEmpty())
                     .toList();
@@ -347,11 +352,15 @@ public class ProfessionalController {
 
             log.info("✅ 정리된 Survey Answers: {}", filteredAnswers);
 
-            // 데이터 업데이트
+            // ✅ 데이터 업데이트 (중복 검사 포함)
             professionalService.updateProConversionData(request);
 
             log.info("✅ 포트폴리오 업데이트 완료 - portfolioNo: {}", request.getPortfolioNo());
             return ResponseEntity.ok(Collections.singletonMap("message", "포트폴리오가 성공적으로 업데이트되었습니다."));
+        } catch (IllegalStateException e) {
+            log.warn("🚨 중복된 itemNo로 인해 업데이트 실패 - proNo: {}, itemNo: {}", request.getProNo(), request.getItemNo());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("message", "이미 같은 전문 분야를 가진 포트폴리오가 존재합니다."));
         } catch (Exception e) {
             log.error("🚨 포트폴리오 업데이트 실패: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

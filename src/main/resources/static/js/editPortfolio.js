@@ -15,10 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("✅ editPortfolio.js 로드 완료");
 
-    // ✅ 기존 데이터 유지
-    const savedCategory = categorySelect.getAttribute("data-db-value");
-    const savedItem = itemSelect.getAttribute("data-db-value");
-
     // ✅ 카테고리별 전문분야 목록
     const categoryOptions = {
         "1": [
@@ -40,21 +36,29 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
-    // ✅ 기존 데이터 로드
-    if (savedCategory) {
-        categorySelect.value = savedCategory;
-        updateItemOptions(savedCategory, savedItem);
-    }
+    // ✅ 기존 데이터 유지
+    const savedCategory = categorySelect.value;
+    const savedItem = itemSelect.value;
 
+    // ✅ 선택된 카테고리에 맞춰 전문분야 옵션 필터링 (초기 로드 시 실행)
+    updateItemOptions(savedCategory, savedItem);
+
+    // ✅ 카테고리 선택 시 해당하는 전문분야 표시
+    categorySelect.addEventListener("change", function () {
+        updateItemOptions(categorySelect.value);
+    });
+
+    // ✅ 전문분야 옵션 필터링 함수
     function updateItemOptions(selectedCategory, selectedItem = null) {
-        itemSelect.innerHTML = '<option value="">전문분야 선택</option>';
+        itemSelect.innerHTML = '<option value="" hidden>전문분야 선택</option>'; // 기존 옵션 초기화
+
         if (selectedCategory && categoryOptions[selectedCategory]) {
             categoryOptions[selectedCategory].forEach(option => {
                 const opt = document.createElement("option");
                 opt.value = option.value;
                 opt.textContent = option.text;
                 if (selectedItem && option.value === selectedItem) {
-                    opt.selected = true;
+                    opt.selected = true;  // 저장된 값이 있으면 자동 선택
                 }
                 itemSelect.appendChild(opt);
             });
@@ -281,7 +285,11 @@ document.addEventListener("DOMContentLoaded", function () {
                body: JSON.stringify(requestData)
            });
 
-           if (!response.ok) throw new Error("서버 응답 오류");
+        if (response.status === 409) {
+            const result = await response.json();
+            alert(result.message);
+            return;
+        }
            alert("포트폴리오가 수정되었습니다.");
            window.location.href = "/portfolioList";
        } catch (error) {

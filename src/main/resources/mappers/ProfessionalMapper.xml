@@ -237,8 +237,25 @@
 			LIMIT 1
 	</select>
 
+<!--동일한 itemNo 저장되어 있는지 확인-->
+	<select id="findByMemberNoAndItemNo" resultType="Professional">
+		SELECT p.*
+		FROM Professional p
+		JOIN ProfessionalAdvancedInformation pa ON p.pro_no = pa.pro_no
+		WHERE p.member_no = #{memberNo} AND pa.item_no = #{itemNo}
+	</select>
 
-<!-- 포트폴리오 추가 -->
+	<!--수정하고 있는 포폴 제외하고 동일한 itemNo로 되어있는 전문가 고급정보 있는지 확인-->
+	<select id="countExistingItemNoExcludingCurrent" resultType="int">
+		SELECT COUNT(*)
+		FROM ProfessionalAdvancedInformation
+		WHERE pro_no = #{proNo}
+		AND item_no = #{itemNo}
+		AND pro_advanced_no != #{proAdvancedNo}
+	</select>
+
+
+	<!-- 포트폴리오 추가 -->
 <insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
         INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,
                               thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,

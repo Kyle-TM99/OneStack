@@ -32,7 +32,11 @@ public interface ProfessionalMapper {
 
     // 전문가 여부 확인
     Professional findByMemberNo(@Param("memberNo") int memberNo);
+    // 같은 itemNo가 있는지 확인
+    Professional findByMemberNoAndItemNo(@Param("memberNo") int memberNo, @Param("itemNo") int itemNo);
 
+    // 같은 itemNo가 있는지 확인(수정하고 있는 포폴제외)
+    int countExistingItemNoExcludingCurrent(@Param("proNo") int proNo, @Param("itemNo") int itemNo, @Param("proAdvancedNo") int proAdvancedNo);
 
     //포트폴리오/전문가고급정보/전문가 삭제
     void deletePortfolio(int portfolioNo);

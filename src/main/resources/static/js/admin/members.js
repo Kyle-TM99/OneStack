@@ -124,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function () {
                    }
            const memberIdInput = document.getElementById("memberId");
            if (memberIdInput) {
-               console.log("🛠 [DEBUG] MutationObserver - memberId 이벤트 리스너 제거 후 추가");
                memberIdInput.removeEventListener("input", handleMemberIdInput); // 중복 방지
                memberIdInput.addEventListener("input", handleMemberIdInput);
            }
@@ -236,7 +235,6 @@ function initializeMemberManagement() {
 
 // 회원정보 수정
  document.getElementById('editInformation')?.addEventListener('click', function () {
-     console.log("🚀 [DEBUG] 변경사항 저장 버튼 클릭됨");
      const memberNo = parseInt(window.currentMemberNo);
      if (!memberNo) {
          alert('회원 번호가 누락되었습니다.');

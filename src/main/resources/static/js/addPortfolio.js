@@ -35,30 +35,46 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     };
 
-    // ✅ 리로드 시 저장된 카테고리 및 전문분야 복원
-    const savedCategory = sessionStorage.getItem("selectedCategory");
-    const savedItem = sessionStorage.getItem("selectedItem");
+// ✅ 기본 카테고리 설정
+    function setDefaultCategoryOption() {
+        categorySelect.innerHTML = ""; // 기존 옵션 제거
 
-    if (savedCategory) {
-        categorySelect.value = savedCategory;
-        updateItemOptions(savedCategory, savedItem); // 전문분야 목록 로드
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "카테고리를 선택해주세요.";
+        defaultOption.selected = true;
+        defaultOption.hidden = true;
+        categorySelect.appendChild(defaultOption);
+
+        // 기존 카테고리 목록 추가
+        Object.keys(categoryOptions).forEach(categoryValue => {
+            const opt = document.createElement("option");
+            opt.value = categoryValue;
+            opt.textContent = categoryValue === "1" ? "개발" : "데이터";
+            categorySelect.appendChild(opt);
+        });
+
+        categorySelect.value = ""; // 강제 초기화
     }
 
-    // ✅ 카테고리 선택 시 해당하는 전문분야 표시 및 저장
-    categorySelect.addEventListener("change", function () {
-        sessionStorage.setItem("selectedCategory", categorySelect.value);
-        sessionStorage.removeItem("selectedItem"); // 새 카테고리를 선택하면 기존 전문분야 초기화
-        updateItemOptions(categorySelect.value);
-    });
+    // ✅ 기본 전문분야 설정
+    function setDefaultItemOption() {
+        itemSelect.innerHTML = ""; // 기존 옵션 초기화
 
-    // ✅ 전문분야 선택 시 값 저장
-    itemSelect.addEventListener("change", function () {
-        sessionStorage.setItem("selectedItem", itemSelect.value);
-    });
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "전문분야를 선택해주세요.";
+        defaultOption.selected = true;
+        defaultOption.hidden = true;
+
+        itemSelect.appendChild(defaultOption);
+        itemSelect.value = ""; // 강제 초기화
+    }
 
     // ✅ 카테고리 선택 시 해당하는 전문분야 표시
     function updateItemOptions(selectedCategory, selectedItem = null) {
-        itemSelect.innerHTML = '<option value="" hidden>전문분야를 선택해주세요.</option>';
+        setDefaultItemOption(); // 기본 옵션 추가
+
         if (selectedCategory && categoryOptions[selectedCategory]) {
             categoryOptions[selectedCategory].forEach(option => {
                 const opt = document.createElement("option");
@@ -71,6 +87,194 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+
+    // ✅ 리로드 시 sessionStorage 값 복원
+    const savedCategory = sessionStorage.getItem("selectedCategory");
+    const savedItem = sessionStorage.getItem("selectedItem");
+
+    if (savedCategory) {
+        categorySelect.value = savedCategory;
+        updateItemOptions(savedCategory, savedItem);
+    } else {
+        setDefaultCategoryOption();
+        setDefaultItemOption();
+    }
+
+    // ✅ 카테고리 변경 시 sessionStorage 업데이트
+    categorySelect.addEventListener("change", function () {
+        sessionStorage.setItem("selectedCategory", categorySelect.value);
+        sessionStorage.removeItem("selectedItem"); // 새 카테고리를 선택하면 기존 전문분야 초기화
+        updateItemOptions(categorySelect.value);
+    });
+
+    // ✅ 전문분야 선택 시 sessionStorage 업데이트
+    itemSelect.addEventListener("change", function () {
+        sessionStorage.setItem("selectedItem", itemSelect.value);
+    });
+
+    // ✅ 페이지를 완전히 벗어날 때 sessionStorage 초기화
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) return; // 뒤로가기 방지
+
+        sessionStorage.removeItem("selectedCategory");
+        sessionStorage.removeItem("selectedItem");
+    });
+
+    // ✅ 설문조사 데이터 로드 (선택한 전문분야가 있을 경우)
+    if (savedItem) {
+        fetchSurveyData(savedItem);
+    }
+
+    itemSelect.addEventListener("change", function () {
+        fetchSurveyData(itemSelect.value);
+    });
+
+    function fetchSurveyData(itemNo) {
+        if (!itemNo) return;
+
+        fetch(`/api/getSurvey?itemNo=${itemNo}`)
+            .then(response => {
+                if (!response.ok) throw new Error("설문조사 데이터를 불러오지 못했습니다.");
+                return response.json();
+            })
+            .then(data => {
+                updateSurveyUI(data);
+            })
+            .catch(error => console.error("🚨 설문조사 로드 오류:", error));
+    }
+
+    function updateSurveyUI(surveyList) {
+        surveyContainer.innerHTML = ""; // 기존 설문조사 초기화
+
+        if (!surveyList || surveyList.length === 0) {
+            surveyContainer.innerHTML = "<p class='text-muted'>해당 전문분야에 대한 설문조사가 없습니다.</p>";
+            return;
+        }
+
+        surveyList.forEach(survey => {
+            const questionBlock = document.createElement("div");
+            questionBlock.classList.add("fw-bold", "my-2");
+            questionBlock.innerHTML = `Q${survey.survey.surveyNo}: ${survey.survey.surveyQuestion}`;
+
+            const optionsBlock = document.createElement("div");
+
+            const options = survey.survey.surveyOption.split(",");
+            options.forEach(option => {
+                const optionDiv = document.createElement("div");
+                optionDiv.classList.add("form-check");
+
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.classList.add("form-check-input");
+                input.name = `answer_${survey.survey.surveyNo}`;
+                input.value = option.trim();
+                input.required = true;
+
+                const label = document.createElement("label");
+                label.classList.add("form-check-label", "ms-2");
+                label.textContent = option.trim();
+
+                optionDiv.appendChild(input);
+                optionDiv.appendChild(label);
+                optionsBlock.appendChild(optionDiv);
+            });
+
+            surveyContainer.appendChild(questionBlock);
+            surveyContainer.appendChild(optionsBlock);
+        });
+
+        console.log("✅ 설문조사 데이터 로드 완료:", surveyList);
+    }
+
+//            function setDefaultCategoryOption() {
+//                categorySelect.innerHTML = ""; // 기존 옵션 제거
+//
+//                const defaultOption = document.createElement("option");
+//                defaultOption.value = "";
+//                defaultOption.textContent = "카테고리를 선택해주세요.";
+//                defaultOption.selected = true;
+//                defaultOption.hidden = true;
+//
+//                categorySelect.appendChild(defaultOption);
+//
+//                // 기존 카테고리 목록 추가
+//                Object.keys(categoryOptions).forEach(categoryValue => {
+//                    const opt = document.createElement("option");
+//                    opt.value = categoryValue;
+//                    opt.textContent = categoryValue === "1" ? "개발" : "데이터";
+//                    categorySelect.appendChild(opt);
+//                });
+//
+//                categorySelect.value = ""; // 강제 초기화
+//            }
+//
+//            // ✅ 전문분야 기본 옵션 설정
+//            function setDefaultItemOption() {
+//                itemSelect.innerHTML = ""; // 기존 옵션 초기화
+//
+//                const defaultOption = document.createElement("option");
+//                defaultOption.value = "";
+//                defaultOption.textContent = "전문분야를 선택해주세요.";
+//                defaultOption.selected = true;
+//                defaultOption.hidden = true;
+//
+//                itemSelect.appendChild(defaultOption);
+//                itemSelect.value = ""; // 강제 초기화
+//            }
+//
+//            // ✅ 카테고리 선택 시 해당하는 전문분야 표시
+//            function updateItemOptions(selectedCategory, selectedItem = null) {
+//                setDefaultItemOption(); // 기본 옵션 추가
+//
+//                if (selectedCategory && categoryOptions[selectedCategory]) {
+//                    categoryOptions[selectedCategory].forEach(option => {
+//                        const opt = document.createElement("option");
+//                        opt.value = option.value;
+//                        opt.textContent = option.text;
+//                        if (selectedItem && option.value === selectedItem) {
+//                            opt.selected = true;  // 저장된 값이 있으면 자동 선택
+//                        }
+//                        itemSelect.appendChild(opt);
+//                    });
+//                }
+//            }
+//
+//            // ✅ 리로드 시 저장된 카테고리 및 전문분야 복원
+//            const savedCategory = sessionStorage.getItem("selectedCategory");
+//            const savedItem = sessionStorage.getItem("selectedItem");
+//
+//            if (savedCategory) {
+//                categorySelect.value = savedCategory;
+//                updateItemOptions(savedCategory, savedItem);
+//            } else {
+//                setDefaultCategoryOption();
+//                setDefaultItemOption();
+//            }
+//
+//            // ✅ 카테고리 변경 시 저장 & 전문분야 초기화
+//            categorySelect.addEventListener("change", function () {
+//                sessionStorage.setItem("selectedCategory", categorySelect.value);
+//                sessionStorage.removeItem("selectedItem"); // 새 카테고리를 선택하면 기존 전문분야 초기화
+//                updateItemOptions(categorySelect.value);
+//            });
+//
+//            // ✅ 전문분야 선택 시 값 저장
+//            itemSelect.addEventListener("change", function () {
+//                sessionStorage.setItem("selectedItem", itemSelect.value);
+//            });
+//
+////            // ✅ 강제적으로 "카테고리를 선택해주세요."가 기본 선택되도록 설정
+////            if (!savedCategory) {
+////                categorySelect.value = "";
+////            }
+////            if (!savedItem) {
+////                itemSelect.value = "";
+////            }
+////
+////           window.addEventListener("beforeunload", function () {
+////                sessionStorage.removeItem("selectedCategory");
+////                sessionStorage.removeItem("selectedItem");
+////            });
 
     // ✅ 경력 추가 버튼 이벤트
     const addCareerBtn = document.getElementById('addCareerBtn');
@@ -233,20 +437,28 @@ document.addEventListener('DOMContentLoaded', function () {
                       body: JSON.stringify(requestData),
                   });
 
-                  if (!response.ok) {
-                      throw new Error('DB 저장 실패');
-                  }
+                 const result = await response.json();
 
-                  alert('포트폴리오 추가 완료!');
-                  window.location.href = "/portfolioList";
-              } catch (error) {
-                  console.error('오류 발생:', error);
-                  alert('저장 중 오류가 발생했습니다.');
-              }
-          });
-      } else {
-          console.error("❌ submitPortfolioBtn 요소를 찾을 수 없습니다.");
-      }
+                                 // ✅ 중복된 itemNo가 있는 경우
+                                 if (response.status === 409) {
+                                     alert(result.message); // "이미 같은 전문 분야를 선택한 전문가가 존재합니다."
+                                     return;
+                                 }
+
+                                 if (!response.ok) {
+                                     throw new Error(result.message || 'DB 저장 실패');
+                                 }
+
+                                 alert('포트폴리오 추가 완료!');
+                                 window.location.href = "/portfolioList";
+                             } catch (error) {
+                                 console.error('오류 발생:', error);
+                                 alert('저장 중 오류가 발생했습니다.');
+                             }
+                         });
+                     } else {
+                         console.error("❌ submitPortfolioBtn 요소를 찾을 수 없습니다.");
+                     }
 
       // ✅ 파일 업로드 함수 (썸네일 + 포트폴리오 파일)
       async function uploadFiles(thumbnail, portfolioFiles) {

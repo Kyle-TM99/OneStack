@@ -24,34 +24,33 @@ public class ProfessionalService {
     private ProfessionalMapper professionalMapper;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+    private final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
 
     // 심사요청 시 각각 데이터 전문가/전문가고급정보/포트폴리오 테이블에 저장
     public void saveProConversionData(ProConversionRequest request) {
-        // 이미 전문가인지 확인
-        Professional existingProfessional = professionalMapper.findByMemberNo(request.getMemberNo());
 
-        int proNo;
+        Professional existingProfessional = professionalMapper.findByMemberNoAndItemNo(request.getMemberNo(), request.getItemNo());
 
-        if (existingProfessional == null) { // 전문가 정보가 없을 경우만 저장
-            professionalMapper.updateMemberType(2, request.getMemberNo());
+        if (existingProfessional != null) {
 
-            // 전문가 저장
-            Professional professional = new Professional();
-            professional.setMemberNo(request.getMemberNo());
-            professional.setCategoryNo(request.getCategoryNo());
-            professional.setSelfIntroduction(request.getSelfIntroduction());
-            professional.setCareer(String.join(",", request.getCareer()));
-            professional.setAwardCareer(String.join(",", request.getAwardCareer()));
-            professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
-
-            professionalMapper.addPro(professional);
-            proNo = professional.getProNo(); // 새롭게 생성된 전문가 번호
-        } else {
-            proNo = existingProfessional.getProNo(); // 기존 전문가 번호 사용
+            throw new IllegalStateException("이미 같은 전문 분야의 포트폴리오가 존재합니다.");
         }
 
-            // 전문가 고급정보 저장
+        professionalMapper.updateMemberType(2, request.getMemberNo());
+
+        // 전문가 저장
+        Professional professional = new Professional();
+        professional.setMemberNo(request.getMemberNo());
+        professional.setCategoryNo(request.getCategoryNo());
+        professional.setSelfIntroduction(request.getSelfIntroduction());
+        professional.setCareer(String.join(",", request.getCareer()));
+        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
+        professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
+
+        professionalMapper.addPro(professional);
+        int proNo = professional.getProNo();
+
+        // 전문가 고급정보 저장
             ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
             advancedInfo.setProNo(proNo);
             advancedInfo.setItemNo(request.getItemNo());
@@ -66,7 +65,7 @@ public class ProfessionalService {
             professionalMapper.addProAdvancedInfo(advancedInfo);
             int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
-            final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+            final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
 
             String thumbnailUrl = request.getThumbnailImage();
             if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
@@ -185,12 +184,22 @@ public class ProfessionalService {
         return professionalMapper.getAdvancedInfoByPortfolio(portfolioNo);
     }
 
+
+    // 포트폴리오 수정
     @Transactional
     public void updateProConversionData(ProUpdateRequest request) {
         // ✅ 기존 포트폴리오 정보 가져오기
         Portfolio existingPortfolio = professionalMapper.getPortfolioEntityById(request.getPortfolioNo());
         if (existingPortfolio == null) {
             throw new RuntimeException("포트폴리오 데이터를 찾을 수 없습니다.");
+        }
+
+        // ✅ 같은 itemNo가 있는지 확인 (현재 포트폴리오 제외)
+        int existingCount = professionalMapper.countExistingItemNoExcludingCurrent(
+                request.getProNo(), request.getItemNo(), request.getProAdvancedNo());
+
+        if (existingCount > 0) {
+            throw new IllegalStateException("이미 같은 전문 분야를 가진 포트폴리오가 존재합니다.");
         }
 
         // ✅ 포트폴리오 업데이트
