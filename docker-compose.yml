@@ -26,12 +26,11 @@ services:
     container_name: onestack
     ports:
       - "1234:8080"
+    volumes:
+      - ./src/main/resources/static:/app/static
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./src/main/resources/static/images:/app/src/main/resources/static/images
-      - image_data:/app/images
     networks:
       - onestack-network
 
