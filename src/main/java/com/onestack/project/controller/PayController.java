@@ -1,12 +1,10 @@
 package com.onestack.project.controller;
 
-import com.onestack.project.domain.MemPay;
-import com.onestack.project.domain.MemProEstimation;
-import com.onestack.project.domain.Pay;
-import com.onestack.project.domain.PaymentVerificationRequest;
+import com.onestack.project.domain.*;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
 import com.onestack.project.service.ProService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -80,6 +79,12 @@ public class PayController {
             Pay pay1 = new Pay();
             int payNo = payService.getPayNo(estimationNo);
 
+            // proNo 가져오기
+            int proNo = payService.findByEstimationNo(estimationNo);
+
+            // 전문가 고용 수 증가
+            payService.updateStudentCount(proNo);
+
 
             return ResponseEntity.ok(String.valueOf(payNo));
         }
@@ -102,6 +107,22 @@ public class PayController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/payReceipt")
+    public String payReceipt(Model model, @SessionAttribute("member") Member member) {
+        int memberNo = member.getMemberNo();  // member 객체에서 memberNo 추출
+
+        List<MemPay> recipetList = payService.getReceipt(memberNo);
+        int payCount = payService.getMemPayCount(memberNo);
+
+        model.addAttribute("recipetList", recipetList);
+        model.addAttribute("payCount", payCount);
+        return "views/payReceiptForm";
+    }
+
+
+
+
 
 
 

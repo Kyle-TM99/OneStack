@@ -1,17 +1,12 @@
 package com.onestack.project.controller;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onestack.project.domain.*;
 import com.onestack.project.service.ProService;
 import jakarta.servlet.http.HttpSession;
-import org.apache.ibatis.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +17,7 @@ import com.onestack.project.service.ProfessionalService;
 import com.onestack.project.service.ReviewService;
 import com.onestack.project.service.SurveyService;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
@@ -114,12 +106,13 @@ public class ProfessionalController {
 
         int sum = 0;
         int cnt = 0;
-        for(Review review : reviewList) {
-            sum += review.getReviewRate();
-            cnt++;
+        if(reviewList != null && reviewList.size() > 0) {
+            for(Review review : reviewList) {
+                sum += review.getReviewRate();
+                cnt++;
+            }
+            sum /= cnt;
         }
-
-        sum /= cnt;
 
         model.addAttribute("proList", proList);
         model.addAttribute("reviewList", reviewList);

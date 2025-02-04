@@ -9,7 +9,7 @@
 					<!-- 로고 영역 -->
 					<div class="col-2">
 						<a class="navbar-brand d-flex align-items-center" href="/mainPage">
-							<img src="images/onestack.png" alt="Logo" style="width: 70px; height: 40px;">
+							<img src="/images/onestack.png" alt="Logo" style="width: 70px; height: 40px;">
 						</a>
 					</div>
 
@@ -79,6 +79,10 @@
 								<div class="d-flex align-items-center gap-3">
 									<th:block th:if="${session.isLogin}">
 										<div class="right-menu d-flex">
+											<a th:href="@{/payReceipt}" class="nav-link px-3 d-flex align-items-center">
+												<i class="bi bi-credit-card-2-front me-1"></i>
+												<span>결제 내역</span>
+											</a>
 											<a th:href="@{/chat}" class="nav-link px-3 d-flex align-items-center">
 												<i class="bi bi-chat-right me-1"></i>
 												<span>채팅</span>
