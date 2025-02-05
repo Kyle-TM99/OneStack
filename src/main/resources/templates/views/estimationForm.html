@@ -180,20 +180,28 @@
             });
 
             $("#estimationPrice").on("input", function() {
-                let value = $(this).val().replace(/[^0-9]/g, "");
+                let value = $(this).val().replace(/[^0-9]/g, ""); // 숫자만 남기기
                 if(value) {
-                    value = parseInt(value).toLocaleString();
+                    value = parseInt(value).toLocaleString(); // 숫자에 콤마 추가
                 }
                 $(this).val(value);
             });
 
             $("#estimationForm").on("submit", function(e) {
-                e.preventDefault();
+                e.preventDefault(); // 폼 제출 기본 동작 막기
 
-                let price = $("#estimationPrice").val().replace(/,/g, "");
+                let price = $("#estimationPrice").val().replace(/,/g, ""); // 콤마 제거
+
+                let amount = parseInt(price); // 금액을 정수로 변환
+
+                // 0원 이상 20억 원 이하인지 확인
+                if (amount < 1000 || amount > 2000000000) {
+                    alert("금액은 1000원 이상 20억 원 미만으로 입력해주세요.");
+                    return; // 범위 외의 값일 경우 폼 제출을 막고 함수 종료
+                }
 
                 let formData = new FormData(this);
-                formData.set("estimationPrice", price);
+                formData.set("estimationPrice", price); // 금액을 폼 데이터에 추가
 
                 $.ajax({
                     url: $(this).attr("action"),
@@ -201,7 +209,7 @@
                     data: new URLSearchParams(formData).toString(),
                     contentType: "application/x-www-form-urlencoded",
                     success: function(response) {
-                        window.location.href = "/estimationDoneForm";
+                        window.location.href = "/estimationDoneForm"; // 성공 시 리다이렉트
                     },
                     error: function(xhr, status, error) {
                         alert("견적 요청 중 오류가 발생했습니다.");
@@ -209,6 +217,7 @@
                     }
                 });
             });
+
         });
 
     </script>
