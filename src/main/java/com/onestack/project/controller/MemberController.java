@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import com.onestack.project.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,12 +43,60 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
+    @PostMapping("/ajax/member/changePassword")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> changePassword(HttpSession session,
+                                                              @RequestBody Map<String, String> requestBody
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 세션에서 memberId 가져오기
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            response.put("success", false);
+            response.put("message", "로그인 세션이 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        // Show 접미사가 붙은 파라미터로 변경
+        String currentPassword = requestBody.get("currentPasswordShow");
+        String newPassword = requestBody.get("newPasswordShow");
+        String confirmPassword = requestBody.get("confirmPasswordShow");
+
+        // 새 비밀번호 일치 검증
+        if (!newPassword.equals(confirmPassword)) {
+            response.put("success", false);
+            response.put("message", "새 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 비밀번호 변경 시도
+        boolean result = memberService.changePassword(
+                member.getMemberId(),
+                currentPassword,
+                newPassword
+        );
+
+        if (result) {
+            response.put("success", true);
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "현재 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     @PostMapping("/updateMember")
+    @ResponseBody
     public String updateMember(HttpSession session, Member member,
                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
         try {
             Member sessionMember = (Member) session.getAttribute("member");
             member.setMemberNo(sessionMember.getMemberNo());
+            // 소셜 타입 설정 추가
+            member.setSocialType(sessionMember.getSocialType());
 
             if (profileImage != null && !profileImage.isEmpty()) {
                 try {
@@ -67,7 +117,10 @@ public class MemberController {
             }
 
             // 회원 정보 업데이트
-            if (sessionMember.isSocial()) {
+            String socialType = sessionMember.getSocialType();
+            if (socialType.equals("kakao") || socialType.equals("google")) {
+                member.setMemberId(sessionMember.getMemberId());
+                member.setPass(sessionMember.getPass());
                 memberService.updateSocialMember(member);
             } else {
                 memberService.updateMember(member);
@@ -75,6 +128,7 @@ public class MemberController {
 
             // DB에서 업데이트된 정보 확인
             Member updatedMember = memberService.getMember(member.getMemberId());
+            session.setAttribute("member", updatedMember);
             log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
 
             // 세션 업데이트
@@ -87,6 +141,7 @@ public class MemberController {
             return "redirect:/updateMemberForm?error=update";
         }
     }
+
 
 /*
 
@@ -291,7 +346,9 @@ public class MemberController {
     public Map<String, Boolean> checkId(@RequestParam("memberId") String memberId) {
         Map<String, Boolean> response = new HashMap<>();
         int count = memberService.checkMemberId(memberId);
-        response.put("available", count == 0);
+
+        Boolean check = count == 0;
+        response.put("available", check);
         return response;
     }
 

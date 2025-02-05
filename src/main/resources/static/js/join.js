@@ -63,7 +63,7 @@ $(document).ready(function() {
             validationState.memberId = false;
             return;
         }
-
+        // 아이디 중복 검사
         validators.checkDuplicate("/checkId", "memberId", memberId, function(response) {
             const isValid = response.available;
             const message = isValid ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다.";
@@ -72,9 +72,9 @@ $(document).ready(function() {
             $("#memberIdMessage").text(message).css("color", color);
             $("#memberId").css("border-color", color);
             validationState.memberId = isValid;
-            checkFormValidity(); // 유효성 검사
         });
     });
+
 
     // 닉네임 실시간 중복 검사
     $("#nickname").on("keyup", function() {
@@ -96,9 +96,9 @@ $(document).ready(function() {
             $("#nicknameMessage").text(message).css("color", color);
             $("#nickname").css("border-color", color);
             validationState.nickname = isValid;
-            checkFormValidity(); // 유효성 검사
         });
     });
+
 
     // 이메일 실시간 중복 검사
     $("#email").on("keyup", function() {
@@ -120,7 +120,6 @@ $(document).ready(function() {
             $("#emailMessage").text(message).css("color", color);
             $("#email").css("border-color", color);
             validationState.email = isValid;
-            checkFormValidity(); // 유효성 검사
         });
     });
 
@@ -144,7 +143,6 @@ $(document).ready(function() {
             $("#phoneMessage").text(message).css("color", color);
             $("#phone").css("border-color", color);
             validationState.phone = isValid;
-            checkFormValidity(); // 유효성 검사
         });
     });
 
@@ -160,7 +158,6 @@ $(document).ready(function() {
             $(this).css("border-color", "green");
             validationState.name = true;
         }
-        checkFormValidity(); // 유효성 검사
     });
 
     // 비밀번호 유효성 검사
@@ -194,13 +191,11 @@ $(document).ready(function() {
         if ($("#memberPwCheck").val()) {
             checkPasswordMatch();
         }
-        checkFormValidity(); // 유효성 검사
     });
 
     // 비밀번호 확인
     $("#memberPwCheck").on("input", function() {
         checkPasswordMatch();
-        checkFormValidity(); // 유효성 검사
     });
 
     function checkPasswordMatch() {
@@ -251,13 +246,11 @@ $(document).ready(function() {
                 $("#phoneMessage").text(message).css("color", color);
                 $("#phone").css("border-color", color);
                 validationState.phone = isValid;
-                checkFormValidity(); // 유효성 검사
             });
         } else {
             $("#phoneMessage").text("올바른 전화번호 형식이 아닙니다.").css("color", "red");
             $(this).css("border-color", "red");
             validationState.phone = false;
-            checkFormValidity(); // 유효성 검사
         }
     });
 
@@ -288,7 +281,6 @@ $(document).ready(function() {
             $("#emailMessage").text(message).css("color", color);
             $("#email").css("border-color", color);
             validationState.email = isValid;
-            checkFormValidity(); // 유효성 검사
         });
     });
 
@@ -311,7 +303,6 @@ $(document).ready(function() {
             } else {
                 validationState.birth = true;
             }
-            checkFormValidity(); // 유효성 검사
         });
     });
 
@@ -403,7 +394,6 @@ $(document).ready(function() {
 
     $("#address2").on("input", function() {
         validationState.address = $(this).val().trim() !== "";
-        checkFormValidity(); // 유효성 검사
     });
 
     // 폼 제출 이벤트 핸들러

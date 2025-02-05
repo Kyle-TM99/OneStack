@@ -3,9 +3,6 @@
       layout:decorate="~{layouts/main_layout}">
 <head>
     <link th:href="@{/css/community.css}" rel="stylesheet">
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-    <!-- Toast UI Editor JS -->
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 </head>
 <div layout:fragment="content" class="container py-5">
@@ -13,11 +10,15 @@
         <form name="communityCheckForm" id="communityCheckForm">
             <input type="hidden" name="communityBoardNo" id="communityBoardNo" th:value="${community.communityBoardNo}"/>
             <input type="hidden" name="pageNum" th:value="${pageNum}"/>
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+            <input type="hidden" name="reportedMemberNo" th:value="${community.memberNo}" />
+
+
             <th:block th:if="${searchOption}">
                 <input type="hidden" name="type" th:value="${ type }" />
                 <input type="hidden" name="keyword" th:value="${ keyword }" />
             </th:block>
-        </form>
+
         <div class="row mt-5">
             <div class="col-md">
                 <a href="#" th:onclick="@{|location.href='community?pageNum=${pageNum}&type=${type}&keyword=${keyword}'|}" style="text-decoration: none; color: inherit;">
@@ -45,14 +46,15 @@
                             삭제하기
                         </button>
                     </form>
-                    <a class="dropdown-item communityDropdownItem"
-                       th:if="${session.member != null and session.member.memberNo != community.memberNo}"
-                       th:href="@{/report(communityBoardNo=${community.communityBoardNo})}">
+                    <button type="button"  class="dropdown-item communityDropdownItem reporstBtn"
+                            th:if="${session.member != null and session.member.memberNo != community.memberNo}"
+                            data-bs-toggle="modal" th:data-bs-target="'#reportModal'">
                         신고하기
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
+        </form>
 
         <div class="row d-flex justify-content-between">
             <div class="col-auto">
@@ -173,10 +175,16 @@
                                         th:if="${session.member != null && session.member.memberNo == reply.memberNo}">삭제하기</button>
                             </form>
 
-                            <!-- 신고하기: 작성자와 다를 경우만 보이기 -->
-                            <a class="dropdown-item communityDropdownItem"
-                               th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
-                               href="/">신고하기</a>
+                            <button type="button" class="dropdown-item communityDropdownItem reporstBtn"
+                                    th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
+                                    data-bs-toggle="modal"
+                                    th:data-bs-target="'#reportModal'"
+                                    th:data-reply-no="${reply.communityReplyNo}"
+                                    th:data-member-no="${reply.memberNo}"
+                                    th:data-type="reply"
+                                    onclick="setReplyReportInfo(this)">
+                                신고하기
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -191,6 +199,55 @@
             </div>
         </div>
             </div>
+
+            <!-- 신고 모달 -->
+            <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{/reports}" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+                                <input type="hidden" name="reportedMemberNo" />
+
+                                <div class="mb-3">
+                                    <label for="reportsType" class="form-label">신고 유형</label>
+                                    <select id="reportsType" name="reportsType" class="form-select">
+                                        <option value="community" selected>자유게시판</option>
+                                        <option value="member">회원</option>
+                                        <option value="reply">댓글</option>
+                                        <option value="review">리뷰</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reportsTarget" class="form-label">신고 항목</label>
+                                    <select id="reportsTarget" name="reportsTarget" class="form-select">
+                                        <option value="욕설">욕설</option>
+                                        <option value="광고">광고</option>
+                                        <option value="스팸">스팸</option>
+                                        <option value="기타">기타</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reportsReason" class="form-label">신고 사유</label>
+                                    <textarea id="reportsReason" name="reportsReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                <button type="button" class="btn btn-primary" onclick="submitReport()">신고 접수</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
         </th:block>
     </th:block>
 </div>
@@ -199,6 +256,72 @@
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/communityReply.js}"></script>
     <script th:src="@{/js/header.js}"></script>
+    <script>
+        const reporstBtn = document.getElementsByClassName("reporstBtn");
+        const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
+        reporstBtn.addEventListener("click", function() {
+            reportModal.show();
+        });
+    </script>
+    <script>
+        function submitReport() {
+            // HTML 요소에서 값 가져오기
+            const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
+            const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
+            const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
+            const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
+            const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+
+            const url = new URL(window.location.href); // 현재 URL 객체 생성
+            const pathname = url.pathname; // "/communityDetail"
+            const searchParams = new URLSearchParams(url.search); // "?communityBoardNo=1&pageNum=1"
+
+            const communityBoardNo = searchParams.get("communityBoardNo"); // "1"
+
+            const reportsTargetLink = communityBoardNo ? `${pathname}?communityBoardNo=${communityBoardNo}` : pathname;
+
+            console.log(reportsTargetLink); // "/communityDetail?communityBoardNo=1"
+
+            // report 객체 생성
+            const report = {
+                memberNo: parseInt(memberNo), // 숫자로 변환
+                reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+                reportsType: reportsType,
+                reportsTarget: reportsTarget,
+                reportsReason: reportsReason,
+                reportsStatus: 0, // 초기값
+                reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+            };
+
+            // 데이터 전송
+            fetch('/reports', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(report)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error("신고 처리 중 오류 발생");
+                    }
+                })
+
+                .then(data => {
+                    alert("신고가 완료되었습니다."); // 성공 메시지 알림
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                    modal.hide(); // 모달 창 닫기
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('신고 처리 중 오류가 발생했습니다.');
+                });
+        }
+
+
+    </script>
         <script>
             // 이미지 로딩 에러 처리
             document.querySelectorAll('.ql-editor img').forEach(img => {

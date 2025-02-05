@@ -45,7 +45,7 @@ public class WebConfig implements WebMvcConfigurer {
 		  registry.addInterceptor(new LoginCheckInterceptor(memberMapper))
 	  		   	  .addPathPatterns("/**") // 인터셉터를 적용할 경로
 	              .excludePathPatterns( // 로그인 없이 접근 가능한 경로
-						  "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout"
+						  "/checkEmail" ,"/checkPhone", "/checkNickname" ,"/checkId" , "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout", "/join", "/joinForm"
 	              );
 	  }
 
