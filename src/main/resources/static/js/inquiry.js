@@ -1,4 +1,13 @@
 $(function() {
+    // 정렬 버튼 클릭 시
+    $("#sortButton").on("click", function() {
+        const sortOption = $("#sortOptions").val();
+        const currentUrl = window.location.href.split('?')[0];
+
+        // 정렬 기준에 따라 URL에 쿼리 파라미터 추가
+        window.location.href = `${currentUrl}?sort=${sortOption}`;
+    });
+
     $("#detailDelete").on("click", function() {
         // 삭제 확인 모달 표시
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'), {
@@ -52,7 +61,6 @@ $(function() {
                 inquiryAnswerContent: answerContent
             }),
             success: function(response) {
-                // alert 대신 모달 표시
                 const answerModal = new bootstrap.Modal(document.getElementById('answerCompleteModal'), {
                     backdrop: false
                 });
@@ -73,8 +81,8 @@ $(function() {
     // 날짜 형식 변환 함수
     function formatDate(date) {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true};
-        let formattedDate = date.toLocaleString('ko-KR', options).replace(',', ''); // 한국어 형식으로 변환 후 쉼표 제거
-        formattedDate = formattedDate.replace(/(\d{4})\.\s?(\d{2})\.\s?(\d{2})\./, '$1.$2.$3').replace(/\s+/g, ' ') // 연속된 공백 제거.trim();
+        let formattedDate = date.toLocaleString('ko-KR', options).replace(',', '');
+        formattedDate = formattedDate.replace(/(\d{4})\.\s?(\d{2})\.\s?(\d{2})\./, '$1.$2.$3').replace(/\s+/g, ' ')
         return formattedDate;
     }
 
@@ -107,14 +115,15 @@ $(function() {
                             backdrop: false
                         });
 
+                        // 메시지 설정 수정
                         if (isSatisfied) {
                             $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-smile fs-1 text-success mb-3');
                             $("#satisfactionModalLabel").text("만족도 평가 완료");
-                            $("#satisfactionModalBody").text("감사합니다. 행복한 하루 되세요.");
+                            $("#satisfactionModalBody").text("감사합니다. 행복한 하루 되세요."); // 만족일 때
                         } else {
                             $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-frown fs-1 text-warning mb-3');
                             $("#satisfactionModalLabel").text("만족도 평가 완료");
-                            $("#satisfactionModalBody").text("죄송합니다. 다음엔 조금 더 나은 답변을 드릴게요.");
+                            $("#satisfactionModalBody").text("죄송합니다. 다음엔 조금 더 나은 답변을 드릴게요."); // 불만족일 때
                         }
 
                         // 확인 버튼 이벤트 변경
@@ -152,29 +161,24 @@ $(function() {
 
     // 답변 수정 버튼 클릭 시
     $(".editAnswerButton").on("click", function() {
-        const inquiryAnswerNo = $(this).data("answer-no"); // 답변 번호 가져오기
-        const textarea = $(this).siblings(".review-textarea"); // 해당 텍스트 영역 가져오기
+        const inquiryAnswerNo = $(this).data("answer-no");
+        const textarea = $(this).siblings(".review-textarea");
 
         // 텍스트 영역을 토글하여 보여주기
         textarea.toggle();
 
         // 텍스트 영역이 보일 때, 기존 답변 내용을 채워넣기
         if (textarea.is(":visible")) {
-            textarea.val($(this).parent().find("p").text()); // 기존 답변 내용으로 채우기
+            textarea.val($(this).parent().find("p").text());
         } else {
             // 텍스트 영역이 숨겨질 때, AJAX 요청을 통해 수정
-            const inquiryNo = $("input[name='inquiryNo']").val(); // 문의글 번호 가져오기
-            const answerContent = textarea.val(); // 수정할 답변 내용 가져오기
-
-            // 콘솔 로그 추가
-            console.log("inquiryAnswerNo:", inquiryAnswerNo);
-            console.log("inquiryNo:", inquiryNo);
-            console.log("inquiryAnswerContent:", answerContent);
+            const inquiryNo = $("input[name='inquiryNo']").val();
+            const answerContent = textarea.val();
 
             // AJAX 요청을 통해 답변 수정
             $.ajax({
                 url: '/memberInquiry/updateInquiryAnswer',
-                type: 'POST', // POST 방식
+                type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     inquiryAnswerNo: inquiryAnswerNo,
@@ -182,21 +186,13 @@ $(function() {
                     inquiryAnswerContent: answerContent
                 }),
                 success: function(response) {
-                    console.log("수정 성공:", response); // 성공 시 로그
                     alert(response);
-                    location.reload(); // 페이지 새로 고침
+                    location.reload();
                 },
                 error: function(xhr, status, error) {
-                    console.error("수정 실패:", xhr.responseText); // 실패 시 로그
                     alert("답변 수정에 실패했습니다.");
                 }
             });
         }
-    });
-
-    // isAdmin 값 확인
-    console.log("isAdmin value:", $("#isAdminValue").val());
-    $("img[data-is-admin]").each(function() {
-        console.log("data-is-admin:", $(this).data("isAdmin"));
     });
 });
