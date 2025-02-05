@@ -23,12 +23,12 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberMapper memberMapper;
+	private final MemberMapper memberMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    private final JavaMailSender mailSender;
+	private final JavaMailSender mailSender;
 
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
@@ -92,6 +92,7 @@ public class MemberService {
         }
     }
 
+
     public void updateSocialMember(Member member) {
         try {
             log.info("Updating member: {}", member);
@@ -113,6 +114,7 @@ public class MemberService {
             throw e;
         }
     }
+
 
     public boolean changePassword(String memberId, String currentPassword, String newPassword) {
         // 현재 비밀번호 검증
@@ -195,6 +197,24 @@ public class MemberService {
     }
 
 
+    public boolean memberPassCheck(String memberId, String pass) {
+        // DB에서 저장된 비밀번호 가져오기
+        String dbPass = memberMapper.memberPassCheck(memberId);
+
+        // 비밀번호가 없는 경우
+        if(dbPass == null) {
+            return false;
+        }
+
+        // 입력한 비밀번호와 DB의 암호화된 비밀번호 비교
+        return passwordEncoder.matches(pass, dbPass);
+    }
+
+    public int updatePasswordMember(Member member) {
+        // 비밀번호 암호화
+        member.setPass(passwordEncoder.encode(member.getPass()));
+        return memberMapper.updatePasswordMember(member);
+    }
 
     public void sendPasswordResetEmail(String memberId, String email) {
         log.info("비밀번호 재설정 요청 - memberId: {}, email: {}", memberId, email);
@@ -223,7 +243,7 @@ public class MemberService {
         try {
             memberMapper.savePasswordResetToken(resetToken);
 
-            String resetLink = "http://localhost:8080/resetPassword?token=" + token;
+            String resetLink = "http://www.onestack.store/resetPassword?token=" + token;
             String emailContent = String.format(
                 "안녕하세요,\n\n" +
                 "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +

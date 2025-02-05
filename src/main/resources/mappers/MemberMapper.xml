@@ -130,6 +130,8 @@
 		<association property="community" javaType="Community" resultMap="communityMap"/>
 	</resultMap>
 
+
+
 	<!-- community With CommunityReply -->
 	<resultMap id="ComWithComReply" type="ComWithComReply">
 		<association property="community" javaType="Community" resultMap="communityMap"/>
@@ -198,6 +200,7 @@
 	</select>
 
 
+
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
 		SELECT m.*, p.*
@@ -260,7 +263,7 @@
 	<!-- 게시글 공감 조회 -->
 	<select id="memberMyPageCommunityLike" resultType="Community">
 		SELECT *
-		FROM community
+		FROM Community
 		WHERE member_no = #{memberNo}
 		  AND community_board_like > 0
 	</select>
@@ -269,7 +272,7 @@
 	<select id="memberMyPageComReplyLike" resultType="CommunityReply">
 		SELECT cr.*, c.community_board_title
 		FROM CommunityReply cr
-				 JOIN community c ON cr.community_board_no = c.community_board_no
+				 JOIN Community c ON cr.community_board_no = c.community_board_no
 		WHERE cr.member_no = #{memberNo}
 		  AND cr.community_reply_like > 0
 	</select>
@@ -437,7 +440,7 @@
 
 	<!-- 비밀번호 업데이트 -->
 	<update id="updatePassword">
-		UPDATE member
+		UPDATE Member
 		SET pass = #{newPassword}
 		WHERE member_id = #{memberId}
 	</update>
@@ -496,19 +499,19 @@
 			m.nickname as memberNickname,
 			p.nickname as proNickname,
 			c.item_title as categoryName
-		FROM
-			estimation e
-			LEFT JOIN member m ON e.member_no = m.member_no
-			LEFT JOIN member p ON e.pro_no = p.member_no
-			LEFT JOIN category c ON e.item_no = c.item_no
-		WHERE
+		FROM 
+			Estimation e
+			LEFT JOIN Member m ON e.member_no = m.member_no
+			LEFT JOIN Member p ON e.pro_no = p.member_no
+			LEFT JOIN Category c ON e.item_no = c.item_no
+		WHERE 
 			e.estimation_no = #{estimationNo}
 	</select>
 
 	<!-- 견적 확인 상태 업데이트 -->
 	<update id="updateEstimationCheck">
-		UPDATE Estimation
-		SET
+		UPDATE Estimation 
+		SET 
 			estimation_check = #{estimationCheck},
 			updated_at = CURRENT_TIMESTAMP
 		WHERE estimation_no = #{estimationNo}
@@ -542,5 +545,5 @@
 		FROM Estimation
 		WHERE progress = 4
 	</select>
-
+	
 </mapper>

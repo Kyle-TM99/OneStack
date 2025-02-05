@@ -39,4 +39,5 @@ public class Member {
     private boolean isSocial;
     private String memberStop;
     private String socialType;
+
 }

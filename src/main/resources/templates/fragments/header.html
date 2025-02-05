@@ -21,7 +21,7 @@
 								<div class="left-menu">
 									<a href="#" class="nav-link px-3 fw-bold" data-menu="findPro">고수 찾기</a>
 									<a href="#" class="nav-link px-3 fw-bold" data-menu="community">커뮤니티</a>
-
+									
 									<!-- 통합 서브메뉴 -->
 									<div class="submenu-container">
 										<div class="container">
@@ -67,7 +67,6 @@
 													<h6 class="fw-bold mb-3">커뮤니티</h6>
 													<div class="d-flex flex-column gap-2">
 														<a href="community" class="text-decoration-none text-secondary">자유 게시판</a>
-														<a href="QnA" class="text-decoration-none text-secondary">질문 게시판</a>
 													</div>
 												</div>
 											</div>
@@ -131,7 +130,7 @@
 														<li class="dropdown-item-text text-center text-muted">전문가 심사중</li>
 													</th:block>
 													<li><hr class="dropdown-divider"></li>
-														<li><a class="dropdown-item" href="/#">고객 문의</a></li>
+														<li><a class="dropdown-item" href="/memberInquiry">고객 문의</a></li>
 													<th:block th:unless="${session.member.isAdmin()}">
                                                     <li><a class="dropdown-item" href="/updateMemberForm">회원정보수정</a></li>
 													</th:block>
