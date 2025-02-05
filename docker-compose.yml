@@ -5,7 +5,7 @@ services:
     image: mysql:8.0.41-bookworm
     container_name: myone
     ports:
-      - "0.0.0.0:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: Kyle9907!
       MYSQL_DATABASE: onestack
