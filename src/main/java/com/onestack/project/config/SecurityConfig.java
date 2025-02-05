@@ -24,36 +24,50 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
+	@Bean  // 스프링 컨테이너에 이 메서드가 반환하는 객체를 빈으로 등록
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-			http
-					.requiresChannel(channel -> channel
-							.anyRequest().requiresSecure()    // 모든 요청을 HTTPS로 리다이렉트
-					)
-					.csrf(csrf -> csrf.disable())
-					.authorizeHttpRequests(auth -> auth
-							.requestMatchers("/login/**", "/oauth2/**", "/google/**", "/loginForm/**", 
-														 "/chat/**", "/estimation/**", "/**").permitAll()
-							.anyRequest().authenticated()
-					)
-					.oauth2Login(oauth2 -> oauth2
-							.loginPage("/loginForm")
-							.successHandler((request, response, authentication) -> {
-									OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-									String email = oauth2User.getAttribute("email");
-									log.info("OAuth2 Login Success. Email: {}", email);
-									request.setAttribute("oauth2User", oauth2User);
-									request.getRequestDispatcher("/google/callback").forward(request, response);
-							})
-							.failureHandler((request, response, exception) -> {
-									log.error("OAuth2 Login Failed: {}", exception.getMessage());
-									request.getRequestDispatcher("/loginForm?error=true").forward(request, response);
-							})
-							.userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService())
-							)
-					);
+		http
+			// CSRF 보호 기능을 비활성화 (REST API 서버의 경우 일반적으로 비활성화)
+			.csrf(csrf -> csrf.disable())
+			
+			// HTTP 요청에 대한 접근 권한 설정
+			.authorizeHttpRequests(auth -> auth
+				// Google 콜백 URL에 대한 접근을 명시적으로 허용
+				.requestMatchers("/login/**", "/oauth2/**", "/google/**", "/loginForm/**", 
+							   "/chat/**", "/estimation/**", "/**").permitAll()
+				// 위에서 설정한 경로 외의 모든 요청은 인증된 사용자만 접근 가능
+				.anyRequest().authenticated()
+			)
+			
+			// OAuth2 로그인 설정
+			.oauth2Login(oauth2 -> oauth2
+				// 커스텀 로그인 페이지 경로 설정
+				.loginPage("/loginForm")
+				// 로그인 성공 시 실행될 핸들러 설정
+				.successHandler((request, response, authentication) -> {
+					// 인증 성공 후 처리
+					OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+					String email = oauth2User.getAttribute("email");
+					
+					// 로그 추가
+					log.info("OAuth2 Login Success. Email: {}", email);
+					
+					// 컨트롤러로 OAuth2User 전달
+					request.setAttribute("oauth2User", oauth2User);
+					request.getRequestDispatcher("/google/callback").forward(request, response);
+				})
+				.failureHandler((request, response, exception) -> {
+					// 인증 실패 시 처리
+					log.error("OAuth2 Login Failed: {}", exception.getMessage());
+					
+					// 컨트롤러의 매핑된 URL로 포워드
+					request.getRequestDispatcher("/loginForm?error=true").forward(request, response);
+				})
+				.userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService())
+				)
+			);
 	
-			return http.build();
+		return http.build();  // 설정이 완료된 SecurityFilterChain 객체 반환
 	}
 	
 	// OAuth2 사용자 서비스 설정을 위한 빈 등록
