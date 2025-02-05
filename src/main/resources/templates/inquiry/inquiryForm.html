@@ -4,25 +4,6 @@
       layout:decorate="~{layouts/main_layout}" lang="">
 <head>
     <style>
-        img {
-            max-height: 150px;
-            object-fit: cover;
-        }
-        .post-title {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .post-title:hover {
-            color: #0d6efd;
-            font-weight: bold;
-        }
-        .inquiry-title {
-            transition: color 0.2s ease;
-        }
-        .inquiry-title:hover {
-            color: #0d6efd !important;
-            font-weight: bold;
-        }
         .pagination .page-link {
             width: 35px;
             height: 35px;
@@ -45,6 +26,13 @@
         }
         .pagination .page-item:not(.active) .page-link {
             background-color: transparent;
+        }
+        .a-tag-hover {
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        .a-tag-hover:hover {
+            transform: translateY(-3px);
         }
     </style>
 </head>
@@ -170,15 +158,16 @@
                                 <span class="fw-bold">작성시간</span>
                             </div>
                         </div>
-                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                        <div class="row align-items-center mb-3 py-2 a-tag-hover" th:each="inquiry : ${inquiryList}">
                             <div class="col-2 text-center">
                                 <span th:text="${inquiry.member.nickname}">작성자</span>
                             </div>
-                            <div class="col-6">
-                                <a class="text-decoration-none inquiry-title" style="color: #000000;"
-                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}"
-                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                            </div>
+                            <a class="col-6 text-decoration-none"
+                               th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}">
+                                <div class="inquiry-title">
+                                    <span th:text="${inquiry.inquiry.inquiryTitle}" style="color: #000000;">게시글 제목</span>
+                                </div>
+                            </a>
                             <div class="col-1 text-center">
                                         <span th:switch="${inquiry.inquiry.inquiryStatus}">
                                             <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
@@ -223,15 +212,16 @@
                                 <span class="fw-bold">작성시간</span>
                             </div>
                         </div>
-                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                        <div class="row align-items-center mb-3 py-2  a-tag-hover" th:each="inquiry : ${inquiryList}">
                             <div class="col-2 text-center">
                                 <span th:text="${inquiry.member.nickname}">작성자</span>
                             </div>
-                            <div class="col-6">
-                                <a class="text-decoration-none inquiry-title" style="color: #000000;"
-                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}"
-                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                            </div>
+                            <a class="col-6 text-decoration-none"
+                               th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}">
+                                <div class="inquiry-title">
+                                    <span th:text="${inquiry.inquiry.inquiryTitle}" style="color: #000000;">게시글 제목</span>
+                                </div>
+                            </a>
                             <div class="col-1 text-center">
                                         <span th:switch="${inquiry.inquiry.inquiryStatus}">
                                             <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
