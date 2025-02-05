@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.onestack.project.mapper.InquiryMapper">   
-    <resultMap id="InquiryResultMap" type="com.onestack.project.domain.Inquiry">
-        <id property="inquiryNo" column="inquiry_no" />
-        <result property="memberNo" column="member_no" />
-        <result property="inquiryTitle" column="inquiry_title" />
-        <result property="inquiryContent" column="inquiry_content" />
-        <result property="inquiryFile" column="inquiry_file" />
-        <result property="inquiryRegDate" column="inquiry_reg_date" />
-        <result property="inquiryStatus" column="inquiry_status" />
-        <result property="inquirySatisfaction" column="inquiry_satisfaction" />
-    </resultMap>
-    
-    <resultMap id="InquiryAnswerResultMap" type="com.onestack.project.domain.InquiryAnswer">
-        <id property="inquiryAnswerNo" column="inquiry_answer_no" />
-        <result property="inquiryNo" column="inquiry_no" />
-        <result property="managerNo" column="manager_no" />
-        <result property="inquiryAnswerContent" column="inquiry_answer_content" />
-        <result property="inquiryAnswerRegDate" column="inquiry_answer_reg_date" />
-        <result property="inquiryAnswerFile" column="inquiry_answer_file" />
-    </resultMap>
-    
-    <resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
-        <id property="memberNo" column="member_no" />
+<mapper namespace="com.onestack.project.mapper.InquiryMapper">
+	<resultMap id="InquiryResultMap" type="com.onestack.project.domain.Inquiry">
+		<id property="inquiryNo" column="inquiry_no" />
+		<result property="memberNo" column="member_no" />
+		<result property="inquiryTitle" column="inquiry_title" />
+		<result property="inquiryContent" column="inquiry_content" />
+		<result property="inquiryFile" column="inquiry_file" />
+		<result property="inquiryRegDate" column="inquiry_reg_date" />
+		<result property="inquiryStatus" column="inquiry_status" />
+		<result property="inquirySatisfaction" column="inquiry_satisfaction" />
+	</resultMap>
+
+	<resultMap id="InquiryAnswerResultMap" type="com.onestack.project.domain.InquiryAnswer">
+		<id property="inquiryAnswerNo" column="inquiry_answer_no" />
+		<result property="inquiryNo" column="inquiry_no" />
+		<result property="inquiryAnswerContent" column="inquiry_answer_content" />
+		<result property="inquiryAnswerRegDate" column="inquiry_answer_reg_date" />
+		<result property="inquiryAnswerFile" column="inquiry_answer_file" />
+	</resultMap>
+
+	<resultMap id="MemberResultMap" type="com.onestack.project.domain.Member">
+		<id property="memberNo" column="member_no" />
 		<result property="name" column="name" />
 		<result property="memberId" column="member_id" />
 		<result property="kakaoId" column="kakao_id" />
@@ -49,152 +48,132 @@
 		<result property="isAdmin" column="is_admin" />
 		<result property="isSocial" column="is_social" />
 		<result property="socialType" column="social_type" />
-    </resultMap>
-    
-     <resultMap id="ManagerResultMap" type="com.onestack.project.domain.Manager">
-        <id property="manager_no" column="manager_no" />
-        <result property="manager_name" column="manager_name" />
-        <result property="manager_pass" column="manager_pass" />
-        <result property="member_type" column="member_type" />
-        <result property="manager_image" column="manager_image" />
-        <result property="manager_type" column="manager_type" />
-    </resultMap>
-    
- 	<resultMap id="MemberWithInquiryResultMap" type="com.onestack.project.domain.MemberWithInquiry">
+	</resultMap>
+
+	<resultMap id="MemberWithInquiryResultMap" type="com.onestack.project.domain.MemberWithInquiry">
 		<result property="inquiryNo" column="inquiryNo" />
-    	<result property="inquiryTitle" column="inquiryTitle" />
-    	<result property="inquiryRegDate" column="inquiryRegDate" />
-    	<result property="inquiryStatus" column="inquiryStatus" />
+		<result property="inquiryTitle" column="inquiryTitle" />
+		<result property="inquiryRegDate" column="inquiryRegDate" />
+		<result property="inquiryStatus" column="inquiryStatus" />
 		<association property="member" resultMap="MemberResultMap" />
 		<association property="inquiry" resultMap="InquiryResultMap" />
 	</resultMap>
-	
-	<resultMap id="ManagerWithInquiryAnswerResultMap" type="com.onestack.project.domain.ManagerWithInquiryAnswer">
-		<association property="manager" resultMap="ManagerResultMap" />
-	    <association property="inquiryAnswer" resultMap="InquiryAnswerResultMap" />
-	</resultMap>
-	
-<!-- 문의글 조회 (건민) --> 
-<select id = "getInquiry" parameterType = "map" resultMap = "MemberWithInquiryResultMap">
-	SELECT i.*, m.*
-	FROM Inquiry i JOIN Member m
+
+	<!-- 문의글 조회 -->
+	<select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
+		SELECT i.*, m.*
+		FROM Inquiry i JOIN Member m
 		ON i.member_no = m.member_no
-	<where>	
-		<if test = "type == 'title'">
-			i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
-		</if>
-		<if test = "type == 'content'">
-			i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
-		</if>
-	</where>
-	ORDER BY i.inquiry_reg_date DESC
-	LIMIT #{startRow}, #{num}
-</select>
+		<where>
+			<if test="memberNo != null">
+				m.member_no = #{memberNo}
+			</if>
+			<if test="type == 'title'">
+				AND i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="type == 'content'">
+				AND i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="type == 'nickname'">
+				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+		ORDER BY i.inquiry_reg_date DESC
+	</select>
 
-<!-- 문의글 상세 조회 -->
-<select id="getInquiryDetail" resultType="inquiry">
-	SELECT * FROM Inquiry
-	WHERE inquiry_no = #{inquiryNo}
-</select>
 
-<!-- 문의글 조회 (건우)
-<select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
-	SELECT i.*, m.*
-    FROM Inquiry i JOIN Member m
-    ON i.member_no = m.member_no
-    ORDER BY i.inquiry_reg_date DESC
-    LIMIT #{startRow}, #{num}
-</select> -->
 
-<!-- 문의글 수 조회 -->
-<select id = "getInquiryCount" parameterType = "map" resultType = "int">
-	SELECT COUNT(inquiry_no)
-	FROM Inquiry i JOIN Member m
+	<!-- 문의글 상세 조회 -->
+	<select id="getInquiryDetail" resultMap="InquiryResultMap">
+		SELECT * FROM Inquiry
+		WHERE inquiry_no = #{inquiryNo}
+	</select>
+
+	<!-- 문의글 조회 (건우)
+    <select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
+        SELECT i.*, m.*
+        FROM Inquiry i JOIN Member m
+        ON i.member_no = m.member_no
+        ORDER BY i.inquiry_reg_date DESC
+        LIMIT #{startRow}, #{num}
+    </select> -->
+
+	<!-- 문의글 수 조회 -->
+	<select id = "getInquiryCount" parameterType = "map" resultType = "int">
+		SELECT COUNT(inquiry_no)
+		FROM Inquiry i JOIN Member m
 		ON i.member_no = m.member_no
-	<where>	
-		<if test = "type == 'title'">
-			i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
-		</if>
-		<if test = "type == 'content'">
-			i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
-		</if>	
-		<if test = "type == 'date'">
-			i.inquiry_reg_date BETWEEN #{date1} AND #{date2}   
-		</if>
-	</where>
-</select>
+		<where>
+			<if test = "type == 'title'">
+				i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "type == 'content'">
+				i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "type == 'date'">
+				i.inquiry_reg_date BETWEEN #{date1} AND #{date2}
+			</if>
+		</where>
+	</select>
 
-<!-- 이전 문의글 -->
-<select id="preInquiry" parameterType = "int" resultType="int">
-    SELECT inquiry_no 
-    FROM Inquiry 
-    WHERE inquiry_no &lt; #{currentInquiryNo}
-    ORDER BY inquiry_no DESC 
-    LIMIT 1
-</select>
+	<!-- 문의글 작성 -->
+	<insert id="addInquiry" parameterType="Inquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
+		INSERT INTO Inquiry(member_no, inquiry_title, inquiry_content, inquiry_file)
+		VALUES (#{memberNo}, #{inquiryTitle}, #{inquiryContent}, #{inquiryFile})
+	</insert>
 
-<!-- 다음 문의글 -->
-<select id="nextInquiry" parameterType = "int" resultType="int">
-    SELECT inquiry_no 
-    FROM Inquiry 
-    WHERE inquiry_no &gt; #{currentInquiryNo}
-    ORDER BY inquiry_no ASC 
-    LIMIT 1
-</select>
+	<!-- 문의글 수정 -->
+	<update id = "updateInquiry" parameterType = "Inquiry">
+		UPDATE Inquiry
+		SET inquiry_title = #{inquiryTitle}, inquiry_content = #{inquiryContent}, inquiry_file = #{inquiryFile}
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
 
-<!-- 문의글 작성 -->
-<insert id = "addInquiry" parameterType = "Inquiry" useGeneratedKeys = "true" keyProperty = "inquiryNo">
-	INSERT INTO Inquiry(member_no, inquiry_title, inquiry_content, inquiry_file)
-	VALUES (#{memberNo}, #{inquiryTitle}, #{inquiryContent}, #{inquiryFile})
-</insert>
+	<!-- 문의글 삭제 -->
+	<delete id = "deleteInquiry" parameterType = "int">
+		DELETE FROM Inquiry
+		WHERE inquiry_no = #{inquiryNo}
+	</delete>
 
-<!-- 문의글 수정 -->
-<update id = "updateInquiry" parameterType = "Inquiry">
-	UPDATE Inquiry
-	SET inquiry_title = #{inquiryTitle}, inquiry_content = #{inquiryContent}, inquiry_file = #{inquiryFile}
-	WHERE inquiry_no = #{inquiryNo}
-</update>
+	<!-- 문의글 만족/불만족 -->
+	<update id="updateInquirySatisfaction" parameterType="map">
+		UPDATE Inquiry
+		SET inquiry_satisfaction = #{status}
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
 
-<!-- 문의글 삭제 -->
-<delete id = "deleteInquiry" parameterType = "int">
-	DELETE FROM Inquiry
-	WHERE inquiry_no = #{inquiryNo}
-</delete>
+	<!-- 문의 답변 조회 -->
+	<select id="getInquiryAnswer" parameterType="int" resultType="InquiryAnswer">
+		SELECT i.*, m.*
+		FROM InquiryAnswer i JOIN Member m
+			ON i.member_no = m.member_no
+		WHERE i.inquiry_no = #{inquiryNo}
+		ORDER BY i.inquiry_answer_reg_date DESC
+	</select>
 
-<!-- 문의글 만족/불만족 -->
-<update id = "updateInquirySatisfaction" parameterType ="map">
-	UPDATE Inquiry
-	SET inquiry_satisfaction = #{status}
-	WHERE inquiry_no = #{inquiryNo}
-</update>
+	<!-- 문의 답변 추가 -->
+	<insert id="addInquiryAnswer" parameterType="InquiryAnswer" useGeneratedKeys="true" keyProperty="inquiryAnswerNo">
+		INSERT INTO InquiryAnswer(inquiry_no, member_no, inquiry_answer_content, inquiry_answer_file)
+		VALUES(#{inquiryNo}, #{memberNo}, #{inquiryAnswerContent}, #{inquiryAnswerFile})
+	</insert>
 
-<!-- 문의 답변 조회 -->
-<select id = "getInquiryAnswer" parameterType = "int" resultMap = "ManagerWithInquiryAnswerResultMap">
-	SELECT ia.*, m.*
-	FROM InquiryAnswer ia JOIN Manager mg
-		ON ia.manager_no = mg.manager_no
-	WHERE ia.inquiry_no = #{inquiryNo}
-	ORDER BY ia.inquiry_answer_reg_date DESC
-</select>
+	<!-- 문의 답변 수정 -->
+	<update id="updateInquiryAnswer" parameterType="com.onestack.project.domain.InquiryAnswer">
+		UPDATE inquiry_answer
+		SET inquiryAnswerContent = #{inquiryAnswerContent}
+		WHERE inquiryAnswerNo = #{inquiryAnswerNo}
+	</update>
 
-<!-- 문의 답변 추가 -->
-<insert id = "addInquiryAnswer" parameterType = "InquiryAnswer" useGeneratedKeys = "true" keyProperty = "inquiryAnswerNo">
-	INSERT INTO InquiryAnswer(manager_no, inquiry_answer_content, inquiry_answer_file)
-	VALUES(#{managerNo}, #{inquiryAnswerContent}, #{inquiryAnswerContent})
-</insert>
+	<update id="updateInquiryStatusToInProgress" parameterType="int">
+		UPDATE Inquiry
+		SET inquiry_status = '답변 중'
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
 
-<!-- 문의 답변 수정 -->
-<update id = "updateInquiryAnswer" parameterType = "InquiryAnswer">
-	UPDATE InquiryAnswer
-	SET inquiry_answer_content = #{inquiryAnswerContent}, inquiry_answer_file = #{inquiryAnswerContent}
-	WHERE inquiry_answer_no = #{inquiryAnswerNo}
-</update>
-
-<!-- 문의 답변 삭제 -->
-<delete id = "deleteInquiryAnswer" parameterType = "int">
-	DELETE FROM InquiryAnswer
-	WHERE inquiry_answer_no = #{inquiryAnswerNo}
-</delete>
-
+	<update id="updateInquiryStatusToCompleted" parameterType="int">
+		UPDATE Inquiry
+		SET inquiry_status = '답변 완료'
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
 
 </mapper>
