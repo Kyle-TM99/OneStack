@@ -222,6 +222,7 @@ function updateResults(pros, overallAveragePrice) {
 
 /* 감지 대상 */
 const observerTarget = document.querySelector('.target');
+const loadingSpinner = document.getElementById('loadingSpinner');
 
 /* observer 초기화 */
 const observeIntersection = (target, callback) => {
@@ -240,47 +241,59 @@ function callNextList() {
     if (isLoading) return; // 이미 로딩 중이면 중복 요청 방지
     isLoading = true;
 
-    const filters = getFilters(); // 필터링 조건 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    const itemNo = parseInt(urlParams.get('itemNo')); // URL의 itemNo 가져오기
-    const sortValue = sortSelect.value; // 정렬 조건 가져오기
+    // 로딩 스피너 보이기
+    loadingSpinner.style.display = 'block';
 
-    const requestData = {
-        filters: filters.appType, // 필터 정보
-        sort: sortValue, // 정렬 정보
-        itemNo: itemNo, // item 번호
-        page: currentPage, // 현재 페이지 번호
-        size: pageSize, // 페이지 크기
-    };
+    setTimeout(() => {
+        const filters = getFilters(); // 필터링 조건 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemNo = parseInt(urlParams.get('itemNo')); // URL의 itemNo 가져오기
+        const sortValue = sortSelect.value; // 정렬 조건 가져오기
 
-    console.log("Fetching data for next page: ", requestData);
+        const requestData = {
+            filters: filters.appType, // 필터 정보
+            sort: sortValue, // 정렬 정보
+            itemNo: itemNo, // item 번호
+            page: currentPage, // 현재 페이지 번호
+            size: pageSize, // 페이지 크기
+        };
 
-    fetch("/proFilter", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-    })
-        .then((response) => response.json())
-        .then((response) => {
-            if (response && response.pros) {
-                addResults(response.pros, response.overallAveragePrice);
+        console.log("Fetching data for next page: ", requestData);
 
-                // 다음 페이지를 위한 변수를 업데이트
-                if (response.hasMore) {
-                    currentPage++;
-                } else {
-                    console.log("더 이상 데이터가 없습니다."); // 추가 데이터 없음 표시
-                }
-            }
-            isLoading = false; // 로딩 상태 해제
+        fetch("/proFilter", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
         })
-        .catch((error) => {
-            console.error("Error fetching next list:", error);
-            isLoading = false;
-        });
+            .then((response) => response.json())
+            .then((response) => {
+                if (response && response.pros) {
+                    addResults(response.pros, response.overallAveragePrice);
+
+                    // 다음 페이지를 위한 변수를 업데이트
+                    if (response.hasMore) {
+                        currentPage++;
+                    } else {
+                        console.log("더 이상 데이터가 없습니다."); // 추가 데이터 없음 표시
+                    }
+                }
+                isLoading = false; // 로딩 상태 해제
+
+                // 로딩 스피너 숨기기
+                loadingSpinner.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error("Error fetching next list:", error);
+                isLoading = false;
+
+                // 로딩 스피너 숨기기
+                loadingSpinner.style.display = 'none';
+            });
+    }, 800); // 1초(800ms) 후 실행
 }
+
 
 /* observer 초기화 */
 observeIntersection(observerTarget, callNextList);
@@ -334,8 +347,6 @@ function addResults(pros, overallAveragePrice) {
             '    </div>';
         resultContainer.appendChild(proDiv);
 
-
-
         /* 모든 카드 전문가 상세보기로 연결 */
         const cards = document.querySelectorAll(".row.card-body");
         cards.forEach((card) => {
@@ -360,7 +371,5 @@ function addResults(pros, overallAveragePrice) {
         const averagePriceContainer = document.getElementById("overallAveragePrice");
         averagePriceContainer.textContent = `전체 평균 가격: ${overallAveragePrice}원`;
         console.log(averagePriceContainer.textContent);
-
     });
-
 }
