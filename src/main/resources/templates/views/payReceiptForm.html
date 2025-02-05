@@ -10,6 +10,7 @@
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #215EA3;
         }
         .card-header {
             background-color: #215EA3;
@@ -20,35 +21,81 @@
             border-top-right-radius: 10px;
         }
         .card-body {
-            background-color: #f8f9fa;
+            background-color: #f0f7ff;
             color: #495057;
+            padding: 20px;
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
         }
-        .card p {
+        .card-body p {
             margin-bottom: 1rem;
+            font-size: 1rem;
         }
         .container-fluid {
             padding-top: 50px;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #215EA3;
+        }
+        .text-muted {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        .payment-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .payment-summary .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .payment-summary .summary-item strong {
+            color: #215EA3;
         }
     </style>
 </head>
 
 <div layout:fragment="content">
     <div class="container-fluid">
-        <h2 class="mb-4 text-center">원스택 결제내역</h2>
+        <h2 class="mb-4 text-center">결제 내역</h2>
         <p class="text-center text-muted">총 [[ ${payCount} ]]건</p>
 
         <div class="row">
-            <div class="col-lg-8 mx-auto" style="max-width: 500px;">
-                <div class="card p-4 my-3" th:each="recipetList, status: ${recipetList}">
-                    <div class="card-header">
-                        결제 번호: [[ ${recipetList.pay.payNo} ]]
-                    </div>
-                    <div class="card-body">
-                        <p>견적 번호: [[ ${recipetList.pay.estimationNo} ]]</p>
-                        <p>결제 타입: [[ ${recipetList.pay.payType} ]]</p>
-                        <p>결제 내용: [[ ${recipetList.pay.payContent} ]]</p>
-                        <p>결제 금액: [[ ${recipetList.pay.payPrice} ]]원</p>
-                        <p>결제 일자: [[ ${#dates.format(recipetList.pay.payDate, 'yyyy-MM-dd HH:mm:ss')} ]]</p>
+            <div class="col-lg-5 mx-auto">
+                <div th:each="recipetList, status: ${recipetList}">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            결제 번호: [[ ${recipetList.pay.payNo} ]]
+                        </div>
+                        <div class="card-body">
+                            <div class="payment-summary">
+                                <div class="summary-item">
+                                    <span><strong>견적 번호:</strong></span>
+                                    <span>[[ ${recipetList.pay.estimationNo} ]]</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span><strong>결제 타입:</strong></span>
+                                    <span>[[ ${recipetList.pay.payType} ]]</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span><strong>결제 내용:</strong></span>
+                                    <span>[[ ${recipetList.pay.payContent} ]]</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span><strong>결제 금액:</strong></span>
+                                    <span>[[ ${recipetList.pay.payPrice} ]]원</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span><strong>결제 일자:</strong></span>
+                                    <span>[[ ${#dates.format(recipetList.pay.payDate, 'yyyy-MM-dd HH:mm:ss')} ]]</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
