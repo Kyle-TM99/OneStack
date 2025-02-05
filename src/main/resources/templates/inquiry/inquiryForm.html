@@ -128,13 +128,8 @@
                     </div>
                 </th:block>
 
-
-
-
                 <!-- 검색 요청일 때 -->
                 <th:block th:if="${searchOption}">
-                    <!-- 관리자인 경우 -->
-                    <th:block th:if="${session.member.isAdmin == true}">
                         <!-- 게시글이 있는 경우 -->
                         <th:block th:if="${not #lists.isEmpty(inquiryList)}">
                             <!-- 관리자용 게시글 목록 출력 -->
@@ -184,54 +179,10 @@
                                 <a href="/memberInquiry" class="btn btn-light border">전체 목록 보기</a>
                             </div>
                         </th:block>
-                    </th:block>
-
-                    <!-- 일반 회원인 경우 -->
-                    <th:block th:if="${session.member.isAdmin == false}">
-                        <!-- 게시글이 있는 경우 -->
-                        <th:block th:if="${not #lists.isEmpty(inquiryList)}">
-                            <!-- 자신의 게시글만 필터링하여 출력 -->
-                            <th:block th:each="inquiry : ${inquiryList}"
-                                      th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
-                                <div class="row border-bottom align-items-center mb-3 py-2"
-                                     th:with="hasOwnInquiry=${true}">
-                                    <div class="col-9">
-                                        <a class="text-decoration-none fs-5 inquiry-title" style="color: #000000;"
-                                           th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                           th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                    </div>
-                                    <div class="col-3 text-center">
-                                        <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
-                                    </div>
-                                    <div class="col-9"></div>
-                                    <div class="col-3 text-center">
-                                        <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                            <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
-                                            <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
-                                            <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </th:block>
-                        </th:block>
-
-                        <!-- 게시글이 없는 경우 -->
-                        <th:block th:if="${#lists.isEmpty(inquiryList)}">
-                            <!-- 검색 결과 없음 메시지 -->
-                            <div class="alert alert-light border text-center p-5 mb-5">
-                                <i class="bi bi-search fs-1 text-secondary mb-3"></i>
-                                <p class="fs-5 mb-2">"[[${keyword}]]"에 대한 검색 결과가 없습니다</p>
-                                <p class="text-secondary mb-3">다른 검색어를 입력해보세요</p>
-                                <a href="/memberInquiry" class="btn btn-light border">전체 목록 보기</a>
-                            </div>
-                        </th:block>
-                    </th:block>
                 </th:block>
 
                 <!-- 일반 요청일 때 -->
                 <th:block th:if="${not searchOption}">
-                    <!-- 관리자인 경우 -->
-                    <th:block th:if="${session.member.isAdmin == true}">
                         <!-- 게시글이 있는 경우 -->
                         <th:block th:if="${not #lists.isEmpty(inquiryList)}">
                             <!-- 관리자용 게시글 목록 출력 -->
@@ -273,50 +224,13 @@
 
                         <!-- 게시글이 없는 경우 -->
                         <th:block th:if="${#lists.isEmpty(inquiryList)}">
-
                             <!-- 게시글 없음 메시지 -->
                             <div class="row text-center py-3 d-flex justify-content-center my-5" style="width: 100%;">
                                 문의글이 존재하지 않습니다. 문의글을 작성해주세요.
                             </div>
                         </th:block>
-                    </th:block>
-
-                    <!-- 일반 회원인 경우 -->
-                    <th:block th:if="${session.member.isAdmin == false}">
-                        <!-- 게시글이 있는 경우 -->
-                        <th:block th:if="${not #lists.isEmpty(inquiryList)}">
-                            <!-- 자신의 게시글만 필터링하여 출력 -->
-                            <th:block th:each="inquiry : ${inquiryList}">
-                                <th:block th:if="${inquiry.inquiry.memberNo == session.member.memberNo}">
-                                    <div class="row border-bottom align-items-center mb-3 py-2"
-                                         th:with="hasOwnInquiry=${true}">
-                                        <div class="col-9">
-                                            <a class="text-decoration-none fs-5 inquiry-title" style="color: #000000;"
-                                               th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                               th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                        </div>
-                                        <div class="col-3 text-center">
-                                            <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
-                                        </div>
-                                        <div class="col-9"></div>
-                                        <div class="col-3 text-center">
-                                        <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                            <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
-                                            <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
-                                            <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
-                                        </span>
-                                        </div>
-                                    </div>
-                                </th:block>
-                            </th:block>
-
-                        </th:block>
-                    </th:block>
-
-
 
                 </th:block>
-
             </div>
             <div class="col-md-2"></div>
         </div>

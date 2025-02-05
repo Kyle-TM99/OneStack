@@ -39,7 +39,7 @@ public class InquiryController {
         boolean isAdmin = member.isAdmin(); // isAdmin 값 가져오기
 
         // isAdmin 값을 전달하여 문의글 조회
-        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(type, keyword);
+        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(memberNo, type, keyword, isAdmin);
 
         model.addAttribute("inquiryList", inquiryList);
 

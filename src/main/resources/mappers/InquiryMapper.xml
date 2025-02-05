@@ -55,6 +55,7 @@
 		<result property="inquiryTitle" column="inquiryTitle" />
 		<result property="inquiryRegDate" column="inquiryRegDate" />
 		<result property="inquiryStatus" column="inquiryStatus" />
+		<result property="memberType" column="memberType" />
 		<association property="member" resultMap="MemberResultMap" />
 		<association property="inquiry" resultMap="InquiryResultMap" />
 	</resultMap>
@@ -65,9 +66,6 @@
 		FROM Inquiry i JOIN Member m
 		ON i.member_no = m.member_no
 		<where>
-			<if test="memberNo != null">
-				m.member_no = #{memberNo}
-			</if>
 			<if test="type == 'title'">
 				AND i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
@@ -76,6 +74,9 @@
 			</if>
 			<if test="type == 'nickname'">
 				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="!isAdmin">
+				AND m.member_no = #{memberNo}
 			</if>
 		</where>
 		ORDER BY i.inquiry_reg_date DESC

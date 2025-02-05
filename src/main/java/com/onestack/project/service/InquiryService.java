@@ -20,11 +20,11 @@ public class InquiryService {
     @Autowired
     private InquiryMapper inquiryMapper;
 
-    private static final String FILE_STORAGE_PATH = "src/main/resources/static/files/";
-
     // 문의글 목록 조회 (검색 조건)
-    public List<MemberWithInquiry> getInquiry(String type, String keyword) {
+    public List<MemberWithInquiry> getInquiry(int memberNo, String type, String keyword, boolean isAdmin) {
         Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", memberNo);
+        params.put("isAdmin", isAdmin);
 
         // 검색 조건이 있는 경우에만 파라미터 추가
         if (type != null && keyword != null && !type.isEmpty() && !keyword.isEmpty()) {
