@@ -1,86 +1,98 @@
-/* ✅ 모달 크기 및 스타일 */
+/* ✅ 공통 스타일 */
 .modal-content {
-    border-radius: 10px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
-    background: #fff;
-    width: 80vw;
-    max-width: 1000px;
+    border-radius: 15px;
+    box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    width: 85vw;
+    max-width: 900px;
     height: auto;
     display: flex;
     flex-direction: row;
     overflow: hidden;
     border: none;
+    transition: all 0.3s ease-in-out;
 }
 
-/* ✅ 모달 헤더 */
+/* ✅ 모달 닫기 버튼 */
 .modal-header {
     position: absolute;
     right: 15px;
     top: 15px;
-    border-bottom: none;
     z-index: 10;
+    background: transparent;
+    border-bottom: none;
 }
 
 .btn-close {
-    font-size: 1.5rem;
-    opacity: 0.7;
-    transition: 0.3s;
+    font-size: 1.4rem;
+    opacity: 0.6;
+    transition: 0.3s ease;
+    background: transparent;
 }
 
 .btn-close:hover {
     opacity: 1;
 }
 
-/* ✅ 이미지 섹션 (왼쪽) */
+/* ✅ 왼쪽: 이미지 섹션 */
 .portfolio-carousel-container {
     width: 50%;
-    height: 100%;
-    background: #f8f9fa;
+    height: auto;
+    background: #f4f4f4;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px;
+    padding: 20px;
+    border-radius: 15px 0 0 15px;
 }
 
 .portfolio-carousel-container img {
-    object-fit: contain;
+    object-fit: cover;
     width: 100%;
-    height: auto;
     max-height: 300px;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
 }
 
-/* ✅ 포트폴리오 상세 정보 (오른쪽) */
+.portfolio-carousel-container img:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ 오른쪽: 상세 정보 섹션 */
 .portfolio-info-container {
     width: 50%;
-    padding: 30px;
+    padding: 25px;
     background: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border-radius: 0 15px 15px 0;
 }
 
 /* ✅ 제목 */
 .portfolio-info-container h2 {
     font-size: 1.5rem;
-    color: #222;
-    font-weight: bold;
+    color: #333;
+    font-weight: 600;
     margin-bottom: 15px;
 }
 
-/* ✅ 기본 정보 */
+/* ✅ 정보 텍스트 */
 .portfolio-info p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: #555;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    line-height: 1.4;
 }
 
 .portfolio-info p strong {
     color: #222;
+    font-weight: 600;
 }
 
 /* ✅ 리스트 스타일 */
 .portfolio-info ul {
-    padding-left: 15px;
+    padding-left: 18px;
     margin-bottom: 15px;
 }
 
@@ -90,9 +102,9 @@
     margin-bottom: 5px;
 }
 
-/* ✅ 요청 버튼 스타일 */
+/* ✅ 요청 버튼 */
 .request-button {
-    background-color: #00c7ae;
+    background: linear-gradient(135deg, #00b4d8, #0096c7);
     color: white;
     text-align: center;
     padding: 12px 0;
@@ -100,28 +112,36 @@
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(0, 150, 199, 0.3);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
 }
 
 .request-button:hover {
-    background-color: #009e8c;
+    background: linear-gradient(135deg, #0096c7, #0077b6);
+    box-shadow: 0px 6px 15px rgba(0, 150, 199, 0.5);
+    transform: translateY(-2px);
 }
 
 /* ✅ 반응형 스타일 */
 @media (max-width: 768px) {
     .modal-content {
         flex-direction: column;
-        width: 90vw;
-        max-height: none;
+        width: 95vw;
     }
 
     .portfolio-carousel-container {
         width: 100%;
-        padding: 20px;
+        padding: 15px;
+        border-radius: 15px 15px 0 0;
     }
 
     .portfolio-info-container {
         width: 100%;
         padding: 20px;
+        border-radius: 0 0 15px 15px;
     }
 }

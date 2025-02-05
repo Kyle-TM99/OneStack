@@ -162,48 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-        // ✅ 수상 경력 추가 버튼 이벤트
-        document.getElementById("addAwardCareerBtn").addEventListener("click", function () {
-            const awardsContainer = document.getElementById("awardsContainer");
-
-            const newAwardInput = document.createElement("div");
-            newAwardInput.className = "d-flex align-items-center justify-content-between mb-2 award-entry";
-            newAwardInput.innerHTML = `
-                <input type="text" class="form-control me-2" name="awardCareer" placeholder="수상 경력을 입력하세요">
-                <button type="button" class="btn btn-danger btn-sm remove-award">X</button>
-            `;
-
-            awardsContainer.appendChild(newAwardInput);
-        });
-
-        // ✅ 수상 경력 삭제 버튼 이벤트 (이벤트 위임)
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-award")) {
-                event.target.parentElement.remove();
-            }
-        });
-
-        // ✅ 경력 추가 버튼 이벤트
-           document.getElementById("addCareerBtn").addEventListener("click", function () {
-               const careerContainer = document.getElementById("careerContainer");
-
-               const newCareerInput = document.createElement("div");
-               newCareerInput.className = "d-flex align-items-center justify-content-between mb-2 career-entry";
-               newCareerInput.innerHTML = `
-                   <input type="text" class="form-control me-2" name="career" placeholder="경력을 입력하세요">
-                   <button type="button" class="btn btn-danger btn-sm remove-career">X</button>
-               `;
-
-               careerContainer.appendChild(newCareerInput);
-         });
-
-        // ✅ 경력 삭제 버튼 이벤트 (이벤트 위임)
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-career")) {
-                event.target.parentElement.remove();
-            }
-        });
-
 
 
     // ✅ 포트폴리오 파일 추가 버튼 이벤트 (이벤트 위임 방식)
@@ -260,10 +218,6 @@ document.addEventListener("DOMContentLoaded", function () {
          const portfolioContent = document.getElementById("portfolioContent").value.trim();
          const categoryNo = document.getElementById("categoryNo").value;
          const itemNo = document.getElementById("itemNo").value;
-         const selfIntroduction = document.getElementById("selfIntroduction").value.trim();
-         const contactableTimeStart = document.getElementById("contactableTimeStart").value;
-         const contactableTimeEnd = document.getElementById("contactableTimeEnd").value;
-         const careerInputs = document.querySelectorAll("input[name='career']");
          const surveyAnswers = document.querySelectorAll("input[type='radio']:checked");
 
          // ✅ 필수 항목 확인
@@ -281,24 +235,6 @@ document.addEventListener("DOMContentLoaded", function () {
          }
          if (!itemNo) {
              errorMessage += "전문분야를 선택해주세요.\n";
-             isValid = false;
-         }
-         if (!selfIntroduction) {
-             errorMessage += "자기소개를 입력해주세요.\n";
-             isValid = false;
-         }
-         if (!contactableTimeStart || !contactableTimeEnd) {
-             errorMessage += "연락 가능 시간을 선택해주세요.\n";
-             isValid = false;
-         }
-
-         // ✅ 최소 한 개 이상의 경력 입력 체크
-         let hasCareer = false;
-         careerInputs.forEach(input => {
-             if (input.value.trim() !== "") hasCareer = true;
-         });
-         if (!hasCareer) {
-             errorMessage += "경력을 최소 1개 이상 입력해주세요.\n";
              isValid = false;
          }
 
@@ -337,11 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
              portfolioFilePaths: Array.from(document.querySelectorAll(".currentPortfolioFile")).map(el => el.textContent.trim()),
              categoryNo: document.getElementById("categoryNo").value,
              itemNo: document.getElementById("itemNo").value,
-             selfIntroduction: document.getElementById("selfIntroduction").value,
-             contactableTimeStart: document.getElementById("contactableTimeStart").value,
-             contactableTimeEnd: document.getElementById("contactableTimeEnd").value,
-             career: Array.from(document.querySelectorAll("input[name='career']")).map(input => input.value),
-             awardCareer: Array.from(document.querySelectorAll("input[name='awardCareer']")).map(input => input.value), // null 허용
              surveyAnswers: Array.from(document.querySelectorAll("input[type='radio']:checked")).map(input => input.value),
              proAnswer1: document.getElementById("proAnswer1")?.value.trim(), // 필수
              proAnswer2: document.getElementById("proAnswer2")?.value.trim() || null, // null 허용
@@ -361,17 +292,22 @@ document.addEventListener("DOMContentLoaded", function () {
                  body: JSON.stringify(requestData)
              });
 
-             if (response.status === 409) {
-                 const result = await response.json();
-                 alert(result.message);
-                 return;
+             const responseData = await response.json();
+
+             if (!response.ok) {
+                 throw new Error(responseData.message || 'DB 저장 실패');
              }
+             // if (response.status === 409) {
+             //     const result = await response.json();
+             //     alert(result.message);
+             //     return;
+             // }
 
              alert("포트폴리오가 성공적으로 수정되었습니다.");
              window.location.href = "/portfolioList";
          } catch (error) {
              console.error("🚨 오류 발생:", error);
-             alert("수정 중 오류가 발생했습니다.");
+             alert("동일한 전문분야의 포트폴리오로 수정할 수 없습니다.");
          }
      });
 

@@ -435,6 +435,12 @@
 
 						<button class="custom-button"
 								th:if="${session.member != null and session.member.memberType == 2}"
+								th:onclick="|if(confirm('전문가 등록 심사가 반려되었습니다. 다시 신청해주세요.')) location.href='/proConversion';|">
+							전문가 전환하기
+						</button>
+
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.memberType == null}"
 								th:onclick="alert('전문가 등록 심사가 진행 중입니다. 곧 결과를 알려드릴 예정이니 조금만 기다려 주세요!')">
 							전문가 전환하기
 						</button>

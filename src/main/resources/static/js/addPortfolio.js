@@ -228,15 +228,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     body: JSON.stringify(requestData),
                 });
 
+                const responseData = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('DB 저장 실패');
+                    throw new Error(responseData.message || 'DB 저장 실패');
                 }
 
                 alert('포트폴리오 추가 완료!');
                 window.location.href = "/portfolioList";
             } catch (error) {
                 console.error('오류 발생:', error);
-                alert('저장 중 오류가 발생했습니다.');
+                alert('동일한 전문분야의 포트폴리오는 추가할 수 없습니다.');
             }
         });
     } else {

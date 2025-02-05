@@ -321,8 +321,8 @@ public class ProfessionalController {
         model.addAllAttributes(surveyData);
         model.addAttribute("selectedItemNo", itemNo);
         model.addAttribute("categories", surveyService.getAllCategories());
-        model.addAttribute("contactableTimeStart", contactableTimeStart);
-        model.addAttribute("contactableTimeEnd", contactableTimeEnd);
+//        model.addAttribute("contactableTimeStart", contactableTimeStart);
+//        model.addAttribute("contactableTimeEnd", contactableTimeEnd);
 
         log.info("🎯 [editPortfolio] 데이터 로딩 완료. 페이지 반환.");
         return "views/editPortfolio";
@@ -333,7 +333,7 @@ public class ProfessionalController {
      */
     @PostMapping("/portfolio/update")
     @ResponseBody
-    public ResponseEntity<?> updateProfessionalData(@RequestBody ProUpdateRequest request) {
+    public ResponseEntity<?> updateProfessionalData(@RequestBody ProUpdateRequest request, HttpSession session) {
         try {
             log.info("📩 [updatePortfolio] 요청 수신: {}", request);
 
@@ -346,13 +346,13 @@ public class ProfessionalController {
             log.info("✅ 정리된 Survey Answers: {}", filteredAnswers);
 
             // ✅ 데이터 업데이트 (중복 검사 포함)
-            professionalService.updateProConversionData(request);
+            professionalService.updateProConversionData(request,session);
 
             log.info("✅ 포트폴리오 업데이트 완료 - portfolioNo: {}", request.getPortfolioNo());
             return ResponseEntity.ok(Collections.singletonMap("message", "포트폴리오가 성공적으로 업데이트되었습니다."));
         } catch (IllegalStateException e) {
             log.warn("🚨 중복된 itemNo로 인해 업데이트 실패 - proNo: {}, itemNo: {}", request.getProNo(), request.getItemNo());
-            return ResponseEntity.status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(HttpStatus.CONFLICT) // HTTP 409: Conflict
                     .body(Collections.singletonMap("message", "이미 같은 전문 분야를 가진 포트폴리오가 존재합니다."));
         } catch (Exception e) {
             log.error("🚨 포트폴리오 업데이트 실패: {}", e.getMessage(), e);
@@ -378,7 +378,7 @@ public class ProfessionalController {
     @ResponseBody
     public ResponseEntity<?> submitProConversionData(@RequestBody Pro2ConversionRequest request, HttpSession session) {
         try {
-            log.info("수신된 데이터: {}", request);
+            log.info("✅ 수신된 데이터: {}", request);
 
             // 빈 Survey Answer 제거
             List<String> filteredAnswers = request.getSurveyAnswers().stream()
@@ -386,16 +386,21 @@ public class ProfessionalController {
                     .toList();
             request.setSurveyAnswers(filteredAnswers);
 
-            // 데이터 저장
+            // 데이터 저장 실행
             professionalService.submitProConversionData(request, session);
 
-            return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
+            return ResponseEntity.ok(Map.of("message", "포트폴리오가 성공적으로 등록되었습니다."));
+        } catch (IllegalStateException e) {
+            // 예외 발생 시 400 Bad Request 반환
+            log.warn("🚨 예외 발생: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            log.error("전문가 데이터 저장 실패", e);
+            log.error("❌ 전문가 데이터 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "저장 실패"));
+                    .body(Map.of("message", "서버 오류가 발생했습니다."));
         }
     }
+
 
     @GetMapping("/portfolioDetail/{portfolioNo}")
     @ResponseBody

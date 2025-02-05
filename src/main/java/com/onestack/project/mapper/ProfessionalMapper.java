@@ -20,11 +20,15 @@ public interface ProfessionalMapper {
     // 전문가 고급 정보 저장
     int addProAdvancedInfo(ProfessionalAdvancedInformation professionalAdvancedInformation);
 
+    // 포트폴리오 저장
+    int addPortfolio(Portfolio portfolio);
+
     void add2ProAdvancedInfo(ProfessionalAdvancedInformation advancedInfo);
     void add2Portfolio(Portfolio portfolio);
 
-    // 포트폴리오 저장
-    int addPortfolio(Portfolio portfolio);
+    // 전문가 고급정보 번호가 이미 있는 회원 조회
+    Integer findExistingProAdvancedInfo(@Param("proNo") Integer proNo, @Param("itemNo") Integer itemNo);
+
 
     // 전문가 정보 조회
     public List<MemberWithProfessional> getPro2(@Param("proNo") int proNo);
@@ -59,7 +63,10 @@ public interface ProfessionalMapper {
     Professional getProfessionalByPortfolio(@Param("portfolioNo") int portfolioNo);
 
     // ✅ 전문가 고급 정보 조회
+//    ProfessionalAdvancedInformation getAdvancedInfoByPortfolio(@Param("portfolioNo") int portfolioNo);
+
     ProfessionalAdvancedInformation getAdvancedInfoByPortfolio(@Param("portfolioNo") int portfolioNo);
+
 
     int getItemNoByPortfolio(int portfolioNo);
 
@@ -70,7 +77,7 @@ public interface ProfessionalMapper {
 
     void updatePortfolio(Portfolio portfolio);
 
-    void updateProfessional(Professional professional);
+
 
     void updateProfessionalAdvancedInfo(ProfessionalAdvancedInformation advancedInfo);
 

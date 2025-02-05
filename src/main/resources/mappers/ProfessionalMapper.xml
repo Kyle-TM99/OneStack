@@ -250,9 +250,9 @@
 		SELECT COUNT(*)
 		FROM ProfessionalAdvancedInformation
 		WHERE pro_no = #{proNo}
-		AND item_no = #{itemNo}
-		AND pro_advanced_no != #{proAdvancedNo}
+		  AND item_no = #{itemNo}
 	</select>
+
 
 
 	<!-- 포트폴리오 추가 -->
@@ -303,12 +303,18 @@
 	SELECT * FROM professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
 </select>
 
-<!-- ✅ 전문가 고급 정보 조회 -->
-<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
-	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
-</select>
+<!--&lt;!&ndash; ✅ 전문가 고급 정보 조회 &ndash;&gt;-->
+<!--<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">-->
+<!--	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})-->
+<!--</select>-->
 
-<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
+	<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
+		SELECT * FROM ProfessionalAdvancedInformation WHERE pro_advanced_no =
+															(SELECT pro_advanced_no FROM Portfolio WHERE portfolio_no = #{portfolioNo})
+	</select>
+
+
+	<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
 	SELECT item_no
 	FROM ProfessionalAdvancedInformation
 	WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
@@ -369,6 +375,14 @@
 		INSERT INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
 		VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
 	</insert>
+
+	<!-- 기존 전문가 고급 정보 확인 -->
+	<select id="findExistingProAdvancedInfo" resultType="Integer">
+		SELECT pro_advanced_no FROM ProfessionalAdvancedInformation
+		WHERE pro_no = #{proNo} AND item_no = #{itemNo}
+	</select>
+
+
 
 	<insert id="add2Portfolio">
 		INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content, visibility, thumbnail_image,

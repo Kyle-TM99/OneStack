@@ -115,6 +115,7 @@
         JOIN ProfessionalAdvancedInformation pa ON p.pro_no = pa.pro_no
         JOIN Category c ON pa.item_no = c.item_no
         WHERE m.member_status = 0
+            AND p.professor_status = 1
         <if test="appType != null and !appType.isEmpty()">
             AND (
             <foreach collection="appType" item="type" separator=" AND ">
@@ -145,6 +146,7 @@
         JOIN ProfessionalAdvancedInformation pa ON p.pro_no = pa.pro_no
         JOIN Category c ON pa.item_no = c.item_no
         WHERE m.member_status = 0
+            AND p.professor_status = 1
         <if test="appType != null and !appType.isEmpty()">
             AND (
             <foreach collection="appType" item="type" separator=" AND ">

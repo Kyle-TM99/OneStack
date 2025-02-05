@@ -56,10 +56,10 @@ public class ProfessionalService {
             advancedInfo.setItemNo(request.getItemNo());
             List<String> surveyAnswers = request.getSurveyAnswers();
             advancedInfo.setProAnswer1(surveyAnswers.get(0));
-            advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ? surveyAnswers.get(1) : null);
-            advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ? surveyAnswers.get(2) : null);
-            advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ? surveyAnswers.get(3) : null);
-            advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ? surveyAnswers.get(4) : null);
+            advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ?surveyAnswers.get(1) : null);
+            advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ?surveyAnswers.get(2) : null);
+            advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ?surveyAnswers.get(3) : null);
+            advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ?surveyAnswers.get(4) : null);
 
 
             professionalMapper.addProAdvancedInfo(advancedInfo);
@@ -197,19 +197,26 @@ public class ProfessionalService {
 
     // 포트폴리오 수정
     @Transactional
-    public void updateProConversionData(ProUpdateRequest request) {
+    public void updateProConversionData(ProUpdateRequest request, HttpSession session) {
+
+        Member loginUser = (Member) session.getAttribute("member");
+        if (loginUser == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
         // ✅ 기존 포트폴리오 정보 가져오기
         Portfolio existingPortfolio = professionalMapper.getPortfolioEntityById(request.getPortfolioNo());
         if (existingPortfolio == null) {
             throw new RuntimeException("포트폴리오 데이터를 찾을 수 없습니다.");
         }
 
-        // ✅ 같은 itemNo가 있는지 확인 (현재 포트폴리오 제외)
-        int existingCount = professionalMapper.countExistingItemNoExcludingCurrent(
-                request.getProNo(), request.getItemNo(), request.getProAdvancedNo());
-
-        if (existingCount > 0) {
-            throw new IllegalStateException("이미 같은 전문 분야를 가진 포트폴리오가 존재합니다.");
+        Integer proNo = professionalMapper.findProNoByMemberNo(loginUser.getMemberNo());
+        if (proNo == null) {
+            throw new IllegalStateException("전문가 등록이 필요합니다.");
+        }
+        int duplicateCount = professionalMapper.countExistingItemNoExcludingCurrent(proNo, request.getItemNo(), 0);
+        if (duplicateCount > 0) {
+            throw new IllegalStateException("이미 동일한 전문 분야의 포트폴리오가 존재합니다.");
         }
 
         // ✅ 포트폴리오 업데이트
@@ -244,15 +251,15 @@ public class ProfessionalService {
 
         professionalMapper.updatePortfolio(portfolio);
 
-        // ✅ 전문가 정보 업데이트
-        Professional professional = new Professional();
-        professional.setProNo(request.getProNo());
-        professional.setCategoryNo(request.getCategoryNo());
-        professional.setSelfIntroduction(request.getSelfIntroduction());
-        professional.setCareer(String.join(",", request.getCareer()));
-        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
-        professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
-        professionalMapper.updateProfessional(professional);
+//        // ✅ 전문가 정보 업데이트
+//        Professional professional = new Professional();
+//        professional.setProNo(request.getProNo());
+//        professional.setCategoryNo(request.getCategoryNo());
+//        professional.setSelfIntroduction(request.getSelfIntroduction());
+//        professional.setCareer(String.join(",", request.getCareer()));
+//        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
+//        professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
+//        professionalMapper.updateProfessional(professional);
 
         // ✅ 전문가 고급 정보 업데이트
         ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
@@ -283,9 +290,7 @@ public class ProfessionalService {
         return professionalMapper.getItemNoByPortfolio(portfolioNo);
     }
 
-
-    public void submitProConversionData(
-            Pro2ConversionRequest request, HttpSession session) {
+    public void submitProConversionData(Pro2ConversionRequest request, HttpSession session) {
 
         // 1. 로그인한 회원의 정보를 가져오기
         Member loginUser = (Member) session.getAttribute("member");
@@ -298,39 +303,55 @@ public class ProfessionalService {
         if (proNo == null) {
             throw new IllegalStateException("전문가 등록이 필요합니다.");
         }
+        int duplicateCount = professionalMapper.countExistingItemNoExcludingCurrent(proNo, request.getItemNo(), 0);
 
-        // 3. 조회한 proNo를 request에 설정
-        request.setProNo(proNo);
+        if (duplicateCount > 0) {
+            throw new IllegalStateException("이미 동일한 전문 분야의 포트폴리오가 존재합니다.");
+        }
 
-        // 전문가 고급정보 저장
-        ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
-        advancedInfo.setProNo(request.getProNo());
-        advancedInfo.setItemNo(request.getItemNo());
-        List<String> surveyAnswers = request.getSurveyAnswers();
-        advancedInfo.setProAnswer1(surveyAnswers.get(0));
-        advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ? surveyAnswers.get(1) : null);
-        advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ? surveyAnswers.get(2) : null);
-        advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ? surveyAnswers.get(3) : null);
-        advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ? surveyAnswers.get(4) : null);
 
-        professionalMapper.add2ProAdvancedInfo(advancedInfo);
-        int proAdvancedNo = advancedInfo.getProAdvancedNo();
+        // 3. 기존 전문가 고급정보(pro_advanced_no) 조회
+        Integer existingProAdvancedNo = professionalMapper.findExistingProAdvancedInfo(proNo, request.getItemNo());
+
+        int proAdvancedNo;
+
+        if (existingProAdvancedNo != null) {
+            // 기존 데이터가 존재하면 해당 pro_advanced_no 사용
+            proAdvancedNo = existingProAdvancedNo;
+        } else {
+            // 새 전문가 고급정보 저장
+            ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
+
+            advancedInfo.setProNo(proNo);
+            advancedInfo.setItemNo(request.getItemNo());
+
+            List<String> surveyAnswers = request.getSurveyAnswers();
+            advancedInfo.setProAnswer1(surveyAnswers.get(0));
+            advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ?surveyAnswers.get(1) : null);
+            advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ?surveyAnswers.get(2) : null);
+            advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ?surveyAnswers.get(3) : null);
+            advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ?surveyAnswers.get(4) : null);
+
+            // 새로운 pro_advanced 정보 추가
+            professionalMapper.add2ProAdvancedInfo(advancedInfo);
+            proAdvancedNo = advancedInfo.getProAdvancedNo(); // 생성된 PK 가져오기
+        }
 
         final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
-
         String thumbnailUrl = request.getThumbnailImage();
         if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
             thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
         }
 
-        // 포트폴리오 저장
+        // 4. 포트폴리오 저장
         Portfolio portfolio = new Portfolio();
-        portfolio.setProNo(request.getProNo());
-        portfolio.setProAdvancedNo(proAdvancedNo);
+        portfolio.setProNo(proNo);
+        portfolio.setProAdvancedNo(proAdvancedNo); // 기존 또는 새로운 pro_advanced_no 사용
         portfolio.setPortfolioTitle(request.getPortfolioTitle());
         portfolio.setPortfolioContent(request.getPortfolioContent());
         portfolio.setVisibility(true); // 공개
         portfolio.setThumbnailImage(thumbnailUrl);
+
         List<String> portfolioFilePaths = request.getPortfolioFilePaths();
         portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
         portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
@@ -343,6 +364,78 @@ public class ProfessionalService {
         portfolio.setPortfolioFile9(portfolioFilePaths.size() > 8 ? portfolioFilePaths.get(8) : null);
         portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
 
+        // 포트폴리오 저장
         professionalMapper.add2Portfolio(portfolio);
+        log.info("🎉 포트폴리오 저장 완료: portfolio_no={}", portfolio.getPortfolioNo());
     }
+
+
+
+
+//    public void submitProConversionData(
+//            Pro2ConversionRequest request, HttpSession session) {
+//
+//        // 1. 로그인한 회원의 정보를 가져오기
+//        Member loginUser = (Member) session.getAttribute("member");
+//        if (loginUser == null) {
+//            throw new IllegalStateException("로그인이 필요합니다.");
+//        }
+//
+//        // 2. memberNo를 통해 proNo 가져오기
+//        Integer proNo = professionalMapper.findProNoByMemberNo(loginUser.getMemberNo());
+//        if (proNo == null) {
+//            throw new IllegalStateException("전문가 등록이 필요합니다.");
+//        }
+//        int duplicateCount = professionalMapper.countExistingItemNoExcludingCurrent(proNo, request.getItemNo(), 0);
+//        if (duplicateCount > 0) {
+//            throw new IllegalStateException("이미 동일한 전문 분야의 포트폴리오가 존재합니다.");
+//        }
+//
+//        // 3. 조회한 proNo를 request에 설정
+//        request.setProNo(proNo);
+//
+//        // 전문가 고급정보 저장
+//        ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
+//        advancedInfo.setProNo(request.getProNo());
+//        advancedInfo.setItemNo(request.getItemNo());
+//
+//        List<String> surveyAnswers = request.getSurveyAnswers();
+//        advancedInfo.setProAnswer1(surveyAnswers.get(0));
+//        advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ? surveyAnswers.get(1) : null);
+//        advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ? surveyAnswers.get(2) : null);
+//        advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ? surveyAnswers.get(3) : null);
+//        advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ? surveyAnswers.get(4) : null);
+//
+//        professionalMapper.add2ProAdvancedInfo(advancedInfo);
+//        int proAdvancedNo = advancedInfo.getProAdvancedNo();
+//
+//        final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+//
+//        String thumbnailUrl = request.getThumbnailImage();
+//        if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
+//            thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
+//        }
+//
+//        // 포트폴리오 저장
+//        Portfolio portfolio = new Portfolio();
+//        portfolio.setProNo(request.getProNo());
+//        portfolio.setProAdvancedNo(proAdvancedNo);
+//        portfolio.setPortfolioTitle(request.getPortfolioTitle());
+//        portfolio.setPortfolioContent(request.getPortfolioContent());
+//        portfolio.setVisibility(true); // 공개
+//        portfolio.setThumbnailImage(thumbnailUrl);
+//        List<String> portfolioFilePaths = request.getPortfolioFilePaths();
+//        portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
+//        portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
+//        portfolio.setPortfolioFile3(portfolioFilePaths.size() > 2 ? portfolioFilePaths.get(2) : null);
+//        portfolio.setPortfolioFile4(portfolioFilePaths.size() > 3 ? portfolioFilePaths.get(3) : null);
+//        portfolio.setPortfolioFile5(portfolioFilePaths.size() > 4 ? portfolioFilePaths.get(4) : null);
+//        portfolio.setPortfolioFile6(portfolioFilePaths.size() > 5 ? portfolioFilePaths.get(5) : null);
+//        portfolio.setPortfolioFile7(portfolioFilePaths.size() > 6 ? portfolioFilePaths.get(6) : null);
+//        portfolio.setPortfolioFile8(portfolioFilePaths.size() > 7 ? portfolioFilePaths.get(7) : null);
+//        portfolio.setPortfolioFile9(portfolioFilePaths.size() > 8 ? portfolioFilePaths.get(8) : null);
+//        portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
+//
+//        professionalMapper.add2Portfolio(portfolio);
+//    }
 }
