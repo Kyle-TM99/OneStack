@@ -80,79 +80,86 @@
                         </th:block>
                     </div>
                     <p class="my-4" th:utext="${inquiry.inquiryContent}">문의 내용</p>
-                    <div class="col-md-2"></div>
-                </div>
 
-                <!-- 답변 영역 -->
-                <div class="row g-0 mt-3">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <div class="fw-bold mb-3 fs-3">답변
-                            <!-- 관리자 : 미출력 || 회원 : 답변 중일 때만 출력 -->
-                            <th:block th:if="${session.member.isAdmin == false and inquiry.inquiryStatus != '답변 대기' and inquiry.inquiryStatus != '답변 완료'}">
-                                <!-- 만족 버튼 -->
-                                <button id="satisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="만족">
-                                    <i class="fas fa-thumbs-up"></i>
-                                </button>
-                                <!-- 불만족 버튼 -->
-                                <button id="dissatisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="불만족">
-                                    <i class="fas fa-thumbs-down"></i>
-                                </button>
-                            </th:block>
-                        </div>
-
-                        <!-- 답변 작성 폼 영역 -->
-                        <div class="row g-0 mt-3"
-                             th:if="${inquiry.inquiryStatus == '답변 중' || (inquiry.inquiryStatus == '답변 대기' && session.member.isAdmin)}">
-                            <div class="col-md-12 mt-3">
-                                <div class="review-form" id="reviewForm">
-                                    <div class="form-group">
-                                        <textarea class="form-control review-textarea" id="reviewText" rows="3" placeholder="답변을 작성하세요" required></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="d-flex justify-content-end align-items-center mb-3 mt-3">
-                                        <button type="button" class="btn btn-primary" id="submitAnswer">답변 등록</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 답변이 없을 경우 메시지 출력 -->
-                        <th:block th:if="${session.member.isAdmin == false}">
-                            <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="alert alert-light text-center p-5 my-4">
-                                <i class="bi bi-hourglass-split fs-1 text-secondary mb-3 d-block"></i>
-                                <p class="fs-5 mb-2">관리자의 답변을 잠시만 기다려주세요</p>
-                                <p class="text-secondary mb-3">곧 답변을 작성할 예정입니다</p>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${session.member.isAdmin != false}">
-                            <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="alert alert-light text-center p-5 my-4">
-                                <i class="bi bi-envelope fs-1 text-secondary mb-3 d-block"></i>
-                                <p class="fs-5 mb-2">회원님의 새로운 문의가 도착했어요</p>
-                                <p class="text-secondary mb-3">답변을 기다리고 있습니다</p>
-                            </div>
-                        </th:block>
-
-                        <div class="row g-0 mb-2 border-top" th:each="inquiryAnswer : ${inquiryAnswer}">
-                            <!-- 답변 내용 -->
-                            <div class="text-start my-3">
-                                <img th:src="@{${inquiryAnswer.isAdmin ? '/images/admin.png' : '/images/default-profile.png'}}"
-                                     alt="프로필"
-                                     class="rounded-circle"
-                                     style="width: 40px; height: 40px;">
-                                <span class="m-0">
-                                    <span th:text="${inquiryAnswer.nickname}">작성자 닉네임</span>  |
-                                    <span class="text-secondary small" id="inquiryAnswerDate" th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy.MM.dd a HH:mm:ss')}">답변 작성 시간</span>
-                                </span>
-                                <p class="mb-1 my-3 ps-4" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
-                            </div>
-                            <input type="hidden" id="inquiryAnswerRegDate" th:value="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy.MM.dd. a HH:mm:ss')}"/>
-                        </div>
-                        <div class="col-md-2"></div>
+                    <!-- 목록으로 돌아가기 버튼 추가 -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <a th:href="@{/memberInquiry(pageNum=${pageNum}, type=${type}, keyword=${keyword})}"
+                           class="btn btn-secondary">
+                            <i class="bi bi-list me-1"></i> 목록으로
+                        </a>
                     </div>
                 </div>
+                <div class="col-md-2"></div>
+            </div>
 
+            <!-- 답변 영역 -->
+            <div class="row g-0 mt-3">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="fw-bold mb-3 fs-3">답변
+                        <!-- 관리자 : 미출력 || 회원 : 답변 중일 때만 출력 -->
+                        <th:block th:if="${session.member.isAdmin == false and inquiry.inquiryStatus != '답변 대기' and inquiry.inquiryStatus != '답변 완료'}">
+                            <!-- 만족 버튼 -->
+                            <button id="satisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="만족">
+                                <i class="fas fa-thumbs-up"></i>
+                            </button>
+                            <!-- 불만족 버튼 -->
+                            <button id="dissatisfactionButton" class="satisfaction-button" data-inquiry-no="${inquiry.inquiryNo}" title="불만족">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                        </th:block>
+                    </div>
+
+                    <!-- 답변 작성 폼 영역 -->
+                    <div class="row g-0 mt-3"
+                         th:if="${inquiry.inquiryStatus == '답변 중' || (inquiry.inquiryStatus == '답변 대기' && session.member.isAdmin)}">
+                        <div class="col-md-12 mt-3">
+                            <div class="review-form" id="reviewForm">
+                                <div class="form-group">
+                                    <textarea class="form-control review-textarea" id="reviewText" rows="3" placeholder="답변을 작성하세요" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="d-flex justify-content-end align-items-center mb-3 mt-3">
+                                    <button type="button" class="btn btn-primary" id="submitAnswer">답변 등록</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 답변이 없을 경우 메시지 출력 -->
+                    <th:block th:if="${session.member.isAdmin == false}">
+                        <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="alert alert-light text-center p-5 my-4">
+                            <i class="bi bi-hourglass-split fs-1 text-secondary mb-3 d-block"></i>
+                            <p class="fs-5 mb-2">관리자의 답변을 잠시만 기다려주세요</p>
+                            <p class="text-secondary mb-3">곧 답변을 작성할 예정입니다</p>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${session.member.isAdmin != false}">
+                        <div th:if="${#lists.isEmpty(inquiryAnswer)}" class="alert alert-light text-center p-5 my-4">
+                            <i class="bi bi-envelope fs-1 text-secondary mb-3 d-block"></i>
+                            <p class="fs-5 mb-2">회원님의 새로운 문의가 도착했어요</p>
+                            <p class="text-secondary mb-3">답변을 기다리고 있습니다</p>
+                        </div>
+                    </th:block>
+
+                    <div class="row g-0 mb-2 border-top" th:each="inquiryAnswer : ${inquiryAnswer}">
+                        <!-- 답변 내용 -->
+                        <div class="text-start my-3">
+                            <img th:src="@{${inquiryAnswer.isAdmin ? '/images/admin.png' : '/images/default-profile.png'}}"
+                                 alt="프로필"
+                                 class="rounded-circle"
+                                 style="width: 40px; height: 40px;">
+                            <span class="m-0">
+                                <span th:text="${inquiryAnswer.nickname}">작성자 닉네임</span>  |
+                                <span class="text-secondary small" id="inquiryAnswerDate" th:text="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy.MM.dd a HH:mm:ss')}">답변 작성 시간</span>
+                            </span>
+                            <p class="mb-1 my-3 ps-4" th:text="${inquiryAnswer.inquiryAnswerContent}">답변 내용</p>
+                        </div>
+                        <input type="hidden" id="inquiryAnswerRegDate" th:value="${#dates.format(inquiryAnswer.inquiryAnswerRegDate, 'yyyy.MM.dd. a HH:mm:ss')}"/>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
             </div>
         </div>
         <script th:src="@{/js/inquiry.js}"></script>

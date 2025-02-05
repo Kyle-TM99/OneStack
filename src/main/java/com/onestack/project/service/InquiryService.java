@@ -20,8 +20,25 @@ public class InquiryService {
     @Autowired
     private InquiryMapper inquiryMapper;
 
-    // 문의글 목록 조회 (검색 조건)
-    public List<MemberWithInquiry> getInquiry(int memberNo, String type, String keyword, boolean isAdmin) {
+    // 문의글 목록 조회 (검색 조건, 페이징 포함)
+    public List<MemberWithInquiry> getInquiry(int memberNo, String type, String keyword, boolean isAdmin, int startRow, int num) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberNo", memberNo);
+        params.put("isAdmin", isAdmin);
+
+        if (type != null && keyword != null && !type.isEmpty() && !keyword.isEmpty()) {
+            params.put("type", type);
+            params.put("keyword", keyword);
+        }
+
+        params.put("startRow", startRow);
+        params.put("num", num);
+
+        return inquiryMapper.getInquiry(params);
+    }
+
+    // 검색 조건에 맞는 전체 문의글 수 조회
+    public int getInquiryCount(int memberNo, String type, String keyword, boolean isAdmin) {
         Map<String, Object> params = new HashMap<>();
         params.put("memberNo", memberNo);
         params.put("isAdmin", isAdmin);
@@ -32,12 +49,7 @@ public class InquiryService {
             params.put("keyword", keyword);
         }
 
-        return inquiryMapper.getInquiry(params);
-    }
-
-    // 검색 조건에 맞는 전체 문의글 수 조회
-    public int getInquiryCount(String type, String keyword) {
-        return inquiryMapper.getInquiryCount(type, keyword);
+        return inquiryMapper.getInquiryCount(params);
     }
 
     // 문의글 작성

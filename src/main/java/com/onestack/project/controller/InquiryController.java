@@ -31,28 +31,46 @@ public class InquiryController {
     public String getInquiry(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize,
             HttpSession session,
             Model model) {
 
         Member member = (Member) session.getAttribute("member");
         int memberNo = member.getMemberNo();
-        boolean isAdmin = member.isAdmin(); // isAdmin 값 가져오기
+        boolean isAdmin = member.isAdmin();
 
-        // isAdmin 값을 전달하여 문의글 조회
-        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(memberNo, type, keyword, isAdmin);
+        // 시작 행 번호 계산
+        int startRow = (pageNum - 1) * pageSize;
+
+        // 전체 게시글 수 조회
+        int totalCount = inquiryService.getInquiryCount(memberNo, type, keyword, isAdmin);
+
+        // 디버깅용 로그 추가
+        System.out.println("현재 게시글 수: " + totalCount);
+        System.out.println("페이지 크기: " + pageSize);
+
+        // 전체 페이지 수 계산 수정
+        int totalPages = totalCount == 0 ? 1 : (totalCount - 1) / pageSize + 1;
+
+        // 현재 페이지가 총 페이지 수보다 크면 첫 페이지로 리다이렉트
+        if (pageNum > totalPages) {
+            return "redirect:/memberInquiry?pageNum=1";
+        }
+
+        // 문의글 목록 조회
+        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(memberNo, type, keyword, isAdmin, startRow, pageSize);
 
         model.addAttribute("inquiryList", inquiryList);
-
-        // 페이징 정보
-        int totalCount = inquiryService.getInquiryCount(type, keyword);
-
-        boolean searchOption = (type != null && !type.isEmpty() && keyword != null && !keyword.isEmpty());
-
-        model.addAttribute("searchOption", searchOption);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("searchOption", (type != null && !type.isEmpty() && keyword != null && !keyword.isEmpty()));
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 
-        return "inquiry/inquiryForm"; // 뷰 이름
+        return "inquiry/inquiryForm";
     }
 
     // 문의글 작성 폼으로 이동
@@ -80,12 +98,25 @@ public class InquiryController {
 
     // 문의글 상세보기
     @GetMapping("/{inquiryNo}")
-    public String getInquiryDetail(@PathVariable int inquiryNo, Model model) {
+    public String getInquiryDetail(
+            @PathVariable int inquiryNo,
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword,
+            Model model) {
+
+        // 기존 상세 조회 로직
         Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
         List<InquiryAnswer> inquiryAnswer = inquiryService.getInquiryAnswer(inquiryNo);
 
         model.addAttribute("inquiry", inquiry);
         model.addAttribute("inquiryAnswer", inquiryAnswer);
+
+        // 이전 페이지 정보를 모델에 추가
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+
         return "inquiry/inquiryDetail";
     }
 

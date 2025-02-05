@@ -23,6 +23,29 @@
             color: #0d6efd !important;
             font-weight: bold;
         }
+        .pagination .page-link {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            color: #0d6efd !important;
+        }
+        .pagination .active .page-link {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .pagination .disabled .page-link {
+            color: #6c757d !important;
+            cursor: not-allowed;
+        }
+        .pagination .page-item:not(.active) .page-link {
+            background-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -103,26 +126,26 @@
             <div class="col-md-1"></div>
         </div>
 
-        <div class="row g-0">
+        <div class="row g-0" style="height: 630px;">
             <div class="col-md-2"></div>
             <div class="col-md-8">
 
                 <!-- 상태 안내 -->
                 <th:block th:if="${session.member.isAdmin != true and
-                                   ((searchOption and not #lists.isEmpty(inquiryList)) or
-                                    (not searchOption and not #lists.isEmpty(inquiryList)))}">
+                                       ((searchOption and not #lists.isEmpty(inquiryList)) or
+                                        (not searchOption and not #lists.isEmpty(inquiryList)))}">
                     <div class="row mt-4 mb-3">
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end align-items-center">
+                                    <span class="me-3">
+                                        <i class="fas fa-circle" style="color: #6c757d;"></i> 답변 대기
+                                    </span>
                                 <span class="me-3">
-                                    <i class="fas fa-circle" style="color: #6c757d;"></i> 답변 대기
-                                </span>
-                                <span class="me-3">
-                                    <i class="fas fa-circle" style="color: #ffc107;"></i> 답변 중
-                                </span>
+                                        <i class="fas fa-circle" style="color: #ffc107;"></i> 답변 중
+                                    </span>
                                 <span>
-                                    <i class="fas fa-circle" style="color: #198754;"></i> 답변 완료
-                                </span>
+                                        <i class="fas fa-circle" style="color: #198754;"></i> 답변 완료
+                                    </span>
                             </div>
                         </div>
                     </div>
@@ -130,110 +153,153 @@
 
                 <!-- 검색 요청일 때 -->
                 <th:block th:if="${searchOption}">
-                        <!-- 게시글이 있는 경우 -->
-                        <th:block th:if="${not #lists.isEmpty(inquiryList)}">
-                            <!-- 관리자용 게시글 목록 출력 -->
-                            <div class="row align-items-center mb-3 py-2 border-bottom border-top">
-                                <div class="col-2 text-center">
-                                    <span class="fw-bold">작성자</span>
-                                </div>
-                                <div class="col-6 text-center">
-                                    <span class="fw-bold">제목</span>
-                                </div>
-                                <div class="col-1 text-center">
-                                    <span class="fw-bold">상태</span>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <span class="fw-bold">작성시간</span>
-                                </div>
+                    <!-- 게시글이 있는 경우 -->
+                    <th:block th:if="${not #lists.isEmpty(inquiryList)}">
+                        <!-- 관리자용 게시글 목록 출력 -->
+                        <div class="row align-items-center mb-3 py-2 border-bottom border-top">
+                            <div class="col-2 text-center">
+                                <span class="fw-bold">작성자</span>
                             </div>
-                            <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
-                                <div class="col-2 text-center">
-                                    <span th:text="${inquiry.member.nickname}">작성자</span>
-                                </div>
-                                <div class="col-6">
-                                    <a class="text-decoration-none inquiry-title" style="color: #000000;"
-                                       th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                       th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                </div>
-                                <div class="col-1 text-center">
-                                    <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                        <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
-                                        <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
-                                        <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
-                                    </span>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
-                                </div>
+                            <div class="col-6 text-center">
+                                <span class="fw-bold">제목</span>
                             </div>
-                        </th:block>
+                            <div class="col-1 text-center">
+                                <span class="fw-bold">상태</span>
+                            </div>
+                            <div class="col-3 text-center">
+                                <span class="fw-bold">작성시간</span>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                            <div class="col-2 text-center">
+                                <span th:text="${inquiry.member.nickname}">작성자</span>
+                            </div>
+                            <div class="col-6">
+                                <a class="text-decoration-none inquiry-title" style="color: #000000;"
+                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}"
+                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                            </div>
+                            <div class="col-1 text-center">
+                                        <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                            <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
+                                            <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
+                                            <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
+                                        </span>
+                            </div>
+                            <div class="col-3 text-center">
+                                <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
+                            </div>
+                        </div>
+                    </th:block>
 
-                        <!-- 게시글이 없는 경우 -->
-                        <th:block th:if="${#lists.isEmpty(inquiryList)}">
-                            <!-- 검색 결과 없음 메시지 -->
-                            <div class="alert alert-light border text-center p-5 my-5">
-                                <i class="bi bi-search fs-1 text-secondary mb-3"></i>
-                                <p class="fs-5 mb-2">"[[${keyword}]]"에 대한 검색 결과가 없습니다</p>
-                                <p class="text-secondary mb-3">다른 검색어를 입력해보세요</p>
-                                <a href="/memberInquiry" class="btn btn-light border">전체 목록 보기</a>
-                            </div>
-                        </th:block>
+                    <!-- 게시글이 없는 경우 -->
+                    <th:block th:if="${#lists.isEmpty(inquiryList)}">
+                        <!-- 검색 결과 없음 메시지 -->
+                        <div class="alert alert-light border text-center p-5 my-5">
+                            <i class="bi bi-search fs-1 text-secondary mb-3"></i>
+                            <p class="fs-5 mb-2">"[[${keyword}]]"에 대한 검색 결과가 없습니다</p>
+                            <p class="text-secondary mb-3">다른 검색어를 입력해보세요</p>
+                            <a href="/memberInquiry" class="btn btn-light border">전체 목록 보기</a>
+                        </div>
+                    </th:block>
                 </th:block>
 
                 <!-- 일반 요청일 때 -->
                 <th:block th:if="${not searchOption}">
-                        <!-- 게시글이 있는 경우 -->
-                        <th:block th:if="${not #lists.isEmpty(inquiryList)}">
-                            <!-- 관리자용 게시글 목록 출력 -->
-                            <div class="row align-items-center mb-3 py-2 border-bottom border-top">
-                                <div class="col-2 text-center">
-                                    <span class="fw-bold">작성자</span>
-                                </div>
-                                <div class="col-6 text-center">
-                                    <span class="fw-bold">제목</span>
-                                </div>
-                                <div class="col-1 text-center">
-                                    <span class="fw-bold">상태</span>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <span class="fw-bold">작성시간</span>
-                                </div>
+                    <!-- 게시글이 있는 경우 -->
+                    <th:block th:if="${not #lists.isEmpty(inquiryList)}">
+                        <!-- 관리자용 게시글 목록 출력 -->
+                        <div class="row align-items-center mb-3 py-2 border-bottom border-top">
+                            <div class="col-2 text-center">
+                                <span class="fw-bold">작성자</span>
                             </div>
-                            <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
-                                <div class="col-2 text-center">
-                                    <span th:text="${inquiry.member.nickname}">작성자</span>
-                                </div>
-                                <div class="col-6">
-                                    <a class="text-decoration-none inquiry-title" style="color: #000000;"
-                                       th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo})}"
-                                       th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
-                                </div>
-                                <div class="col-1 text-center">
-                                    <span th:switch="${inquiry.inquiry.inquiryStatus}">
-                                        <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
-                                        <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
-                                        <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
-                                    </span>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
-                                </div>
+                            <div class="col-6 text-center">
+                                <span class="fw-bold">제목</span>
                             </div>
-                        </th:block>
+                            <div class="col-1 text-center">
+                                <span class="fw-bold">상태</span>
+                            </div>
+                            <div class="col-3 text-center">
+                                <span class="fw-bold">작성시간</span>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-3 py-2" th:each="inquiry : ${inquiryList}">
+                            <div class="col-2 text-center">
+                                <span th:text="${inquiry.member.nickname}">작성자</span>
+                            </div>
+                            <div class="col-6">
+                                <a class="text-decoration-none inquiry-title" style="color: #000000;"
+                                   th:href="@{/memberInquiry/{inquiryNo}(inquiryNo=${inquiry.inquiry.inquiryNo}, pageNum=${currentPage}, type=${type}, keyword=${keyword})}"
+                                   th:text="${inquiry.inquiry.inquiryTitle}">게시글 제목</a>
+                            </div>
+                            <div class="col-1 text-center">
+                                        <span th:switch="${inquiry.inquiry.inquiryStatus}">
+                                            <span th:case="'답변 대기'" class="badge rounded-pill text-bg-secondary">답변 대기</span>
+                                            <span th:case="'답변 중'" class="badge rounded-pill text-bg-warning">답변 중</span>
+                                            <span th:case="'답변 완료'" class="badge text-bg-success">답변 완료</span>
+                                        </span>
+                            </div>
+                            <div class="col-3 text-center">
+                                <span th:text="${#dates.format(inquiry.inquiry.inquiryRegDate, 'yyyy.MM.dd a HH:mm')}"></span>
+                            </div>
+                        </div>
+                    </th:block>
 
-                        <!-- 게시글이 없는 경우 -->
-                        <th:block th:if="${#lists.isEmpty(inquiryList)}">
-                            <!-- 게시글 없음 메시지 -->
-                            <div class="row text-center py-3 d-flex justify-content-center my-5" style="width: 100%;">
-                                문의글이 존재하지 않습니다. 문의글을 작성해주세요.
-                            </div>
-                        </th:block>
+                    <!-- 게시글이 없는 경우 -->
+                    <th:block th:if="${#lists.isEmpty(inquiryList)}">
+                        <!-- 게시글 없음 메시지 -->
+                        <div class="row text-center py-3 d-flex justify-content-center my-5" style="width: 100%;">
+                            문의글이 존재하지 않습니다. 문의글을 작성해주세요.
+                        </div>
+                    </th:block>
 
                 </th:block>
+
             </div>
             <div class="col-md-2"></div>
         </div>
+
+        <!-- 페이징 네비게이션 추가 -->
+        <div class="row mt-2">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- 이전 페이지 -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link border-0 shadow-none"
+                               th:href="@{/memberInquiry(pageNum=${currentPage - 1}, pageSize=${pageSize}, type=${type}, keyword=${keyword})}"
+                               aria-label="Previous">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- 페이지 번호들 -->
+                        <th:block th:with=" startPage=${(currentPage - 4) < 1 ? 1 : (currentPage - 4)},
+                                                endPage=${(startPage + 9) > totalPages ? totalPages : (startPage + 9)}">
+                            <li class="page-item mx-1" th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                                th:classappend="${pageNum == currentPage} ? 'active'">
+                                <a class="page-link rounded-circle border-0"
+                                   th:href="@{/memberInquiry(pageNum=${pageNum}, pageSize=${pageSize}, type=${type}, keyword=${keyword})}"
+                                   th:text="${pageNum}"
+                                   th:classappend="${pageNum == currentPage} ? 'bg-primary text-white' : 'text-dark'"></a>
+                            </li>
+                        </th:block>
+
+                        <!-- 다음 페이지 -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link border-0 shadow-none"
+                               th:href="@{/memberInquiry(pageNum=${currentPage + 1}, pageSize=${pageSize}, type=${type}, keyword=${keyword})}"
+                               aria-label="Next">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
     </div>
     <div class="col-md-2"></div>
 </div>
