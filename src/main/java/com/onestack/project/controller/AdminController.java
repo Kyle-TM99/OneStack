@@ -98,20 +98,22 @@ public class AdminController {
         model.addAttribute("pro", pList);
         return "adminDashboard/screeningManagement/reviewPendingInquiry";
     }
-    
+
     @PostMapping("/reviewPro")
     public ResponseEntity<String> reviewPro(@RequestBody Map<String, Object> request) {
         try {
             int proNo = Integer.parseInt(request.get("proNo").toString());
             Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
-            String screeningMsg = (String) request.get("screeningMsg");
-            
+            String screeningMsg = request.get("screeningMsg") != null ? request.get("screeningMsg").toString() : "";
+
+            // 전문가 심사 상태 업데이트
             adminService.updateProStatus(proNo, professorStatus, screeningMsg);
+
             return ResponseEntity.ok("심사가 완료되었습니다.");
         } catch (Exception e) {
             log.error("심사 처리 중 오류 발생: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                               .body("심사 처리 중 오류가 발생했습니다.");
+                    .body("심사 처리 중 오류가 발생했습니다.");
         }
     }
     

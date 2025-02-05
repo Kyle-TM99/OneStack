@@ -15,9 +15,14 @@ public interface ManagerMapper {
 
 	List<MemProPortPaiCate> getMemProPortPaiCate();
 
-	void updateProStatus(@Param("proNo") int proNo, 
-            @Param("professorStatus") Integer professorStatus, 
-            @Param("screeningMsg") String screeningMsg);
+	void updateProStatus(@Param("proNo") int proNo,
+						 @Param("professorStatus") Integer professorStatus,
+						 @Param("screeningMsg") String screeningMsg);
+
+	// Member 테이블 업데이트 (memberType 변경)
+	void updateMemberType(@Param("proNo") int proNo,
+						  @Param("professorStatus") Integer professorStatus);
+
 
 	int checkDuplicateFields(Map<String, Object> params);
 

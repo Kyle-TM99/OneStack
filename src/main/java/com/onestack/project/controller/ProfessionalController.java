@@ -374,6 +374,29 @@ public class ProfessionalController {
         }
     }
 
+    @PostMapping("/proConversion/submit")
+    @ResponseBody
+    public ResponseEntity<?> submitProConversionData(@RequestBody Pro2ConversionRequest request, HttpSession session) {
+        try {
+            log.info("수신된 데이터: {}", request);
+
+            // 빈 Survey Answer 제거
+            List<String> filteredAnswers = request.getSurveyAnswers().stream()
+                    .filter(answer -> answer != null && !answer.trim().isEmpty())
+                    .toList();
+            request.setSurveyAnswers(filteredAnswers);
+
+            // 데이터 저장
+            professionalService.submitProConversionData(request, session);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
+        } catch (Exception e) {
+            log.error("전문가 데이터 저장 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "저장 실패"));
+        }
+    }
+
     @GetMapping("/portfolioDetail/{portfolioNo}")
     @ResponseBody
     public ResponseEntity<?> getPortfolioDetail(@PathVariable("portfolioNo") int portfolioNo) {
@@ -416,5 +439,7 @@ public class ProfessionalController {
         System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
         return ResponseEntity.ok(response);
     }
+
+
 
 }

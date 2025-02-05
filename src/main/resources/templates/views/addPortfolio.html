@@ -23,7 +23,7 @@
                             <!-- ✅ 카테고리 선택 -->
                             <label for="categoryNo">카테고리 *</label>
                             <select id="categoryNo" name="categoryNo" class="form-select mb-3">
-                                <option value=""hidden selected>카테고리를 선택해주세요.</option>
+                                <option value="">카테고리를 선택해주세요.</option>
                                 <option value="1">개발</option>
                                 <option value="2">데이터</option>
                             </select>
@@ -32,7 +32,7 @@
                             <label for="itemNo">전문분야 *</label>
                             <select id="itemNo" name="itemNo" class="form-select mb-3"
                                     onchange="location.href='/portfolioList/addPortfolio?itemNo=' + this.value">
-                                <option value="" hidden selected>전문분야 선택</option>
+                                <option value="">전문분야 선택</option>
                             </select>
 
                             <!-- ✅ 설문조사 영역 -->
@@ -60,126 +60,126 @@
                             </div>
 
                             <!-- 자기소개 -->
-                        <div class="mb-3">
-                            <label for="selfIntroduction" class="form-label"><i class="fas fa-user"></i> 자기소개 *</label>
-                            <textarea class="form-control" id="selfIntroduction" name="selfIntroduction" rows="3" required></textarea>
-                        </div>
-
-                        <!-- 연락 가능 시간 -->
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-clock"></i> 연락 가능 시간 *</label>
-                            <div class="d-flex gap-2">
-                                <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
-                                    <option value="" hidden>시작 시간</option>
-                                    <option value="오전 6시">오전 6시</option>
-                                    <option value="오전 7시">오전 7시</option>
-                                    <option value="오전 8시">오전 8시</option>
-                                    <option value="오전 9시">오전 9시</option>
-                                    <option value="오전 10시">오전 10시</option>
-                                    <option value="오전 11시">오전 11시</option>
-                                    <option value="오후 12시">오후 12시</option>
-                                    <option value="오후 1시">오후 1시</option>
-                                    <option value="오후 2시">오후 2시</option>
-                                    <option value="오후 3시">오후 3시</option>
-                                    <option value="오후 4시">오후 4시</option>
-                                    <option value="오후 5시">오후 5시</option>
-                                    <option value="오후 6시">오후 6시</option>
-                                    <option value="오후 7시">오후 7시</option>
-                                    <option value="오후 8시">오후 8시</option>
-                                    <option value="오후 9시">오후 9시</option>
-                                    <option value="오후 10시">오후 10시</option>
-                                </select>
-                                <span class="align-self-center">~</span>
-                                <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
-                                    <option value="" hidden>종료 시간</option>
-                                    <option value="오전 6시">오전 6시</option>
-                                    <option value="오전 7시">오전 7시</option>
-                                    <option value="오전 8시">오전 8시</option>
-                                    <option value="오전 9시">오전 9시</option>
-                                    <option value="오전 10시">오전 10시</option>
-                                    <option value="오전 11시">오전 11시</option>
-                                    <option value="오후 12시">오후 12시</option>
-                                    <option value="오후 1시">오후 1시</option>
-                                    <option value="오후 2시">오후 2시</option>
-                                    <option value="오후 3시">오후 3시</option>
-                                    <option value="오후 4시">오후 4시</option>
-                                    <option value="오후 5시">오후 5시</option>
-                                    <option value="오후 6시">오후 6시</option>
-                                    <option value="오후 7시">오후 7시</option>
-                                    <option value="오후 8시">오후 8시</option>
-                                    <option value="오후 9시">오후 9시</option>
-                                    <option value="오후 10시">오후 10시</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-field my-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <label for="career">경력 *</label>
-                                <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
-                            </div>
-                            <div id="careerContainer">
-                                <input type="text" class="form-control mb-2" id="career" name="career" required>
-                            </div>
-                        </div>
-
-                        <div class="form-field my-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <label for="awardCareer">수상경력 *</label>
-                                <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
-                            </div>
-                            <div id="awardsContainer">
-                                <input type="text" class="form-control" id="awardCareer" name="awardCareer">
-                            </div>
-                        </div>
-                        <!-- 포트폴리오 제목 -->
-                        <div class="form-field my-3">
-                            <label for="portfolioTitle">포트폴리오 제목 *</label>
-                            <input type="text" class="form-control mb-2" name="portfolioTitle" required>
-                            <label for="portfolioContent">포트폴리오 내용 *</label>
-                            <textarea class="form-control mb-2" name="portfolioContent" required></textarea>
-                            <!-- 썸네일 이미지 표시 -->
-                            <label for="thumbnailImage" class="form-label">썸네일 이미지 *</label>
-                            <input type="file" class="form-control" id="thumbnailImage" name="thumbnailImage" accept="image/*">
-
-                            <!-- 포트폴리오 파일 표시 -->
-                            <div class="mb-3" id="portfolioFileContainer">
-                                <label for="portfolioFile1" class="form-label">포트폴리오 파일 *</label>
-                                <input type="file" class="form-control" id="portfolioFile1" name="portfolioFiles" accept="image/*">
-                                <button type="button" class="btn btn-secondary btn-sm float-end mt-2" id="addFileButtonBtn">파일 추가</button>
-                            </div>
-                            <div id="fileInfo" class="mt-2 text-muted">
-                                <small>최대 10개의 파일을 추가할 수 있습니다.</small>
+                            <div class="mb-3" th:if="${member.memberType != 1}">
+                                <label for="selfIntroduction" class="form-label"><i class="fas fa-user"></i> 자기소개 *</label>
+                                <textarea class="form-control" id="selfIntroduction" name="selfIntroduction" rows="3" required></textarea>
                             </div>
 
-                        </div>
-                        <div class="d-none">
-                        <label for="proAnswer1">전문가 질문 1 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
-                        <label for="proAnswer2">전문가 질문 2 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer2" required readonly>
-                        <label for="proAnswer3">전문가 질문 3 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer3" readonly>
-                        <label for="proAnswer4">전문가 질문 4 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer4" readonly>
-                        <label for="proAnswer5">전문가 질문 5 *</label>
-                        <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
-                        <button type="submit" id="submitProConversionBtn" class="custom-button2 w-100 my-5">심사 요청</button>
-                        </div>
+                            <!-- 연락 가능 시간 -->
+                            <div class="mb-3" th:if="${member.memberType != 1}">
+                                <label class="form-label"><i class="fas fa-clock"></i> 연락 가능 시간 *</label>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required>
+                                        <option value="" hidden>시작 시간</option>
+                                        <option value="오전 6시">오전 6시</option>
+                                        <option value="오전 7시">오전 7시</option>
+                                        <option value="오전 8시">오전 8시</option>
+                                        <option value="오전 9시">오전 9시</option>
+                                        <option value="오전 10시">오전 10시</option>
+                                        <option value="오전 11시">오전 11시</option>
+                                        <option value="오후 12시">오후 12시</option>
+                                        <option value="오후 1시">오후 1시</option>
+                                        <option value="오후 2시">오후 2시</option>
+                                        <option value="오후 3시">오후 3시</option>
+                                        <option value="오후 4시">오후 4시</option>
+                                        <option value="오후 5시">오후 5시</option>
+                                        <option value="오후 6시">오후 6시</option>
+                                        <option value="오후 7시">오후 7시</option>
+                                        <option value="오후 8시">오후 8시</option>
+                                        <option value="오후 9시">오후 9시</option>
+                                        <option value="오후 10시">오후 10시</option>
+                                    </select>
+                                    <span class="align-self-center">~</span>
+                                    <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required>
+                                        <option value="" hidden>종료 시간</option>
+                                        <option value="오전 6시">오전 6시</option>
+                                        <option value="오전 7시">오전 7시</option>
+                                        <option value="오전 8시">오전 8시</option>
+                                        <option value="오전 9시">오전 9시</option>
+                                        <option value="오전 10시">오전 10시</option>
+                                        <option value="오전 11시">오전 11시</option>
+                                        <option value="오후 12시">오후 12시</option>
+                                        <option value="오후 1시">오후 1시</option>
+                                        <option value="오후 2시">오후 2시</option>
+                                        <option value="오후 3시">오후 3시</option>
+                                        <option value="오후 4시">오후 4시</option>
+                                        <option value="오후 5시">오후 5시</option>
+                                        <option value="오후 6시">오후 6시</option>
+                                        <option value="오후 7시">오후 7시</option>
+                                        <option value="오후 8시">오후 8시</option>
+                                        <option value="오후 9시">오후 9시</option>
+                                        <option value="오후 10시">오후 10시</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-field my-3" th:if="${member.memberType != 1}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="career">경력 *</label>
+                                    <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                                </div>
+                                <div id="careerContainer">
+                                    <input type="text" class="form-control mb-2" id="career" name="career" required>
+                                </div>
+                            </div>
+
+                            <div class="form-field my-3" th:if="${member.memberType != 1}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="awardCareer">수상경력 *</label>
+                                    <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm mb-2">추가하기</button>
+                                </div>
+                                <div id="awardsContainer">
+                                    <input type="text" class="form-control" id="awardCareer" name="awardCareer">
+                                </div>
+                            </div>
+                            <!-- 포트폴리오 제목 -->
+                            <div class="form-field my-3">
+                                <label for="portfolioTitle">포트폴리오 제목 *</label>
+                                <input type="text" class="form-control mb-2" name="portfolioTitle" required>
+                                <label for="portfolioContent">포트폴리오 내용 *</label>
+                                <textarea class="form-control mb-2" name="portfolioContent" required></textarea>
+                                <!-- 썸네일 이미지 표시 -->
+                                <label for="thumbnailImage" class="form-label">썸네일 이미지 *</label>
+                                <input type="file" class="form-control" id="thumbnailImage" name="thumbnailImage" accept="image/*">
+
+                                <!-- 포트폴리오 파일 표시 -->
+                                <div class="mb-3" id="portfolioFileContainer">
+                                    <label for="portfolioFile1" class="form-label">포트폴리오 파일 *</label>
+                                    <input type="file" class="form-control" id="portfolioFile1" name="portfolioFiles" accept="image/*">
+                                    <button type="button" class="btn btn-secondary btn-sm float-end mt-2" id="addFileButtonBtn">파일 추가</button>
+                                </div>
+                                <div id="fileInfo" class="mt-2 text-muted">
+                                    <small>최대 10개의 파일을 추가할 수 있습니다.</small>
+                                </div>
+
+                            </div>
+                            <div class="d-none">
+                                <label for="proAnswer1">전문가 질문 1 *</label>
+                                <input type="text" class="form-control mb-2" name="proAnswer1" required readonly>
+                                <label for="proAnswer2">전문가 질문 2 *</label>
+                                <input type="text" class="form-control mb-2" name="proAnswer2" required readonly>
+                                <label for="proAnswer3">전문가 질문 3 *</label>
+                                <input type="text" class="form-control mb-2" name="proAnswer3" readonly>
+                                <label for="proAnswer4">전문가 질문 4 *</label>
+                                <input type="text" class="form-control mb-2" name="proAnswer4" readonly>
+                                <label for="proAnswer5">전문가 질문 5 *</label>
+                                <input type="text" class="form-control mb-2" name="proAnswer5" readonly>
+                                <button type="submit" id="submitProConversionBtn" class="custom-button2 w-100 my-5">심사 요청</button>
+                            </div>
                             <!-- 제출 버튼 -->
-                        <div class="text-end mt-4">
-                            <button type="button" class="btn btn-primary" id="submitPortfolioBtn">추가 완료</button>
-                        </div>
-                    </form>
+                            <div class="text-end mt-4">
+                                <button type="button" class="btn btn-primary" id="submitPortfolioBtn">추가 완료</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>
 
 <th:block layout:fragment="script">
     <script th:src="@{/js/addPortfolio.js}"></script>
-    <script th:src="@{/js/header.js}"></script>
+<!--    <script th:src="@{/js/header.js}"></script>-->
 </th:block>
 </body>
 </html>

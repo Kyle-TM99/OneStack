@@ -233,9 +233,19 @@
 
 <!-- 전문가 심사 처리 -->
 <update id="updateProStatus" parameterType="map">
-    UPDATE Professional 
-    SET professor_status = #{professorStatus}, screening_msg = #{screeningMsg}
-    WHERE pro_no = #{proNo}
+	UPDATE Professional
+	SET professor_status = #{professorStatus}, screening_msg = #{screeningMsg}
+	WHERE pro_no = #{proNo}
+</update>
+
+<update id="updateMemberType" parameterType="map">
+	UPDATE Member
+	SET member_type = CASE
+						  WHEN #{professorStatus} = 1 THEN 1
+						  WHEN #{professorStatus} = 0 THEN 0
+						  ELSE member_type
+		END
+	WHERE member_no = (SELECT member_no FROM Professional WHERE pro_no = #{proNo})
 </update>
 
 <!-- 회원, 전문가, 포트폴리오, 카테고리 -->

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.onestack.project.domain.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.onestack.project.mapper.ProfessionalMapper;
@@ -282,4 +283,66 @@ public class ProfessionalService {
         return professionalMapper.getItemNoByPortfolio(portfolioNo);
     }
 
+
+    public void submitProConversionData(
+            Pro2ConversionRequest request, HttpSession session) {
+
+        // 1. 로그인한 회원의 정보를 가져오기
+        Member loginUser = (Member) session.getAttribute("member");
+        if (loginUser == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        // 2. memberNo를 통해 proNo 가져오기
+        Integer proNo = professionalMapper.findProNoByMemberNo(loginUser.getMemberNo());
+        if (proNo == null) {
+            throw new IllegalStateException("전문가 등록이 필요합니다.");
+        }
+
+        // 3. 조회한 proNo를 request에 설정
+        request.setProNo(proNo);
+
+        // 전문가 고급정보 저장
+        ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
+        advancedInfo.setProNo(request.getProNo());
+        advancedInfo.setItemNo(request.getItemNo());
+        List<String> surveyAnswers = request.getSurveyAnswers();
+        advancedInfo.setProAnswer1(surveyAnswers.get(0));
+        advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ? surveyAnswers.get(1) : null);
+        advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ? surveyAnswers.get(2) : null);
+        advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ? surveyAnswers.get(3) : null);
+        advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ? surveyAnswers.get(4) : null);
+
+        professionalMapper.add2ProAdvancedInfo(advancedInfo);
+        int proAdvancedNo = advancedInfo.getProAdvancedNo();
+
+        final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+
+        String thumbnailUrl = request.getThumbnailImage();
+        if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
+            thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
+        }
+
+        // 포트폴리오 저장
+        Portfolio portfolio = new Portfolio();
+        portfolio.setProNo(request.getProNo());
+        portfolio.setProAdvancedNo(proAdvancedNo);
+        portfolio.setPortfolioTitle(request.getPortfolioTitle());
+        portfolio.setPortfolioContent(request.getPortfolioContent());
+        portfolio.setVisibility(true); // 공개
+        portfolio.setThumbnailImage(thumbnailUrl);
+        List<String> portfolioFilePaths = request.getPortfolioFilePaths();
+        portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
+        portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
+        portfolio.setPortfolioFile3(portfolioFilePaths.size() > 2 ? portfolioFilePaths.get(2) : null);
+        portfolio.setPortfolioFile4(portfolioFilePaths.size() > 3 ? portfolioFilePaths.get(3) : null);
+        portfolio.setPortfolioFile5(portfolioFilePaths.size() > 4 ? portfolioFilePaths.get(4) : null);
+        portfolio.setPortfolioFile6(portfolioFilePaths.size() > 5 ? portfolioFilePaths.get(5) : null);
+        portfolio.setPortfolioFile7(portfolioFilePaths.size() > 6 ? portfolioFilePaths.get(6) : null);
+        portfolio.setPortfolioFile8(portfolioFilePaths.size() > 7 ? portfolioFilePaths.get(7) : null);
+        portfolio.setPortfolioFile9(portfolioFilePaths.size() > 8 ? portfolioFilePaths.get(8) : null);
+        portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
+
+        professionalMapper.add2Portfolio(portfolio);
+    }
 }

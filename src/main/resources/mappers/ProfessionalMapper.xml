@@ -330,6 +330,11 @@
 		WHERE portfolio_no = #{portfolioNo}
 	</select>
 
+	<select id="findProNoByMemberNo" resultType="Integer">
+		SELECT pro_no FROM Professional WHERE member_no = #{memberNo} LIMIT 1
+	</select>
+
+
 	<!-- ✅ 포트폴리오 업데이트 -->
 	<update id="updatePortfolio" parameterType="Portfolio">
 		UPDATE Portfolio
@@ -359,6 +364,20 @@
 		contactable_time = #{contactableTime}
 		WHERE pro_no = #{proNo}
 	</update>
+
+	<insert id="add2ProAdvancedInfo" useGeneratedKeys="true" keyProperty="proAdvancedNo">
+		INSERT INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
+		VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
+	</insert>
+
+	<insert id="add2Portfolio">
+		INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content, visibility, thumbnail_image,
+							   portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
+							   portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
+		VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, #{visibility}, #{thumbnailImage},
+				#{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3}, #{portfolioFile4}, #{portfolioFile5},
+				#{portfolioFile6}, #{portfolioFile7}, #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
+	</insert>
 
 	<!-- ✅ 전문가 고급 정보 업데이트 -->
 	<update id="updateProfessionalAdvancedInfo" parameterType="ProfessionalAdvancedInformation">
