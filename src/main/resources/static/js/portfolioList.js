@@ -2,25 +2,30 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("포트폴리오 리스트 로드됨");
 });
 
-/* 포트폴리오 상세 보기 */
-function viewPortfolioDetail(element) {
-    const portfolioId = element.getAttribute("data-portfolio-id");
-    window.location.href = `/portfolio/portfolioDetail?portfolioNo=${portfolioId}`;
-}
+///* 포트폴리오 상세 보기 */
+//function viewPortfolioDetail(element) {
+//    const portfolioId = element.getAttribute("data-portfolio-id");
+//    window.location.href = `/portfolio/portfolioDetail?portfolioNo=${portfolioId}`;
+//}
 
 /* 포트폴리오 수정 */
 function editPortfolio(event, button) {
-   event.stopPropagation(); // 부모 요소 클릭 방지
+   event.stopPropagation(); // 부모 요소 클릭 방지 (부모 요소의 클릭 이벤트 실행 방지)
 
-   const portfolioId = button.closest(".portfolio-card").getAttribute("data-portfolio-id");
-   console.log(portfolioId);
+   const portfolioCard = button.closest(".portfolio-card"); // 해당 버튼이 속한 카드 찾기
+   const portfolioId = portfolioCard.getAttribute("data-portfolio-id");
+
+   console.log("🟢 수정 버튼 클릭됨! 포트폴리오 ID:", portfolioId);
+
    if (!portfolioId) {
-       alert("포트폴리오 정보를 찾을 수 없습니다.");
+       alert("❌ 포트폴리오 정보를 찾을 수 없습니다.");
        return;
    }
 
+   // ✅ 수정 페이지로 이동
    window.location.href = `/editPortfolio?portfolioNo=${portfolioId}`;
 }
+
 
 // ✅ 포트폴리오 삭제 함수
 async function deletePortfolio(event, button) {

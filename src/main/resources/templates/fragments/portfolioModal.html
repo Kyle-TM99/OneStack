@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+  /* ✅ 모달 크기 및 스타일 */
+  .modal-content {
+  border-radius: 10px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  width: 80vw;
+  max-width: 1000px;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  border: none;
+  }
+
+  /* ✅ 모달 헤더 */
+  .modal-header {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  border-bottom: none;
+  z-index: 10;
+  }
+
+  .btn-close {
+  font-size: 1.5rem;
+  opacity: 0.7;
+  transition: 0.3s;
+  }
+
+  .btn-close:hover {
+  opacity: 1;
+  }
+
+  /* ✅ 이미지 섹션 (왼쪽) */
+  .portfolio-carousel-container {
+  width: 50%;
+  height: 100%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  }
+
+  .portfolio-carousel-container img {
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  }
+
+  /* ✅ 포트폴리오 상세 정보 (오른쪽) */
+  .portfolio-info-container {
+  width: 50%;
+  padding: 30px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  }
+
+  /* ✅ 제목 */
+  .portfolio-info-container h2 {
+  font-size: 1.5rem;
+  color: #222;
+  font-weight: bold;
+  margin-bottom: 15px;
+  }
+
+  /* ✅ 기본 정보 */
+  .portfolio-info p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 5px;
+  }
+
+  .portfolio-info p strong {
+  color: #222;
+  }
+
+  /* ✅ 리스트 스타일 */
+  .portfolio-info ul {
+  padding-left: 15px;
+  margin-bottom: 15px;
+  }
+
+  .portfolio-info ul li {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 5px;
+  }
+
+  /* ✅ 요청 버튼 스타일 */
+  .request-button {
+  background-color: #00c7ae;
+  color: white;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  }
+
+  .request-button:hover {
+  background-color: #009e8c;
+  }
+
+  /* ✅ 반응형 스타일 */
+  @media (max-width: 768px) {
+  .modal-content {
+  flex-direction: column;
+  width: 90vw;
+  max-height: none;
+  }
+
+  .portfolio-carousel-container {
+  width: 100%;
+  padding: 20px;
+  }
+
+  .portfolio-info-container {
+  width: 100%;
+  padding: 20px;
+  }
+  }
+</style>
+</head>
+<body>
+<div th:fragment="portfolioModal">
+  <!-- ✅ 포트폴리오 상세 모달 -->
+  <div class="modal fade" id="portfolioDetailModal" tabindex="-1" aria-labelledby="portfolioDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <!-- 닫기 버튼 -->
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- 왼쪽: 이미지 -->
+        <div class="portfolio-carousel-container">
+          <img id="thumbnailImage" class="d-block w-100" alt="포트폴리오 이미지">
+        </div>
+
+        <!-- 오른쪽: 포트폴리오 정보 -->
+        <div class="portfolio-info-container">
+          <h2 id="portfolioTitle">포트폴리오 제목</h2>
+          <p><strong>회원 이름:</strong> <span id="memberName">홍길동</span></p>
+          <p><strong>전문 분야:</strong> <span id="categoryTitle">웹 개발</span></p>
+          <p><strong>자기소개:</strong> <span id="selfIntroduction">안녕하세요. 웹 개발자 홍길동입니다.</span></p>
+          <p><strong>연락 가능 시간:</strong> <span id="contactableTime">오전 9시 ~ 오후 6시</span></p>
+
+          <p><strong>경력:</strong></p>
+          <ul id="careerList">
+            <li>10년 경력</li>
+            <li>대기업 프로젝트 경험</li>
+          </ul>
+
+          <p><strong>수상 경력:</strong></p>
+          <ul id="awardList">
+            <li>2022년 IT 우수상</li>
+          </ul>
+
+          <p><strong>포트폴리오 설명:</strong></p>
+          <p id="portfolioContent">이 포트폴리오는 최신 기술을 활용하여 개발된 웹사이트입니다.</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

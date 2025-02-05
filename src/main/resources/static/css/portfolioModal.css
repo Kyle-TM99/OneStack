@@ -1,0 +1,127 @@
+/* ✅ 모달 크기 및 스타일 */
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    background: #fff;
+    width: 80vw;
+    max-width: 1000px;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    border: none;
+}
+
+/* ✅ 모달 헤더 */
+.modal-header {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border-bottom: none;
+    z-index: 10;
+}
+
+.btn-close {
+    font-size: 1.5rem;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* ✅ 이미지 섹션 (왼쪽) */
+.portfolio-carousel-container {
+    width: 50%;
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.portfolio-carousel-container img {
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+}
+
+/* ✅ 포트폴리오 상세 정보 (오른쪽) */
+.portfolio-info-container {
+    width: 50%;
+    padding: 30px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ✅ 제목 */
+.portfolio-info-container h2 {
+    font-size: 1.5rem;
+    color: #222;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* ✅ 기본 정보 */
+.portfolio-info p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.portfolio-info p strong {
+    color: #222;
+}
+
+/* ✅ 리스트 스타일 */
+.portfolio-info ul {
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.portfolio-info ul li {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 5px;
+}
+
+/* ✅ 요청 버튼 스타일 */
+.request-button {
+    background-color: #00c7ae;
+    color: white;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.request-button:hover {
+    background-color: #009e8c;
+}
+
+/* ✅ 반응형 스타일 */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column;
+        width: 90vw;
+        max-height: none;
+    }
+
+    .portfolio-carousel-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .portfolio-info-container {
+        width: 100%;
+        padding: 20px;
+    }
+}

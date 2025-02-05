@@ -178,6 +178,16 @@ public class ProfessionalService {
         return convertToPortfolio(portfolio);
     }
 
+    // ✅ portfolioDetail/{portfolioNo} API에서만 사용되는 메서드 추가
+    public PortfolioDetail getPortfolioDetailById(int portfolioNo) {
+        PortfolioDetail portfolioDetail = professionalMapper.getPortfolioById(portfolioNo);
+        if (portfolioDetail == null) {
+            System.out.println("❌ getPortfolioDetailById: 데이터 없음 (portfolioNo = " + portfolioNo + ")");
+            return null;
+        }
+        return portfolioDetail;
+    }
+
     // ✅ 전문가 고급 정보 조회
     public ProfessionalAdvancedInformation getAdvancedInfoByPortfolio(int portfolioNo) {
         return professionalMapper.getAdvancedInfoByPortfolio(portfolioNo);
