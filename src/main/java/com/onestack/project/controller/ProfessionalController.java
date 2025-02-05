@@ -401,7 +401,7 @@ public class ProfessionalController {
         }
     }
 
-
+        // 포트폴리오 모달
     @GetMapping("/portfolioDetail/{portfolioNo}")
     @ResponseBody
     public ResponseEntity<?> getPortfolioDetail(@PathVariable("portfolioNo") int portfolioNo) {
