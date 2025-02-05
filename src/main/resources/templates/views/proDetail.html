@@ -345,12 +345,10 @@
                 const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
                 const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
                 const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
-                const url = new URL(window.location.href); // 현재 URL 객체 생성
-                const pathname = url.pathname;
-                const searchParams = new URLSearchParams(url.search);
-
-                const proNo = searchParams.get("proNo");
-
+                    const url = new URL(window.location.href); // 현재 URL 객체 생성
+                    const pathname = url.pathname;
+                    const searchParams = new URLSearchParams(url.search);
+                    const proNo = searchParams.get("proNo");
                 const reportsTargetLink = proNo ? `${pathname}?proNo=${proNo}` : pathname;
 
                 // report 객체 생성
