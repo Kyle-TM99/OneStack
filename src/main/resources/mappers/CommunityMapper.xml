@@ -16,6 +16,7 @@
 		<result property="communityReplyCount" column="community_reply_count" />
 	</resultMap>
 
+
 	<!-- 댓글 수 조회-->
 	<select id="replyCount" resultType="int">
 		SELECT COUNT(*)
@@ -203,7 +204,7 @@
 		  AND member_no = #{memberNo}
 	</update>
 
-	<!-- 자우게시판 삭제하기 -->
+	<!-- 자유게시판 삭제하기 -->
 	<delete id="deleteCommunity">
 		DELETE FROM Community
 		WHERE community_board_no = #{communityBoardNo} AND member_no = #{memberNo}
@@ -229,24 +230,6 @@
 				c.community_board_reg_date BETWEEN #{date1} AND #{date2}
 			</if>
 		</where>
-	</select>
-
-	<!-- 이전 커뮤니티글 -->
-	<select id = "preCommunity" parameterType = "int" resultType="int">
-		SELECT community_board_no
-		FROM Community
-		WHERE community_board_no &lt; #{currentCommunityBoardNo}
-		ORDER BY community_board_no DESC
-			LIMIT 1
-	</select>
-
-	<!-- 다음 커뮤니티글 -->
-	<select id = "nextCommunity" parameterType = "int" resultType="int" >
-		SELECT community_board_no
-		FROM Community
-		WHERE community_board_no &gt; #{currentCommunityBoardNo}
-		ORDER BY community_board_no ASC
-			LIMIT 1
 	</select>
 
 	<!-- 커뮤니티 추가 -->
@@ -299,22 +282,4 @@
 		c.community_board_no = #{communityBoardNo}
 	</select>
 
-
-	<!-- 이전 글 조회 -->
-	<select id="getPreviousCommunity" parameterType="int" resultType="Community">
-		SELECT *
-		FROM Community
-		WHERE community_board_no &lt; #{currentCommunityBoardNo}
-		ORDER BY community_board_no DESC
-			LIMIT 1
-	</select>
-
-	<!-- 다음 글 조회 -->
-	<select id="getNextCommunity" parameterType="int" resultType="Community">
-		SELECT *
-		FROM Community
-		WHERE community_board_no &gt; #{currentCommunityBoardNo}
-		ORDER BY community_board_no ASC
-			LIMIT 1
-	</select>
 </mapper>

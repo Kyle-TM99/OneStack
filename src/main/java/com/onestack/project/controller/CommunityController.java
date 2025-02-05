@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -273,133 +274,33 @@ public class CommunityController {
 
 
     /* 자유게시판 삭제 */
-    @PostMapping("/delete")  // URL 패턴 수정
-    public String deleteCommunity(RedirectAttributes reAttrs,
-                                  @RequestParam("communityBoardNo") int communityBoardNo,
+    @PostMapping("/delete")
+    @ResponseBody // URL 패턴 수정
+    public Map<String, Object> deleteCommunity(@RequestParam("communityBoardNo") int communityBoardNo,
                                   @RequestParam("memberNo") int memberNo,
-                                  HttpSession session,
-                                  @RequestParam(value="pageNum", defaultValue="1") int pageNum,
-                                  @RequestParam(value="type", defaultValue="null") String type,
-                                  @RequestParam(value="keyword", defaultValue="null") String keyword) {
-
+                                  HttpSession session) {
+        Map<String,Object> response = new HashMap<>();
         // 세션 체크
         Member member = (Member) session.getAttribute("member");
 
         // 권한 체크 추가
         if (member == null || member.getMemberNo() != memberNo) {
-            reAttrs.addFlashAttribute("message", "삭제 권한이 없습니다.");
-            return "redirect:/community";
+            response.put("status", "nodelete");
+            response.put("message", "삭제 권한이 없습니다.");
+            return response;
         }
 
         try {
             // 게시글 삭제
             communityService.deleteCommunity(communityBoardNo, memberNo);
-            boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
-
-            reAttrs.addAttribute("pageNum", pageNum);
-            reAttrs.addAttribute("searchOption", searchOption);
-
-            if(searchOption) {
-                reAttrs.addAttribute("type", type);
-                reAttrs.addAttribute("keyword", keyword);
-            }
-
-            reAttrs.addFlashAttribute("message", "게시글이 성공적으로 삭제되었습니다.");
-            return "redirect:/community";
-
+            response.put("status", "success");
+            response.put("message", "게시글이 성공적으로 삭제되었습니다.");
         } catch (Exception e) {
-            reAttrs.addFlashAttribute("message", "게시글 삭제 중 오류가 발생했습니다.");
-            return "redirect:/community";
+            response.put("status", "error");
+            response.put("message", "게시글 삭제 중 오류가 발생했습니다.");
         }
+        return response;
     }
-
-
-
-   /* // 게시글 저장
-    @PostMapping("/api/posts")
-    public Long savePost(@RequestBody final CommunityRequest params) {
-        return communityService.savePost(params);
-    }
-
-    // 게시글 상세정보 조회
-    @GetMapping("/api/posts/{id}")
-    public CommunityResponse findPostById(@PathVariable final Long id) {
-        return communityService.findPostById(id);
-    }
-
-    // 게시글 목록 조회
-    @GetMapping("/api/posts")
-    public List<CommunityResponse> findAllPost() {
-        return communityService.findAllPost();
-    }*/
-
-    // 파일을 업로드할 디렉터리 경로
-    private final String uploadDir = Paths.get("C:", "tui-editor", "upload").toString();
-
-    /**
-     * 에디터 이미지 업로드
-     * @param image 파일 객체
-     * @return 업로드된 파일명
-     */
-    @PostMapping("/tui-editor/image-upload")
-    public String uploadEditorImage(@RequestParam final MultipartFile image) {
-        if (image.isEmpty()) {
-            return "";
-        }
-
-        String orgFilename = image.getOriginalFilename();                                         // 원본 파일명
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");           // 32자리 랜덤 문자열
-        String extension = orgFilename.substring(orgFilename.lastIndexOf(".") + 1);  // 확장자
-        String saveFilename = uuid + "." + extension;                                             // 디스크에 저장할 파일명
-        String fileFullPath = Paths.get(uploadDir, saveFilename).toString();                      // 디스크에 저장할 파일의 전체 경로
-
-        // uploadDir에 해당되는 디렉터리가 없으면, uploadDir에 포함되는 전체 디렉터리 생성
-        File dir = new File(uploadDir);
-        if (dir.exists() == false) {
-            dir.mkdirs();
-        }
-
-        try {
-            // 파일 저장 (write to disk)
-            File uploadFile = new File(fileFullPath);
-            image.transferTo(uploadFile);
-            return saveFilename;
-
-        } catch (IOException e) {
-            // 예외 처리는 따로 해주는 게 좋습니다.
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 디스크에 업로드된 파일을 byte[]로 반환
-     * @param filename 디스크에 업로드된 파일명
-     * @return image byte array
-     */
-    @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-    public byte[] printEditorImage(@RequestParam final String filename) {
-
-        // 업로드된 파일의 전체 경로
-        String fileFullPath = Paths.get(uploadDir, filename).toString();
-
-        // 파일이 없는 경우 예외 throw
-        File uploadedFile = new File(fileFullPath);
-        if (uploadedFile.exists() == false) {
-            throw new RuntimeException();
-        }
-
-        try {
-            // 이미지 파일을 byte[]로 변환 후 반환
-            byte[] imageBytes = Files.readAllBytes(uploadedFile.toPath());
-            return imageBytes;
-
-        } catch (IOException e) {
-            // 예외 처리는 따로 해주는 게 좋습니다.
-            throw new RuntimeException(e);
-        }
-    }
-
-
 
     //QIll API
     @ResponseBody
@@ -448,25 +349,6 @@ public class CommunityController {
         return "board/community";
     }
 
-
-
-    /*
-        // 커뮤니티 게시글 상세 조회
-        @GetMapping("community/{communityBoardNo}")
-        public String communityDetail(
-                @PathVariable int communityBoardNo,
-                Model model
-        ) {
-            MemberWithCommunity communityDetail = communityService.getCommunityDetail(communityBoardNo);
-            Map<String, Object> adjacentPosts = communityService.getAdjacentPosts(communityBoardNo);
-
-            model.addAttribute("community", communityDetail);
-            model.addAttribute("previousPost", adjacentPosts.get("previousPost"));
-            model.addAttribute("nextPost", adjacentPosts.get("nextPost"));
-            return "board/communityDetail";
-        }
-    */
-    // 게시글 작성 폼
 // 게시글 작성 폼
     @GetMapping("/communityWriteForm")
     public String communityWriteForm(Model model) {
@@ -474,21 +356,4 @@ public class CommunityController {
         model.addAttribute("community", community); // 모델에 추가
         return "board/communityWriteForm";
     }
-/*
-    // 게시글 등록
-    @PostMapping("/write")
-    public String communityWrite(@ModelAttribute Community community,
-                                 @RequestParam("communityFile") MultipartFile file,
-                                 HttpSession session) {
-        Integer memberNo = (Integer) session.getAttribute("memberNo");
-        community.setMemberNo(memberNo); // 세션에서 memberNo 가져오기
-        try {
-            communityService.addCommunity(community, file);
-        } catch (IOException e) {
-            // 예외 처리 로직 추가 (예: 로그 기록, 사용자에게 오류 메시지 표시 등)
-            log.error("게시글 작성 중 오류 발생: {}", e.getMessage());
-            return "redirect:board/communityWriteForm"; // 오류 발생 시 작성 폼으로 리다이렉트
-        }
-        return "redirect:board/community"; // 작성 후 커뮤니티 목록으로 리다이렉트
-    }*/
 }

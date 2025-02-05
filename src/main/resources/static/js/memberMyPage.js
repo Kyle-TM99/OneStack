@@ -39,15 +39,15 @@ document.addEventListener("DOMContentLoaded", function() {
 				processData: false,
 				contentType: false,
 				success: function (response) {
+					console.log(response);
 					if (response.success) {
-						alert('회원 정보가 성공적으로 수정되었습니다.');
-						window.location.href = '/updateMemberForm';
-					} else {
-						alert(response.message || '회원 정보 수정 중 오류가 발생했습니다.');
+						alert(response.message);
+						window.location.href = '/main'
 					}
 				},
 				error: function (xhr) {
 					alert('회원 정보 수정 중 오류가 발생했습니다.');
+					window.location.href = '/updateMemberForm';
 				}
 			});
 		});

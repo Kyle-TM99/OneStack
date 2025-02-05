@@ -23,6 +23,7 @@ public class CommunityService {
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
 
+
     /* 게시글 번호 별 댓글 수 조회 */
     public int replyCount(int communityBoardNo){
         return communityMapper.replyCount(communityBoardNo);
@@ -93,15 +94,6 @@ public class CommunityService {
         communityMapper.deleteCommunityReply(communityReplyNo, memberNo);
     }
 
-    // 게시글 수정 폼을 위한 데이터 조회
-    public Community getCommunityForUpdate(int communityBoardNo, int memberNo) {
-        Community community = communityMapper.getCommunity(communityBoardNo);
-        if (community == null || community.getMemberNo() != memberNo) {
-            return null;
-        }
-        return community;
-    }
-
 
 
 
@@ -123,10 +115,6 @@ public class CommunityService {
 
         return result;
     }
-
-public List<Community> getCommunityAll(int communityBoardNo) {
-    return communityMapper.getCommunityAll(communityBoardNo);
-}
 
     // Reply
     public List<Community> replyList(int communityBoardNo) {
@@ -217,30 +205,6 @@ public List<Community> getCommunityAll(int communityBoardNo) {
         }
         communityMapper.insertCommunity(community);
     }
-
- /*   // 커뮤니티 게시글 목록 조회
-    public Map<String, Object> communityList(int page, String type, String keyword) {
-        Map<String, Object> params = new HashMap<>();
-        int num = 10; // 페이지당 게시글 수
-        int startRow = (page - 1) * num;
-
-        params.put("startRow", startRow);
-        params.put("num", num);
-        params.put("type", type);
-        params.put("keyword", keyword);
-
-        List<MemberWithCommunity> communityList = communityMapper.getCommunity(params);
-        int totalCount = communityMapper.getCommunityBoardCount(params);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("list", communityList);
-        result.put("totalCount", totalCount);
-        result.put("currentPage", page);
-        result.put("totalPages", (int) Math.ceil((double) totalCount / num));
-
-        return result;
-    }*/
-
 
 
     // 자유게시판 게시글 수정

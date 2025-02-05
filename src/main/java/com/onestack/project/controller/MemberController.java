@@ -31,6 +31,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
@@ -90,8 +91,9 @@ public class MemberController {
 
     @PostMapping("/updateMember")
     @ResponseBody
-    public String updateMember(HttpSession session, Member member,
+    public Map<String, Object> updateMember(HttpSession session, Member member,
                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Member sessionMember = (Member) session.getAttribute("member");
             member.setMemberNo(sessionMember.getMemberNo());
@@ -110,7 +112,6 @@ public class MemberController {
 
                 } catch (Exception e) {
                     log.error("이미지 처리 중 에러 발생: {}", e.getMessage());
-                    return "redirect:/updateMemberForm?error=image";
                 }
             } else {
                 member.setMemberImage(sessionMember.getMemberImage());
@@ -134,11 +135,16 @@ public class MemberController {
             // 세션 업데이트
             updateSessionMember(session, member);
 
-            return "redirect:/updateMemberForm?success=true";
+            response.put("success",true);
+            response.put("message", "회원정보가 성공적으로 수정되었습니다.");
+
+            return response;
 
         } catch (Exception e) {
             log.error("회원 정보 수정 실패: {}", e.getMessage());
-            return "redirect:/updateMemberForm?error=update";
+            response.put("error", e.getMessage());
+            response.put("message", "회원정보 수정에 실패했습니다.");
+            return response;
         }
     }
 
@@ -229,6 +235,8 @@ public class MemberController {
         if (updatedMember.getMemberImage() != null) {
             sessionMember.setMemberImage(updatedMember.getMemberImage());
         }
+
+        session.setAttribute("member", sessionMember);
     }
 
     // 프로필 이미지 저장 메서드 (필요한 경우)

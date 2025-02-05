@@ -10,7 +10,7 @@
         <form name="communityCheckForm" id="communityCheckForm">
             <input type="hidden" name="communityBoardNo" id="communityBoardNo" th:value="${community.communityBoardNo}"/>
             <input type="hidden" name="pageNum" th:value="${pageNum}"/>
-            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+            <input type="hidden" name="memberNo" id="memberNo" th:value="${session.member.memberNo}" />
             <input type="hidden" name="reportedMemberNo" th:value="${community.memberNo}" />
 
 
@@ -39,13 +39,9 @@
                        th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo}, memberNo=${session.member.memberNo})}">
                         수정하기
                     </a>
-                    <form th:action="@{/delete}" method="post" style="display:inline;">
-                        <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
-                        <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
-                        <button type="submit" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
+                        <button id="deletBtn" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
                             삭제하기
                         </button>
-                    </form>
                     <button type="button"  class="dropdown-item communityDropdownItem reporstBtn"
                             th:if="${session.member != null and session.member.memberNo != community.memberNo}"
                             data-bs-toggle="modal" th:data-bs-target="'#reportModal'">
@@ -255,7 +251,6 @@
 <th:block layout:fragment="script">
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/communityReply.js}"></script>
-    <script th:src="@{/js/header.js}"></script>
     <script>
         const reporstBtn = document.getElementsByClassName("reporstBtn");
         const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
@@ -335,6 +330,32 @@
             document.querySelectorAll('.ql-editor a').forEach(link => {
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
+            });
+
+            $('#deletBtn').click(function() {  // onclick을 click으로 수정
+                const memberNo = $('#memberNo').val();
+                const communityBoardNo = $('#communityBoardNo').val();
+                console.log(memberNo, communityBoardNo);
+
+                $.ajax({
+                    url: '/delete',
+                    type: 'POST',
+                    data: {
+                        memberNo: memberNo,
+                        communityBoardNo: communityBoardNo
+                    },
+                    success: function(response) {
+                        alert(response.message);
+
+                        if(response.status == "success") {
+                            location.href = "/community";  // 경로가 맞는지 확인해보세요
+                        }
+                    },
+                    error: function(xhr, status, error) {  // 에러 파라미터 추가
+                        console.error('Error:', error);    // 에러 로깅 추가
+                        alert('게시물 삭제 중 오류가 발생되었습니다.');
+                    }
+                });
             });
         </script>
     </th:block>

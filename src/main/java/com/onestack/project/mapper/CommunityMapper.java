@@ -11,13 +11,14 @@ import java.util.Map;
 @Mapper
 public interface CommunityMapper {
 
+    Community mainCommunityList();
+
     /* 댓글 수 조회 */
     int replyCount(int communityBoardNo);
 
     void insertCommunityReply(CommunityReply communityReply);
     void updateCommunityReply(CommunityReply communityReply);
     void deleteCommunityReply(int communityReplyNo, int memberNo);
-
 
     // 회원의 추천 이력 조회
     String getMemberRecommendType(@Param("communityBoardNo") int communityBoardNo,
@@ -45,14 +46,9 @@ public interface CommunityMapper {
                          @Param("memberNo") int memberNo);
 
 
-
     // 커뮤니티 상세 정보 및 댓글 리스트 조회
     List<Community> getCommunityAll(@Param("communityBoardNo") int communityBoardNo);
 
-
-
-    // 댓글
-    public List<Community> selectMemberWithCommunityReplies(int communityBoardNo);
 
     // 자유게시판 리스트 조회
     public List<Community> communityList(Map<String, Object> params);
@@ -73,36 +69,11 @@ public interface CommunityMapper {
     // 자유게시한 수정
     public int updateCommunity(Community community);
 
-    // 자유게시판 삭제
-    public int deleteCommunity(int no);
-
-
-
-    // 커뮤니티 게시글 목록 조회
-    List<Community> getCommunity(Map<String, Object> params);
-
-    // 커뮤니티 게시글 총 개수 조회
-    int getCommunityBoardCount(Map<String, Object> params);
 
     // 커뮤니티 게시글 상세 조회
     Community getCommunityDetail(@Param("communityBoardNo") int communityBoardNo);
 
-    // 커뮤니티 게시글 작성
-    int addCommunity(Community community);
 
     // 커뮤니티 게시글 삭제
     int deleteCommunity(int communityBoardNo, int memberNo);
-
-    // 이전 글 조회
-    Community getPreviousCommunity(int currentCommunityBoardNo);
-
-    // 다음 글 조회
-    Community getNextCommunity(int currentCommunityBoardNo);
-
-    // 조회수 증가
-    void incrementCommunityReadCount(int communityBoardNo);
-
-    int getCommunityCount();
-
-    List<Community> communityList(int startRow, int pageSize, String type, String keyword, String order);
 }

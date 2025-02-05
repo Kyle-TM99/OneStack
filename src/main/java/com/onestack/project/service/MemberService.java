@@ -67,13 +67,6 @@ public class MemberService {
         return memberMapper.memberMyPageQnAReplyCount(memberNo);
     }
 
-    // 게시글 공감 조회
-    public List<Community> memberMyPageCommunityLike(int memberNo) {
-        return memberMapper.memberMyPageCommunityLike(memberNo);
-    }
-
-
-
 
 
     public void updateMember(Member member) {
@@ -143,33 +136,6 @@ public class MemberService {
     }
 
 
-
-    // 현재 비밀번호 검증 메서드 추가
-    public boolean validateCurrentPassword(String memberId, String currentPassword) {
-        // 세션의 memberId로 회원 정보 조회 후 비밀번호 검증
-        Member member = memberMapper.getMember(memberId);
-        return passwordEncoder.matches(currentPassword, member.getPass());
-    }
-
-
-
-    public List<Map<String, Object>> myPageLikedCommunity(int memberNo) {
-        return memberMapper.myPageLikedCommunity(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedQnA(int memberNo) {
-        return memberMapper.myPageLikedQnA(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedCommunityReply(int memberNo) {
-        return memberMapper.myPageLikedCommunityReply(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedQnAReply(int memberNo) {
-        return memberMapper.myPageLikedQnAReply(memberNo);
-    }
-
-
     // 회원 로그인 요청을 처리하고 결과를 반환하는 메서드
     public int login(String memberId, String pass) {
         int result = -1;
@@ -229,24 +195,6 @@ public class MemberService {
     }
 
 
-    public boolean memberPassCheck(String memberId, String pass) {
-        // DB에서 저장된 비밀번호 가져오기
-        String dbPass = memberMapper.memberPassCheck(memberId);
-
-        // 비밀번호가 없는 경우
-        if(dbPass == null) {
-            return false;
-        }
-
-        // 입력한 비밀번호와 DB의 암호화된 비밀번호 비교
-        return passwordEncoder.matches(pass, dbPass);
-    }
-
-    public int updatePasswordMember(Member member) {
-        // 비밀번호 암호화
-        member.setPass(passwordEncoder.encode(member.getPass()));
-        return memberMapper.updatePasswordMember(member);
-    }
 
     public void sendPasswordResetEmail(String memberId, String email) {
         log.info("비밀번호 재설정 요청 - memberId: {}, email: {}", memberId, email);
@@ -316,10 +264,6 @@ public class MemberService {
         return memberNo;
     }
 
-    public List<Portfolio> portfolio(int proNo) {
-        List<Portfolio> result = memberMapper.portfolio(proNo);
-        return result;
-    }
 
     // 견적 상태 업데이트
     public void updateEstimationProgress(int estimationNo, int progress) {

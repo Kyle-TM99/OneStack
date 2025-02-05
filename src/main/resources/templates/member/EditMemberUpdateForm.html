@@ -9,13 +9,13 @@
 </head>
 <body>
 <div layout:fragment="content"
-     class="d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+     class="d-flex align-items-center justify-content-center my-5" style="min-height: 90vh;">
     <div class="d-flex align-items-center justify-content-center vh-80">
         <div class="container">
             <h3 class="fw-bold mt-5 text-center">회원정보수정</h3>
             <p class="text-muted mt-3 mb-5 text-center">쉽고 간편한 외주 서비스</p>
             <div class="card" style="width: 100%; max-width: 500px;">
-                <form action="/updateMember" name="memberUpdateForm" method="post" id="memberUpdateForm" enctype="multipart/form-data">
+                <form name="memberUpdateForm"  id="memberUpdateForm" enctype="multipart/form-data">
                     <input type="hidden" id="currentMemberNo" th:value="${session.member.memberNo}">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -40,10 +40,7 @@
                             <label for="name">&nbsp;이름 *</label>
                             <input id="name" name="name" type="text" class="form-control mb-2"
                                    th:value="${session.member.name}"
-                                   th:readonly="${session.member.socialType == 'google' or session.member.socialType == 'kakao'}"
-                                   maxlength="5" required>
-                            <small id="nameMessage" class="form-text"></small>
-                            <small class="text-muted d-block">최대 5자까지 입력 가능합니다.</small>
+                                   maxlength="5" readonly required>
                         </div>
                     </div>
 

@@ -11,12 +11,6 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
-	// 소셜 로그인 회원 선택적 업데이트
-	public void updateMemberSelective(Member member);
-
-	// 현재 비밀번호 확인
-	public int checkCurrentPassword(@Param("memberNo") int memberNo, @Param("currentPassword") String currentPassword);
-
 	// 전문가가 받은 견적 요청 리스트 Estimation (대기 상태인 것만)
 	public List<Estimation> proEstimation(@Param("proNo") int proNo);
 
@@ -90,9 +84,6 @@ public interface MemberMapper {
 
 	// LHB - 아이디로 회원번호 조회
 	Integer findMemberNoByMemberId(String memberId);
-
-
-	List<Portfolio> portfolio(int proNo);
 
 	// 견적 관련 메서드들 (중복 제거)
 	void updateEstimationProgress(@Param("estimationNo") int estimationNo, @Param("progress") int progress);
