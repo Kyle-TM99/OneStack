@@ -216,9 +216,7 @@
                         <!-- 서비스 카테고리 -->
                         <div class="section-title">제공 서비스</div>
                         <div class="service-categories mb-4">
-                            <span class="service-category">웹 개발</span>
-                            <span class="service-category">모바일 앱</span>
-                            <span class="service-category">서버 개발</span>
+                            <span th:each="itemNamesList : ${itemNamesList}" class="service-category" th:text="${itemNamesList}"></span>
                         </div>
 
                         <!-- 수상 경력 -->
