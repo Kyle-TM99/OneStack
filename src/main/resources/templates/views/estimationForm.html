@@ -75,7 +75,7 @@
     <div class="container">
         <div class="estimation-form">
             <h2 class="form-title">견적 요청서</h2>
-            <form id="estimationForm" action="https://www.onestack.store/submitEstimation" method="POST">
+            <form id="estimationForm">
                 <input type="hidden" id="memberNo" th:value="${session.member.memberNo}" name="memberNo">
                 <input type="hidden" id="proNo" th:value="${proNo}" name="proNo">
 
@@ -141,7 +141,7 @@
                 formData.set("estimationPrice", price);
 
                 $.ajax({
-                    url: $(this).attr("action"),
+                    url: "/submitEstimation",
                     type: "POST",
                     data: new URLSearchParams(formData).toString(),
                     contentType: "application/x-www-form-urlencoded",
