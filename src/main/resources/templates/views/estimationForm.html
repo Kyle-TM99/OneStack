@@ -146,6 +146,7 @@
                     data: new URLSearchParams(formData).toString(),
                     contentType: "application/x-www-form-urlencoded",
                     success: function(response) {
+                        if(response.status) {
                         window.location.href = "https://www.onestack.store/estimationDoneForm";
                     },
                     error: function(xhr, status, error) {
