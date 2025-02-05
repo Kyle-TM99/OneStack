@@ -20,5 +20,7 @@ public class InquiryAnswer {
 	private String inquiryAnswerFile;
 
 	private String nickname;
+	private String memberImage;
+	private boolean isAdmin;
 }
 

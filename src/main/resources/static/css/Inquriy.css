@@ -26,7 +26,6 @@
     cursor: pointer; /* 커서 변경 */
     color:  #888888; /* 아이콘 색상 */
     font-size: 15px; /* 아이콘 크기 조정 */
-    margin: 0 10px; /* 아이콘 간격 조정 */
 }
 
 .satisfaction-button:hover {

@@ -22,4 +22,7 @@ public class Inquiry {
 	private Timestamp inquiryRegDate;
 	private String inquiryStatus;
 	private boolean inquirySatisfaction;
+
+	private String nickname;
+	private String memberImage;
 }

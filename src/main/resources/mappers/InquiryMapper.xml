@@ -74,10 +74,14 @@
 			<if test="type == 'content'">
 				AND i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
+			<if test="type == 'nickname'">
+				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
+			</if>
 		</where>
 		ORDER BY i.inquiry_reg_date DESC
-		LIMIT #{startRow}, #{num}
 	</select>
+
+
 
 	<!-- 문의글 상세 조회 -->
 	<select id="getInquiryDetail" resultMap="InquiryResultMap">
@@ -112,24 +116,6 @@
 		</where>
 	</select>
 
-	<!-- 이전 문의글 -->
-	<select id="preInquiry" parameterType = "int" resultType="int">
-		SELECT inquiry_no
-		FROM Inquiry
-		WHERE inquiry_no &lt; #{currentInquiryNo}
-		ORDER BY inquiry_no DESC
-			LIMIT 1
-	</select>
-
-	<!-- 다음 문의글 -->
-	<select id="nextInquiry" parameterType = "int" resultType="int">
-		SELECT inquiry_no
-		FROM Inquiry
-		WHERE inquiry_no &gt; #{currentInquiryNo}
-		ORDER BY inquiry_no ASC
-			LIMIT 1
-	</select>
-
 	<!-- 문의글 작성 -->
 	<insert id="addInquiry" parameterType="Inquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
 		INSERT INTO Inquiry(member_no, inquiry_title, inquiry_content, inquiry_file)
@@ -158,7 +144,7 @@
 
 	<!-- 문의 답변 조회 -->
 	<select id="getInquiryAnswer" parameterType="int" resultType="InquiryAnswer">
-		SELECT i.*, m.nickname
+		SELECT i.*, m.*
 		FROM InquiryAnswer i JOIN Member m
 			ON i.member_no = m.member_no
 		WHERE i.inquiry_no = #{inquiryNo}
@@ -177,12 +163,6 @@
 		SET inquiryAnswerContent = #{inquiryAnswerContent}
 		WHERE inquiryAnswerNo = #{inquiryAnswerNo}
 	</update>
-
-	<!-- 문의 답변 삭제 -->
-	<delete id = "deleteInquiryAnswer" parameterType = "int">
-		DELETE FROM InquiryAnswer
-		WHERE inquiry_answer_no = #{inquiryAnswerNo}
-	</delete>
 
 	<update id="updateInquiryStatusToInProgress" parameterType="int">
 		UPDATE Inquiry

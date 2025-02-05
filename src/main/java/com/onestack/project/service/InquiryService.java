@@ -22,11 +22,9 @@ public class InquiryService {
 
     private static final String FILE_STORAGE_PATH = "src/main/resources/static/files/";
 
-    // 문의글 목록 조회 (검색 조건, 페이징 포함)
-    public List<MemberWithInquiry> getInquiry(int startRow, int num, String type, String keyword) {
+    // 문의글 목록 조회 (검색 조건)
+    public List<MemberWithInquiry> getInquiry(String type, String keyword) {
         Map<String, Object> params = new HashMap<>();
-        params.put("startRow", startRow);
-        params.put("num", num);
 
         // 검색 조건이 있는 경우에만 파라미터 추가
         if (type != null && keyword != null && !type.isEmpty() && !keyword.isEmpty()) {

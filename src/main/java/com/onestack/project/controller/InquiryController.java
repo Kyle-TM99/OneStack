@@ -29,8 +29,6 @@ public class InquiryController {
     // 문의글 목록 조회
     @GetMapping
     public String getInquiry(
-            @RequestParam(defaultValue = "0") int startRow,
-            @RequestParam(defaultValue = "10") int num,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
             HttpSession session,
@@ -41,19 +39,16 @@ public class InquiryController {
         boolean isAdmin = member.isAdmin(); // isAdmin 값 가져오기
 
         // isAdmin 값을 전달하여 문의글 조회
-        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(startRow, num, type, keyword);
+        List<MemberWithInquiry> inquiryList = inquiryService.getInquiry(type, keyword);
 
         model.addAttribute("inquiryList", inquiryList);
 
         // 페이징 정보
         int totalCount = inquiryService.getInquiryCount(type, keyword);
-        int totalPages = (totalCount + num - 1) / num;
 
         boolean searchOption = (type != null && !type.isEmpty() && keyword != null && !keyword.isEmpty());
 
         model.addAttribute("searchOption", searchOption);
-        model.addAttribute("currentPage", startRow / num + 1);
-        model.addAttribute("totalPages", totalPages);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 

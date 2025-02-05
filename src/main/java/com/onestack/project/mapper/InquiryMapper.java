@@ -42,9 +42,6 @@ public interface InquiryMapper {
     // 문의 답변 수정
     void updateInquiryAnswer(InquiryAnswer inquiryAnswer);
 
-    // 문의 답변 삭제
-    void deleteInquiryAnswer(int inquiryAnswerNo);
-
     // 문의글 상태를 '답변 중'으로 업데이트
     void updateInquiryStatusToInProgress(int inquiryNo);
 

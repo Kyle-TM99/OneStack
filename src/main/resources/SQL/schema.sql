@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS onestack;
+CREATE DATABASE IF NOT EXISTS onestack;
+use onestack;
+
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,
@@ -233,15 +237,15 @@ CREATE TABLE IF NOT EXISTS Notice (notice_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 
 -- Inquiry - 고객문의
 CREATE TABLE IF NOT EXISTS Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-                      member_no INTEGER NOT NULL,
-                      inquiry_title VARCHAR(100) NOT NULL,
-                      inquiry_content   VARCHAR(10000) NOT NULL,
-                      inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                      inquiry_file VARCHAR(100) NULL,
-                      inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
-                      inquiry_satisfaction TINYINT DEFAULT NULL, -- 초기값 NULL, 1(만족), 0(불만족)
-                      CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    member_no INTEGER NOT NULL,
+    inquiry_title VARCHAR(100) NOT NULL,
+    inquiry_content LONGTEXT NOT NULL,
+    inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    inquiry_file VARCHAR(100) NULL,
+    inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
+    inquiry_satisfaction TINYINT DEFAULT NULL, -- 초기값 NULL, 1(만족), 0(불만족)
+    CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- InquiryAnswer - 고객문의 답변
 CREATE TABLE IF NOT EXISTS InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREMENT PRIMARY KEY,
