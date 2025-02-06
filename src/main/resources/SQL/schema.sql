@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS Review (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Community - 커뮤니티
-CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                         member_no INTEGER NOT NULL,
                         community_board_title VARCHAR(30) NOT NULL,
                         community_board_content LONGTEXT NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CommunityReply - 커뮤니티 댓글
-CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
                              community_board_no INTEGER NOT NULL,
                              member_no INTEGER NOT NULL,
                              community_reply_content   VARCHAR(500) NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY K
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CommunityRecommend - 커뮤니티 추천
-CREATE TABLE CommunityRecommend (
+CREATE TABLE IF NOT EXISTS CommunityRecommend (
                                     community_board_no INTEGER NOT NULL,
                                     member_no INTEGER NOT NULL,
                                     recommend_type VARCHAR(10) NOT NULL, -- 'LIKE' 또는 'DISLIKE'
