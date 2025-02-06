@@ -3,36 +3,30 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
 <head>
-  <title>고객센터 글 작성 페이지</title>
+  <title>고객센터 글 수정 페이지</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/communityForm.css}">
   <style>
     img {
       max-height: 150px;
       object-fit: cover;
     }
-
     /* Quill 에디터 스타일 */
     .quill-editor {
-      height: 400px;  /* 에디터 높이 조절 */
+      height: 400px;
       margin-bottom: 20px;
     }
-
-    /* 에디터 내부 입력 영역 높이 조절 */
     .ql-editor {
-      min-height: 350px;  /* 최소 높이 설정 */
+      min-height: 350px;
     }
-
-    /* 툴바 스타일링 */
     .ql-toolbar.ql-snow {
       border-radius: 4px 4px 0 0;
     }
-
-    /* 에디터 컨테이너 스타일링 */
     .ql-container.ql-snow {
       border-radius: 0 0 4px 4px;
     }
   </style>
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/communityForm.css}">
 </head>
 <body>
 <div layout:fragment="content">
@@ -40,8 +34,9 @@
     <div class="col-md-1"></div>
     <div class="col-md-10 mt-3 border-bottom">
       <h1 class="fw-bold mt-3 mb-4">
-        <i class="bi bi-pencil-square me-2"></i>문의글 작성
+        <i class="bi bi-pencil-square me-2"></i>문의글 수정
       </h1>
+      <div class="col-md-1"></div>
     </div>
 
     <div class="row g-0">
@@ -52,7 +47,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">고객센터</a></li>
               <li class="breadcrumb-item"><a href="/memberInquiry" class="text-decoration-none text-dark">회원 문의</a></li>
-              <li class="breadcrumb-item active" aria-current="page">문의글 작성</li>
+              <li class="breadcrumb-item active" aria-current="page">문의글 수정</li>
             </ol>
           </nav>
         </div>
@@ -64,13 +59,18 @@
       <div class="col-md-2"></div>
       <div class="col-md-8">
         <div class="form-container py-5">
-          <form name="writeForm" id="writeForm" th:action="@{/memberInquiry/addInquiry}" method="post" enctype="multipart/form-data" class="form-write">
+          <form name="updateForm" id="updateForm" th:action="@{/memberInquiry/update}" method="post" class="form-write">
+            <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
             <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+            <input type="hidden" name="pageNum" th:value="${param.pageNum}"/>
+            <input type="hidden" name="type" th:value="${param.type}"/>
+            <input type="hidden" name="keyword" th:value="${param.keyword}"/>
 
             <div class="row form-group">
               <div class="col-md">
                 <label for="inquiryTitle" class="form-label">제 목</label>
-                <input type="text" class="form-control" name="inquiryTitle" id="inquiryTitle" required>
+                <input type="text" class="form-control" name="inquiryTitle" id="inquiryTitle"
+                       th:value="${inquiry.inquiryTitle}" required>
               </div>
             </div>
 
@@ -83,8 +83,8 @@
               </div>
             </div>
 
-            <div class="mt-4 mb-4 d-flex justify-content-center gap-2"  style="padding-top: 50px;">
-              <button type="button" onclick="submitForm()" class="btn btn-light">등록</button>
+            <div class="mt-5 d-flex justify-content-center gap-2">
+              <button type="button" onclick="submitForm()" class="btn btn-light">수정</button>
               <button type="button" class="btn btn-secondary" onclick="window.history.back();">취소</button>
             </div>
           </form>
@@ -97,8 +97,7 @@
 
 <th:block layout:fragment="script">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
+  <script th:inline="javascript">
     var quill = new Quill('#editor', {
       theme: 'snow',
       modules: {
@@ -112,6 +111,10 @@
         ]
       }
     });
+
+    // 기존 내용을 Quill 에디터에 설정 (HTML 이스케이프 처리)
+    var content = /*[[${inquiry.inquiryContent}]]*/ '';
+    quill.root.innerHTML = content;
 
     // 제목 글자 수 제한 기능
     const titleInput = document.getElementById('inquiryTitle');

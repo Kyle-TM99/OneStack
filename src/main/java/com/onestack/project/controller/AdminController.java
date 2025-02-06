@@ -200,6 +200,9 @@ public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> r
             @RequestParam("type") String type,
             @RequestParam("targetId") int targetId,
             @RequestParam("reportsNo")int reportsNo) {
+
+        log.info("테스트: " + type + "a: " +  targetId + "b: " + reportsNo);
+
         try {
             adminService.disableTarget(type, targetId, reportsNo);
             return ResponseEntity.ok("비활성화 처리 완료");

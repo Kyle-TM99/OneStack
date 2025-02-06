@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS onestack;
+CREATE DATABASE IF NOT EXISTS onestack;
+use onestack;
+
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,
@@ -167,30 +171,45 @@ CREATE TABLE IF NOT EXISTS Review (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Community - 커뮤니티
-CREATE TABLE IF NOT EXISTS Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	member_no INTEGER NOT NULL,
-	community_board_title VARCHAR(30) NOT NULL,
-	community_board_content   VARCHAR(1000) NOT NULL,
-	community_board_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	community_view   INTEGER DEFAULT 0 NOT NULL,
-	community_file   VARCHAR(100) NULL,
-	community_board_like INTEGER DEFAULT 0 NOT NULL,
-	community_board_dislike   INTEGER   DEFAULT 0 NOT NULL,
-	community_board_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
-	CONSTRAINT member_no_community_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
+CREATE TABLE Community (community_board_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                        member_no INTEGER NOT NULL,
+                        community_board_title VARCHAR(30) NOT NULL,
+                        community_board_content LONGTEXT NOT NULL,
+                        community_board_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                        community_view   INTEGER DEFAULT 0 NOT NULL,
+                        community_file   VARCHAR(100) NULL,
+                        community_board_like INTEGER DEFAULT 0 NOT NULL,
+                        community_board_dislike   INTEGER   DEFAULT 0 NOT NULL,
+                        community_board_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
+                        CONSTRAINT member_no_community_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- CommunityReply - 커뮤니티 댓글
-CREATE TABLE IF NOT EXISTS CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	 community_board_no INTEGER NOT NULL,
-	 member_no INTEGER NOT NULL,
-	 community_reply_content   VARCHAR(500) NOT NULL,
-	 community_reply_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	 community_reply_like INTEGER DEFAULT 0 NOT NULL,
-	 community_reply_dislike   INTEGER DEFAULT 0 NOT NULL,
-	 community_reply_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
-	 CONSTRAINT member_no_communityReply_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
-	 CONSTRAINT community_board_no_communityReply_fk FOREIGN KEY (community_board_no) REFERENCES Community(community_board_no) ON DELETE CASCADE
+CREATE TABLE CommunityReply (community_reply_no INTEGER AUTO_INCREMENT PRIMARY KEY,
+                             community_board_no INTEGER NOT NULL,
+                             member_no INTEGER NOT NULL,
+                             community_reply_content   VARCHAR(500) NOT NULL,
+                             community_reply_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             community_reply_activation TINYINT DEFAULT 1 NOT NULL, -- 1(활성화) 0(비활성화) --
+                             CONSTRAINT member_no_communityReply_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
+                             CONSTRAINT community_board_no_communityReply_fk FOREIGN KEY (community_board_no) REFERENCES Community(community_board_no) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- CommunityRecommend - 커뮤니티 추천
+CREATE TABLE CommunityRecommend (
+                                    community_board_no INTEGER NOT NULL,
+                                    member_no INTEGER NOT NULL,
+                                    recommend_type VARCHAR(10) NOT NULL, -- 'LIKE' 또는 'DISLIKE'
+                                    recommend_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                    PRIMARY KEY (community_board_no, member_no),
+                                    CONSTRAINT member_no_communityRecommend_fk
+                                        FOREIGN KEY (member_no)
+                                            REFERENCES Member(member_no)
+                                            ON DELETE CASCADE,
+                                    CONSTRAINT community_board_no_communityRecommend_fk
+                                        FOREIGN KEY (community_board_no)
+                                            REFERENCES Community(community_board_no)
+                                            ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- QnA - 질문 게시판
@@ -233,15 +252,15 @@ CREATE TABLE IF NOT EXISTS Notice (notice_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 
 -- Inquiry - 고객문의
 CREATE TABLE IF NOT EXISTS Inquiry (inquiry_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-  member_no INTEGER NOT NULL,
-  inquiry_title VARCHAR(30) NOT NULL,
-  inquiry_content   VARCHAR(1000) NOT NULL,
-  inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  inquiry_file VARCHAR(100) NULL,
-  inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
-  inquiry_satisfaction TINYINT DEFAULT 0 NOT NULL, -- 1(만족) 0(불만족) --
-  CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    member_no INTEGER NOT NULL,
+    inquiry_title VARCHAR(100) NOT NULL,
+    inquiry_content LONGTEXT NOT NULL,
+    inquiry_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    inquiry_file VARCHAR(100) NULL,
+    inquiry_status ENUM('답변 대기', '답변 중', '답변 완료') DEFAULT '답변 대기' NOT NULL,
+    inquiry_satisfaction TINYINT DEFAULT NULL, -- 초기값 NULL, 1(만족), 0(불만족)
+    CONSTRAINT member_no_inquiry_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- InquiryAnswer - 고객문의 답변
 CREATE TABLE IF NOT EXISTS InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -316,10 +335,10 @@ CREATE TABLE IF NOT EXISTS chat_room (
     max_users INT NOT NULL DEFAULT 2,
     created_at TIMESTAMP NOT NULL,
     room_admin INT NOT NULL,  -- 방장 ID (전문가 ID) 컬럼 추가
-    CONSTRAINT fk_room_member FOREIGN KEY (member_no) REFERENCES member(member_no),
-    CONSTRAINT fk_room_pro FOREIGN KEY (pro_no) REFERENCES member(member_no),
-    CONSTRAINT fk_room_estimation FOREIGN KEY (estimation_no) REFERENCES estimation(estimation_no),
-    CONSTRAINT fk_room_admin FOREIGN KEY (room_admin) REFERENCES member(member_no)
+    CONSTRAINT fk_room_member FOREIGN KEY (member_no) REFERENCES Member(member_no),
+    CONSTRAINT fk_room_pro FOREIGN KEY (pro_no) REFERENCES Member(member_no),
+    CONSTRAINT fk_room_estimation FOREIGN KEY (estimation_no) REFERENCES Estimation(estimation_no),
+    CONSTRAINT fk_room_admin FOREIGN KEY (room_admin) REFERENCES Member(member_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅 메세지
@@ -332,7 +351,7 @@ CREATE TABLE IF NOT EXISTS chat_message (
     message_type VARCHAR(10) NOT NULL,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_chat_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
-    CONSTRAINT fk_chat_sender FOREIGN KEY (sender) REFERENCES member(member_id)
+    CONSTRAINT fk_chat_sender FOREIGN KEY (sender) REFERENCES Member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅방 참여자 테이블 추가
@@ -342,7 +361,7 @@ CREATE TABLE IF NOT EXISTS chat_room_participant (
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (room_id, member_id),
     CONSTRAINT fk_participant_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id),
-    CONSTRAINT fk_participant_member FOREIGN KEY (member_id) REFERENCES member(member_id)
+    CONSTRAINT fk_participant_member FOREIGN KEY (member_id) REFERENCES Member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅방 게시판 테이블 추가
@@ -354,7 +373,7 @@ CREATE TABLE IF NOT EXISTS chat_board_event (
     board_content VARCHAR(10000) NOT NULL,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_chat_board_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
-    CONSTRAINT fk_chat_board_member FOREIGN KEY (member_id) REFERENCES member(member_id)
+    CONSTRAINT fk_chat_board_member FOREIGN KEY (member_id) REFERENCES Member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 채팅방 일정 테이블 추가
@@ -370,5 +389,5 @@ CREATE TABLE IF NOT EXISTS chat_calendar_event (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_calendar_room FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE,
-    CONSTRAINT fk_calendar_creator FOREIGN KEY (created_by) REFERENCES member(member_id)
+    CONSTRAINT fk_calendar_creator FOREIGN KEY (created_by) REFERENCES Member(member_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

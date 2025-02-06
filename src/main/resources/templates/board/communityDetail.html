@@ -1,107 +1,396 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-   layout:decorate="~{layouts/main_layout}">
-   
-<th:block>
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <link th:href="@{/css/community.css}" rel="stylesheet">
+
+</head>
 <div layout:fragment="content" class="container py-5">
-    <!-- 헤더 섹션 -->
-    <div class="row mt-5">
-        <div class="col-md">
-            <h2 class="fw-bold">커뮤니티</h2>
-            <p class="text-muted">다양한 분야의 사람들과 활발하게 소통해보세요!</p>
-        </div>
-    </div>
+    <th:block>
+        <form name="communityCheckForm" id="communityCheckForm">
+            <input type="hidden" name="communityBoardNo" id="communityBoardNo" th:value="${community.communityBoardNo}"/>
+            <input type="hidden" name="pageNum" th:value="${pageNum}"/>
+            <input type="hidden" name="memberNo" id="memberNo" th:value="${session.member.memberNo}" />
+            <input type="hidden" name="reportedMemberNo" th:value="${community.memberNo}" />
 
-    <!-- 탭 섹션 -->
-<div class="row my-5">
-    <div class="col-md d-flex align-items-center justify-content-center">
-        <div class="sort-control float-end">
-    <label class="sort-option">
-        <input type="radio" name="sort" checked>
-        <a href="/community" class="text-center me-5 text-decoration-none fw-bold">Community</a>
-    </label>
-    <label class="sort-option">
-        <input type="radio" name="sort">
-        <a href="/QnA" class="text-center ms-5 text-decoration-none">Q&A</a>
-    </label>
-</div>
-    </div>
-</div>
 
-    <!-- 검색 및 필터 섹션 -->
-    <div class="row my-5">
-    <div class="col-md-3 d-flex align-items-center justify-content-center">
-            <a href="/communityWriteForm" class="btn custom-button">
-                <i class="bi bi-pencil-square me-2"></i>글쓰기
-            </a>
+            <th:block th:if="${searchOption}">
+                <input type="hidden" name="type" th:value="${ type }" />
+                <input type="hidden" name="keyword" th:value="${ keyword }" />
+            </th:block>
+
+        <div class="row mt-5">
+            <div class="col-md">
+                <a href="#" th:onclick="@{|location.href='community?pageNum=${pageNum}&type=${type}&keyword=${keyword}'|}" style="text-decoration: none; color: inherit;">
+                    <span class="fw-bold">자유 게시판</span>
+                </a>
+            </div>
         </div>
-        <div class="col-md-6 d-flex align-items-center justify-content-center">
-        <div class="d-flex align-items-center">
-            <input type="text" class="search-bar" placeholder="검색어를 입력하세요"
-                style="border: 2px solid #215EA3; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
-            <button class="search-button"
-                style="margin-left: -50px; border: none; background: none; cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                    fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path
-                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.442.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
-                </svg>
-            </button>
+        <div class="row d-flex justify-content-between my-3">
+            <div class="col-auto">
+                <small class="text-muted" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd HH:mm')}">작성 날짜</small>
+            </div>
+            <div class="col-auto dropdown-container communityDropdownContainer">
+                <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                <div class="dropdown-menu communityDropdown" style="display: none;">
+                    <!-- 수정하기 링크 수정 -->
+                    <a class="dropdown-item communityDropdownItem"
+                       th:if="${session.member != null and session.member.memberNo == community.memberNo}"
+                       th:href="@{/communityUpdateForm(communityBoardNo=${community.communityBoardNo}, memberNo=${session.member.memberNo})}">
+                        수정하기
+                    </a>
+                        <button id="deletBtn" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
+                            삭제하기
+                        </button>
+                    <button type="button" class="dropdown-item communityDropdownItem reportBtn"
+                            th:if="${session.member != null and session.member.memberNo != community.memberNo}"
+                            data-type="community"
+                            data-member-no="${community.memberNo}"
+                            onclick="setReportInfo(this)">
+                        신고하기
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-	    <div class="col-md-3 d-flex align-items-center justify-content-center">
-	        <div class="segment-control float-end">
-	            <input type="radio" name="sort" id="sort-popular" checked>
-	            <input type="radio" name="sort" id="sort-recommended">
-	            <label for="sort-popular">최신순</label>
-	            <label for="sort-recommended">추천순</label>
-	            <div class="segment-indicator"></div>
-	        </div>
-	    </div>
-	</div> 
-    
-<!-- 게시물 리스트 -->
-<div class="row g-4 mt-5">
-    <!-- 게시물 카드 반복 -->
-    <div class="col-12 col-lg-8 mx-auto">  <!-- 가로 사이즈 조절 -->   <!-- 패딩 축소 -->
-                <div class="row mb-2 mx-3">      <!-- 상단 마진 축소 -->
-                    <div class="col d-flex align-items-center justify-content-end">
-                        <i class="bi bi-three-dots"></i>
+        </form>
+
+        <div class="row d-flex justify-content-between">
+            <div class="col-auto">
+                    <span th:text="${community.nickname != null ? community.nickname : '알 수 없음'}"></span>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted ms-2">조회수 <span th:text="${community.communityView}">0</span></span>
+            </div>
+        </div>
+
+        <div class="row mt-5 mx-3">
+            <div class="col">
+                <h3 th:text="${community.communityBoardTitle}">게시물 제목</h3>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col">
+                <hr class="my-4 opacity-25">
+            </div>
+        </div>
+
+        <div class="row mx-3">
+            <div class="col">
+                <div class="ql-editor" th:utext="${community.communityBoardContent}"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div th:if="${community.communityFile != null}" class="text-center mb-4">
+                    <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}" class="img-fluid rounded" alt="게시물 이미지">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <hr class="my-4 opacity-25">
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-3 col-auto">
+                <!-- 좋아요 버튼 -->
+                <span id="communityBoardLike" class="recommend-btn"
+                      th:with="isAuthor=${session.member != null && session.member.memberNo == community.memberNo}"
+                      th:style="${!isAuthor && session.member != null} ? 'cursor: pointer;' : 'cursor: not-allowed; opacity: 0.6;'"
+                      th:data-board-no="${community.communityBoardNo}"
+                      th:data-is-author="${isAuthor}"
+                      th:classappend="${community.communityBoardLike > 0} ? 'active' : ''">
+            <i class="bi" th:classappend="${community.communityBoardLike > 0} ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+            좋아요 <span class="like-count" th:text="${community.communityBoardLike}">0</span>
+        </span>
+
+                <!-- 싫어요 버튼 -->
+                <span id="communityBoardDislike" class="recommend-btn"
+                      th:with="isAuthor=${session.member != null && session.member.memberNo == community.memberNo}"
+                      th:style="${!isAuthor && session.member != null} ? 'cursor: pointer;' : 'cursor: not-allowed; opacity: 0.6;'"
+                      th:data-board-no="${community.communityBoardNo}"
+                      th:data-is-author="${isAuthor}"
+                      th:classappend="${community.communityBoardDislike > 0} ? 'active' : ''">
+            <i class="bi" th:classappend="${community.communityBoardDislike > 0} ? 'bi-hand-thumbs-down-fill text-primary' : 'bi-hand-thumbs-down'"></i>
+            싫어요 <span class="dislike-count" th:text="${community.communityBoardDislike}">0</span>
+        </span>
+            </div>
+            <div class="d-flex gap-3 col-auto text-end"><span><i class="bi bi-chat"></i> 댓글 <span th:text="${replyCount}">0</span></span>
+            </div>
+        </div>
+
+
+
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <form id="replyForm" class="d-flex gap-2">
+                            <input type="hidden" name="communityBoardNo" th:value="${community.communityBoardNo}"/>
+                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+                            <div class="flex-grow-1">
+                                <input type="text" class="form-control" placeholder="댓글을 입력하세요" name="communityReplyContent"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary">등록</button>
+                        </form>
                     </div>
                 </div>
-                <div class="row mx-3">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h5 class="card-title">게시물 제목</h5>
-                                <p class="card-text text-muted">게시물 내용 미리보기...</p>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                <img src="placeholder.jpg" class="img-fluid rounded" alt="게시물 이미지">
-                            </div>
+            </div>
+        </div>
+
+
+        <!-- 댓글 목록 -->
+        <th:block th:if="${not #lists.isEmpty(replyList)}">
+            <div class="row mt-4" id="replyList" th:each="reply : ${replyList}">
+        <div class="card mb-2">
+            <div class="card-body">
+                <form>
+                    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}">
+                    <input type="hidden" name="communityBoardNo" th:value="${reply.communityBoardNo}">
+                    <input type="hidden" name="memberReplyNo" th:value="${reply.memberNo}">
+                    <input type="hidden" name="communityReplyActivation" value="1">
+                </form>
+                <div class="row d-flex justify-content-between">
+                    <div class="col-auto">
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${reply.nickname}">작성자</h6>
+                    </div>
+                    <div class="col-auto dropdown-container communityDropdownContainer communityReplyDelete">
+                        <i class="bi bi-three-dots" onclick="toggleDropdown(this)"></i>
+                        <div class="dropdown-menu communityDropdown" style="display: none;">
+                            <!-- 수정하기, 삭제하기: 작성자일 경우만 보이기 -->
+                            <a class="dropdown-item communityDropdownItem"
+                               href="#"
+                               th:if="${session.member != null && session.member.memberNo == reply.memberNo}"
+                               th:data-member-no="${reply.memberNo}"
+                               th:data-reply-no="${reply.communityReplyNo}"
+                               th:data-board-no="${reply.communityBoardNo}">수정하기</a>
+
+                            <form action="/replyDelete" method="post" style="display:inline;">
+                                <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
+                                <input type="hidden" name="memberNo" th:value="${reply.memberNo}"/>
+                                <button type="submit" class="dropdown-item communityDropdownItem"
+                                        th:if="${session.member != null && session.member.memberNo == reply.memberNo}">삭제하기</button>
+                            </form>
+
+                            <button type="button" class="dropdown-item communityDropdownItem reportBtn"
+                                    th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
+                                    th:data-member-no="${reply.memberNo}"
+                                    data-type="reply"
+                                    onclick="setReportInfo(this)">
+                                신고하기
+                            </button>
                         </div>
-                
-                       <div class="row">
-						    <div class="col-md-8 mt-3">
-						        <div class="d-flex gap-3">
-						            <span><i class="bi bi-heart"></i> 좋아요 0</span>
-						            <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 0</span>
-						            <span><i class="bi bi-chat"></i> 댓글 0</span>
-						        </div>
-						    </div>
-						    <div class="col-md-4 mt-3 d-flex align-items-center justify-content-end">  <!-- 수정된 부분 -->
-						        <small class="text-muted">2024.03.21</small>
-						    </div>
-						</div>
-		            </div>
-		        </div>
-		        <div class="row">
-				    <div class="col">
-				        <hr class="my-4 opacity-25">
-				    </div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="card-text" th:text="${reply.communityReplyContent}">댓글 내용이 여기에 표시됩니다.</p>
+                </div>
+                <div class="row">
+                    <div class="d-flex gap-2 text-muted">
+                        <small th:text="${#dates.format(reply.communityReplyRegDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </th:block>
+
+            <!-- 신고 모달 -->
+            <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{/reports}" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+                                <input type="hidden" name="reportedMemberNo" />
+
+                                <div class="mb-3">
+                                    <label for="reportsType" class="form-label">신고 유형</label>
+                                    <select id="reportsType" name="reportsType" class="form-select">
+                                        <option value="community" selected>자유게시판</option>
+                                        <option value="reply">댓글</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reportsTarget" class="form-label">신고 항목</label>
+                                    <select id="reportsTarget" name="reportsTarget" class="form-select">
+                                        <option value="욕설">욕설</option>
+                                        <option value="광고">광고</option>
+                                        <option value="스팸">스팸</option>
+                                        <option value="기타">기타</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reportsReason" class="form-label">신고 사유</label>
+                                    <textarea id="reportsReason" name="reportsReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                <button type="button" class="btn btn-primary" onclick="submitReport()">신고 접수</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+    </th:block>
+</div>
+<!-- communityWrite.js 스크립트 포함 -->
+<th:block layout:fragment="script">
+    <script th:src="@{/js/communityWrite.js}"></script>
+    <script th:src="@{/js/communityReply.js}"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Bootstrap이 로드되었는지 확인
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap이 로드되지 않았습니다.');
+                return;
+            }
+        });
+
+        function setReportInfo(button) {
+            try {
+                const memberNo = button.getAttribute('data-member-no');
+                const type = button.getAttribute('data-type');
+
+                // 1. 모달 요소 찾기
+                const modalEl = document.getElementById('reportModal');
+                if (!modalEl) {
+                    throw new Error('모달 요소를 찾을 수 없습니다.');
+                    return;
+                }
+
+                // 3. 폼 요소 찾기 (modalEl에서 직접 querySelector 사용)
+                const reportedMemberNoInput = modalEl.querySelector('input[name="reportedMemberNo"]');
+                const reportsTypeSelect = modalEl.querySelector('#reportsType');
+
+                if (!reportedMemberNoInput || !reportsTypeSelect) {
+                    throw new Error('필요한 폼 요소를 찾을 수 없습니다.');
+                }
+
+                // 2. 모달 인스턴스 생성
+                const modal = new bootstrap.Modal(modalEl);
+
+                // 4. 값 설정
+                reportedMemberNoInput.value = memberNo;
+                reportsTypeSelect.value = type;
+
+                // 5. 모달 표시
+                modal.show();
+            } catch (error) {
+                console.error('모달 초기화 오류:', error);
+                alert(error.message);
+            }
+        }
+
+                function submitReport() {
+                    const modalEl = document.getElementById('reportModal');
+                    const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
+                    const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
+                    const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
+                    const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
+                    const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+                    const reportsTargetLink = window.location.pathname + window.location.search.split('&')[0];
+
+
+                    // report 객체 생성
+                    const report = {
+                        memberNo: parseInt(memberNo), // 숫자로 변환
+                        reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+                        reportsType: reportsType,
+                        reportsTarget: reportsTarget,
+                        reportsReason: reportsReason,
+                        reportsStatus: 0, // 초기값
+                        reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+                    };
+
+                    console.log(report);
+
+                    // 데이터 전송
+                    fetch('/reports', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(report)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.text();
+                            } else {
+                                throw new Error("신고 처리 중 오류 발생");
+                            }
+                        })
+
+                        .then(data => {
+                            alert("신고가 완료되었습니다."); // 성공 메시지 알림
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                            modal.hide(); // 모달 창 닫기
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('신고 처리 중 오류가 발생했습니다.');
+                        });
+                }
+
+
+
+                // 이미지 로딩 에러 처리
+            document.querySelectorAll('.ql-editor img').forEach(img => {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    console.log('이미지 로딩 실패:', this.src);
+                };
+            });
+
+            // 링크 새 창에서 열기
+            document.querySelectorAll('.ql-editor a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+
+            $('#deletBtn').click(function() {  // onclick을 click으로 수정
+                const memberNo = $('#memberNo').val();
+                const communityBoardNo = $('#communityBoardNo').val();
+                console.log(memberNo, communityBoardNo);
+
+                $.ajax({
+                    url: '/delete',
+                    type: 'POST',
+                    data: {
+                        memberNo: memberNo,
+                        communityBoardNo: communityBoardNo
+                    },
+                    success: function(response) {
+                        alert(response.message);
+
+                        if(response.status == "success") {
+                            location.href = "/community";  // 경로가 맞는지 확인해보세요
+                        }
+                    },
+                    error: function(xhr, status, error) {  // 에러 파라미터 추가
+                        console.error('Error:', error);
+                        alert('게시물 삭제 중 오류가 발생되었습니다.');
+                    }
+                });
+            });
+        </script>
+    </th:block>
+
+
 </th:block>
 </html>

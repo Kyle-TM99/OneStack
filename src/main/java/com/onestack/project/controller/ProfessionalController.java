@@ -75,7 +75,11 @@ public class ProfessionalController {
 
     /* 견적 요청서 작성 */
 	@PostMapping("/submitEstimation")
-	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+    @ResponseBody
+	public Map<String, Object> submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+
+        Map<String, Object> result = new HashMap<>();
+
 		try {
 			// 견적 정보 설정
 			estimation.setProNo(proNo);
@@ -84,10 +88,11 @@ public class ProfessionalController {
 			// 견적 저장
 			proService.submitEstimation(estimation);
 
-			return "redirect:/estimationDoneForm";
+			result.put("status", true);
+            return result;
 		} catch (Exception e) {
 			log.error("견적 요청 중 오류 발생", e);
-			return "redirect:/error";
+            return result;
 		}
 	}
 

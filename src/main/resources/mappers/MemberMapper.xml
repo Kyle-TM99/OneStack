@@ -139,8 +139,6 @@
 	</resultMap>
 
 
-
-
 	<resultMap id="memberEstimation" type="MemberEstimation">
 		<association property="member" javaType="Member" resultMap="memberMap"/>
 		<association property="estimation" javaType="Estimation" resultMap="Estimation" />
@@ -201,25 +199,7 @@
 		WHERE pro_no = #{proNo}
 	</select>
 
-<!--
 
-	&lt;!&ndash; myPage에서 포트폴리오 관리를 위한 조회 (memProWithPortPortImage) &ndash;&gt;
-	<select id="memProWithPortPortImage" parameterType="int" resultMap="memProWithPortPortImage">
-		SELECT
-			m.*, p.*, pi.*, pr.*
-		FROM
-			Member m
-				JOIN
-			Professional pr ON m.member_no = pr.member_no
-				JOIN
-			Portfolio p ON pr.pro_no = p.pro_no
-				JOIN
-			PortfolioImages pi ON p.portfolio_id = pi.portfolio_id
-		WHERE
-			m.member_type = 2;
-	</select>
-
--->
 
 	<!-- 내역 조회를 위한 memberWithProfessional -->
 	<select id="memberWithProfessional" parameterType="int" resultMap="memberWithProfessional">
@@ -235,16 +215,6 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
-<!--
-
-	&lt;!&ndash; 전문가가 받은 총합 리뷰 (pro_no) &ndash;&gt;
-	<select id="proReview" parameterType="int" resultMap="Review">
-		SELECT *
-		FROM Review
-		WHERE pro_no =#{proNo}
-		ORDER BY revire_date DESC
-	</select>
--->
 
 	<!-- 자신이 작성한 리뷰 수 조회 -->
 	<select id="findMyReviewCount" parameterType="int" resultType="int">
@@ -252,16 +222,6 @@
 		FROM Review
 		WHERE member_no = #{memberNo}
 	</select>
-<!--
-
-	&lt;!&ndash; 전문가가 받은 총합 리뷰 수(pro_no) &ndash;&gt;
-	<select id="proReviewCount" parameterType="int" resultMap="Review">
-		SELECT COUNT(review_no)
-		FROM Review
-		WHERE pro_no =#{proNo}
-		ORDER BY revire_date DESC
-	</select>
--->
 
 
 	<!-- 회원별 작성한 게시글 조회 -->
@@ -282,9 +242,6 @@
 		WHERE m.member_no = #{memberNo}
 	</select>
 
-
-
-
 	<!-- 회원별 작성한 댓글 조회 -->
 	<select id="comWithComReply" parameterType="int" resultMap="ComWithComReply">
 		SELECT
@@ -303,42 +260,53 @@
 		WHERE m.member_no = #{memberNo}
 	</select>
 
-
-
-
-
 	<!-- 게시글 공감 조회 -->
 	<select id="memberMyPageCommunityLike" resultType="Community">
 		SELECT *
-		FROM community
+		FROM Community
 		WHERE member_no = #{memberNo}
 		  AND community_board_like > 0
 	</select>
-
-
 
 	<!-- 댓글 공감 조회 -->
 	<select id="memberMyPageComReplyLike" resultType="CommunityReply">
 		SELECT cr.*, c.community_board_title
 		FROM CommunityReply cr
-				 JOIN community c ON cr.community_board_no = c.community_board_no
+				 JOIN Community c ON cr.community_board_no = c.community_board_no
 		WHERE cr.member_no = #{memberNo}
 		  AND cr.community_reply_like > 0
 	</select>
-
-
 
 	<!-- 회원 수정 -->
 	<update id="updateMember" parameterType="Member" >
 		UPDATE Member
 		SET
 		name = #{name},
+		nickname = #{nickname},
+		member_id = #{memberId},
 		email = #{email},
 		phone = #{phone},
 		email_get = #{emailGet},
 		zipcode = #{zipcode},
 		address = #{address},
 		address2 = #{address2}
+		<if test="memberImage != null and memberImage != ''">
+			, member_image = #{memberImage}
+		</if>
+		WHERE member_no = #{memberNo}
+	</update>
+
+	<!-- 소셜 로그인 회원 수정 -->
+	<update id="updateSocialMember" parameterType="Member">
+		UPDATE Member
+		SET
+			nickname = #{nickname},
+			email = #{email},
+			phone = #{phone},
+			email_get = #{emailGet},
+			zipcode = #{zipcode},
+			address = #{address},
+			address2 = #{address2}
 		<if test="memberImage != null and memberImage != ''">
 			, member_image = #{memberImage}
 		</if>
@@ -359,7 +327,7 @@
 	</insert>
 
 	<!-- ID 중복 체크 -->
-	<select id="checkMemberId" parameterType="String" resultType="int">
+	<select id="checkMemberId">
 		SELECT COUNT(*)
 		FROM Member
 		WHERE member_id = #{memberId}
@@ -439,7 +407,6 @@
 		ORDER BY p.payment_date DESC
 	</select>
 
-
 	<!-- 삭제 쿼리들 -->
 	<update id="deleteReview">
 		UPDATE Review
@@ -459,7 +426,6 @@
 		WHERE member_id = #{memberId}
 	</select>
 
-
 	<!-- 비밀번호 재설정 토큰 저장 -->
 	<insert id="savePasswordResetToken" parameterType="PasswordResetToken">
 		INSERT INTO PasswordResetToken (member_id, token, expiry_date)
@@ -474,7 +440,7 @@
 
 	<!-- 비밀번호 업데이트 -->
 	<update id="updatePassword">
-		UPDATE member
+		UPDATE Member
 		SET pass = #{newPassword}
 		WHERE member_id = #{memberId}
 	</update>
@@ -534,10 +500,10 @@
 			p.nickname as proNickname,
 			c.item_title as categoryName
 		FROM 
-			estimation e
-			LEFT JOIN member m ON e.member_no = m.member_no
-			LEFT JOIN member p ON e.pro_no = p.member_no
-			LEFT JOIN category c ON e.item_no = c.item_no
+			Estimation e
+			LEFT JOIN Member m ON e.member_no = m.member_no
+			LEFT JOIN Member p ON e.pro_no = p.member_no
+			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
 			e.estimation_no = #{estimationNo}
 	</select>

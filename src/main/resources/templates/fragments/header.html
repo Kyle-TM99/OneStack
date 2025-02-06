@@ -130,8 +130,10 @@
 														<li class="dropdown-item-text text-center text-muted">전문가 심사중</li>
 													</th:block>
 													<li><hr class="dropdown-divider"></li>
-														<li><a class="dropdown-item" href="/#">고객 문의</a></li>
-
+														<li><a class="dropdown-item" href="/memberInquiry">고객 문의</a></li>
+													<th:block th:unless="${session.member.isAdmin()}">
+                                                    <li><a class="dropdown-item" href="/updateMemberForm">회원정보수정</a></li>
+													</th:block>
 													<!-- 관리자 페이지 버튼 -->
 													<th:block th:if="${session.member != null && session.member.isAdmin()}">
 														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
