@@ -31,13 +31,15 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-		/*
-		 * 기존에 정적 리소스 핸들러의 설정은 그대로 유지하며 새로운 리소스 핸들러 추가 /resources/** 로 요청되는 리소스 요청 설정
-		 **/
 		registry.addResourceHandler("/resources/files/**")
-				// file: 프로토콜을 사용하면 업로드한 이미지가 바로 보인다.
-				.addResourceLocations("file:./src/main/resources/static/files/").setCachePeriod(1); // 캐쉬 지속시간(초)
-
+			// file: 프로토콜을 사용하면 업로드한 이미지가 바로 보인다.
+			.addResourceLocations("file:./src/main/resources/static/files/").setCachePeriod(1); // 캐쉬 지속시간(초)
+		
+		registry.addResourceHandler("/images/**")
+		// 이미지 경로
+		.addResourceLocations("classpath:/static/images/")
+		// 캐쉬 지속시간(초)
+		.setCachePeriod(3600);
 	}
 
 	  @Override
@@ -45,8 +47,9 @@ public class WebConfig implements WebMvcConfigurer {
 		  registry.addInterceptor(new LoginCheckInterceptor(memberMapper))
 	  		   	  .addPathPatterns("/**") // 인터셉터를 적용할 경로
 	              .excludePathPatterns( // 로그인 없이 접근 가능한 경로
-						  "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout"
+						"/**" , "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout"
 	              );
+
 	  }
 
 

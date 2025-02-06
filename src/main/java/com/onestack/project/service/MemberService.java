@@ -317,8 +317,8 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         
         try {
             memberMapper.savePasswordResetToken(resetToken);
-            
-            String resetLink = "http://localhost:8080/resetPassword?token=" + token;
+
+            String resetLink = "http://www.onestack.store/resetPassword?token=" + token;
             String emailContent = String.format(
                 "안녕하세요,\n\n" +
                 "비밀번호 재설정을 위한 링크입니다:\n%s\n\n" +
