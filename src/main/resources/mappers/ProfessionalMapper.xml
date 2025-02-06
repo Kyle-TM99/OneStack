@@ -151,6 +151,14 @@
 	WHERE p.pro_no = #{proNo}
 </select>
 
+<!-- 전문가 itemNo 조회 -->
+<select id="getItemNo" parameterType="int">
+	SELECT pai.item_no
+	FROM Professional p JOIN ProfessionalAdvancedInformation pai ON p.pro_no = pai.pro_no
+						JOIN Portfolio pf ON pai.pro_advanced_no = pf.pro_advanced_no
+	WHERE p.pro_no = #{proNo};
+</select>
+
 <!-- 포트폴리오 이미지 조회 -->
 <select id="getPortfolioFiles" parameterType="int" resultType="map">
 	SELECT portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,

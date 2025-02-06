@@ -124,21 +124,84 @@
 
     <script>
         $(document).ready(function() {
+            // 카테고리 선택 시 placeholder 변경
+            $("#itemNo").on("change", function() {
+                let selectedCategory = $(this).val();
+                let placeholderText = "원하시는 서비스에 대해 자세히 설명해주세요.";
+
+                // 카테고리에 따라 placeholder 변경
+                switch (selectedCategory) {
+                    case "11":
+                        placeholderText = "기획에 관한 자세한 내용을 작성해주세요.";
+                        break;
+                    case "12":
+                        placeholderText = "웹 관련 서비스에 대해 설명해주세요.";
+                        break;
+                    case "13":
+                        placeholderText = "소프트웨어 개발에 대한 요구 사항을 작성해주세요.";
+                        break;
+                    case "14":
+                        placeholderText = "안드로이드 관련 서비스를 설명해주세요.";
+                        break;
+                    case "15":
+                        placeholderText = "iOS 관련 서비스를 설명해주세요.";
+                        break;
+                    case "16":
+                        placeholderText = "게임 관련 개발 사항을 작성해주세요.";
+                        break;
+                    case "17":
+                        placeholderText = "AI 관련 요구 사항을 작성해주세요.";
+                        break;
+                    case "18":
+                        placeholderText = "QA 및 테스트에 대한 내용을 작성해주세요.";
+                        break;
+                    case "21":
+                        placeholderText = "가공 및 라벨링 작업에 대한 상세 내용을 작성해주세요.";
+                        break;
+                    case "22":
+                        placeholderText = "데이터 복구 서비스에 대해 설명해주세요.";
+                        break;
+                    case "23":
+                        placeholderText = "크롤링 서비스에 대한 요구 사항을 작성해주세요.";
+                        break;
+                    case "24":
+                        placeholderText = "DB 구축에 대한 요구 사항을 작성해주세요.";
+                        break;
+                    case "25":
+                        placeholderText = "통계 분석 관련 내용을 작성해주세요.";
+                        break;
+                    default:
+                        placeholderText = "원하시는 서비스에 대해 자세히 설명해주세요.";
+                        break;
+                }
+
+                // 변경된 placeholder 적용
+                $("#estimationContent").attr("placeholder", placeholderText);
+            });
+
             $("#estimationPrice").on("input", function() {
-                let value = $(this).val().replace(/[^0-9]/g, "");
+                let value = $(this).val().replace(/[^0-9]/g, ""); // 숫자만 남기기
                 if(value) {
-                    value = parseInt(value).toLocaleString();
+                    value = parseInt(value).toLocaleString(); // 숫자에 콤마 추가
                 }
                 $(this).val(value);
             });
 
             $("#estimationForm").on("submit", function(e) {
-                e.preventDefault();
+                e.preventDefault(); // 폼 제출 기본 동작 막기
 
-                let price = $("#estimationPrice").val().replace(/,/g, "");
+                let price = $("#estimationPrice").val().replace(/,/g, ""); // 콤마 제거
+
+                let amount = parseInt(price); // 금액을 정수로 변환
+
+                // 0원 이상 20억 원 이하인지 확인
+                if (amount < 1000 || amount > 2000000000) {
+                    alert("금액은 1000원 이상 20억 원 미만으로 입력해주세요.");
+                    return; // 범위 외의 값일 경우 폼 제출을 막고 함수 종료
+                }
 
                 let formData = new FormData(this);
-                formData.set("estimationPrice", price);
+                formData.set("estimationPrice", price); // 금액을 폼 데이터에 추가
 
                 $.ajax({
                     url: "/submitEstimation",

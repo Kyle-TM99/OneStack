@@ -1,4 +1,6 @@
 function submitReport() {
+    console.log("신고 버튼 클릭 완료");
+
     // HTML 요소에서 값 가져오기
     const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
     const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
@@ -33,7 +35,6 @@ function submitReport() {
     throw new Error("신고 처리 중 오류 발생");
 }
 })
-
     .then(data => {
     alert("신고가 완료되었습니다."); // 성공 메시지 알림
     const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));

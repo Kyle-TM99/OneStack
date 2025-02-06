@@ -168,4 +168,55 @@
     .category-section {
         margin-bottom: 2rem;
     }
-} 
+}
+
+
+
+/* 로딩 스피너 */
+/* #loadingSpinner: 로딩 스피너의 외부 컨테이너 스타일 */
+#loadingSpinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex; /* flexbox로 자식 요소들을 정렬 */
+    align-items: center; /* 자식 요소들을 세로 방향으로 중앙 정렬 */
+    justify-content: center; /* 자식 요소들을 가로 방향으로 중앙 정렬 */
+}
+
+/* .spinner: 실제로 회전하는 원 모양의 로딩 스피너 스타일 */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    border-top-color: rgba(33, 94, 163, 1);
+    animation: spin 1s linear infinite; /* spin 애니메이션을 1초 간격으로 무한 반복 */
+}
+
+/* spin 애니메이션: 회전 효과 */
+@keyframes spin {
+    0% { transform: rotate(0deg); } /* 시작 시 0도 회전 */
+    100% { transform: rotate(360deg); } /* 끝날 때 360도 회전 */
+}
+
+/* #loadingSpinner p: 로딩 스피너 아래 텍스트의 스타일 */
+#loadingSpinner p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #215EA3;
+    font-weight: bold;
+    opacity: 0.8;
+    animation: textFade 1.5s ease-in-out infinite; /* 텍스트에 fade 애니메이션을 적용 */
+}
+
+/* textFade 애니메이션: 텍스트의 투명도 변경 효과 */
+@keyframes textFade {
+    0% { opacity: 0.3; } /* 시작 시 텍스트 투명도 0.3 */
+    50% { opacity: 1; } /* 중간에 텍스트 투명도 1 */
+    100% { opacity: 0.3; } /* 끝날 때 텍스트 투명도 0.3 */
+}
