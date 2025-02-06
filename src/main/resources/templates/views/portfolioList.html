@@ -31,7 +31,6 @@
             <div class="card-body">
               <h5 class="card-title" th:text="${portfolio.portfolioTitle}"></h5>
               <p class="card-text text-muted" th:text="${#strings.abbreviate(portfolio.portfolioContent, 50)}"></p>
-              <span class="badge bg-secondary" th:text="${portfolio.visibility == 1 ? '공개' : '비공개'}"></span>
 
               <!-- ✅ 수정 버튼 -->
               <div class="portfolio-actions d-flex justify-content-end mt-3">

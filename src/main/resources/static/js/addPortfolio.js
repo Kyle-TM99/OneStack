@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const uploadedFiles = await uploadFiles(thumbnailImage, portfolioFiles);
 
                 if (!uploadedFiles || !uploadedFiles.thumbnailImage || uploadedFiles.portfolioFiles.length === 0) {
-                    alert('파일 업로드 실패');
+                    alert('포트폴리오 이미지를 최소 1개 업로드 해주세요.');
                     return;
                 }
 

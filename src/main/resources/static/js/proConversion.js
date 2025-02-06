@@ -321,7 +321,8 @@
 		        const thumbnailImagePath = document.getElementById('thumbnailImageDisplay').innerText.trim();
 		        const portfolioFilePaths = Array.from(document.querySelectorAll('#portfolioFilesDisplay li a')).map(link => link.href);
 
-		        if (!memberNo || !categoryNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent) {
+		        if (!memberNo || !categoryNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent || !career || !contactableTimeStart
+				|| !contactableTimeEnd) {
 		            alert('모든 필수 정보를 입력해주세요.');
 		            return;
 		        }
@@ -359,7 +360,8 @@
 		        alert('심사 요청이 완료되었습니다.');
 				window.location.href = "/mainPage";
 		    } catch (error) {
-		        console.error('오류 발생:', error);
-		        alert('심사 요청 중 오류가 발생했습니다.');
+				console.error('오류 발생:', error);
+				alert('동일한 전문분야의 포트폴리오는 추가할 수 없습니다.');
+
 		    }
 		});

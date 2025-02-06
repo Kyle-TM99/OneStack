@@ -43,6 +43,7 @@ const modalContent = document.querySelector(".modal-content");
                 $("#selfIntroduction").text(data.selfIntroduction || "없음");
                 $("#contactableTime").text(data.contactableTime || "없음");
 
+
                 // ✅ 경력 및 수상경력 업데이트
                 let careerList = data.career.length > 0 ? data.career.map(c => `<li>${c}</li>`).join("") : "<li>경력 없음</li>";
                 $("#careerList").html(careerList);

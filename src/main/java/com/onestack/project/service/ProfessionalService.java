@@ -43,8 +43,8 @@ public class ProfessionalService {
         professional.setMemberNo(request.getMemberNo());
         professional.setCategoryNo(request.getCategoryNo());
         professional.setSelfIntroduction(request.getSelfIntroduction());
-        professional.setCareer(String.join(",", request.getCareer()));
-        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
+        professional.setCareer(String.join("\n", request.getCareer()));
+        professional.setAwardCareer(String.join("\n", request.getAwardCareer()));
         professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
 
         professionalMapper.addPro(professional);
@@ -180,8 +180,8 @@ public class ProfessionalService {
     }
 
     // ✅ portfolioDetail/{portfolioNo} API에서만 사용되는 메서드 추가
-    public PortfolioDetail getPortfolioDetailById(int portfolioNo) {
-        PortfolioDetail portfolioDetail = professionalMapper.getPortfolioById(portfolioNo);
+    public PortfolioDetail getProPortfolioDetail(int portfolioNo) {
+        PortfolioDetail portfolioDetail = professionalMapper.getProPortfolioDetail(portfolioNo);
         if (portfolioDetail == null) {
             System.out.println("❌ getPortfolioDetailById: 데이터 없음 (portfolioNo = " + portfolioNo + ")");
             return null;

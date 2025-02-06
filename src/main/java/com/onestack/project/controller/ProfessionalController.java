@@ -402,49 +402,47 @@ public class ProfessionalController {
     }
 
         // 포트폴리오 모달
-    @GetMapping("/portfolioDetail/{portfolioNo}")
-    @ResponseBody
-    public ResponseEntity<?> getPortfolioDetail(@PathVariable("portfolioNo") int portfolioNo) {
-        System.out.println("🔍 포트폴리오 상세 조회 요청: portfolioNo = " + portfolioNo);
+        @GetMapping("/portfolioDetail/{portfolioNo}")
+        @ResponseBody
+        public ResponseEntity<?> getPortfolioDetail(@PathVariable("portfolioNo") int portfolioNo) {
+            System.out.println("🔍 포트폴리오 상세 조회 요청: portfolioNo = " + portfolioNo);
 
-        PortfolioDetail portfolioDetail = professionalService.getPortfolioDetailById(portfolioNo);
+            PortfolioDetail portfolioDetail = professionalService.getProPortfolioDetail(portfolioNo);
 
-        if (portfolioDetail == null) {
-            System.out.println("❌ 포트폴리오를 찾을 수 없습니다: portfolioNo = " + portfolioNo);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("포트폴리오를 찾을 수 없습니다.");
+            if (portfolioDetail == null) {
+                System.out.println("❌ 포트폴리오를 찾을 수 없습니다: portfolioNo = " + portfolioNo);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("포트폴리오를 찾을 수 없습니다.");
+            }
+
+            // ✅ JSON 데이터 변환
+            Map<String, Object> response = new HashMap<>();
+            response.put("portfolioNo", portfolioDetail.getPortfolioNo());
+            response.put("portfolioTitle", portfolioDetail.getPortfolioTitle());
+            response.put("portfolioContent", portfolioDetail.getPortfolioContent());
+            response.put("thumbnailImage", portfolioDetail.getThumbnailImage());
+            response.put("portfolioFiles", Arrays.asList(
+                    portfolioDetail.getPortfolioFile1(),
+                    portfolioDetail.getPortfolioFile2(),
+                    portfolioDetail.getPortfolioFile3(),
+                    portfolioDetail.getPortfolioFile4(),
+                    portfolioDetail.getPortfolioFile5(),
+                    portfolioDetail.getPortfolioFile6(),
+                    portfolioDetail.getPortfolioFile7(),
+                    portfolioDetail.getPortfolioFile8(),
+                    portfolioDetail.getPortfolioFile9(),
+                    portfolioDetail.getPortfolioFile10()
+            ));
+
+            // ✅ 올바른 전문 분야 적용
+            response.put("memberName", portfolioDetail.getProfessionalName());
+            response.put("categoryTitle", portfolioDetail.getCategoryTitle()); // ✅ 수정된 부분
+            response.put("selfIntroduction", portfolioDetail.getSelfIntroduction());
+            response.put("contactableTime", portfolioDetail.getContactableTime());
+            response.put("career", portfolioDetail.getCareer() != null ? Arrays.asList(portfolioDetail.getCareer().split(",")) : new ArrayList<>());
+            response.put("awardCareer", portfolioDetail.getAwardCareer() != null ? Arrays.asList(portfolioDetail.getAwardCareer().split(",")) : new ArrayList<>());
+
+            System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
+            return ResponseEntity.ok(response);
         }
-
-        // ✅ 필요한 데이터를 JSON 형태로 변환하여 반환
-        Map<String, Object> response = new HashMap<>();
-        response.put("portfolioNo", portfolioDetail.getPortfolioNo());
-        response.put("portfolioTitle", portfolioDetail.getPortfolioTitle());
-        response.put("portfolioContent", portfolioDetail.getPortfolioContent());
-        response.put("thumbnailImage", portfolioDetail.getThumbnailImage());
-        response.put("portfolioFiles", Arrays.asList(
-                portfolioDetail.getPortfolioFile1(),
-                portfolioDetail.getPortfolioFile2(),
-                portfolioDetail.getPortfolioFile3(),
-                portfolioDetail.getPortfolioFile4(),
-                portfolioDetail.getPortfolioFile5(),
-                portfolioDetail.getPortfolioFile6(),
-                portfolioDetail.getPortfolioFile7(),
-                portfolioDetail.getPortfolioFile8(),
-                portfolioDetail.getPortfolioFile9(),
-                portfolioDetail.getPortfolioFile10()
-        ));
-
-        // ✅ 추가 정보 (회원 이름, 전문 분야, 자기소개, 경력, 수상 경력 등)
-        response.put("memberName", portfolioDetail.getProfessionalName());
-        response.put("categoryTitle", portfolioDetail.getCategoryName());
-        response.put("selfIntroduction", portfolioDetail.getSelfIntroduction());
-        response.put("contactableTime", portfolioDetail.getContactableTime());
-        response.put("career", portfolioDetail.getCareer() != null ? Arrays.asList(portfolioDetail.getCareer().split(",")) : new ArrayList<>());
-        response.put("awardCareer", portfolioDetail.getAwardCareer() != null ? Arrays.asList(portfolioDetail.getAwardCareer().split(",")) : new ArrayList<>());
-
-        System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
-        return ResponseEntity.ok(response);
-    }
-
-
 
 }

@@ -59,6 +59,8 @@ public interface ProfessionalMapper {
     // ✅ 포트폴리오 조회 (PortfolioDetail 반환)
     PortfolioDetail getPortfolioById(@Param("portfolioNo") int portfolioNo);
 
+
+    PortfolioDetail getProPortfolioDetail(@Param("portfolioNo") int portfolioNo);
     // ✅ 전문가 정보 조회
     Professional getProfessionalByPortfolio(@Param("portfolioNo") int portfolioNo);
 

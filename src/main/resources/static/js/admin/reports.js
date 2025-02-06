@@ -38,7 +38,7 @@ document.addEventListener("click", function (e) {
          // 한글 타입 변환
          const typeMap = {
              "커뮤니티": "community",
-             "질문": "qna",
+             "회원": "member",
              "댓글": "reply",
              "리뷰": "review"
          };
