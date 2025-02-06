@@ -175,13 +175,31 @@
 	    if (submitPortfolioBtn) {
 	        submitPortfolioBtn.addEventListener('click', async function () {
 	            try {
-	                // 설문조사 답변 수집
-	                const surveyAnswers = Array.from(document.querySelectorAll('[name^="answer_"]:checked')).map(input => input.value);
-					
-	                if (surveyAnswers.length === 0) {
-	                    alert('모든 설문 질문에 답변해주세요.');
-	                    return;
-	                }
+					const surveyQuestions = document.querySelectorAll('.survey-box .my-2.fw-bold'); // 설문 질문 요소 찾기
+					const totalQuestions = surveyQuestions.length;
+
+					let answeredCount = 0;
+					let surveyAnswers = []; // ✅ 오류 방지를 위해 변수 선언 및 초기화
+
+					surveyQuestions.forEach(question => {
+						// 설문 질문의 다음 요소에서 input name을 가져오기
+						const inputName = question.nextElementSibling?.querySelector('.form-check-input')?.name;
+
+						if (inputName) {
+							// 해당 질문에 대해 하나 이상의 응답이 선택되었는지 확인
+							const checkedInput = document.querySelector(`[name="${inputName}"]:checked`);
+							if (checkedInput) {
+								answeredCount++;
+								surveyAnswers.push(checkedInput.value); // ✅ 올바르게 배열에 추가
+							}
+						}
+					});
+
+					// 유효성 검사 - 모든 질문에 응답했는지 확인
+					if (answeredCount < totalQuestions) {
+						alert(`모든 설문 질문에 답변해주세요. (${totalQuestions}개 중 ${answeredCount}개 선택됨)`);
+						return;
+					}
 
 	                // 포트폴리오 데이터 수집
 	                const portfolioTitle = document.getElementById('portfolioTitle')?.value.trim();
@@ -194,7 +212,7 @@
 
 	                // 파일 업로드 준비
 	                const thumbnailImage = document.querySelector('[name="thumbnailImage"]').files[0];
-	                const portfolioFiles = Array.from(document.querySelectorAll('[name^="portfolioFile"]')).map(fileInput => fileInput.files[0]);
+	                const portfolioFiles = Array.from(document.querySelectorAll('[name^="portfolioFile"]')).map(fileInput => fileInput.files[0]).filter(file => file !== undefined);;
 					const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 	                const formData = new FormData();
 
@@ -208,7 +226,10 @@
 	               } else {
 	                   alert('썸네일 이미지를 업로드해주세요.');
 	                   return; // 중단
-	               }
+	               }if (portfolioFiles.length === 0) {
+						alert('포트폴리오 파일을 최소 1개 이상 추가해주세요.');
+						return;
+					}
 
 	               // 포트폴리오 파일 크기 확인
 	               for (const file of portfolioFiles) {

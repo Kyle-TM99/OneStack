@@ -44,9 +44,9 @@ public class AdminService {
 
 			// ✅ 2. 회원 타입 업데이트 (승인: 전문가 유지, 거부: 일반회원으로 변경)
 			if (professorStatus == 0) {
-				managerMapper.updateMemberType(proNo, 1); // 거부 시 일반회원(1)으로 변경
+				managerMapper.updateMemberType(proNo, 3);
 			} else if (professorStatus == 1) {
-				managerMapper.updateMemberType(proNo, 2); // 승인 시 전문가(2)로 유지
+				managerMapper.updateMemberType(proNo, 1);
 			}
 		} catch (Exception e) {
 			log.error("전문가 심사 업데이트 중 오류 발생: ", e);

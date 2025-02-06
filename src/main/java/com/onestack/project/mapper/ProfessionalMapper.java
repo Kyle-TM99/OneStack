@@ -54,6 +54,8 @@ public interface ProfessionalMapper {
     void deletePortfolio(int portfolioNo);
     void deleteProfessionalAdvancedInfo(int proAdvancedNo);
     void deleteProfessional(int proNo);
+    int countPortfoliosByProNo(int proNo);
+
     ProfessionalInfo getProfessionalInfoByPortfolio(int portfolioNo);
 
     // ✅ 포트폴리오 조회 (PortfolioDetail 반환)

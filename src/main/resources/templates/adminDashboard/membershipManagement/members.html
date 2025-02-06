@@ -53,7 +53,7 @@
                     <td th:text="${member.name}">이름</td>
                     <td th:text="${member.nickname}" class="d-none">닉네임</td>
                     <td th:text="${member.memberId}">아이디</td>
-                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
+                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : (member.memberType == 2 ? '심사중': '반려'))}">회원 타입</td>
                     <td th:text="${member.email}">이메일</td>
                     <td th:text="${member.phone}" class="d-none">전화번호</td>
                     <td th:text="${member.address}" class="d-none">주소</td>

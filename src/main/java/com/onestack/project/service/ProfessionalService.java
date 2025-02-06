@@ -124,12 +124,19 @@ public class ProfessionalService {
 
 
     public void deletePortfolio(int portfolioNo) {
-        // ✅ 포트폴리오 번호로 관련 전문가 및 전문가 고급 정보 조회
+        // ✅ 포트폴리오 번호로 전문가 정보 조회
         ProfessionalInfo professionalInfo = professionalMapper.getProfessionalInfoByPortfolio(portfolioNo);
 
         if (professionalInfo != null) {
             int proNo = professionalInfo.getProNo();
             int proAdvancedNo = professionalInfo.getProAdvancedNo();
+
+            // ✅ 전문가의 포트폴리오 개수 조회
+            int portfolioCount = professionalMapper.countPortfoliosByProNo(proNo);
+
+            if (portfolioCount <= 1) {
+                throw new IllegalStateException("포트폴리오가 하나만 존재하여 삭제할 수 없습니다.");
+            }
 
             // ✅ 1. 포트폴리오 삭제
             professionalMapper.deletePortfolio(portfolioNo);
@@ -141,6 +148,7 @@ public class ProfessionalService {
             professionalMapper.deleteProfessional(proNo);
         }
     }
+
 
 
     // ✅ PortfolioDetail을 Portfolio로 변환하는 메서드

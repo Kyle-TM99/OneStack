@@ -46,12 +46,16 @@ async function deletePortfolio(event, button) {
             method: "DELETE"
         });
 
-        if (!response.ok) throw new Error("삭제 실패");
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.message || "삭제 실패");
+        }
 
         alert("포트폴리오가 삭제되었습니다.");
-        portfolioCard.remove(); // UI에서 삭제
+        location.reload();
     } catch (error) {
         console.error("삭제 실패:", error);
-        alert("삭제 중 오류 발생.");
+        alert(error.message || "삭제 중 오류 발생.");
     }
 }

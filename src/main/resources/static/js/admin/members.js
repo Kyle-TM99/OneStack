@@ -334,12 +334,14 @@ function openMemberModal(memberData) {
             const typeValue = memberData.type; // "0", "1", "2"
             console.log("회원 유형 값 확인:", typeValue); // 디버깅 로그
 
-            if (typeValue == "0") {
+            if (typeValue === "0") {
                 memberTypeElement.value = "0"; // 초보자
-            } else if (typeValue == "1") {
+            } else if (typeValue === "1") {
                 memberTypeElement.value = "1"; // 전문가
-            } else {
+            } else if(typeValue === "2") {
                 memberTypeElement.value = "2"; // 심사중
+            } else{
+                memberTypeElement.value = "3";
             }
         }
 
@@ -349,11 +351,11 @@ function openMemberModal(memberData) {
             const statusValue = memberData.status;
             console.log("회원 상태 값 확인:", statusValue); // 디버깅 로그
 
-            if (statusValue == "0") {
+            if (statusValue === "0") {
                 memberStatusElement.value = "0"; // 활성화
-            } else if (statusValue == "1") {
+            } else if (statusValue === "1") {
                 memberStatusElement.value = "1"; // 비활성화
-            } else if (statusValue == "2") {
+            } else if (statusValue === "2") {
                 memberStatusElement.value = "2"; // 정지
             } else {
                 memberStatusElement.value = "3"; // 탈퇴

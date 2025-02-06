@@ -370,14 +370,17 @@ public class ProfessionalController {
     @ResponseBody
     public ResponseEntity<?> deletePortfolio(@RequestParam("portfolioNo") int portfolioNo) {
         try {
-            // ✅ 포트폴리오 및 연관 데이터 삭제
             professionalService.deletePortfolio(portfolioNo);
             return ResponseEntity.ok(Map.of("message", "포트폴리오 및 관련 데이터가 삭제되었습니다."));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage())); // 포트폴리오 1개일 경우 예외 메시지 반환
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "삭제 실패"));
         }
     }
+
 
     @PostMapping("/proConversion/submit")
     @ResponseBody

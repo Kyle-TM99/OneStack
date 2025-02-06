@@ -294,9 +294,21 @@
 	DELETE FROM Portfolio WHERE portfolio_no = #{portfolioNo}
 </delete>
 
-<!-- 전문가 고급 정보 삭제 -->
+
+	<!-- 전문가의 포트폴리오 개수 조회 -->
+	<select id="countPortfoliosByProNo" resultType="int">
+		SELECT COUNT(*) FROM Portfolio WHERE pro_no = #{proNo}
+	</select>
+
+	<!-- 전문가 고급 정보 삭제 -->
 <delete id="deleteProfessionalAdvancedInfoByProNo">
 	DELETE FROM ProfessionalAdvancedInformation WHERE pro_advanced_no = #{proAdvancedNo}
+</delete>
+<delete id="deleteProfessionalAdvancedInfo">
+	DELETE FROM ProfessionalAdvancedInformation WHERE pro_advanced_no = #{proAdvancedNo}
+</delete>
+<delete id="deletePortfolio">
+	DELETE FROM Portfolio WHERE portfolio_no = #{portfolioNo}
 </delete>
 
 <!-- 전문가 삭제 (해당 전문가가 마지막 포트폴리오일 경우만 삭제) -->
