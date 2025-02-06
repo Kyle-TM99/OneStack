@@ -16,7 +16,7 @@ public interface InquiryMapper {
     List<MemberWithInquiry> getInquiry(Map<String, Object> params);
 
     // 검색 조건에 맞는 전체 문의글 수 조회
-    int getInquiryCount(@Param("type") String type, @Param("keyword") String keyword);
+    int getInquiryCount(Map<String, Object> params);
 
     // 문의글 상세보기
     Inquiry getInquiryDetail(int inquiryNo);

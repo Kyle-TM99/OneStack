@@ -66,6 +66,9 @@
 		FROM Inquiry i JOIN Member m
 		ON i.member_no = m.member_no
 		<where>
+			<if test="!isAdmin">
+				AND i.member_no = #{memberNo}
+			</if>
 			<if test="type == 'title'">
 				AND i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
@@ -75,14 +78,10 @@
 			<if test="type == 'nickname'">
 				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="!isAdmin">
-				AND m.member_no = #{memberNo}
-			</if>
 		</where>
 		ORDER BY i.inquiry_reg_date DESC
+		LIMIT #{startRow}, #{num}
 	</select>
-
-
 
 	<!-- 문의글 상세 조회 -->
 	<select id="getInquiryDetail" resultMap="InquiryResultMap">
@@ -90,29 +89,23 @@
 		WHERE inquiry_no = #{inquiryNo}
 	</select>
 
-	<!-- 문의글 조회 (건우)
-    <select id="getInquiry" parameterType="map" resultMap="MemberWithInquiryResultMap">
-        SELECT i.*, m.*
-        FROM Inquiry i JOIN Member m
-        ON i.member_no = m.member_no
-        ORDER BY i.inquiry_reg_date DESC
-        LIMIT #{startRow}, #{num}
-    </select> -->
-
 	<!-- 문의글 수 조회 -->
-	<select id = "getInquiryCount" parameterType = "map" resultType = "int">
-		SELECT COUNT(inquiry_no)
+	<select id="getInquiryCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
 		FROM Inquiry i JOIN Member m
 		ON i.member_no = m.member_no
 		<where>
-			<if test = "type == 'title'">
-				i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
+			<if test="!isAdmin">
+				AND i.member_no = #{memberNo}
 			</if>
-			<if test = "type == 'content'">
-				i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
+			<if test="type == 'title'">
+				AND i.inquiry_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test = "type == 'date'">
-				i.inquiry_reg_date BETWEEN #{date1} AND #{date2}
+			<if test="type == 'content'">
+				AND i.inquiry_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="type == 'nickname'">
+				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
 	</select>
@@ -147,7 +140,7 @@
 	<select id="getInquiryAnswer" parameterType="int" resultType="InquiryAnswer">
 		SELECT i.*, m.*
 		FROM InquiryAnswer i JOIN Member m
-			ON i.member_no = m.member_no
+								  ON i.member_no = m.member_no
 		WHERE i.inquiry_no = #{inquiryNo}
 		ORDER BY i.inquiry_answer_reg_date DESC
 	</select>

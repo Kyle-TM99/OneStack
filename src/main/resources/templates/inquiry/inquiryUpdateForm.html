@@ -62,6 +62,9 @@
           <form name="updateForm" id="updateForm" th:action="@{/memberInquiry/update}" method="post" class="form-write">
             <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
             <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+            <input type="hidden" name="pageNum" th:value="${param.pageNum}"/>
+            <input type="hidden" name="type" th:value="${param.type}"/>
+            <input type="hidden" name="keyword" th:value="${param.keyword}"/>
 
             <div class="row form-group">
               <div class="col-md">
@@ -113,13 +116,31 @@
     var content = /*[[${inquiry.inquiryContent}]]*/ '';
     quill.root.innerHTML = content;
 
+    // 제목 글자 수 제한 기능
+    const titleInput = document.getElementById('inquiryTitle');
+    const MAX_LENGTH = 40;
+
+    if (titleInput) {  // titleInput이 존재할 때만 이벤트 리스너 추가
+      titleInput.addEventListener('input', function() {
+        if (this.value.length > MAX_LENGTH) {
+          this.value = this.value.slice(0, MAX_LENGTH);
+          alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        }
+      });
+    }
+
     function submitForm() {
-      var form = document.getElementById('updateForm');
+      var form = document.getElementById('updateForm') || document.getElementById('writeForm');
       var title = document.getElementById('inquiryTitle').value;
       var content = document.getElementById('inquiryContent');
 
       if (title.trim() === '') {
         alert('제목을 입력해주세요.');
+        return false;
+      }
+
+      if (title.length > MAX_LENGTH) {
+        alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
         return false;
       }
 

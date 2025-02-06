@@ -113,8 +113,21 @@
       }
     });
 
+    // 제목 글자 수 제한 기능
+    const titleInput = document.getElementById('inquiryTitle');
+    const MAX_LENGTH = 40;
+
+    if (titleInput) {  // titleInput이 존재할 때만 이벤트 리스너 추가
+      titleInput.addEventListener('input', function() {
+        if (this.value.length > MAX_LENGTH) {
+          this.value = this.value.slice(0, MAX_LENGTH);
+          alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        }
+      });
+    }
+
     function submitForm() {
-      var form = document.getElementById('writeForm');
+      var form = document.getElementById('updateForm') || document.getElementById('writeForm');
       var title = document.getElementById('inquiryTitle').value;
       var content = document.getElementById('inquiryContent');
 
@@ -122,10 +135,17 @@
         alert('제목을 입력해주세요.');
         return false;
       }
+
+      if (title.length > MAX_LENGTH) {
+        alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        return false;
+      }
+
       if (quill.getText().trim() === '') {
         alert('내용을 입력해주세요.');
         return false;
       }
+
       content.value = quill.root.innerHTML;
       form.submit();
     }
