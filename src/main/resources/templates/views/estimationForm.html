@@ -75,7 +75,7 @@
     <div class="container">
         <div class="estimation-form">
             <h2 class="form-title">견적 요청서</h2>
-            <form id="estimationForm" action="/submitEstimation" method="POST">
+            <form id="estimationForm">
                 <input type="hidden" id="memberNo" th:value="${session.member.memberNo}" name="memberNo">
                 <input type="hidden" id="proNo" th:value="${proNo}" name="proNo">
 
@@ -141,12 +141,14 @@
                 formData.set("estimationPrice", price);
 
                 $.ajax({
-                    url: $(this).attr("action"),
+                    url: "/submitEstimation",
                     type: "POST",
                     data: new URLSearchParams(formData).toString(),
                     contentType: "application/x-www-form-urlencoded",
                     success: function(response) {
-                        window.location.href = "/estimationDoneForm";
+                        if(response.status) {
+                            window.location.href = "https://www.onestack.store/estimationDoneForm";
+                        }
                     },
                     error: function(xhr, status, error) {
                         alert("견적 요청 중 오류가 발생했습니다.");
