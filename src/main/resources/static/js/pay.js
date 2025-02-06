@@ -71,7 +71,7 @@ function requestPayment(channelNum) {
                 return response.text(); // 서버에서 quotationNo를 텍스트로 반환
             }).then(payNo => {
                 alert('결제가 성공적으로 완료되었습니다.');
-                // 주문 완료 페이지로 이동하며 주문 번호 전달
+                // 주문 완료 페이지로 이동하면서 주문 번호 전달
                 location.href = `/payDoneForm?payNo=${payNo}`;
             }).catch(error => {
                     alert('결제 처리 중 오류가 발생했습니다: ' + error.message);
@@ -81,4 +81,4 @@ function requestPayment(channelNum) {
         }
     });
 
-};
+}
