@@ -271,12 +271,12 @@
 		c.*,
 		m.member_nickname,
 		m.member_image,
-		(SELECT COUNT(*) FROM communityReply WHERE community_board_id = c.community_board_id) as reply_count,
+		(SELECT COUNT(*) FROM CommunityReply WHERE community_board_id = c.community_board_id) as reply_count,
 		c.community_board_content as raw_content,
 		c.community_board_content_html as html_content  <!-- HTML 변환된 내용 추가 -->
 		FROM
-		community c
-		LEFT JOIN member m ON c.member_no = m.member_no
+		Community c
+		LEFT JOIN Member m ON c.member_no = m.member_no
 		WHERE
 		c.community_board_no = #{communityBoardNo} AND c.community_board_activation = 1
 	</select>
