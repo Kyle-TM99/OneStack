@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (communityBoardTitle.value.trim().length <= 0) {
                 alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
                 communityBoardTitle.focus();
-                event.preventDefault(); // 폼 제출을 중단
+                event.preventDefault(); // 폼 제출을 중단하기
                 return;
             }
             // 내용 유효성 검사
