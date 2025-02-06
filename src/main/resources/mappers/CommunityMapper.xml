@@ -21,7 +21,7 @@
 	<select id="replyCount" resultType="int">
 		SELECT COUNT(*)
 		FROM CommunityReply
-		WHERE community_board_no = #{communityBoardNo}
+		WHERE community_board_no = #{communityBoardNo} and community_reply_activation = 1
 	</select>
 
 
@@ -97,7 +97,7 @@
 		SELECT cr.*, m.*
 		FROM CommunityReply cr
 				 JOIN Member m ON cr.member_no = m.member_no
-		WHERE cr.community_board_no = #{communityBoardNo}
+		WHERE cr.community_board_no = #{communityBoardNo} and cr.community_reply_activation = 1
 		ORDER BY cr.community_reply_reg_date DESC
 	</select>
 
@@ -114,7 +114,7 @@
 			m.member_stop
 		FROM CommunityReply cr
 				 LEFT JOIN Member m ON cr.member_no = m.member_no
-		WHERE cr.community_board_no = #{communityBoardNo}
+		WHERE cr.community_board_no = #{communityBoardNo} and cr.community_reply_activation = 1
 		ORDER BY cr.community_reply_reg_date DESC
 	</select>
 
@@ -128,14 +128,12 @@
 		FROM Community c
 		LEFT JOIN Member m ON c.member_no = m.member_no
 		<where>
+			c.community_board_activation = 1
 			<if test="type == 'communityBoardTitle' and keyword != null and keyword != ''">
-				c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
+				AND c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test="type == 'communityBoardContent' and keyword != null and keyword != ''">
-				c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test="type == 'nickname' and keyword != null and keyword != ''">
-				m.nickname LIKE CONCAT('%', #{keyword}, '%')
+				AND c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
 		<choose>
@@ -157,11 +155,12 @@
 		SELECT COUNT(*)
 		FROM Community
 		<where>
+			community_board_activation = 1
 			<if test="type == 'communityBoardTitle' and keyword != null and keyword != ''">
-				community_board_title LIKE CONCAT('%', #{keyword}, '%')
+				AND community_board_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test="type == 'communityBoardContent' and keyword != null and keyword != ''">
-				community_board_content LIKE CONCAT('%', #{keyword}, '%')
+				AND community_board_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 		</where>
 	</select>
@@ -180,10 +179,10 @@
 			c.*,
 			m.nickname,
 			m.member_stop,
-			(SELECT COUNT(*) FROM CommunityReply cr WHERE cr.community_board_no = c.community_board_no) as community_reply_count
+			(SELECT COUNT(*) FROM CommunityReply cr WHERE cr.community_board_no = c.community_board_no AND cr.community_reply_activation = 1) as community_reply_count
 		FROM Community c
 				 LEFT JOIN Member m ON c.member_no = m.member_no
-		WHERE c.community_board_no = #{communityBoardNo}
+		WHERE c.community_board_no = #{communityBoardNo} AND c.community_board_activation = 1
 	</select>
 
 	<!-- 자유게시판 작성하기 -->
@@ -216,20 +215,20 @@
 		SELECT COUNT(community_board_no)
 		FROM Community c JOIN Member m
 		ON c.member_no = m.member_no
-		<where>
+		WHERE
+			c.community_board_activation = 1
 			<if test = "type == 'title'">
-				c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
+				AND c.community_board_title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test = "type == 'memberNickname'">
-				m.nickname LIKE CONCAT('%', #{keyword}, '%')
+				AND m.nickname LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test = "type == 'content'">
-				c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
+				AND c.community_board_content LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test = "type == 'date'">
-				c.community_board_reg_date BETWEEN #{date1} AND #{date2}
+				AND c.community_board_reg_date BETWEEN #{date1} AND #{date2}
 			</if>
-		</where>
 	</select>
 
 	<!-- 커뮤니티 추가 -->
@@ -272,14 +271,14 @@
 		c.*,
 		m.member_nickname,
 		m.member_image,
-		(SELECT COUNT(*) FROM community_reply WHERE community_board_id = c.community_board_id) as reply_count,
+		(SELECT COUNT(*) FROM communityReply WHERE community_board_id = c.community_board_id) as reply_count,
 		c.community_board_content as raw_content,
 		c.community_board_content_html as html_content  <!-- HTML 변환된 내용 추가 -->
 		FROM
 		community c
 		LEFT JOIN member m ON c.member_no = m.member_no
 		WHERE
-		c.community_board_no = #{communityBoardNo}
+		c.community_board_no = #{communityBoardNo} AND c.community_board_activation = 1
 	</select>
 
 </mapper>

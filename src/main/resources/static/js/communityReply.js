@@ -1,5 +1,7 @@
 // 중복 선언을 피하기 위해 첫 번째 위치에서만 선언하고 이후에는 재사용
-let isSubmitting = false;
+window.communityState = {
+    isSubmitting: false
+};
 
 document.addEventListener('DOMContentLoaded', function() {
     const recommendBtns = document.querySelectorAll('.recommend-btn');
@@ -83,11 +85,11 @@ $(document).ready(function() {
     $('#replyForm').off('submit').on('submit', function (event) {
         event.preventDefault();
 
-        if (window.isSubmitting) {
+        if (window.communityState.isSubmitting) {
             return false;
         }
 
-        window.isSubmitting = true;
+        window.communityState.isSubmitting = true;
 
         $.ajax({
             type: 'POST',
@@ -158,7 +160,7 @@ $(document).ready(function() {
                 alert('댓글 등록에 실패했습니다. 다시 시도해 주세요.');
             },
             complete: function () {
-                window.isSubmitting = false;
+                window.communityState.isSubmitting = false;
             }
         });
     });
@@ -182,7 +184,7 @@ $(document).ready(function() {
         const replyData = {
             replyNo: replyForm.find('input[name="communityReplyNo"]').val(),
             boardNo: replyForm.find('input[name="communityBoardNo"]').val(),
-            memberNo: replyForm.find('input[name="memberNo"]').val()
+            memberNo: replyForm.find('input[name="memberReplyNo"]').val()
         };
 
         // 수정 폼으로 변경

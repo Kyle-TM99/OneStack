@@ -42,12 +42,10 @@
                         <button id="deletBtn" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
                             삭제하기
                         </button>
-                    <button type="button" class="dropdown-item communityDropdownItem reporstBtn"
+                    <button type="button" class="dropdown-item communityDropdownItem reportBtn"
                             th:if="${session.member != null and session.member.memberNo != community.memberNo}"
-                            data-bs-toggle="modal"
-                            th:data-bs-target="'#reportModal'"
                             data-type="community"
-                            th:data-member-no="${community.memberNo}"
+                            data-member-no="${community.memberNo}"
                             onclick="setReportInfo(this)">
                         신고하기
                     </button>
@@ -165,8 +163,11 @@
                         <div class="dropdown-menu communityDropdown" style="display: none;">
                             <!-- 수정하기, 삭제하기: 작성자일 경우만 보이기 -->
                             <a class="dropdown-item communityDropdownItem"
+                               href="#"
                                th:if="${session.member != null && session.member.memberNo == reply.memberNo}"
-                               href="#">수정하기</a>
+                               th:data-member-no="${reply.memberNo}"
+                               th:data-reply-no="${reply.communityReplyNo}"
+                               th:data-board-no="${reply.communityBoardNo}">수정하기</a>
 
                             <form action="/replyDelete" method="post" style="display:inline;">
                                 <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
@@ -175,10 +176,8 @@
                                         th:if="${session.member != null && session.member.memberNo == reply.memberNo}">삭제하기</button>
                             </form>
 
-                            <button type="button" class="dropdown-item communityDropdownItem reporstBtn"
+                            <button type="button" class="dropdown-item communityDropdownItem reportBtn"
                                     th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
-                                    data-bs-toggle="modal"
-                                    th:data-bs-target="'#reportModal'"
                                     th:data-member-no="${reply.memberNo}"
                                     data-type="reply"
                                     onclick="setReportInfo(this)">
@@ -198,6 +197,7 @@
             </div>
         </div>
             </div>
+        </th:block>
 
             <!-- 신고 모달 -->
             <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -245,7 +245,7 @@
             </div>
 
 
-        </th:block>
+
     </th:block>
 </div>
 <!-- communityWrite.js 스크립트 포함 -->
@@ -253,81 +253,103 @@
     <script th:src="@{/js/communityWrite.js}"></script>
     <script th:src="@{/js/communityReply.js}"></script>
     <script>
-        const reporstBtn = document.getElementsByClassName("reporstBtn");
-        const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
-        reporstBtn.addEventListener("click", function() {
-            reportModal.show();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Bootstrap이 로드되었는지 확인
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap이 로드되지 않았습니다.');
+                return;
+            }
         });
-    </script>
-    <script>
+
         function setReportInfo(button) {
-            const memberNo = button.getAttribute('data-member-no');
-            const type = button.getAttribute('data-type');
+            try {
+                const memberNo = button.getAttribute('data-member-no');
+                const type = button.getAttribute('data-type');
 
-            console.log('신고 대상 타입:', type);
-            console.log('신고 대상 회원번호:', memberNo);
+                // 1. 모달 요소 찾기
+                const modalEl = document.getElementById('reportModal');
+                if (!modalEl) {
+                    throw new Error('모달 요소를 찾을 수 없습니다.');
+                    return;
+                }
 
-            // 모달에 값 설정
-            document.querySelector('#reportModal input[name="reportedMemberNo"]').value = memberNo;
-            document.querySelector('#reportsType').value = type;
+                // 3. 폼 요소 찾기 (modalEl에서 직접 querySelector 사용)
+                const reportedMemberNoInput = modalEl.querySelector('input[name="reportedMemberNo"]');
+                const reportsTypeSelect = modalEl.querySelector('#reportsType');
+
+                if (!reportedMemberNoInput || !reportsTypeSelect) {
+                    throw new Error('필요한 폼 요소를 찾을 수 없습니다.');
+                }
+
+                // 2. 모달 인스턴스 생성
+                const modal = new bootstrap.Modal(modalEl);
+
+                // 4. 값 설정
+                reportedMemberNoInput.value = memberNo;
+                reportsTypeSelect.value = type;
+
+                // 5. 모달 표시
+                modal.show();
+            } catch (error) {
+                console.error('모달 초기화 오류:', error);
+                alert(error.message);
+            }
         }
 
-        function submitReport() {
-            const memberNo = document.querySelector('input[name="memberNo"]').value;
-            const reportedMemberNo = document.querySelector('#reportModal input[name="reportedMemberNo"]').value;
-            const reportsType = document.querySelector('#reportsType').value;
-            const reportsTarget = document.querySelector('#reportsTarget').value;
-            const reportsReason = document.querySelector('#reportsReason').value;
-
-            console.log('신고 유형:', reportsType);
-            console.log('신고 대상 회원:', reportedMemberNo);
-
-            const url = new URL(window.location.href);
-            const pathname = url.pathname;
-            const searchParams = new URLSearchParams(url.search);
-            const communityBoardNo = searchParams.get("communityBoardNo");
-            const reportsTargetLink = communityBoardNo ? `${pathname}?communityBoardNo=${communityBoardNo}` : pathname;
-
-            const report = {
-                memberNo: parseInt(memberNo),
-                reportedMemberNo: parseInt(reportedMemberNo),
-                reportsType: reportsType,
-                reportsTarget: reportsTarget,
-                reportsReason: reportsReason,
-                reportsStatus: 0,
-                reportsTargetLink: reportsTargetLink
-            };
-            // 데이터 전송
-            fetch('/reports', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(report)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        throw new Error("신고 처리 중 오류 발생");
-                    }
-                })
-
-                .then(data => {
-                    alert("신고가 완료되었습니다."); // 성공 메시지 알림
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
-                    modal.hide(); // 모달 창 닫기
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('신고 처리 중 오류가 발생했습니다.');
-                });
-        }
+                function submitReport() {
+                    const modalEl = document.getElementById('reportModal');
+                    const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
+                    const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
+                    const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
+                    const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
+                    const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+                    const reportsTargetLink = window.location.pathname + window.location.search.split('&')[0];
 
 
-    </script>
-        <script>
-            // 이미지 로딩 에러 처리
+                    // report 객체 생성
+                    const report = {
+                        memberNo: parseInt(memberNo), // 숫자로 변환
+                        reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+                        reportsType: reportsType,
+                        reportsTarget: reportsTarget,
+                        reportsReason: reportsReason,
+                        reportsStatus: 0, // 초기값
+                        reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+                    };
+
+                    console.log(report);
+
+                    // 데이터 전송
+                    fetch('/reports', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(report)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.text();
+                            } else {
+                                throw new Error("신고 처리 중 오류 발생");
+                            }
+                        })
+
+                        .then(data => {
+                            alert("신고가 완료되었습니다."); // 성공 메시지 알림
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                            modal.hide(); // 모달 창 닫기
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('신고 처리 중 오류가 발생했습니다.');
+                        });
+                }
+
+
+
+                // 이미지 로딩 에러 처리
             document.querySelectorAll('.ql-editor img').forEach(img => {
                 img.onerror = function() {
                     this.style.display = 'none';

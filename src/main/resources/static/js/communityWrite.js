@@ -61,10 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-});
 
-// 문서 클릭 이벤트 리스너
-document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(event) {
         const dropdownContainers = document.querySelectorAll('.communityDropdownContainer');
         dropdownContainers.forEach(container => {
@@ -74,4 +71,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
 });
