@@ -89,7 +89,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/updateMember")
+/*    @PostMapping("/updateMember")
     @ResponseBody
     public Map<String, Object> updateMember(HttpSession session, Member member,
                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
@@ -146,10 +146,10 @@ public class MemberController {
             response.put("message", "회원정보 수정에 실패했습니다.");
             return response;
         }
-    }
+    }*/
 
 
-/*
+
 
     @PostMapping("/updateMember")
     @ResponseBody
@@ -216,7 +216,7 @@ public class MemberController {
 
         return response;
     }
-*/
+
 
     // 세션 정보 업데이트 메서드 분리
     private void updateSessionMember(HttpSession session, Member updatedMember) {

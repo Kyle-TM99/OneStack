@@ -42,9 +42,13 @@
                         <button id="deletBtn" class="dropdown-item communityDropdownItem" th:if="${session.member != null and session.member.memberNo == community.memberNo}">
                             삭제하기
                         </button>
-                    <button type="button"  class="dropdown-item communityDropdownItem reporstBtn"
+                    <button type="button" class="dropdown-item communityDropdownItem reporstBtn"
                             th:if="${session.member != null and session.member.memberNo != community.memberNo}"
-                            data-bs-toggle="modal" th:data-bs-target="'#reportModal'">
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#reportModal'"
+                            data-type="community"
+                            th:data-member-no="${community.memberNo}"
+                            onclick="setReportInfo(this)">
                         신고하기
                     </button>
                 </div>
@@ -149,7 +153,7 @@
                 <form>
                     <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}">
                     <input type="hidden" name="communityBoardNo" th:value="${reply.communityBoardNo}">
-                    <input type="hidden" name="memberNo" th:value="${reply.memberNo}">
+                    <input type="hidden" name="memberReplyNo" th:value="${reply.memberNo}">
                     <input type="hidden" name="communityReplyActivation" value="1">
                 </form>
                 <div class="row d-flex justify-content-between">
@@ -175,10 +179,9 @@
                                     th:if="${session.member != null && session.member.memberNo != reply.memberNo}"
                                     data-bs-toggle="modal"
                                     th:data-bs-target="'#reportModal'"
-                                    th:data-reply-no="${reply.communityReplyNo}"
                                     th:data-member-no="${reply.memberNo}"
-                                    th:data-type="reply"
-                                    onclick="setReplyReportInfo(this)">
+                                    data-type="reply"
+                                    onclick="setReportInfo(this)">
                                 신고하기
                             </button>
                         </div>
@@ -213,9 +216,7 @@
                                     <label for="reportsType" class="form-label">신고 유형</label>
                                     <select id="reportsType" name="reportsType" class="form-select">
                                         <option value="community" selected>자유게시판</option>
-                                        <option value="member">회원</option>
                                         <option value="reply">댓글</option>
-                                        <option value="review">리뷰</option>
                                     </select>
                                 </div>
 
@@ -259,35 +260,43 @@
         });
     </script>
     <script>
+        function setReportInfo(button) {
+            const memberNo = button.getAttribute('data-member-no');
+            const type = button.getAttribute('data-type');
+
+            console.log('신고 대상 타입:', type);
+            console.log('신고 대상 회원번호:', memberNo);
+
+            // 모달에 값 설정
+            document.querySelector('#reportModal input[name="reportedMemberNo"]').value = memberNo;
+            document.querySelector('#reportsType').value = type;
+        }
+
         function submitReport() {
-            // HTML 요소에서 값 가져오기
-            const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
-            const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
-            const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
-            const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
-            const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+            const memberNo = document.querySelector('input[name="memberNo"]').value;
+            const reportedMemberNo = document.querySelector('#reportModal input[name="reportedMemberNo"]').value;
+            const reportsType = document.querySelector('#reportsType').value;
+            const reportsTarget = document.querySelector('#reportsTarget').value;
+            const reportsReason = document.querySelector('#reportsReason').value;
 
-            const url = new URL(window.location.href); // 현재 URL 객체 생성
-            const pathname = url.pathname; // "/communityDetail"
-            const searchParams = new URLSearchParams(url.search); // "?communityBoardNo=1&pageNum=1"
+            console.log('신고 유형:', reportsType);
+            console.log('신고 대상 회원:', reportedMemberNo);
 
-            const communityBoardNo = searchParams.get("communityBoardNo"); // "1"
-
+            const url = new URL(window.location.href);
+            const pathname = url.pathname;
+            const searchParams = new URLSearchParams(url.search);
+            const communityBoardNo = searchParams.get("communityBoardNo");
             const reportsTargetLink = communityBoardNo ? `${pathname}?communityBoardNo=${communityBoardNo}` : pathname;
 
-            console.log(reportsTargetLink); // "/communityDetail?communityBoardNo=1"
-
-            // report 객체 생성
             const report = {
-                memberNo: parseInt(memberNo), // 숫자로 변환
-                reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+                memberNo: parseInt(memberNo),
+                reportedMemberNo: parseInt(reportedMemberNo),
                 reportsType: reportsType,
                 reportsTarget: reportsTarget,
                 reportsReason: reportsReason,
-                reportsStatus: 0, // 초기값
-                reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+                reportsStatus: 0,
+                reportsTargetLink: reportsTargetLink
             };
-
             // 데이터 전송
             fetch('/reports', {
                 method: 'POST',
