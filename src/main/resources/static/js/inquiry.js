@@ -11,7 +11,7 @@ $(function() {
     $("#detailDelete").on("click", function() {
         // 삭제 확인 모달 표시
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'), {
-            backdrop: false
+            backdrop: 'static'
         });
 
         // 삭제 확인 버튼 클릭 이벤트
@@ -62,11 +62,12 @@ $(function() {
             }),
             success: function(response) {
                 const answerModal = new bootstrap.Modal(document.getElementById('answerCompleteModal'), {
-                    backdrop: false
+                    backdrop: 'static'
                 });
 
                 // 모달이 닫힐 때 페이지 새로고침
                 $('#answerCompleteModal').on('hidden.bs.modal', function () {
+                    location.reload();
                 });
 
                 answerModal.show();
@@ -88,7 +89,7 @@ $(function() {
     // 만족/불만족 상태 업데이트 함수
     function updateSatisfaction(inquiryNo, isSatisfied) {
         const modal = new bootstrap.Modal(document.getElementById('satisfactionModal'), {
-            backdrop: false
+            backdrop: 'static'
         });
 
         // 첫 번째 모달 내용 설정
@@ -107,32 +108,21 @@ $(function() {
                     isSatisfied: isSatisfied
                 },
                 success: function(response) {
-                    // 첫 번째 모달이 완전히 닫힌 후 두 번째 모달 표시
-                    modal.hide();
-                    $('#satisfactionModal').on('hidden.bs.modal', function () {
-                        const secondModal = new bootstrap.Modal(document.getElementById('satisfactionModal'), {
-                            backdrop: false
-                        });
+                    // 모달 내용 직접 변경
+                    if (isSatisfied) {
+                        $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-smile fs-1 text-success mb-3');
+                        $("#satisfactionModalLabel").text("만족도 평가 완료");
+                        $("#satisfactionModalBody").text("감사합니다. 행복한 하루 되세요.");
+                    } else {
+                        $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-smile fs-1 text-success mb-3');
+                        $("#satisfactionModalLabel").text("만족도 평가 완료");
+                        $("#satisfactionModalBody").text("감사합니다. 행복한 하루 되세요.");
+                    }
 
-                        // 메시지 설정 수정
-                        if (isSatisfied) {
-                            $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-smile fs-1 text-success mb-3');
-                            $("#satisfactionModalLabel").text("만족도 평가 완료");
-                            $("#satisfactionModalBody").text("감사합니다. 행복한 하루 되세요."); // 만족일 때
-                        } else {
-                            $("#satisfactionIcon").removeClass().addClass('bi bi-emoji-frown fs-1 text-warning mb-3');
-                            $("#satisfactionModalLabel").text("만족도 평가 완료");
-                            $("#satisfactionModalBody").text("죄송합니다. 다음엔 조금 더 나은 답변을 드릴게요."); // 불만족일 때
-                        }
-
-                        // 확인 버튼 이벤트 변경
-                        $("#confirmSatisfaction").one('click', function() {
-                            secondModal.hide();
-                            location.reload();
-                        });
-
-                        secondModal.show();
-                        $(this).off('hidden.bs.modal');
+                    // 확인 버튼 이벤트 변경
+                    $("#confirmSatisfaction").one('click', function() {
+                        modal.hide();
+                        location.reload();
                     });
                 },
                 error: function(xhr, status, error) {
@@ -194,4 +184,44 @@ $(function() {
             });
         }
     });
+
+
+    // 제목 글자 수 제한 기능
+    const titleInput = document.getElementById('inquiryTitle');
+    const MAX_LENGTH = 40;
+
+    if (titleInput) {  // titleInput이 존재할 때만 이벤트 리스너 추가
+        titleInput.addEventListener('input', function() {
+            if (this.value.length > MAX_LENGTH) {
+                this.value = this.value.slice(0, MAX_LENGTH);
+                alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+            }
+        });
+    }
+
+    // 기존 submitForm 함수 수정
+    function submitForm() {
+        var form = document.getElementById('updateForm') || document.getElementById('writeForm');
+        var title = document.getElementById('inquiryTitle').value;
+        var content = document.getElementById('inquiryContent');
+
+        if (title.trim() === '') {
+            alert('제목을 입력해주세요.');
+            return false;
+        }
+
+        if (title.length > MAX_LENGTH) {
+            alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+            return false;
+        }
+
+        if (quill.getText().trim() === '') {
+            alert('내용을 입력해주세요.');
+            return false;
+        }
+
+        content.value = quill.root.innerHTML;
+        form.submit();
+    }
+
 });
