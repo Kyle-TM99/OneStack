@@ -232,21 +232,48 @@
 </update>
 
 <!-- 전문가 심사 처리 -->
-<update id="updateProStatus" parameterType="map">
-	UPDATE Professional
-	SET professor_status = #{professorStatus}, screening_msg = #{screeningMsg}
-	WHERE pro_no = #{proNo}
-</update>
+	<!-- 전문가 승인/거부 상태 업데이트 -->
+	<update id="updateProStatus" parameterType="map">
+		UPDATE Professional
+		SET professor_status = #{professorStatus}, screening_msg = #{screeningMsg}
+		WHERE pro_no = #{proNo}
+	</update>
 
-<update id="updateMemberType" parameterType="map">
-	UPDATE Member
-	SET member_type = CASE
-						  WHEN #{professorStatus} = 1 THEN 1
-						  WHEN #{professorStatus} = 0 THEN 0
-						  ELSE member_type
-		END
-	WHERE member_no = (SELECT member_no FROM Professional WHERE pro_no = #{proNo})
-</update>
+	<delete id="deletePortfolioByProNo" parameterType="int">
+		DELETE FROM Portfolio WHERE pro_no = #{proNo}
+	</delete>
+
+
+	<!-- 전문가 고급 정보 삭제 -->
+	<delete id="deleteProfessionalAdvancedInfoByProNo" parameterType="int">
+		DELETE FROM ProfessionalAdvancedInformation WHERE pro_no = #{proNo}
+	</delete>
+
+
+	<!-- 전문가 삭제 (해당 전문가가 마지막 포트폴리오일 경우만 삭제) -->
+	<delete id="deleteProfessional">
+		DELETE FROM Professional
+		WHERE pro_no = #{proNo}
+		  AND NOT EXISTS (SELECT 1 FROM Portfolio WHERE pro_no = #{proNo})
+	</delete>
+
+	<!-- 회원 타입 업데이트 -->
+	<update id="updateMemberType" parameterType="map">
+		UPDATE Member
+		SET member_type = #{memberType}
+		WHERE member_no = (SELECT member_no FROM Professional WHERE pro_no = #{proNo})
+	</update>
+
+
+<!--<update id="updateMemberType" parameterType="map">-->
+<!--	UPDATE Member-->
+<!--	SET member_type = CASE-->
+<!--						  WHEN #{professorStatus} = 1 THEN 1-->
+<!--						  WHEN #{professorStatus} = 0 THEN 0-->
+<!--						  ELSE member_type-->
+<!--		END-->
+<!--	WHERE member_no = (SELECT member_no FROM Professional WHERE pro_no = #{proNo})-->
+<!--</update>-->
 
 <!-- 회원, 전문가, 포트폴리오, 카테고리 -->
 <select id = "getMemProPortPaiCate" parameterType = "int" resultMap = "MemProPortPaiCateResultMap">

@@ -321,8 +321,8 @@
 		        const thumbnailImagePath = document.getElementById('thumbnailImageDisplay').innerText.trim();
 		        const portfolioFilePaths = Array.from(document.querySelectorAll('#portfolioFilesDisplay li a')).map(link => link.href);
 
-		        if (!memberNo || !categoryNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent || !career || !contactableTimeStart
-				|| !contactableTimeEnd) {
+		        if (!memberNo || !categoryNo || !itemNo || !selfIntroduction || !portfolioTitle || !portfolioContent || !career || !contactableTimeStart || !portfolioFilePaths
+				|| !thumbnailImagePath || !contactableTimeEnd) {
 		            alert('모든 필수 정보를 입력해주세요.');
 		            return;
 		        }

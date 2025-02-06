@@ -117,21 +117,44 @@ public class AdminController {
         }
     }
     
-    @PostMapping("/updateReviewPro")
-    public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
-        try {
-            int proNo = Integer.parseInt(request.get("proNo").toString());
-            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
-            String screeningMsg = (String) request.get("screeningMsg");
-            
-            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
-            return ResponseEntity.ok("승인수정이 완료되었습니다.");
-        } catch (Exception e) {
-            log.error("승인 수정 처리 중 오류 발생: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                               .body("승인 수정 중 오류가 발생했습니다.");
+//    @PostMapping("/updateReviewPro")
+//    public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
+//        try {
+//            int proNo = Integer.parseInt(request.get("proNo").toString());
+//            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
+//            String screeningMsg = (String) request.get("screeningMsg");
+//
+//            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
+//            return ResponseEntity.ok("승인수정이 완료되었습니다.");
+//        } catch (Exception e) {
+//            log.error("승인 수정 처리 중 오류 발생: ", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                               .body("승인 수정 중 오류가 발생했습니다.");
+//        }
+//    }
+@PostMapping("/updateReviewPro")
+public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
+    try {
+        int proNo = Integer.parseInt(request.get("proNo").toString());
+        Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
+        String screeningMsg = (String) request.get("screeningMsg");
+
+        // 전문가 승인/거부 상태 업데이트
+        adminService.updateProStatus(proNo, professorStatus, screeningMsg);
+
+        // 만약 거부(professorStatus == 0)일 경우 전문가 데이터 삭제
+        if (professorStatus == 0) {
+            adminService.rejectAndDeleteProfessional(proNo);
         }
+
+        return ResponseEntity.ok("승인 수정이 완료되었습니다.");
+    } catch (Exception e) {
+        log.error("승인 수정 처리 중 오류 발생: ", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("승인 수정 중 오류가 발생했습니다.");
     }
+}
+
 
     @GetMapping("/reviewProcessingDetails")
 	public String getReviewProcessingDetails(Model model) {

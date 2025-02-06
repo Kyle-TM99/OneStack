@@ -43,13 +43,23 @@ const modalContent = document.querySelector(".modal-content");
                 $("#selfIntroduction").text(data.selfIntroduction || "없음");
                 $("#contactableTime").text(data.contactableTime || "없음");
 
+                // ✅ undefined 또는 null 방지 및 줄바꿈 처리
+                // ✅ data.career와 data.awardCareer가 배열인지 확인 후 첫 번째 요소만 사용
+                let careerData = Array.isArray(data.career) && data.career.length > 0 ? data.career[0].split("\n").map(c => c.trim()) : [];
+                let awardData = Array.isArray(data.awardCareer) && data.awardCareer.length > 0 ? data.awardCareer[0].split("\n").map(a => a.trim()) : [];
 
-                // ✅ 경력 및 수상경력 업데이트
-                let careerList = data.career.length > 0 ? data.career.map(c => `<li>${c}</li>`).join("") : "<li>경력 없음</li>";
+                // ✅ <li> 태그로 변환하여 HTML에 적용
+                let careerList = careerData.length > 0
+                    ? careerData.map(c => `<li>${c}</li>`).join("")
+                    : "<li>경력 없음</li>";
                 $("#careerList").html(careerList);
 
-                let awardList = data.awardCareer.length > 0 ? data.awardCareer.map(a => `<li>${a}</li>`).join("") : "<li>수상 경력 없음</li>";
+                let awardList = awardData.length > 0
+                    ? awardData.map(a => `<li>${a}</li>`).join("")
+                    : "<li>수상 경력 없음</li>";
                 $("#awardList").html(awardList);
+
+
 
                 // ✅ 이미지 슬라이드 추가 (썸네일 + 포트폴리오 이미지들)
                 let imagesHtml = "";
