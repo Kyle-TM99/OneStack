@@ -46,10 +46,6 @@ public class InquiryController {
         // 전체 게시글 수 조회
         int totalCount = inquiryService.getInquiryCount(memberNo, type, keyword, isAdmin);
 
-        // 디버깅용 로그 추가
-        System.out.println("현재 게시글 수: " + totalCount);
-        System.out.println("페이지 크기: " + pageSize);
-
         // 전체 페이지 수 계산 수정
         int totalPages = totalCount == 0 ? 1 : (totalCount - 1) / pageSize + 1;
 
@@ -128,16 +124,31 @@ public class InquiryController {
     }
 
     @PostMapping("/update")
-    public String updateInquiry(@ModelAttribute Inquiry inquiry) {
+    public String updateInquiry(@ModelAttribute Inquiry inquiry,
+                                @RequestParam(defaultValue = "1") int pageNum,
+                                @RequestParam(required = false) String type,
+                                @RequestParam(required = false) String keyword) {
         inquiryService.updateInquiry(inquiry);
-        return "redirect:/memberInquiry";
+        // 수정 후 해당 게시글의 상세 페이지로 리다이렉트
+        return "redirect:/memberInquiry/" + inquiry.getInquiryNo()
+                + "?pageNum=" + pageNum
+                + (type != null ? "&type=" + type : "")
+                + (keyword != null ? "&keyword=" + keyword : "");
     }
 
     @PostMapping("/updateForm")
-    public String updateBoard(Model model, @RequestParam("inquiryNo") int inquiryNo) {
+    public String updateBoard(Model model,
+                              @RequestParam("inquiryNo") int inquiryNo,
+                              @RequestParam(defaultValue = "1") int pageNum,
+                              @RequestParam(required = false) String type,
+                              @RequestParam(required = false) String keyword) {
         Inquiry inquiry = inquiryService.getInquiryDetail(inquiryNo);
         model.addAttribute("inquiry", inquiry);
-        return "inquiry/inquiryupdateForm";
+        // 페이징 및 검색 정보를 모델에 추가
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+        return "inquiry/inquiryUpdateForm";
     }
 
     @PostMapping("/addInquiryAnswer")

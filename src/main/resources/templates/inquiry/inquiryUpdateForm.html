@@ -62,6 +62,9 @@
           <form name="updateForm" id="updateForm" th:action="@{/memberInquiry/update}" method="post" class="form-write">
             <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
             <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+            <input type="hidden" name="pageNum" th:value="${param.pageNum}"/>
+            <input type="hidden" name="type" th:value="${param.type}"/>
+            <input type="hidden" name="keyword" th:value="${param.keyword}"/>
 
             <div class="row form-group">
               <div class="col-md">

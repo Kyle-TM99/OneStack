@@ -67,7 +67,6 @@ $(function() {
 
                 // 모달이 닫힐 때 페이지 새로고침
                 $('#answerCompleteModal').on('hidden.bs.modal', function () {
-                    location.reload();
                 });
 
                 answerModal.show();
