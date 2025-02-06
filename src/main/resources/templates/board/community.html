@@ -1,111 +1,253 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-   layout:decorate="~{layouts/main_layout}">
-   
-   <head>
-   <link th:href="@{/css/community.css}" rel="stylesheet">
-   </head>
-   
-<th:block>
-<div layout:fragment="content" class="container py-5">
-    <!-- 헤더 섹션 -->
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <link th:href="@{/css/mainCommunity.css}" rel="stylesheet">
+    <link th:href="@{/css/community.css}" rel="stylesheet">
+</head>
+
+<th:block layout:fragment="content" class="container py-5">
+    <script src="js/communityReply.js"></script>
     <div class="row mt-5">
         <div class="col-md">
             <h2 class="fw-bold">커뮤니티</h2>
-            <p class="text-muted">다양한 분야의 사람들과 활발하게 소통해보세요!</p>
+            <p class="text-muted communityTextMuted">다양한 분야의 사람들과 활발하게 소통해보세요!</p>
         </div>
     </div>
-
-    <!-- 탭 섹션 -->
-<div class="row my-5">
-    <div class="col-md d-flex align-items-center justify-content-center">
-        <div class="sort-control float-end">
-    <label class="sort-option">
-        <input type="radio" name="sort" checked>
-        <a href="/community" class="text-center me-5 text-decoration-none fw-bold">Community</a>
-    </label>
-    <label class="sort-option">
-        <input type="radio" name="sort">
-        <a href="/QnA" class="text-center ms-5 text-decoration-none">Q&A</a>
-    </label>
-</div>
-    </div>
-</div>
 
     <!-- 검색 및 필터 섹션 -->
     <div class="row my-5">
-    <div class="col-md-3 d-flex align-items-center justify-content-center">
-            <a href="/communityWriteForm" class="btn custom-button">
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <a th:href="@{communityWriteForm}" class="btn custom-button">
                 <i class="bi bi-pencil-square me-2"></i>글쓰기
             </a>
         </div>
+
         <div class="col-md-6 d-flex align-items-center justify-content-center">
-        <div class="d-flex align-items-center">
-            <input type="text" class="search-bar" placeholder="검색어를 입력하세요"
-                style="border: 2px solid #215EA3; border-radius: 25px; padding: 10px 15px; width: 500px; font-size: 16px;">
-            <button class="search-button"
-                style="margin-left: -50px; border: none; background: none; cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                    fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path
-                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.442.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
-                </svg>
-            </button>
-        </div>
-    </div>
-	    <div class="col-md-3 d-flex align-items-center justify-content-center">
-	        <div class="segment-control float-end">
-	            <input type="radio" name="sort" id="sort-popular" checked>
-	            <input type="radio" name="sort" id="sort-recommended">
-	            <label for="sort-popular">최신순</label>
-	            <label for="sort-recommended">추천순</label>
-	            <div class="segment-indicator"></div>
-	        </div>
-	    </div>
-	</div> 
-    
-<!-- 게시물 리스트 -->
-<div class="row g-4 mt-5">
-    <!-- 게시물 카드 반복 -->
-    <div class="col-12 col-lg-8 mx-auto">  <!-- 가로 사이즈 조절 -->   <!-- 패딩 축소 -->
-                <div class="row mb-2 mx-3">      <!-- 상단 마진 축소 -->
-                    <div class="col d-flex align-items-center justify-content-end">
-                        <i class="bi bi-three-dots"></i>
+            <form name="searchForm" id="searchForm" action="community" class="row justify-content-center my-3">
+                <div class="d-flex align-items-center w-100">
+                    <input type="hidden" name="order" th:value="${order}">
+                    <input type="text" name="keyword" class="search-input" placeholder="검색어를 입력하세요">
+                    <button type="submit" class="search-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.442.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
+                        </svg>
+                    </button>
+
+                    <!-- 검색 타입 선택 -->
+                    <div class="select-container">
+                        <select name="type" class="search-select">
+                            <option value="communityBoardTitle" th:selected="${type == 'communityBoardTitle'}">제목</option>
+                            <option value="communityBoardContent" th:selected="${type == 'communityBoardContent'}">내용</option>
+                        </select>
                     </div>
                 </div>
-                <div class="row mx-3">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h5 class="card-title">게시물 제목</h5>
-                                <p class="card-text text-muted">게시물 내용 미리보기...</p>
+            </form>
+        </div>
+
+        <!-- 최신순/추천순 필터 -->
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <div class="segment-control">
+                <input type="radio" name="order" id="sort-latest" value="latest" th:checked="${order == 'latest' || order == null}" onchange="changeOrder(this.value)">
+                <input type="radio" name="order" id="sort-recommend" value="recommend" th:checked="${order == 'recommend'}" onchange="changeOrder(this.value)">
+                <label for="sort-latest" class="order-label">최신순</label>
+                <label for="sort-recommend" class="order-label">추천순</label>
+                <div class="segment-indicator"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--/* 검색 요청일 경우 표시 */-->
+    <th:block th:if="${searchOption}">
+        <div class="row my-3">
+            <div class="col text-center"> "[[${ keyword }]]" 검색 결과 </div>
+        </div>
+    </th:block>
+
+    <!-- 게시물 리스트 -->
+    <div class="row g-4 mt-5">
+        <th:block th:if="${searchOption and #lists.isEmpty(cList)}" class="col-12 text-center">
+            <p class="text-center">아직 올라온 게시글이 없습니다.</p>
+        </th:block>
+
+        <th:block th:if="${not searchOption and #lists.isEmpty(cList)}" class="col-12 text-center">
+            <p class="text-center">아직 올라온 게시글이 없습니다.</p>
+        </th:block>
+
+
+        <div class="row g-4 mt-5">
+            <th:block th:if="${searchOption and not #lists.isEmpty(cList)}" class="col-12">
+                <th:block th:each="community : ${cList}">
+                    <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
+                        <div class="row mx-4 align-items-center py-3 border-bottom">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <!-- 제목 -->
+                                <div class="d-flex flex-column">
+                                    <h5 class="fw-bold mb-1" th:text="${community.communityBoardTitle}"></h5>
+                                    <div class="ql-editor content-preview" th:utext="${community.communityBoardContent}"
+                                         style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-height: 3em; line-height: 1.5em;">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <!-- 이미지 -->
+                                    <div th:if="${community.communityFile != null}" class="position-relative" style="width: 120px; height: 120px;">
+                                        <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
+                                             class="rounded"
+                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="게시물 이미지">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                <img src="placeholder.jpg" class="img-fluid rounded" alt="게시물 이미지">
+
+                            <div class="col-12 mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <!-- 댓글, 좋아요, 싫어요 -->
+                                    <div class="d-flex gap-3 communityBox">
+                                        <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
+                                        <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
+                                        <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                                    </div>
+                                    <!-- 작성자 및 날짜 -->
+                                    <div>
+                                        <span class="text-muted communityTextMuted" th:text="${community.nickname != null ? community.nickname : '알 수 없음'}"></span>
+                                        <span class="text-muted communityTextMuted ms-2" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd')}">2024.03.21</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                
-                       <div class="row">
-						    <div class="col-md-8 mt-3">
-						        <div class="d-flex gap-3">
-						            <span><i class="bi bi-heart"></i> 좋아요 0</span>
-						            <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 0</span>
-						            <span><i class="bi bi-chat"></i> 댓글 0</span>
-						        </div>
-						    </div>
-						    <div class="col-md-4 mt-3 d-flex align-items-center justify-content-end">  <!-- 수정된 부분 -->
-						        <small class="text-muted">2024.03.21</small>
-						    </div>
-						</div>
-		            </div>
-		        </div>
-		        <div class="row">
-				    <div class="col">
-				        <hr class="my-4 opacity-25">
-				    </div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </a>
+                </th:block>
+            </th:block>
+
+            <th:block th:if="${not searchOption and not #lists.isEmpty(cList)}" class="col-12">
+                <th:block th:each="community : ${cList}">
+                    <a th:href="@{communityDetail(communityBoardNo=${community.communityBoardNo}, pageNum=${currentPage})}" class="text-decoration-none text-dark">
+                        <div class="row mx-4 align-items-center py-3 border-bottom">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <!-- 제목 -->
+                                <div class="d-flex flex-column">
+                                    <h5 class="fw-bold mb-1" th:text="${community.communityBoardTitle}"></h5>
+                                    <div class="ql-editor content-preview" th:utext="${community.communityBoardContent}"
+                                         style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-height: 3em; line-height: 1.5em;">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <!-- 이미지 -->
+                                    <div th:if="${community.communityFile != null}" class="position-relative" style="width: 120px; height: 120px;">
+                                        <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
+                                             class="rounded"
+                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="게시물 이미지">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <div class="d-flex justify-content-between">
+                                    <!-- 댓글, 좋아요, 싫어요 -->
+                                    <div class="d-flex gap-3 communityBox">
+                                        <span><i class="bi bi-chat"></i> 댓글 <span th:text="${community.communityReplyCount}">0</span></span>
+                                        <span><i class="bi bi-heart"></i> 좋아요 <span th:text="${community.communityBoardLike}">0</span></span>
+                                        <span><i class="bi bi-hand-thumbs-down"></i> 싫어요 <span th:text="${community.communityBoardDislike}">0</span></span>
+                                    </div>
+                                    <!-- 작성자 및 날짜 -->
+                                    <div>
+                                        <span class="text-muted communityTextMuted" th:text="${community.nickname != null ? community.nickname : '알 수 없음'}"></span>
+                                        <span class="text-muted communityTextMuted ms-2" th:text="${#dates.format(community.communityBoardRegDate, 'yyyy.MM.dd')}">2024.03.21</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </th:block>
+            </th:block>
+        </div>
+
+        <div class="row my-5">
+            <div class="col">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- 이전 페이지 -->
+                        <li class="page-item" th:if="${startPage > pageGroup}">
+                            <a class="page-link" th:href="@{/community(pageNum=${startPage - 1}, type=${type}, keyword=${keyword}, order=${order})}">Pre</a>
+                        </li>
+
+                        <!-- 페이지 번호 -->
+                        <li th:each="num : ${#numbers.sequence(startPage, endPage)}"
+                            th:class="${num == currentPage} ? 'active page-item' : 'page-item'">
+                            <th:block th:if="${pageCount > 0}"> <!-- 수정된 부분 -->
+                                <a th:if="${num != currentPage}"
+                                   th:text="${num}"
+                                   th:href="@{/community(pageNum=${num}, type=${type}, keyword=${keyword}, order=${order})}"
+                                   class="page-link"></a>
+                                <span th:if="${num == currentPage}" th:text="${num}" class="page-link"></span>
+                            </th:block>
+                        </li>
+
+                        <!-- 다음 페이지 -->
+                        <li class="page-item" th:if="${endPage < pageCount}">
+                            <a class="page-link"
+                               th:href="@{/community(pageNum=${endPage + 1}, type=${type}, keyword=${keyword}, order=${order})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    <!-- communityWrite.js 스크립트 포함 -->
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/communityWrite.js}"></script>
+        <script th:src="@{/js/communityReply.js}"></script>
+        <script>
+            // 이미지 로딩 에러 처리
+            document.querySelectorAll('.ql-editor img').forEach(img => {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    console.log('이미지 로딩 실패:', this.src);
+                };
+            });
+
+            // 링크 새 창에서 열기
+            document.querySelectorAll('.ql-editor a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+        </script>
+    </th:block>
+    </div>
+
+    <script th:inline="javascript">
+        function changeOrder(value) {
+            // 현재 URL 가져오기
+            let currentUrl = new URL(window.location.href);
+            let searchParams = currentUrl.searchParams;
+
+            // 정렬 방식 변경
+            searchParams.set('order', value);
+
+            // 페이지 1로 초기화
+            searchParams.set('pageNum', '1');
+
+            // 기존 검색 파라미터 유지
+            let type = /*[[${type}]]*/ '';
+            let keyword = /*[[${keyword}]]*/ '';
+            if(type && keyword) {
+                searchParams.set('type', type);
+                searchParams.set('keyword', keyword);
+            }
+
+            // 새로운 URL로 이동
+            window.location.href = currentUrl.toString();
+        }
+        // 페이지 로드 시 정렬 상태 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const order = new URLSearchParams(window.location.search).get('order') || 'latest';
+            const radioButton = document.querySelector(`input[name="order"][value="${order}"]`);
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+        });
+    </script>
+
 </th:block>
 </html>

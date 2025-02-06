@@ -1,10 +1,75 @@
-// 페이지가 로드된 후에 실행되도록 변경
-            document.addEventListener("DOMContentLoaded", function () {
-                const editor = new toastui.Editor({
-                    el: document.querySelector('#content'), // 에디터를 적용할 요소 (컨테이너)
-                    height: '500px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
-                    initialEditType: 'markdown',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
-                    initialValue: '내용을 입력해 주세요.',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
-                    previewStyle: 'vertical'                // 마크다운 프리뷰 스타일 (tab || vertical)
-                });
-            });
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 삭제 버튼 클릭 이벤트 처리
+    document.querySelectorAll('.delete-community-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            if (confirm('정말 삭제하시겠습니까?')) {
+                const form = this.closest('form');
+                form.submit();
+            }
+        });
+    });
+
+    // 폼 유효성 검사 (updateForm)
+    $("#updateForm").on("submit", function() {
+        if($("#communityBoardTitle").val().length <= 0) {
+            alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
+            $("#communityBoardTitle").focus();
+            return false;
+        }
+        if($("#communityBoardContent").val().length <= 0) {
+            alert("내용이 입력되지 않았습니다.\n내용을 입력해주세요");
+            $("#communityBoardContent").focus();
+            return false;
+        }
+    });
+
+    // 게시글 쓰기 폼 유효성 검사
+    const communityWriteForm = document.getElementById("communityWriteForm");
+    if (communityWriteForm) {
+        communityWriteForm.addEventListener("submit", function(event) {
+            // 제목 유효성 검사
+            const communityBoardTitle = document.getElementById("communityBoardTitle");
+            if (communityBoardTitle.value.trim().length <= 0) {
+                alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
+                communityBoardTitle.focus();
+                event.preventDefault(); // 폼 제출을 중단
+                return;
+            }
+            // 내용 유효성 검사
+            const communityBoardContent = document.getElementById("communityBoardContent");
+            if (communityBoardContent.value.trim().length <= 0) {
+                alert("내용이 입력되지 않았습니다.\n내용을 입력해주세요");
+                communityBoardContent.focus();
+                event.preventDefault(); // 폼 제출을 중단
+                return;
+            }
+        });
+    }
+
+    // 상세 업데이트 버튼 클릭 이벤트 처리
+    const detailUpdateButton = document.getElementById("detailUpdate");
+    if (detailUpdateButton) {
+        detailUpdateButton.addEventListener("click", function() {
+            var communityCheckForm = document.getElementById("communityCheckForm");
+            if (communityCheckForm) {
+                communityCheckForm.setAttribute("action", "updateForm");
+                communityCheckForm.setAttribute("method", "post");
+                communityCheckForm.submit();
+            }
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        const dropdownContainers = document.querySelectorAll('.communityDropdownContainer');
+        dropdownContainers.forEach(container => {
+            const dropdownMenu = container.querySelector('.communityDropdown');
+            if (!container.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+    });
+
+});

@@ -34,7 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/resources/files/**")
 			// file: 프로토콜을 사용하면 업로드한 이미지가 바로 보인다.
 			.addResourceLocations("file:./src/main/resources/static/files/").setCachePeriod(1); // 캐쉬 지속시간(초)
-		
+
 		registry.addResourceHandler("/images/**")
 		// 이미지 경로
 		.addResourceLocations("classpath:/static/images/")
@@ -47,7 +47,8 @@ public class WebConfig implements WebMvcConfigurer {
 		  registry.addInterceptor(new LoginCheckInterceptor(memberMapper))
 	  		   	  .addPathPatterns("/**") // 인터셉터를 적용할 경로
 	              .excludePathPatterns( // 로그인 없이 접근 가능한 경로
-						"/**" , "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout"
+						"/**" , "/" ,"/main", "/images/**" , "/mainPage", "/login", "/loginForm", "/css/**", "/js/**", "/resources/**", "/static/**", "/main_layout",
+						  "/findPass" ,"/findId" ,"/checkEmail" ,"/checkPhone", "/checkNickname" ,"/checkId", "/join", "/joinForm"
 	              );
 
 	  }

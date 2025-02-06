@@ -1,0 +1,205 @@
+/* 기본 스타일 */
+.search-input {
+    border: 2px solid #215EA3;
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 16px;
+    width: 500px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #004d77; /* Focus 상태에서 색상 변경 */
+    box-shadow: 0 0 5px rgba(33, 94, 175, 0.4); /* Focus 효과 */
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #215EA3;
+}
+
+.search-btn:hover svg {
+    color: #004d77; /* Hover 상태에서 색상 변경 */
+}
+
+.select-container {
+    margin-left: 15px;
+}
+
+.search-select {
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 2px solid #215EA3;
+    outline: none;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.search-select:focus {
+    border-color: #004d77;
+    box-shadow: 0 0 5px rgba(33, 94, 175, 0.4);
+}
+
+/* 최신순, 추천순 라디오 버튼 */
+.segment-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.segment-control input[type="radio"] {
+    display: none;
+}
+
+.segment-control label {
+    font-size: 16px;
+    margin: 0 15px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.segment-control label:hover {
+    background-color: #f0f0f0;
+}
+
+.segment-control input[type="radio"]:checked + label {
+    color: #215EA3;
+    font-weight: bold;
+}
+
+.segment-indicator {
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50%;
+    height: 4px;
+    background-color: #215EA3;
+    transition: all 0.3s ease;
+}
+
+#sort-latest:checked ~ .segment-indicator {
+    left: 0;
+}
+
+#sort-recommend:checked ~ .segment-indicator {
+    left: 50%;
+}
+
+/* 리스트 */
+
+/* 커뮤니티 리스트 디자인 */
+/* 전체 게시물 리스트 스타일 */
+.row.g-4.mt-5 {
+    margin-top: 50px;
+}
+
+/* 게시물 항목 스타일 */
+.row.mx-4.align-items-center.py-3.border-bottom {
+    border-bottom: 1px solid #ddd; /* 구분선 */
+    padding: 15px 0;
+}
+
+/* 게시물 제목 */
+h5.fw-bold.mb-1 {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* 게시물 내용 요약 */
+.ql-editor.content-preview {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* 이미지 스타일 (반응형 이미지) */
+.position-relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.position-relative img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* 댓글, 좋아요, 싫어요 정보 */
+.communityBox {
+    gap: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.communityBox span {
+    display: flex;
+    align-items: center;
+}
+
+.communityBox i {
+    margin-right: 5px;
+}
+
+/* 작성자 및 날짜 */
+.communityTextMuted {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.communityTextMuted.ms-2 {
+    margin-left: 10px;
+}
+
+/* 반응형 디자인 (여러 화면 크기에 맞춰 조정) */
+@media (max-width: 768px) {
+    .row.mx-4.align-items-center.py-3.border-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .col-4 {
+        margin-top: 10px;
+    }
+
+    .communityBox {
+        flex-wrap: wrap;
+
+    }
+
+    .text-muted.ms-2 {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    h5.fw-bold.mb-1 {
+        font-size: 1rem;
+    }
+
+    .ql-editor.content-preview {
+        font-size: 0.85rem;
+    }
+
+    .communityBox {
+        font-size: 0.8rem;
+    }
+}

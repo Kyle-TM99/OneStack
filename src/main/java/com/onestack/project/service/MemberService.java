@@ -30,15 +30,6 @@ public class MemberService {
 
 	private final JavaMailSender mailSender;
 
-
-/*
-
-// 전문가 마이페이지에서 포트폴리오 조회
-public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
-    List<MemProWithPortPortImage> result = memberMapper.memProWithPortPortImage(memberNo);
-    return result;
-}
-*/
     // 전문가가 받은 견적 요청 리스트 Estimation
     public List<Estimation> proEstimation(int proNo) {
         try {
@@ -57,45 +48,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return result;
     }
 
-    // myPage 내역 조회
-    public List<MemberWithProfessional> memberWithProfessional(int memberNo) {
-        List<MemberWithProfessional> result = memberMapper.memberWithProfessional(memberNo);
-        return result;
-    }
-
-    // 회원별 review 리스트 조회
-    public List<Review> findMyReview(int memberNo) {
-        List<Review> result = memberMapper.findMyReview(memberNo);
-        return result;
-    }
-/*
-    // 회원별 review 리스트 조회
-    public List<Review> proReview(int proNo) {
-        List<Review> result = memberMapper.proReview(proNo);
-        return result;
-    }*/
-
-   /* public int proReviewCount(int proNo) {
-        return memberMapper.proReviewCount(proNo);
-    }
-*/
-    public int findMyReviewCount(int memberNo) {
-        return memberMapper.findMyReviewCount(memberNo);
-    }
-
-    // 회원별 게시글 리스트 조회
-    public List<MemberWithCommunity> memberMyPageCommunity(int memberNo) {
-        List<MemberWithCommunity> result = memberMapper.memberMyPageCommunity(memberNo);
-        if (result != null) {
-            result.forEach(item -> {
-                if (item != null) {
-                    System.out.println("Member: " + item.getMember());
-                    System.out.println("Community: " + item.getCommunity());
-                }
-            });
-        }
-        return result;
-    }
 
     // 회원별 게시글 수 조회
     public int memberMyPageCommunityCount(int memberNo) {
@@ -103,10 +55,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     }
 
 
-    // 회원별 질문글 수 조회
-    public int memberMyPageQnACount(int memberNo) {
-        return memberMapper.memberMyPageQnACount(memberNo);
-    }
 
     // 회원별 댓글 수 조회
     public int memberMyPageComReplyCount(int memberNo) {
@@ -118,26 +66,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     public int memberMyPageQnAReplyCount(int memberNo) {
         return memberMapper.memberMyPageQnAReplyCount(memberNo);
     }
-
-    // 게시글 공감 조회
-    public List<Community> memberMyPageCommunityLike(int memberNo) {
-        return memberMapper.memberMyPageCommunityLike(memberNo);
-    }
-
-
-    // 댓글 공감 조회
-    public List<CommunityReply> memberMyPageComReplyLike(int memberNo) {
-        try {
-            log.info("Fetching comment likes for member: {}", memberNo);
-            List<CommunityReply> result = memberMapper.memberMyPageComReplyLike(memberNo);
-            log.info("Found {} liked comments", result.size());
-            return result;
-        } catch (Exception e) {
-            log.error("Error fetching comment likes", e);
-            throw e;
-        }
-    }
-
 
 
 
@@ -156,12 +84,37 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             }
 
             memberMapper.updateMember(member);
+            memberMapper.updateSocialMember(member);
             log.info("Member update completed for memberNo: {}", member.getMemberNo());
         } catch (Exception e) {
             log.error("Member update failed", e);
             throw e;
         }
     }
+
+
+    public void updateSocialMember(Member member) {
+        try {
+            log.info("Updating member: {}", member);
+
+            // null 체크 추가
+            if (member == null) {
+                throw new IllegalArgumentException("업데이트할 회원 정보가 없습니다.");
+            }
+
+            // 필수 필드 null 체크
+            if (member.getMemberNo() == 0) {
+                throw new IllegalArgumentException("회원 번호가 유효하지 않습니다.");
+            }
+
+            memberMapper.updateSocialMember(member);
+            log.info("Member update completed for memberNo: {}", member.getMemberNo());
+        } catch (Exception e) {
+            log.error("Member update failed", e);
+            throw e;
+        }
+    }
+
 
     public boolean changePassword(String memberId, String currentPassword, String newPassword) {
         // 현재 비밀번호 검증
@@ -185,33 +138,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
     }
 
 
-
-    // 현재 비밀번호 검증 메서드 추가
-    public boolean validateCurrentPassword(String memberId, String currentPassword) {
-        // 세션의 memberId로 회원 정보 조회 후 비밀번호 검증
-        Member member = memberMapper.getMember(memberId);
-        return passwordEncoder.matches(currentPassword, member.getPass());
-    }
-
-
-
-    public List<Map<String, Object>> myPageLikedCommunity(int memberNo) {
-        return memberMapper.myPageLikedCommunity(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedQnA(int memberNo) {
-        return memberMapper.myPageLikedQnA(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedCommunityReply(int memberNo) {
-        return memberMapper.myPageLikedCommunityReply(memberNo);
-    }
-
-    public List<Map<String, Object>> myPageLikedQnAReply(int memberNo) {
-        return memberMapper.myPageLikedQnAReply(memberNo);
-    }
-
-
     // 회원 로그인 요청을 처리하고 결과를 반환하는 메서드
     public int login(String memberId, String pass) {
         int result = -1;
@@ -227,7 +153,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return result;
     }
 
-    // 마이페이지
 
     // 회원 로그인 요청을 처리하기 위한 메서드
     public Member getMember(String memberId) {
@@ -293,7 +218,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 
     public void sendPasswordResetEmail(String memberId, String email) {
         log.info("비밀번호 재설정 요청 - memberId: {}, email: {}", memberId, email);
-        
+
         Member member = memberMapper.getMember(memberId);
         log.info("조회된 회원 정보: {}", member);
 
@@ -301,7 +226,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             log.error("회원 정보가 없음 - memberId: {}", memberId);
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
         }
-        
+
         if (!email.equals(member.getEmail())) {
             log.error("이메일 불일치 - 입력: {}, DB: {}", email, member.getEmail());
             throw new RuntimeException("일치하는 회원 정보가 없습니다.");
@@ -314,7 +239,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
 
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken(memberId, token);
-        
+
         try {
             memberMapper.savePasswordResetToken(resetToken);
 
@@ -333,7 +258,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
             message.setSubject("OneStack 비밀번호 재설정");
             message.setText(emailContent);
             mailSender.send(message);
-            
+
             log.info("비밀번호 재설정 이메일 발송 완료 - email: {}", email);
         } catch (Exception e) {
             log.error("이메일 발송 실패", e);
@@ -359,10 +284,6 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         return memberNo;
     }
 
-    public List<Portfolio> portfolio(int proNo) {
-        List<Portfolio> result = memberMapper.portfolio(proNo);
-        return result;
-    }
 
     // 견적 상태 업데이트
     public void updateEstimationProgress(int estimationNo, int progress) {
@@ -401,7 +322,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         if (estimation == null) {
             throw new RuntimeException("견적을 찾을 수 없습니다.");
         }
-        
+
         // 전문가 확인 상태로 변경
         memberMapper.updateEstimationCheck(estimationNo, 1);
     }
@@ -412,7 +333,7 @@ public List<MemProWithPortPortImage> memProWithPortPortImage(int memberNo) {
         if (estimation == null) {
             throw new RuntimeException("견적을 찾을 수 없습니다.");
         }
-        
+
         // 의뢰인 확인 완료 및 결제 단계로 변경
         memberMapper.updateEstimationProgress(estimationNo, 2);  // 결제 단계로 변경
     }
