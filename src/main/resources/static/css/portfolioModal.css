@@ -1,0 +1,147 @@
+ /* ✅ 공통 스타일 */
+.modal-content {
+    border-radius: 15px; !important
+    box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.15);!important
+    background: #ffffff;!important
+    width: 85vw;!important
+    max-width: 900px;!important
+    height: auto;!important
+    display: flex; !important
+    flex-direction: row;!important
+    overflow: hidden;!important
+    border: none;!important
+    transition: all 0.3s ease-in-out;!important
+}
+
+/* ✅ 모달 닫기 버튼 */
+.modal-header {
+    position: absolute;!important
+    right: 15px;!important
+    top: 15px;!important
+    z-index: 10;!important
+    background: transparent;!important
+    border-bottom: none;!important
+}
+
+.btn-close {
+    font-size: 1.4rem;!important
+    opacity: 0.6;!important
+    transition: 0.3s ease;!important
+    background: transparent;!important
+}
+
+.btn-close:hover {
+    opacity: 1;!important
+}
+
+/* ✅ 왼쪽: 이미지 섹션 */
+.portfolio-carousel-container {
+    width: 50%;!important
+    height: auto;!important
+    background: #f4f4f4;!important
+    display: flex;!important
+    align-items: center;!important
+    justify-content: center;!important
+    padding: 20px;!important
+    border-radius: 15px 0 0 15px;!important
+}
+
+.portfolio-carousel-container img {
+    object-fit: cover;!important
+    width: 100%;!important
+    max-height: 300px;!important
+    border-radius: 10px;!important
+    transition: transform 0.3s ease-in-out;!important
+}
+
+.portfolio-carousel-container img:hover {
+    transform: scale(1.05);!important
+}
+
+/* ✅ 오른쪽: 상세 정보 섹션 */
+.portfolio-info-container {
+    width: 50%;!important
+    padding: 25px;!important
+    background: white;!important
+    display: flex;!important
+    flex-direction: column;!important
+    justify-content: space-between;!important
+    border-radius: 0 15px 15px 0;!important
+}
+
+/* ✅ 제목 */
+.portfolio-info-container h2 {
+    font-size: 1.5rem;!important
+    color: #333;!important
+    font-weight: 600;!important
+    margin-bottom: 15px;!important
+}
+
+/* ✅ 정보 텍스트 */
+.portfolio-info p {
+    font-size: 1rem;!important
+    color: #555;!important
+    margin-bottom: 8px;!important
+    line-height: 1.4;!important
+}
+
+.portfolio-info p strong {
+    color: #222;!important
+    font-weight: 600;!important
+}
+
+/* ✅ 리스트 스타일 */
+.portfolio-info ul {
+    padding-left: 18px;!important
+    margin-bottom: 15px;!important
+}
+
+.portfolio-info ul li {
+    font-size: 0.95rem;!important
+    color: #444;!important
+    margin-bottom: 5px;!important
+}
+
+/* ✅ 요청 버튼 */
+.request-button {
+    background: linear-gradient(135deg, #00b4d8, #0096c7);!important
+    color: white;!important
+    text-align: center;!important
+    padding: 12px 0;!important
+    font-size: 1rem;!important
+    font-weight: bold;!important
+    border-radius: 8px;!important
+    cursor: pointer;!important
+    transition: all 0.3s ease-in-out;!important
+    box-shadow: 0px 4px 10px rgba(0, 150, 199, 0.3);!important
+    text-decoration: none;!important
+    display: inline-block;!important
+    text-align: center;!important
+    width: 100%;!important
+}
+
+.request-button:hover {
+    background: linear-gradient(135deg, #0096c7, #0077b6);!important
+    box-shadow: 0px 6px 15px rgba(0, 150, 199, 0.5);!important
+    transform: translateY(-2px);!important
+}
+
+/* ✅ 반응형 스타일 */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column;!important
+        width: 95vw;!important
+    }
+
+    .portfolio-carousel-container {
+        width: 100%;!important
+        padding: 15px;!important
+        border-radius: 15px 15px 0 0;!important
+    }
+
+    .portfolio-info-container {
+        width: 100%;!important
+        padding: 20px;!important
+        border-radius: 0 0 15px 15px;!important
+    }
+}

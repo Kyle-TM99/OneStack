@@ -15,11 +15,20 @@ public interface ProfessionalMapper {
     // 전문가 기본 정보 저장
     int addPro(Professional professional);
 
+    Integer findProNoByMemberNo(Integer memberNo);
+
     // 전문가 고급 정보 저장
     int addProAdvancedInfo(ProfessionalAdvancedInformation professionalAdvancedInformation);
 
     // 포트폴리오 저장
     int addPortfolio(Portfolio portfolio);
+
+    void add2ProAdvancedInfo(ProfessionalAdvancedInformation advancedInfo);
+    void add2Portfolio(Portfolio portfolio);
+
+    // 전문가 고급정보 번호가 이미 있는 회원 조회
+    Integer findExistingProAdvancedInfo(@Param("proNo") Integer proNo, @Param("itemNo") Integer itemNo);
+
 
     // 전문가 정보 조회
     public List<MemberWithProfessional> getPro2(@Param("proNo") int proNo);
@@ -33,21 +42,35 @@ public interface ProfessionalMapper {
     // 포트폴리오 조회
     List<Portfolio> getPortfoliosByMember(@Param("memberNo") int memberNo);
 
+    // 전문가 여부 확인
+    Professional findByMemberNo(@Param("memberNo") int memberNo);
+    // 같은 itemNo가 있는지 확인
+    Professional findByMemberNoAndItemNo(@Param("memberNo") int memberNo, @Param("itemNo") int itemNo);
+
+    // 같은 itemNo가 있는지 확인(수정하고 있는 포폴제외)
+    int countExistingItemNoExcludingCurrent(@Param("proNo") int proNo, @Param("itemNo") int itemNo, @Param("proAdvancedNo") int proAdvancedNo);
 
     //포트폴리오/전문가고급정보/전문가 삭제
     void deletePortfolio(int portfolioNo);
     void deleteProfessionalAdvancedInfo(int proAdvancedNo);
     void deleteProfessional(int proNo);
+    int countPortfoliosByProNo(int proNo);
+
     ProfessionalInfo getProfessionalInfoByPortfolio(int portfolioNo);
 
     // ✅ 포트폴리오 조회 (PortfolioDetail 반환)
     PortfolioDetail getPortfolioById(@Param("portfolioNo") int portfolioNo);
 
+
+    PortfolioDetail getProPortfolioDetail(@Param("portfolioNo") int portfolioNo);
     // ✅ 전문가 정보 조회
     Professional getProfessionalByPortfolio(@Param("portfolioNo") int portfolioNo);
 
     // ✅ 전문가 고급 정보 조회
+//    ProfessionalAdvancedInformation getAdvancedInfoByPortfolio(@Param("portfolioNo") int portfolioNo);
+
     ProfessionalAdvancedInformation getAdvancedInfoByPortfolio(@Param("portfolioNo") int portfolioNo);
+
 
     int getItemNoByPortfolio(int portfolioNo);
 
@@ -58,7 +81,7 @@ public interface ProfessionalMapper {
 
     void updatePortfolio(Portfolio portfolio);
 
-    void updateProfessional(Professional professional);
+
 
     void updateProfessionalAdvancedInfo(ProfessionalAdvancedInformation advancedInfo);
 

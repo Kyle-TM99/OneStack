@@ -77,7 +77,7 @@
 		<result property="contactableTime" column="contactable_time"/>
 		<result property="career" column="career"/>
 		<result property="awardCareer" column="award_career"/>
-		<result property="categoryName" column="category_name"/>
+		<result property="categoryTitle" column="categoryTitle"/>  <!-- ✅ 수정됨 -->
 		<result property="professionalName" column="professional_name"/>
 		<result property="portfolioFile1" column="portfolio_file1"/>
 		<result property="portfolioFile2" column="portfolio_file2"/>
@@ -90,6 +90,7 @@
 		<result property="portfolioFile9" column="portfolio_file9"/>
 		<result property="portfolioFile10" column="portfolio_file10"/>
 	</resultMap>
+
 
 	<resultMap id="portfolioDetailMap" type="com.onestack.project.domain.MemProPortPaiCate">
 		<association property="member" javaType="com.onestack.project.domain.Member">
@@ -176,6 +177,32 @@
 		LIMIT 1
 	</select>
 
+	<select id="getProPortfolioDetail" resultMap="PortfolioDetailResultMap">
+		SELECT
+			m.member_no, m.name AS professional_name,
+			p.pro_no, p.self_introduction, p.career, p.award_career, p.contactable_time,
+			pf.portfolio_no, pf.portfolio_title, pf.portfolio_content, pf.thumbnail_image,
+			pf.portfolio_file1, pf.portfolio_file2, pf.portfolio_file3, pf.portfolio_file4, pf.portfolio_file5,
+			pf.portfolio_file6, pf.portfolio_file7, pf.portfolio_file8, pf.portfolio_file9, pf.portfolio_file10,
+			pai.item_no AS portfolio_item_no, c.item_title AS categoryTitle, -- ✅ 전문 분야 제대로 조인
+			pai.pro_answer1, pai.pro_answer2, pai.pro_answer3, pai.pro_answer4, pai.pro_answer5
+		FROM Portfolio pf
+				 JOIN Professional p ON pf.pro_no = p.pro_no
+				 JOIN Member m ON p.member_no = m.member_no
+				 LEFT JOIN ProfessionalAdvancedInformation pai ON pf.pro_advanced_no = pai.pro_advanced_no
+				 LEFT JOIN Category c ON pai.item_no = c.item_no  -- ✅ 전문 분야 매칭
+		WHERE pf.portfolio_no = #{portfolioNo}
+			LIMIT 1
+	</select>
+
+
+
+
+	<!--전문가 유저 확인-->
+	<select id="findByMemberNo">
+		SELECT * FROM Professional WHERE member_no = #{memberNo}
+	</select>
+
 
 	<!-- 전문가 고급 정보 추가 -->
 <insert id = "addProAdvancedInfo" parameterType = "ProfessionalAdvancedInformation" useGeneratedKeys = "true" keyProperty = "proAdvancedNo">
@@ -232,8 +259,25 @@
 			LIMIT 1
 	</select>
 
+<!--동일한 itemNo 저장되어 있는지 확인-->
+	<select id="findByMemberNoAndItemNo" resultType="Professional">
+		SELECT p.*
+		FROM Professional p
+		JOIN ProfessionalAdvancedInformation pa ON p.pro_no = pa.pro_no
+		WHERE p.member_no = #{memberNo} AND pa.item_no = #{itemNo}
+	</select>
 
-<!-- 포트폴리오 추가 -->
+	<!--수정하고 있는 포폴 제외하고 동일한 itemNo로 되어있는 전문가 고급정보 있는지 확인-->
+	<select id="countExistingItemNoExcludingCurrent" resultType="int">
+		SELECT COUNT(*)
+		FROM ProfessionalAdvancedInformation
+		WHERE pro_no = #{proNo}
+		  AND item_no = #{itemNo}
+	</select>
+
+
+
+	<!-- 포트폴리오 추가 -->
 <insert id="addPortfolio" parameterType="Portfolio" useGeneratedKeys="true" keyProperty="portfolioNo">
         INSERT INTO Portfolio(pro_no, pro_advanced_no, portfolio_title, portfolio_content,
                               thumbnail_image, portfolio_file1, portfolio_file2, portfolio_file3,
@@ -246,13 +290,25 @@
 </insert>
 
 <!-- 포트폴리오 삭제 -->
-<delete id="deletePortfolio">
+<delete id="deletePortfolioByProNo">
 	DELETE FROM Portfolio WHERE portfolio_no = #{portfolioNo}
 </delete>
 
-<!-- 전문가 고급 정보 삭제 -->
+
+	<!-- 전문가의 포트폴리오 개수 조회 -->
+	<select id="countPortfoliosByProNo" resultType="int">
+		SELECT COUNT(*) FROM Portfolio WHERE pro_no = #{proNo}
+	</select>
+
+	<!-- 전문가 고급 정보 삭제 -->
+<delete id="deleteProfessionalAdvancedInfoByProNo">
+	DELETE FROM ProfessionalAdvancedInformation WHERE pro_advanced_no = #{proAdvancedNo}
+</delete>
 <delete id="deleteProfessionalAdvancedInfo">
 	DELETE FROM ProfessionalAdvancedInformation WHERE pro_advanced_no = #{proAdvancedNo}
+</delete>
+<delete id="deletePortfolio">
+	DELETE FROM Portfolio WHERE portfolio_no = #{portfolioNo}
 </delete>
 
 <!-- 전문가 삭제 (해당 전문가가 마지막 포트폴리오일 경우만 삭제) -->
@@ -281,12 +337,18 @@
 	SELECT * FROM Professional WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
 </select>
 
-<!-- ✅ 전문가 고급 정보 조회 -->
-<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
-	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
-</select>
+<!--&lt;!&ndash; ✅ 전문가 고급 정보 조회 &ndash;&gt;-->
+<!--<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">-->
+<!--	SELECT * FROM ProfessionalAdvancedInformation WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})-->
+<!--</select>-->
 
-<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
+	<select id="getAdvancedInfoByPortfolio" parameterType="int" resultType="ProfessionalAdvancedInformation">
+		SELECT * FROM ProfessionalAdvancedInformation WHERE pro_advanced_no =
+															(SELECT pro_advanced_no FROM Portfolio WHERE portfolio_no = #{portfolioNo})
+	</select>
+
+
+	<select id="getItemNoByPortfolio" parameterType="int" resultType="int">
 	SELECT item_no
 	FROM ProfessionalAdvancedInformation
 	WHERE pro_no = (SELECT pro_no FROM portfolio WHERE portfolio_no = #{portfolioNo})
@@ -307,6 +369,11 @@
 		FROM Portfolio
 		WHERE portfolio_no = #{portfolioNo}
 	</select>
+
+	<select id="findProNoByMemberNo" resultType="Integer">
+		SELECT pro_no FROM Professional WHERE member_no = #{memberNo} LIMIT 1
+	</select>
+
 
 	<!-- ✅ 포트폴리오 업데이트 -->
 	<update id="updatePortfolio" parameterType="Portfolio">
@@ -337,6 +404,28 @@
 		contactable_time = #{contactableTime}
 		WHERE pro_no = #{proNo}
 	</update>
+
+	<insert id="add2ProAdvancedInfo" useGeneratedKeys="true" keyProperty="proAdvancedNo">
+		INSERT INTO ProfessionalAdvancedInformation (pro_no, item_no, pro_answer1, pro_answer2, pro_answer3, pro_answer4, pro_answer5)
+		VALUES (#{proNo}, #{itemNo}, #{proAnswer1}, #{proAnswer2}, #{proAnswer3}, #{proAnswer4}, #{proAnswer5})
+	</insert>
+
+	<!-- 기존 전문가 고급 정보 확인 -->
+	<select id="findExistingProAdvancedInfo" resultType="Integer">
+		SELECT pro_advanced_no FROM ProfessionalAdvancedInformation
+		WHERE pro_no = #{proNo} AND item_no = #{itemNo}
+	</select>
+
+
+
+	<insert id="add2Portfolio">
+		INSERT INTO Portfolio (pro_no, pro_advanced_no, portfolio_title, portfolio_content, visibility, thumbnail_image,
+							   portfolio_file1, portfolio_file2, portfolio_file3, portfolio_file4, portfolio_file5,
+							   portfolio_file6, portfolio_file7, portfolio_file8, portfolio_file9, portfolio_file10)
+		VALUES (#{proNo}, #{proAdvancedNo}, #{portfolioTitle}, #{portfolioContent}, #{visibility}, #{thumbnailImage},
+				#{portfolioFile1}, #{portfolioFile2}, #{portfolioFile3}, #{portfolioFile4}, #{portfolioFile5},
+				#{portfolioFile6}, #{portfolioFile7}, #{portfolioFile8}, #{portfolioFile9}, #{portfolioFile10})
+	</insert>
 
 	<!-- ✅ 전문가 고급 정보 업데이트 -->
 	<update id="updateProfessionalAdvancedInfo" parameterType="ProfessionalAdvancedInformation">

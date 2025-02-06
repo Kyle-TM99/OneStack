@@ -12,48 +12,24 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col"><input type="checkbox"/></th>
-                        <th scope="col" class="sortable" data-sort="name">
+                        <th scope="col"></th>
+                        <th scope="col">
                             이름
-                    		<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="memberId">
+                        <th scope="col">
                             아이디
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="itemTitle">
+                        <th scope="col">
                             전문 분야
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="email">
+                        <th scope="col">
                             이메일
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="portfolioTitle">
+                        <th scope="col">
                             포트폴리오
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="date">
+                        <th scope="col">
                             가입일
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
                         <th scope="col">관리</th>
                     </tr>
@@ -68,7 +44,7 @@
                         <td><a class="text-dark text-decoration-none" th:href="${pro.portfolio.portfolioFile1}">[[${pro.portfolio.portfolioTitle}]]</a></td>
                         <td th:text="${#dates.format(pro.member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')}">회원 가입일</td>
                         <td>
-							<button class="btn btn-outline-dark btn-sm screening-btn" 
+							<button class="btn btn-outline-dark btn-sm screening-btn"
 							        th:data-pro-no="${pro.professional.proNo}"
 							        th:data-name="${pro.member.name}"
 							        th:data-item-title="${pro.category.itemTitle}"
@@ -133,6 +109,11 @@
                                 <input class="form-check-input" type="radio" name="professorStatus" id="approve" value="1">
                                 <label class="form-check-label" for="approve">승인</label>
                             </div>
+<!--                            <div class="form-check">-->
+<!--                                <input class="form-check-input" type="radio" name="professorStatus" id="reject" value="0">-->
+<!--                                <label class="form-check-label" for="reject">거부</label>-->
+<!--                            </div>-->
+
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="professorStatus" id="reject" value="0">
                                 <label class="form-check-label" for="reject">거부</label>
@@ -148,7 +129,7 @@
             </div>
             <div class="modal-footer border-top-0 px-4"> <!-- 푸터 테두리 제거 -->
                 <button type="button" class="btn btn-secondary close-custom-btn" data-modal-id="screeningModal">취소</button>
-                <button type="button" class="btn btn-primary" id="saveScreening">심사 완료</button>
+                <button type="button" class="btn btn-primary" id="saveModScreening" onclick="handleSaveModifiedScreening()">심사 완료</button>
             </div>
         </div>
     </div>

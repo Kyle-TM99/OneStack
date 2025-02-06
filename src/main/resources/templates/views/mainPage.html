@@ -415,7 +415,37 @@
 					<div class="col-lg-6">
 						<h3 class="section-title">전문가로 전환하세요</h3>
 						<p class="lead mb-4">OneStack에서 새로운 기회를 만나보세요</p>
-						<button class="custom-button" onclick="location.href='/loginForm'">전문가 전환하기</button>
+						<button class="custom-button"
+								th:if="${session.member == null}"
+								th:onclick="|location.href='/loginForm'|">
+							전문가 전환하기
+						</button>
+
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.memberType == 0}"
+								th:onclick="|location.href='/proConversion'|">
+							전문가 전환하기
+						</button>
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.memberType == 1 and session.member.isAdmin != true}"
+								th:onclick="alert('전문가로 이미 등록되어 있습니다. 더 많은 기회를 찾아보세요!')">
+							전문가 전환하기
+						</button>
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.memberType == 2 and session.member.isAdmin != true}"
+								th:onclick="alert('심사 중입니다.')">
+							전문가 전환하기
+						</button>
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.memberType == 3}"
+								th:onclick="|if(confirm('전문가 등록 심사가 반려되었습니다. 다시 신청해주세요.')) location.href='/proConversion';|">
+							전문가 전환하기
+						</button>
+						<button class="custom-button"
+								th:if="${session.member != null and session.member.isAdmin == true}"
+								th:onclick="alert('관리자는 전문가 등록 심사를 할 수 없습니다.')">
+							전문가 전환하기
+						</button>
 					</div>
 					<div class="col-lg-6">
 						<div class="col-12 mb-3">

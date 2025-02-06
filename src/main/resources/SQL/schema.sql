@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS onestack;
-CREATE DATABASE IF NOT EXISTS onestack;
-use onestack;
-
 -- Member - 회원
 CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 name VARCHAR(5) NOT NULL,

@@ -15,9 +15,14 @@ public interface ManagerMapper {
 
 	List<MemProPortPaiCate> getMemProPortPaiCate();
 
-	void updateProStatus(@Param("proNo") int proNo, 
-            @Param("professorStatus") Integer professorStatus, 
-            @Param("screeningMsg") String screeningMsg);
+//	void updateProStatus(@Param("proNo") int proNo,
+//						 @Param("professorStatus") Integer professorStatus,
+//						 @Param("screeningMsg") String screeningMsg);
+
+	// Member 테이블 업데이트 (memberType 변경)
+	void updateMemberType(@Param("proNo") int proNo,
+						  @Param("professorStatus") Integer professorStatus);
+
 
 	int checkDuplicateFields(Map<String, Object> params);
 
@@ -38,6 +43,21 @@ public interface ManagerMapper {
 
 	// 신고 리스트 조회
 	List<Reports> getReports();
+
+	// ✅ 전문가의 포트폴리오 삭제
+
+	void updateProStatus(@Param("proNo") int proNo,
+						 @Param("professorStatus") Integer professorStatus,
+						 @Param("screeningMsg") String screeningMsg);
+
+	void updateMemberType(@Param("proNo") int proNo, @Param("memberType") int memberType);
+
+	void deletePortfolioByProNo(@Param("proNo") int proNo);
+	void deleteProfessionalAdvancedInfoByProNo(@Param("proNo") int proNo);
+
+	void deleteProfessional(@Param("proNo") int proNo);
+
+
 
 	// 게시물 비활성화 처리
 	int disableTarget(@Param("type") String type, @Param("targetId") int targetId);
