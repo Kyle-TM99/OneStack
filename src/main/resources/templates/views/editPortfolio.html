@@ -43,8 +43,6 @@
                 <option value="23" th:selected="${selectedItemNo == 23}">크롤링</option>
                 <option value="24" th:selected="${selectedItemNo == 24}">DB 구축</option>
                 <option value="25" th:selected="${selectedItemNo == 25}">통계분석</option>
-
-
               </select>
 
               <!-- ✅ 설문조사 영역 -->
@@ -52,83 +50,83 @@
                 <p class="text-muted">전문분야를 선택하면 해당하는 설문조사가 표시됩니다.</p>
               </div>
 
-              <!-- 자기소개 -->
-              <label for="selfIntroduction">자기소개 *</label>
-              <textarea class="form-control mb-2" id="selfIntroduction" name="selfIntroduction" required
-                        th:text="${professional.selfIntroduction}"></textarea>
+<!--              &lt;!&ndash; 자기소개 &ndash;&gt;-->
+<!--              <label for="selfIntroduction" th:if="${member.memberType != 1}">자기소개 *</label>-->
+<!--              <textarea class="form-control mb-2" id="selfIntroduction" name="selfIntroduction" required-->
+<!--                        th:text="${professional.selfIntroduction}"></textarea>-->
 
               <!-- 연락 가능 시간 -->
-              <div class="mb-3">
-                <label class="form-label">연락 가능 시간 *</label>
-                <div class="d-flex gap-2">
-                  <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required
-                          th:data-db-value="${contactableTimeStart}">
-                    <option value="오전 6시" th:selected="${contactableTimeStart == '오전 6시'}">오전 6시</option>
-                    <option value="오전 7시" th:selected="${contactableTimeStart == '오전 7시'}">오전 7시</option>
-                    <option value="오전 8시" th:selected="${contactableTimeStart == '오전 8시'}">오전 8시</option>
-                    <option value="오전 9시" th:selected="${contactableTimeStart == '오전 9시'}">오전 9시</option>
-                    <option value="오전 10시" th:selected="${contactableTimeStart == '오전 10시'}">오전 10시</option>
-                    <option value="오전 11시" th:selected="${contactableTimeStart == '오전 11시'}">오전 11시</option>
-                    <option value="오전 12시" th:selected="${contactableTimeStart == '오전 12시'}">오전 12시</option>
-                    <option value="오후 1시" th:selected="${contactableTimeStart == '오후 1시'}">오후 1시</option>
-                    <option value="오후 2시" th:selected="${contactableTimeStart == '오후 2시'}">오후 2시</option>
-                    <option value="오후 3시" th:selected="${contactableTimeStart == '오후 3시'}">오후 3시</option>
-                    <option value="오후 4시" th:selected="${contactableTimeStart == '오후 4시'}">오후 4시</option>
-                    <option value="오후 5시" th:selected="${contactableTimeStart == '오후 5시'}">오후 5시</option>
-                    <option value="오후 6시" th:selected="${contactableTimeStart == '오후 6시'}">오후 6시</option>
-                    <option value="오후 7시" th:selected="${contactableTimeStart == '오후 7시'}">오후 7시</option>
-                    <option value="오후 8시" th:selected="${contactableTimeStart == '오후 8시'}">오후 8시</option>
-                    <option value="오후 9시" th:selected="${contactableTimeStart == '오후 9시'}">오후 9시</option>
-                    <option value="오후 10시" th:selected="${contactableTimeStart == '오후 10시'}">오후 10시</option>
-                  </select>
-                  <span class="align-self-center">~</span>
-                  <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required
-                          th:data-db-value="${contactableTimeEnd}">
-                    <option value="오전 6시" th:selected="${contactableTimeEnd == '오전 6시'}">오전 6시</option>
-                    <option value="오전 7시" th:selected="${contactableTimeEnd == '오전 7시'}">오전 7시</option>
-                    <option value="오전 8시" th:selected="${contactableTimeEnd == '오전 8시'}">오전 8시</option>
-                    <option value="오전 9시" th:selected="${contactableTimeEnd == '오전 9시'}">오전 9시</option>
-                    <option value="오전 10시" th:selected="${contactableTimeEnd == '오전 10시'}">오전 10시</option>
-                    <option value="오전 11시" th:selected="${contactableTimeEnd == '오전 11시'}">오전 11시</option>
-                    <option value="오전 12시" th:selected="${contactableTimeEnd == '오전 12시'}">오전 12시</option>
-                    <option value="오후 1시" th:selected="${contactableTimeEnd == '오후 1시'}">오후 1시</option>
-                    <option value="오후 2시" th:selected="${contactableTimeEnd == '오후 2시'}">오후 2시</option>
-                    <option value="오후 3시" th:selected="${contactableTimeEnd == '오후 3시'}">오후 3시</option>
-                    <option value="오후 4시" th:selected="${contactableTimeEnd == '오후 4시'}">오후 4시</option>
-                    <option value="오후 5시" th:selected="${contactableTimeEnd == '오후 5시'}">오후 5시</option>
-                    <option value="오후 6시" th:selected="${contactableTimeEnd == '오후 6시'}">오후 6시</option>
-                    <option value="오후 7시" th:selected="${contactableTimeEnd == '오후 7시'}">오후 7시</option>
-                    <option value="오후 8시" th:selected="${contactableTimeEnd == '오후 8시'}">오후 8시</option>
-                    <option value="오후 9시" th:selected="${contactableTimeEnd == '오후 9시'}">오후 9시</option>
-                    <option value="오후 10시" th:selected="${contactableTimeEnd == '오후 10시'}">오후 10시</option>
-                  </select>
-                </div>
-              </div>
+<!--              <div class="mb-3">-->
+<!--                <label class="form-label" th:if="${member.memberType != 1}">연락 가능 시간 *</label>-->
+<!--                <div class="d-flex gap-2">-->
+<!--                  <select class="form-select" id="contactableTimeStart" name="contactableTimeStart" required-->
+<!--                          th:data-db-value="${contactableTimeStart}">-->
+<!--                    <option value="오전 6시" th:selected="${contactableTimeStart == '오전 6시'}">오전 6시</option>-->
+<!--                    <option value="오전 7시" th:selected="${contactableTimeStart == '오전 7시'}">오전 7시</option>-->
+<!--                    <option value="오전 8시" th:selected="${contactableTimeStart == '오전 8시'}">오전 8시</option>-->
+<!--                    <option value="오전 9시" th:selected="${contactableTimeStart == '오전 9시'}">오전 9시</option>-->
+<!--                    <option value="오전 10시" th:selected="${contactableTimeStart == '오전 10시'}">오전 10시</option>-->
+<!--                    <option value="오전 11시" th:selected="${contactableTimeStart == '오전 11시'}">오전 11시</option>-->
+<!--                    <option value="오전 12시" th:selected="${contactableTimeStart == '오전 12시'}">오전 12시</option>-->
+<!--                    <option value="오후 1시" th:selected="${contactableTimeStart == '오후 1시'}">오후 1시</option>-->
+<!--                    <option value="오후 2시" th:selected="${contactableTimeStart == '오후 2시'}">오후 2시</option>-->
+<!--                    <option value="오후 3시" th:selected="${contactableTimeStart == '오후 3시'}">오후 3시</option>-->
+<!--                    <option value="오후 4시" th:selected="${contactableTimeStart == '오후 4시'}">오후 4시</option>-->
+<!--                    <option value="오후 5시" th:selected="${contactableTimeStart == '오후 5시'}">오후 5시</option>-->
+<!--                    <option value="오후 6시" th:selected="${contactableTimeStart == '오후 6시'}">오후 6시</option>-->
+<!--                    <option value="오후 7시" th:selected="${contactableTimeStart == '오후 7시'}">오후 7시</option>-->
+<!--                    <option value="오후 8시" th:selected="${contactableTimeStart == '오후 8시'}">오후 8시</option>-->
+<!--                    <option value="오후 9시" th:selected="${contactableTimeStart == '오후 9시'}">오후 9시</option>-->
+<!--                    <option value="오후 10시" th:selected="${contactableTimeStart == '오후 10시'}">오후 10시</option>-->
+<!--                  </select>-->
+<!--                  <span class="align-self-center">~</span>-->
+<!--                  <select class="form-select" id="contactableTimeEnd" name="contactableTimeEnd" required-->
+<!--                          th:data-db-value="${contactableTimeEnd}">-->
+<!--                    <option value="오전 6시" th:selected="${contactableTimeEnd == '오전 6시'}">오전 6시</option>-->
+<!--                    <option value="오전 7시" th:selected="${contactableTimeEnd == '오전 7시'}">오전 7시</option>-->
+<!--                    <option value="오전 8시" th:selected="${contactableTimeEnd == '오전 8시'}">오전 8시</option>-->
+<!--                    <option value="오전 9시" th:selected="${contactableTimeEnd == '오전 9시'}">오전 9시</option>-->
+<!--                    <option value="오전 10시" th:selected="${contactableTimeEnd == '오전 10시'}">오전 10시</option>-->
+<!--                    <option value="오전 11시" th:selected="${contactableTimeEnd == '오전 11시'}">오전 11시</option>-->
+<!--                    <option value="오전 12시" th:selected="${contactableTimeEnd == '오전 12시'}">오전 12시</option>-->
+<!--                    <option value="오후 1시" th:selected="${contactableTimeEnd == '오후 1시'}">오후 1시</option>-->
+<!--                    <option value="오후 2시" th:selected="${contactableTimeEnd == '오후 2시'}">오후 2시</option>-->
+<!--                    <option value="오후 3시" th:selected="${contactableTimeEnd == '오후 3시'}">오후 3시</option>-->
+<!--                    <option value="오후 4시" th:selected="${contactableTimeEnd == '오후 4시'}">오후 4시</option>-->
+<!--                    <option value="오후 5시" th:selected="${contactableTimeEnd == '오후 5시'}">오후 5시</option>-->
+<!--                    <option value="오후 6시" th:selected="${contactableTimeEnd == '오후 6시'}">오후 6시</option>-->
+<!--                    <option value="오후 7시" th:selected="${contactableTimeEnd == '오후 7시'}">오후 7시</option>-->
+<!--                    <option value="오후 8시" th:selected="${contactableTimeEnd == '오후 8시'}">오후 8시</option>-->
+<!--                    <option value="오후 9시" th:selected="${contactableTimeEnd == '오후 9시'}">오후 9시</option>-->
+<!--                    <option value="오후 10시" th:selected="${contactableTimeEnd == '오후 10시'}">오후 10시</option>-->
+<!--                  </select>-->
+<!--                </div>-->
+<!--              </div>-->
 
-              <!-- 경력 -->
-              <div class="form-field my-3">
-                <div class="d-flex justify-content-between align-items-center">
-                  <label for="career">경력 *</label>
-                  <div class="d-flex gap-2">
-                    <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm">추가</button>
-                  </div>
-                </div>
-                <div id="careerContainer">
-                  <input type="text" class="form-control mb-2" id="career" name="career" th:value="${professional.career}" required>
-                </div>
-              </div>
+<!--              &lt;!&ndash; 경력 &ndash;&gt;-->
+<!--              <div class="form-field my-3" th:if="${member.memberType != 1}">-->
+<!--                <div class="d-flex justify-content-between align-items-center">-->
+<!--                  <label for="career">경력 *</label>-->
+<!--                  <div class="d-flex gap-2">-->
+<!--                    <button type="button" id="addCareerBtn" class="btn btn-outline-dark btn-sm">추가</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div id="careerContainer">-->
+<!--                  <input type="text" class="form-control mb-2" id="career" name="career" th:value="${professional.career}" required>-->
+<!--                </div>-->
+<!--              </div>-->
 
-              <div class="form-field my-3">
-                <div class="d-flex justify-content-between align-items-center">
-                  <label for="awardCareer">수상경력 *</label>
-                  <div class="d-flex gap-2">
-                    <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm">추가</button>
-                  </div>
-                </div>
-                <div id="awardsContainer">
-                  <input type="text" class="form-control" id="awardCareer" name="awardCareer" th:value="${professional.awardCareer}" required>
-                </div>
-              </div>
+<!--              <div class="form-field my-3" th:if="${member.memberType != 1}">-->
+<!--                <div class="d-flex justify-content-between align-items-center">-->
+<!--                  <label for="awardCareer">수상경력 *</label>-->
+<!--                  <div class="d-flex gap-2">-->
+<!--                    <button type="button" id="addAwardCareerBtn" class="btn btn-outline-dark btn-sm">추가</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div id="awardsContainer">-->
+<!--                  <input type="text" class="form-control" id="awardCareer" name="awardCareer" th:value="${professional.awardCareer}" required>-->
+<!--                </div>-->
+<!--              </div>-->
 
               <!-- 포트폴리오 제목 -->
               <label for="portfolioTitle">포트폴리오 제목 *</label>

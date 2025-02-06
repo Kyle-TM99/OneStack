@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.onestack.project.mapper.ManagerMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -35,10 +36,52 @@ public class AdminService {
 		return managerMapper.getMemProPortPaiCate();
 	}
 
-	// 전문가 심사
+	@Transactional
 	public void updateProStatus(int proNo, Integer professorStatus, String screeningMsg) {
-	    managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
+		try {
+			// ✅ 1. 전문가 승인/거부 상태 업데이트
+			managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
+
+			// ✅ 2. 회원 타입 업데이트 (승인: 전문가 유지, 거부: 일반회원으로 변경)
+			if (professorStatus == 0) {
+				managerMapper.updateMemberType(proNo, 3);
+			} else if (professorStatus == 1) {
+				managerMapper.updateMemberType(proNo, 1);
+			}
+		} catch (Exception e) {
+			log.error("전문가 심사 업데이트 중 오류 발생: ", e);
+			throw new RuntimeException("전문가 심사 업데이트 중 오류가 발생했습니다.");
+		}
 	}
+
+	@Transactional
+	public void rejectAndDeleteProfessional(int proNo) {
+		// ✅ 1. 해당 전문가의 포트폴리오 삭제
+		managerMapper.deletePortfolioByProNo(proNo);
+
+		// ✅ 2. 전문가 고급 정보 삭제
+		managerMapper.deleteProfessionalAdvancedInfoByProNo(proNo);
+
+		// ✅ 3. 전문가 삭제
+		managerMapper.deleteProfessional(proNo);
+
+		// ✅ 4. 전문가의 회원 타입을 일반 회원(1)으로 변경
+		managerMapper.updateMemberType(proNo, 1);
+	}
+
+
+//	// 전문가 심사
+//	public void updateProStatus(int proNo, Integer professorStatus, String screeningMsg) {
+//		try {
+//			// 전문가 승인/거부 업데이트
+//			managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
+//			// Member 테이블 memberType 업데이트 (승인: 1, 거부: 0)
+//			managerMapper.updateMemberType(proNo, professorStatus);
+//		} catch (Exception e) {
+//			log.error("전문가 심사 업데이트 중 오류 발생: ", e);
+//			throw new RuntimeException("전문가 심사 업데이트 중 오류가 발생했습니다.");
+//		}
+//	}
 	
 	// 회원 유형/상태 변경
 	public void updateMember(Member member) {

@@ -1,11 +1,8 @@
 package com.onestack.project.domain;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -23,4 +20,12 @@ public class Community {
     private Integer communityBoardDislike;
     private Integer communityBoardActivation;
     private Integer communityReplyCount;
+
+    private int communityReplyNo;
+    private String communityReplyContent;
+    private Timestamp communityReplyRegDate;
+    private boolean communityReplyActivation;
+
+    private String nickname;
+    private String memberStop;
 }

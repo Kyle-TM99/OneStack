@@ -2,10 +2,17 @@ package com.onestack.project.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-
+import com.onestack.project.service.ImageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,62 +31,249 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 public class MemberController {
 
+    @Autowired
+    ImageService imageService;
+
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/updateMember")
-    public String updateMember(HttpSession session, Member member, MultipartFile profileImage) {
+    @PostMapping("/ajax/member/changePassword")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> changePassword(HttpSession session,
+                                                              @RequestBody Map<String, String> requestBody
+    ) {
+        Map<String, Object> response = new HashMap<>();
 
-        Member sessionMember = (Member) session.getAttribute("member");
-        member.setMemberNo(sessionMember.getMemberNo());
+        // 세션에서 memberId 가져오기
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            response.put("success", false);
+            response.put("message", "로그인 세션이 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 
-        // 회원 정보 업데이트
-        memberService.updateMember(member);
+        // Show 접미사가 붙은 파라미터로 변경
+        String currentPassword = requestBody.get("currentPasswordShow");
+        String newPassword = requestBody.get("newPasswordShow");
+        String confirmPassword = requestBody.get("confirmPasswordShow");
 
-        // 세션 정보 업데이트
-        sessionMember.setName(member.getName());
-        sessionMember.setEmail(member.getEmail());
-        sessionMember.setPhone(member.getPhone());
-        sessionMember.setZipcode(member.getZipcode());
-        sessionMember.setAddress(member.getAddress());
-        sessionMember.setAddress2(member.getAddress2());
-        sessionMember.setEmailGet(member.isEmailGet());
+        // 새 비밀번호 일치 검증
+        if (!newPassword.equals(confirmPassword)) {
+            response.put("success", false);
+            response.put("message", "새 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
 
+        // 비밀번호 변경 시도
+        boolean result = memberService.changePassword(
+                member.getMemberId(),
+                currentPassword,
+                newPassword
+        );
 
-        return "member/memberMyPage";
+        if (result) {
+            response.put("success", true);
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "현재 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
-    @GetMapping("/myPage")
-    public String myPage(Model model, HttpSession session) {
+/*    @PostMapping("/updateMember")
+    @ResponseBody
+    public Map<String, Object> updateMember(HttpSession session, Member member,
+                               @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Member sessionMember = (Member) session.getAttribute("member");
+            member.setMemberNo(sessionMember.getMemberNo());
+            // 소셜 타입 설정 추가
+            member.setSocialType(sessionMember.getSocialType());
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                try {
+                    // 개발 환경에서 임시로 이미지 URL 생성
+                    String fileName = UUID.randomUUID().toString() + "_" + profileImage.getOriginalFilename();
+                    String imageUrl = "http://3.37.88.97/images/" + fileName;
+
+                    // 실제 파일은 저장하지 않고 URL만 설정 (개발 환경)
+                    member.setMemberImage(imageUrl);
+                    log.info("개발 환경 - 이미지 URL 설정: {}", imageUrl);
+
+                } catch (Exception e) {
+                    log.error("이미지 처리 중 에러 발생: {}", e.getMessage());
+                }
+            } else {
+                member.setMemberImage(sessionMember.getMemberImage());
+            }
+
+            // 회원 정보 업데이트
+            String socialType = sessionMember.getSocialType();
+            if (socialType.equals("kakao") || socialType.equals("google")) {
+                member.setMemberId(sessionMember.getMemberId());
+                member.setPass(sessionMember.getPass());
+                memberService.updateSocialMember(member);
+            } else {
+                memberService.updateMember(member);
+            }
+
+            // DB에서 업데이트된 정보 확인
+            Member updatedMember = memberService.getMember(member.getMemberId());
+            session.setAttribute("member", updatedMember);
+            log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
+
+            // 세션 업데이트
+            updateSessionMember(session, member);
+
+            response.put("success",true);
+            response.put("message", "회원정보가 성공적으로 수정되었습니다.");
+
+            return response;
+
+        } catch (Exception e) {
+            log.error("회원 정보 수정 실패: {}", e.getMessage());
+            response.put("error", e.getMessage());
+            response.put("message", "회원정보 수정에 실패했습니다.");
+            return response;
+        }
+    }*/
+
+
+
+
+    @PostMapping("/updateMember")
+    @ResponseBody
+    public Map<String, Object> updateMember(HttpSession session, Member member,
+                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Member sessionMember = (Member) session.getAttribute("member");
+            member.setMemberNo(sessionMember.getMemberNo());
+
+            // 현재 상태 로깅
+            log.info("프로필 이미지 업데이트 시작");
+            log.info("기존 이미지 URL: {}", sessionMember.getMemberImage());
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                try {
+                    log.info("새 이미지 파일명: {}", profileImage.getOriginalFilename());
+                    String imageUrl = imageService.uploadImage(profileImage);
+                    log.info("생성된 이미지 URL: {}", imageUrl);
+
+                    // null 체크 추가
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        member.setMemberImage(imageUrl);
+                        log.info("Member 객체에 설정된 이미지 URL: {}", member.getMemberImage());
+                    } else {
+                        log.error("이미지 URL이 null 또는 비어있음");
+                    }
+                } catch (IOException e) {
+                    log.error("이미지 업로드 중 에러 발생: {}", e.getMessage());
+                    response.put("success", false);
+                    response.put("message", "이미지 업로드 중 오류가 발생했습니다.");
+                    return response;
+                }
+            } else {
+                log.info("새로운 이미지가 업로드되지 않음. 기존 이미지 유지");
+                member.setMemberImage(sessionMember.getMemberImage());
+            }
+
+            // 업데이트 전 member 객체 상태 확인
+            log.info("업데이트 전 member 객체: {}", member.toString());
+
+            if (sessionMember.isSocial()) {
+                memberService.updateSocialMember(member);
+            } else {
+                memberService.updateMember(member);
+            }
+
+            // 업데이트 후 DB에서 재조회하여 확인
+            Member updatedMember = memberService.getMember(member.getMemberId());
+            log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
+
+            // 세션 업데이트
+            updateSessionMember(session, member);
+
+            response.put("success", true);
+            response.put("message", "회원 정보가 성공적으로 수정되었습니다.");
+
+        } catch (Exception e) {
+            log.error("회원 정보 수정 실패: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("message", "회원 정보 수정 중 오류가 발생했습니다.");
+        }
+
+        return response;
+    }
+
+
+    // 세션 정보 업데이트 메서드 분리
+    private void updateSessionMember(HttpSession session, Member updatedMember) {
+        Member sessionMember = (Member) session.getAttribute("member");
+        sessionMember.setName(updatedMember.getName());
+        sessionMember.setMemberId(updatedMember.getMemberId());
+        sessionMember.setNickname(updatedMember.getNickname());
+        sessionMember.setEmail(updatedMember.getEmail());
+        sessionMember.setPhone(updatedMember.getPhone());
+        sessionMember.setZipcode(updatedMember.getZipcode());
+        sessionMember.setAddress(updatedMember.getAddress());
+        sessionMember.setAddress2(updatedMember.getAddress2());
+        sessionMember.setEmailGet(updatedMember.isEmailGet());
+
+        // 프로필 이미지가 업데이트된 경우
+        if (updatedMember.getMemberImage() != null) {
+            sessionMember.setMemberImage(updatedMember.getMemberImage());
+        }
+
+        session.setAttribute("member", sessionMember);
+    }
+
+    // 프로필 이미지 저장 메서드 (필요한 경우)
+    private String saveProfileImage(MultipartFile profileImage) throws IOException {
+        String originalFilename = profileImage.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
+
+        // 파일 저장 경로 설정
+        Path uploadPath = Paths.get("src/main/resources/static/images/profile");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Path filePath = uploadPath.resolve(uniqueFileName);
+        profileImage.transferTo(filePath.toFile());
+
+        return uniqueFileName;
+    }
+
+    @GetMapping("/updateMemberForm")
+    public String myPage(Model model, HttpSession session,
+                         @RequestParam(required = false) String success,
+                         @RequestParam(required = false) String error) {
         Member member = (Member) session.getAttribute("member");
-
-        // 세션의 member 객체에서 memberNo 직접 사용
-        int memberNo = member.getMemberNo();
-
-        // 데이터 조회
-        int communityCount = memberService.memberMyPageCommunityCount(memberNo);
-        int communityReplyCount = memberService.memberMyPageComReplyCount(memberNo);
-        int qnaCount = memberService.memberMyPageQnACount(memberNo);
-        int qnaReplyCount = memberService.memberMyPageQnAReplyCount(memberNo);
-        int reviewCount = memberService.findMyReviewCount(memberNo);
-
-        // 모델에 데이터 추가
-        model.addAttribute("communityCount", communityCount);
-        model.addAttribute("communityReplyCount", communityReplyCount);
-        model.addAttribute("qnaCount", qnaCount);
-        model.addAttribute("qnaReplyCount", qnaReplyCount);
-        model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("member", member);
 
-        session.setAttribute("socialType", member.getSocialType());
+        if (success != null) {
+            model.addAttribute("message", "회원 정보가 성공적으로 수정되었습니다.");
+        } else if (error != null) {
+            if ("image".equals(error)) {
+                model.addAttribute("errorMessage", "이미지 업로드 중 오류가 발생했습니다.");
+            } else if ("update".equals(error)) {
+                model.addAttribute("errorMessage", "회원 정보 수정 중 오류가 발생했습니다.");
+            }
+        }
 
-        return "member/memberMyPage";
+        return "member/EditMemberUpdateForm";
     }
 
 
@@ -160,7 +354,9 @@ public class MemberController {
     public Map<String, Boolean> checkId(@RequestParam("memberId") String memberId) {
         Map<String, Boolean> response = new HashMap<>();
         int count = memberService.checkMemberId(memberId);
-        response.put("available", count == 0);
+
+        Boolean check = count == 0;
+        response.put("available", check);
         return response;
     }
 

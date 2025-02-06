@@ -13,48 +13,24 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col"><input type="checkbox"/></th>
-                        <th scope="col" class="sortable" data-sort="name">
+                        <th scope="col"></th>
+                        <th scope="col">
                             이름
-                    		<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
-                        </th>
-                        <th scope="col" class="sortable" data-sort="id">
+                           </th>
+                        <th scope="col">
                             아이디
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
-                        </th>
-                        <th scope="col" class="sortable" data-sort="type">
+	                        </th>
+                        <th scope="col">
                             회원 유형
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="email">
+                        <th scope="col">
                             이메일
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="status">
+                        <th scope="col">
                             상태
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
-                        <th scope="col" class="sortable" data-sort="date">
+                        <th scope="col">
                             가입일
-							<i class="sort-icon">
-    							<span class="sort-up active">▲</span>
-    							<span class="sort-down">▼</span>
-							</i>
                         </th>
                         <th scope="col">관리</th>
                     </tr>
@@ -77,7 +53,7 @@
                     <td th:text="${member.name}">이름</td>
                     <td th:text="${member.nickname}" class="d-none">닉네임</td>
                     <td th:text="${member.memberId}">아이디</td>
-                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
+                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : (member.memberType == 2 ? '심사중': '반려'))}">회원 타입</td>
                     <td th:text="${member.email}">이메일</td>
                     <td th:text="${member.phone}" class="d-none">전화번호</td>
                     <td th:text="${member.address}" class="d-none">주소</td>
@@ -118,7 +94,7 @@
         </div>
     </div>
 
-	<div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
+	<div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel">
 	    <div class="modal-dialog modal-dialog-centered modal-lg">
 	        <div class="modal-content">
 	            <div class="modal-header">

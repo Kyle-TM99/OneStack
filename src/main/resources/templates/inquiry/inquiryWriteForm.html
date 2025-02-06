@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main_layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
 <head>
   <title>고객센터 글 작성 페이지</title>
   <style>
@@ -7,15 +9,39 @@
       max-height: 150px;
       object-fit: cover;
     }
+
+    /* Quill 에디터 스타일 */
+    .quill-editor {
+      height: 400px;  /* 에디터 높이 조절 */
+      margin-bottom: 20px;
+    }
+
+    /* 에디터 내부 입력 영역 높이 조절 */
+    .ql-editor {
+      min-height: 350px;  /* 최소 높이 설정 */
+    }
+
+    /* 툴바 스타일링 */
+    .ql-toolbar.ql-snow {
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* 에디터 컨테이너 스타일링 */
+    .ql-container.ql-snow {
+      border-radius: 0 0 4px 4px;
+    }
   </style>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/communityForm.css}">
 </head>
 <body>
 <div layout:fragment="content">
   <div class="row g-0">
     <div class="col-md-1"></div>
     <div class="col-md-10 mt-3 border-bottom">
-      <h1 class="fw-bold mt-3 mb-4">문의글 작성</h1>
-      <div class="col-md-1"></div>
+      <h1 class="fw-bold mt-3 mb-4">
+        <i class="bi bi-pencil-square me-2"></i>문의글 작성
+      </h1>
     </div>
 
     <div class="row g-0">
@@ -35,34 +61,95 @@
     </div>
 
     <div class="row g-0 mt-4">
-      <div class="col-md-3"></div>
-      <div class="col-md-6">
-        <form th:action="@{/memberInquiry/addInquiry}" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="memberNo" th:value="${session.member.memberNo}">
-          <div class="mb-3">
-            <label for="inquiryTitle" class="form-label">제목</label>
-            <input type="text" class="form-control" id="inquiryTitle" name="inquiryTitle" required>
-          </div>
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <div class="form-container py-5">
+          <form name="writeForm" id="writeForm" th:action="@{/memberInquiry/addInquiry}" method="post" enctype="multipart/form-data" class="form-write">
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
 
-          <div class="mb-3">
-            <label for="inquiryContent" class="form-label">내용</label>
-            <textarea class="form-control" id="inquiryContent" name="inquiryContent" rows="8" required></textarea>
-          </div>
+            <div class="row form-group">
+              <div class="col-md">
+                <label for="inquiryTitle" class="form-label">제 목</label>
+                <input type="text" class="form-control" name="inquiryTitle" id="inquiryTitle" required>
+              </div>
+            </div>
 
-          <div class="mb-3">
-            <label for="file" class="form-label">파일 첨부</label>
-            <input type="file" class="form-control" id="file" name="file">
-          </div>
+            <div class="row mt-3 form-group">
+              <div class="col-md">
+                <!-- Quill 에디터 컨테이너 -->
+                <div id="editor" class="quill-editor"></div>
+                <!-- 실제 폼 전송을 위한 hidden input -->
+                <input type="hidden" name="inquiryContent" id="inquiryContent">
+              </div>
+            </div>
 
-          <div class="d-flex justify-content-center gap-2 mt-4 mb-5">
-            <button type="submit" class="btn btn-primary me-2">등록</button>
-            <button type="button" class="btn btn-secondary ms-2" onclick="window.history.back();">취소</button>
-          </div>
-        </form>
+            <div class="mt-4 mb-4 d-flex justify-content-center gap-2"  style="padding-top: 50px;">
+              <button type="button" onclick="submitForm()" class="btn btn-light">등록</button>
+              <button type="button" class="btn btn-secondary" onclick="window.history.back();">취소</button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="col-md-3"></div>
+      <div class="col-md-2"></div>
     </div>
   </div>
 </div>
+
+<th:block layout:fragment="script">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'align': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+
+    // 제목 글자 수 제한 기능
+    const titleInput = document.getElementById('inquiryTitle');
+    const MAX_LENGTH = 40;
+
+    if (titleInput) {  // titleInput이 존재할 때만 이벤트 리스너 추가
+      titleInput.addEventListener('input', function() {
+        if (this.value.length > MAX_LENGTH) {
+          this.value = this.value.slice(0, MAX_LENGTH);
+          alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        }
+      });
+    }
+
+    function submitForm() {
+      var form = document.getElementById('updateForm') || document.getElementById('writeForm');
+      var title = document.getElementById('inquiryTitle').value;
+      var content = document.getElementById('inquiryContent');
+
+      if (title.trim() === '') {
+        alert('제목을 입력해주세요.');
+        return false;
+      }
+
+      if (title.length > MAX_LENGTH) {
+        alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        return false;
+      }
+
+      if (quill.getText().trim() === '') {
+        alert('내용을 입력해주세요.');
+        return false;
+      }
+
+      content.value = quill.root.innerHTML;
+      form.submit();
+    }
+  </script>
+</th:block>
 </body>
 </html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+  <title>고객센터 글 수정 페이지</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/communityForm.css}">
+  <style>
+    img {
+      max-height: 150px;
+      object-fit: cover;
+    }
+    /* Quill 에디터 스타일 */
+    .quill-editor {
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    .ql-editor {
+      min-height: 350px;
+    }
+    .ql-toolbar.ql-snow {
+      border-radius: 4px 4px 0 0;
+    }
+    .ql-container.ql-snow {
+      border-radius: 0 0 4px 4px;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="row g-0">
+    <div class="col-md-1"></div>
+    <div class="col-md-10 mt-3 border-bottom">
+      <h1 class="fw-bold mt-3 mb-4">
+        <i class="bi bi-pencil-square me-2"></i>문의글 수정
+      </h1>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="row g-0">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="breadcrumb-container mt-3 mb-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">고객센터</a></li>
+              <li class="breadcrumb-item"><a href="/memberInquiry" class="text-decoration-none text-dark">회원 문의</a></li>
+              <li class="breadcrumb-item active" aria-current="page">문의글 수정</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+
+    <div class="row g-0 mt-4">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <div class="form-container py-5">
+          <form name="updateForm" id="updateForm" th:action="@{/memberInquiry/update}" method="post" class="form-write">
+            <input type="hidden" name="inquiryNo" th:value="${inquiry.inquiryNo}"/>
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}"/>
+            <input type="hidden" name="pageNum" th:value="${param.pageNum}"/>
+            <input type="hidden" name="type" th:value="${param.type}"/>
+            <input type="hidden" name="keyword" th:value="${param.keyword}"/>
+
+            <div class="row form-group">
+              <div class="col-md">
+                <label for="inquiryTitle" class="form-label">제 목</label>
+                <input type="text" class="form-control" name="inquiryTitle" id="inquiryTitle"
+                       th:value="${inquiry.inquiryTitle}" required>
+              </div>
+            </div>
+
+            <div class="row mt-3 form-group">
+              <div class="col-md">
+                <!-- Quill 에디터 컨테이너 -->
+                <div id="editor" class="quill-editor"></div>
+                <!-- 실제 폼 전송을 위한 hidden input -->
+                <input type="hidden" name="inquiryContent" id="inquiryContent">
+              </div>
+            </div>
+
+            <div class="mt-5 d-flex justify-content-center gap-2">
+              <button type="button" onclick="submitForm()" class="btn btn-light">수정</button>
+              <button type="button" class="btn btn-secondary" onclick="window.history.back();">취소</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script th:inline="javascript">
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'align': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+
+    // 기존 내용을 Quill 에디터에 설정 (HTML 이스케이프 처리)
+    var content = /*[[${inquiry.inquiryContent}]]*/ '';
+    quill.root.innerHTML = content;
+
+    // 제목 글자 수 제한 기능
+    const titleInput = document.getElementById('inquiryTitle');
+    const MAX_LENGTH = 40;
+
+    if (titleInput) {  // titleInput이 존재할 때만 이벤트 리스너 추가
+      titleInput.addEventListener('input', function() {
+        if (this.value.length > MAX_LENGTH) {
+          this.value = this.value.slice(0, MAX_LENGTH);
+          alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        }
+      });
+    }
+
+    function submitForm() {
+      var form = document.getElementById('updateForm') || document.getElementById('writeForm');
+      var title = document.getElementById('inquiryTitle').value;
+      var content = document.getElementById('inquiryContent');
+
+      if (title.trim() === '') {
+        alert('제목을 입력해주세요.');
+        return false;
+      }
+
+      if (title.length > MAX_LENGTH) {
+        alert('제목은 공백 포함 40자를 초과할 수 없습니다.');
+        return false;
+      }
+
+      if (quill.getText().trim() === '') {
+        alert('내용을 입력해주세요.');
+        return false;
+      }
+
+      content.value = quill.root.innerHTML;
+      form.submit();
+    }
+  </script>
+</th:block>
+</body>
+</html>

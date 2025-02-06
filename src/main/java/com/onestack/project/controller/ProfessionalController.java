@@ -75,7 +75,11 @@ public class ProfessionalController {
 
     /* 견적 요청서 작성 */
 	@PostMapping("/submitEstimation")
-	public String submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+    @ResponseBody
+	public Map<String, Object> submitEstimation(Estimation estimation, @RequestParam("proNo") int proNo) {
+
+        Map<String, Object> result = new HashMap<>();
+
 		try {
 			// 견적 정보 설정
 			estimation.setProNo(proNo);
@@ -84,10 +88,11 @@ public class ProfessionalController {
 			// 견적 저장
 			proService.submitEstimation(estimation);
 
-			return "redirect:/estimationDoneForm";
+			result.put("status", true);
+            return result;
 		} catch (Exception e) {
 			log.error("견적 요청 중 오류 발생", e);
-			return "redirect:/error";
+            return result;
 		}
 	}
 
@@ -186,14 +191,19 @@ public class ProfessionalController {
                     .toList();
             request.setSurveyAnswers(filteredAnswers);
 
-            // 데이터 저장
+            // 데이터 저장 (중복된 itemNo 체크 포함)
             professionalService.saveProConversionData(request);
 
             return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
+        } catch (IllegalStateException e) {
+            // 같은 itemNo를 선택한 전문가가 있을 경우 409 Conflict 반환
+            log.warn("중복된 itemNo: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("message", "이미 같은 전문 분야를 선택한 전문가가 존재합니다."));
         } catch (Exception e) {
             log.error("전문가 데이터 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "저장 실패"));
+                    .body(Collections.singletonMap("message", "저장 실패"));
         }
     }
 
@@ -207,22 +217,35 @@ public class ProfessionalController {
 
     // 포트폴리오 리스트 조회
     @GetMapping("/portfolioList")
-    public String getPortfolioList(HttpSession session, Model model) {
+    public String getPortfolioList(HttpSession session,
+                                   @RequestParam(value = "portfolioNo", required = false, defaultValue = "0") int portfolioNo,
+                                   Model model) {
         Member member = (Member) session.getAttribute("member");
-        Integer memberNo = member.getMemberNo();
 
-        // memberNo가 세션에서 가져와지는지 확인하는 디버깅 로그 추가
+        // 세션에서 member가 null인 경우 로그인 페이지로 리다이렉트
+        if (member == null) {
+            return "redirect:/loginForm";
+        }
+
+        Integer memberNo = member.getMemberNo();
         if (memberNo == null) {
             return "redirect:/loginForm";
         }
 
+        MemProPortPaiCate portfolioDetail = null;
+        if (portfolioNo != 0) { // portfolioNo가 전달된 경우에만 조회
+            portfolioDetail = professionalService.getPortfolioDetail(portfolioNo);
+        }
+
         List<Portfolio> portfolioList = professionalService.getPortfoliosByMember(memberNo);
-        System.out.println(" 조회된 포트폴리오 개수: " + portfolioList.size());
+        System.out.println("조회된 포트폴리오 개수: " + portfolioList.size());
 
         model.addAttribute("portfolioList", portfolioList);
+        model.addAttribute("portfolio", portfolioDetail);
 
         return "views/portfolioList";
     }
+
 
     // 포트폴리오 추가
     @GetMapping("/portfolioList/addPortfolio")
@@ -330,8 +353,8 @@ public class ProfessionalController {
         model.addAllAttributes(surveyData);
         model.addAttribute("selectedItemNo", itemNo);
         model.addAttribute("categories", surveyService.getAllCategories());
-        model.addAttribute("contactableTimeStart", contactableTimeStart);
-        model.addAttribute("contactableTimeEnd", contactableTimeEnd);
+//        model.addAttribute("contactableTimeStart", contactableTimeStart);
+//        model.addAttribute("contactableTimeEnd", contactableTimeEnd);
 
         log.info("🎯 [editPortfolio] 데이터 로딩 완료. 페이지 반환.");
         return "views/editPortfolio";
@@ -342,11 +365,11 @@ public class ProfessionalController {
      */
     @PostMapping("/portfolio/update")
     @ResponseBody
-    public ResponseEntity<?> updateProfessionalData(@RequestBody ProUpdateRequest request) {
+    public ResponseEntity<?> updateProfessionalData(@RequestBody ProUpdateRequest request, HttpSession session) {
         try {
             log.info("📩 [updatePortfolio] 요청 수신: {}", request);
 
-            // 빈 Survey Answer 제거
+            // ✅ 빈 Survey Answer 제거
             List<String> filteredAnswers = request.getSurveyAnswers().stream()
                     .filter(answer -> answer != null && !answer.trim().isEmpty())
                     .toList();
@@ -354,11 +377,15 @@ public class ProfessionalController {
 
             log.info("✅ 정리된 Survey Answers: {}", filteredAnswers);
 
-            // 데이터 업데이트
-            professionalService.updateProConversionData(request);
+            // ✅ 데이터 업데이트 (중복 검사 포함)
+            professionalService.updateProConversionData(request,session);
 
             log.info("✅ 포트폴리오 업데이트 완료 - portfolioNo: {}", request.getPortfolioNo());
             return ResponseEntity.ok(Collections.singletonMap("message", "포트폴리오가 성공적으로 업데이트되었습니다."));
+        } catch (IllegalStateException e) {
+            log.warn("🚨 중복된 itemNo로 인해 업데이트 실패 - proNo: {}, itemNo: {}", request.getProNo(), request.getItemNo());
+            return ResponseEntity.status(HttpStatus.CONFLICT) // HTTP 409: Conflict
+                    .body(Collections.singletonMap("message", "이미 같은 전문 분야를 가진 포트폴리오가 존재합니다."));
         } catch (Exception e) {
             log.error("🚨 포트폴리오 업데이트 실패: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -370,13 +397,87 @@ public class ProfessionalController {
     @ResponseBody
     public ResponseEntity<?> deletePortfolio(@RequestParam("portfolioNo") int portfolioNo) {
         try {
-            // ✅ 포트폴리오 및 연관 데이터 삭제
             professionalService.deletePortfolio(portfolioNo);
             return ResponseEntity.ok(Map.of("message", "포트폴리오 및 관련 데이터가 삭제되었습니다."));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage())); // 포트폴리오 1개일 경우 예외 메시지 반환
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "삭제 실패"));
         }
     }
+
+
+    @PostMapping("/proConversion/submit")
+    @ResponseBody
+    public ResponseEntity<?> submitProConversionData(@RequestBody Pro2ConversionRequest request, HttpSession session) {
+        try {
+            log.info("✅ 수신된 데이터: {}", request);
+
+            // 빈 Survey Answer 제거
+            List<String> filteredAnswers = request.getSurveyAnswers().stream()
+                    .filter(answer -> answer != null && !answer.trim().isEmpty())
+                    .toList();
+            request.setSurveyAnswers(filteredAnswers);
+
+            // 데이터 저장 실행
+            professionalService.submitProConversionData(request, session);
+
+            return ResponseEntity.ok(Map.of("message", "포트폴리오가 성공적으로 등록되었습니다."));
+        } catch (IllegalStateException e) {
+            // 예외 발생 시 400 Bad Request 반환
+            log.warn("🚨 예외 발생: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            log.error("❌ 전문가 데이터 저장 실패", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "서버 오류가 발생했습니다."));
+        }
+    }
+
+        // 포트폴리오 모달
+        @GetMapping("/portfolioDetail/{portfolioNo}")
+        @ResponseBody
+        public ResponseEntity<?> getPortfolioDetail(@PathVariable("portfolioNo") int portfolioNo) {
+            System.out.println("🔍 포트폴리오 상세 조회 요청: portfolioNo = " + portfolioNo);
+
+            PortfolioDetail portfolioDetail = professionalService.getProPortfolioDetail(portfolioNo);
+
+            if (portfolioDetail == null) {
+                System.out.println("❌ 포트폴리오를 찾을 수 없습니다: portfolioNo = " + portfolioNo);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("포트폴리오를 찾을 수 없습니다.");
+            }
+
+            // ✅ JSON 데이터 변환
+            Map<String, Object> response = new HashMap<>();
+            response.put("portfolioNo", portfolioDetail.getPortfolioNo());
+            response.put("portfolioTitle", portfolioDetail.getPortfolioTitle());
+            response.put("portfolioContent", portfolioDetail.getPortfolioContent());
+            response.put("thumbnailImage", portfolioDetail.getThumbnailImage());
+            response.put("portfolioFiles", Arrays.asList(
+                    portfolioDetail.getPortfolioFile1(),
+                    portfolioDetail.getPortfolioFile2(),
+                    portfolioDetail.getPortfolioFile3(),
+                    portfolioDetail.getPortfolioFile4(),
+                    portfolioDetail.getPortfolioFile5(),
+                    portfolioDetail.getPortfolioFile6(),
+                    portfolioDetail.getPortfolioFile7(),
+                    portfolioDetail.getPortfolioFile8(),
+                    portfolioDetail.getPortfolioFile9(),
+                    portfolioDetail.getPortfolioFile10()
+            ));
+
+            // ✅ 올바른 전문 분야 적용
+            response.put("memberName", portfolioDetail.getProfessionalName());
+            response.put("categoryTitle", portfolioDetail.getCategoryTitle()); // ✅ 수정된 부분
+            response.put("selfIntroduction", portfolioDetail.getSelfIntroduction());
+            response.put("contactableTime", portfolioDetail.getContactableTime());
+            response.put("career", portfolioDetail.getCareer() != null ? Arrays.asList(portfolioDetail.getCareer().split(",")) : new ArrayList<>());
+            response.put("awardCareer", portfolioDetail.getAwardCareer() != null ? Arrays.asList(portfolioDetail.getAwardCareer().split(",")) : new ArrayList<>());
+
+            System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
+            return ResponseEntity.ok(response);
+        }
 
 }

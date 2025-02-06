@@ -14,12 +14,12 @@ public class PortfolioDetail {
     private String portfolioTitle;
     private String portfolioContent;
     private String thumbnailImage;
+    private String professionalName;  // ✅ 전문가 이름
+    private String categoryTitle;     // ✅ MyBatis와 일치해야 함!
     private String selfIntroduction;
     private String contactableTime;
     private String career;
     private String awardCareer;
-    private String categoryName;
-    private String professionalName;
     private String portfolioFile1;
     private String portfolioFile2;
     private String portfolioFile3;
@@ -30,4 +30,10 @@ public class PortfolioDetail {
     private String portfolioFile8;
     private String portfolioFile9;
     private String portfolioFile10;
+    private String proAnswer1;
+    private String proAnswer2;
+    private String proAnswer3;
+    private String proAnswer4;
+    private String proAnswer5;
 }
+

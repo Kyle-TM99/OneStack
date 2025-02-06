@@ -15,10 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("✅ editPortfolio.js 로드 완료");
 
-    // ✅ 기존 데이터 유지
-    const savedCategory = categorySelect.getAttribute("data-db-value");
-    const savedItem = itemSelect.getAttribute("data-db-value");
-
     // ✅ 카테고리별 전문분야 목록
     const categoryOptions = {
         "1": [
@@ -40,21 +36,29 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
-    // ✅ 기존 데이터 로드
-    if (savedCategory) {
-        categorySelect.value = savedCategory;
-        updateItemOptions(savedCategory, savedItem);
-    }
+    // ✅ 기존 데이터 유지
+    const savedCategory = categorySelect.value;
+    const savedItem = itemSelect.value;
 
+    // ✅ 선택된 카테고리에 맞춰 전문분야 옵션 필터링 (초기 로드 시 실행)
+    updateItemOptions(savedCategory, savedItem);
+
+    // ✅ 카테고리 선택 시 해당하는 전문분야 표시
+    categorySelect.addEventListener("change", function () {
+        updateItemOptions(categorySelect.value);
+    });
+
+    // ✅ 전문분야 옵션 필터링 함수
     function updateItemOptions(selectedCategory, selectedItem = null) {
-        itemSelect.innerHTML = '<option value="">전문분야 선택</option>';
+        itemSelect.innerHTML = '<option value="" hidden>전문분야 선택</option>'; // 기존 옵션 초기화
+
         if (selectedCategory && categoryOptions[selectedCategory]) {
             categoryOptions[selectedCategory].forEach(option => {
                 const opt = document.createElement("option");
                 opt.value = option.value;
                 opt.textContent = option.text;
                 if (selectedItem && option.value === selectedItem) {
-                    opt.selected = true;
+                    opt.selected = true;  // 저장된 값이 있으면 자동 선택
                 }
                 itemSelect.appendChild(opt);
             });
@@ -158,48 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-        // ✅ 수상 경력 추가 버튼 이벤트
-        document.getElementById("addAwardCareerBtn").addEventListener("click", function () {
-            const awardsContainer = document.getElementById("awardsContainer");
-
-            const newAwardInput = document.createElement("div");
-            newAwardInput.className = "d-flex align-items-center justify-content-between mb-2 award-entry";
-            newAwardInput.innerHTML = `
-                <input type="text" class="form-control me-2" name="awardCareer" placeholder="수상 경력을 입력하세요">
-                <button type="button" class="btn btn-danger btn-sm remove-award">X</button>
-            `;
-
-            awardsContainer.appendChild(newAwardInput);
-        });
-
-        // ✅ 수상 경력 삭제 버튼 이벤트 (이벤트 위임)
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-award")) {
-                event.target.parentElement.remove();
-            }
-        });
-
-        // ✅ 경력 추가 버튼 이벤트
-           document.getElementById("addCareerBtn").addEventListener("click", function () {
-               const careerContainer = document.getElementById("careerContainer");
-
-               const newCareerInput = document.createElement("div");
-               newCareerInput.className = "d-flex align-items-center justify-content-between mb-2 career-entry";
-               newCareerInput.innerHTML = `
-                   <input type="text" class="form-control me-2" name="career" placeholder="경력을 입력하세요">
-                   <button type="button" class="btn btn-danger btn-sm remove-career">X</button>
-               `;
-
-               careerContainer.appendChild(newCareerInput);
-         });
-
-        // ✅ 경력 삭제 버튼 이벤트 (이벤트 위임)
-        document.addEventListener("click", function (event) {
-            if (event.target.classList.contains("remove-career")) {
-                event.target.parentElement.remove();
-            }
-        });
-
 
 
     // ✅ 포트폴리오 파일 추가 버튼 이벤트 (이벤트 위임 방식)
@@ -248,47 +210,106 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ✅ 포트폴리오 수정 완료 버튼
-   updateBtn.addEventListener("click", async function () {
-       const formData = new FormData(portfolioForm);
+    function validatePortfolioForm() {
+         let isValid = true;
+         let errorMessage = "";
 
-       // ✅ JSON 변환을 위해 객체 생성
-       const requestData = {
-           portfolioNo: document.getElementById("portfolioNo").value,
-           proNo: document.getElementById("proNo").value,
-           proAdvancedNo: document.getElementById("proAdvancedNo").value,
-           portfolioTitle: document.getElementById("portfolioTitle").value,
-           portfolioContent: document.getElementById("portfolioContent").value,
-           thumbnailImage: document.getElementById("currentThumbnail").textContent.trim(),
-           portfolioFilePaths: Array.from(document.querySelectorAll(".currentPortfolioFile")).map(el => el.textContent.trim()),
-           categoryNo: document.getElementById("categoryNo").value,
-           itemNo: document.getElementById("itemNo").value,
-           selfIntroduction: document.getElementById("selfIntroduction").value,
-           contactableTimeStart: document.getElementById("contactableTimeStart").value,
-           contactableTimeEnd: document.getElementById("contactableTimeEnd").value,
-           career: Array.from(document.querySelectorAll("input[name='career']")).map(input => input.value),
-           awardCareer: Array.from(document.querySelectorAll("input[name='awardCareer']")).map(input => input.value),
-           surveyAnswers: Array.from(document.querySelectorAll("input[type='radio']:checked")).map(input => input.value)
-       };
+         const portfolioTitle = document.getElementById("portfolioTitle").value.trim();
+         const portfolioContent = document.getElementById("portfolioContent").value.trim();
+         const categoryNo = document.getElementById("categoryNo").value;
+         const itemNo = document.getElementById("itemNo").value;
+         const surveyAnswers = document.querySelectorAll("input[type='radio']:checked");
 
-       console.log("📤 전송할 데이터:", requestData);
+         // ✅ 필수 항목 확인
+         if (!portfolioTitle) {
+             errorMessage += "포트폴리오 제목을 입력해주세요.\n";
+             isValid = false;
+         }
+         if (!portfolioContent) {
+             errorMessage += "포트폴리오 내용을 입력해주세요.\n";
+             isValid = false;
+         }
+         if (!categoryNo) {
+             errorMessage += "카테고리를 선택해주세요.\n";
+             isValid = false;
+         }
+         if (!itemNo) {
+             errorMessage += "전문분야를 선택해주세요.\n";
+             isValid = false;
+         }
 
-       try {
-           const response = await fetch("/portfolio/update", {
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/json"
-               },
-               body: JSON.stringify(requestData)
-           });
+         // ✅ 설문조사 답변 확인
+         if (surveyAnswers.length === 0) {
+             errorMessage += "설문조사 문항에 최소 1개 이상 답변해주세요.\n";
+             isValid = false;
+         }
 
-           if (!response.ok) throw new Error("서버 응답 오류");
-           alert("포트폴리오가 수정되었습니다.");
-           window.location.href = "/portfolioList";
-       } catch (error) {
-           console.error("🚨 오류 발생:", error);
-           alert("수정 중 오류가 발생했습니다.");
-       }
-   });
+         // ✅ 유효성 검사 실패 시 알림창 표시
+         if (!isValid) {
+             alert(errorMessage);
+         }
+
+         return isValid;
+     }
+
+     // ✅ 포트폴리오 수정 완료 버튼
+     updateBtn.addEventListener("click", async function (event) {
+         event.preventDefault(); // 기본 동작 방지
+
+         if (!validatePortfolioForm()) {
+             return; // 유효성 검사 실패 시 실행 중단
+         }
+
+         const formData = new FormData(portfolioForm);
+
+         // ✅ JSON 변환을 위해 객체 생성
+         const requestData = {
+             portfolioNo: document.getElementById("portfolioNo").value,
+             proNo: document.getElementById("proNo").value,
+             proAdvancedNo: document.getElementById("proAdvancedNo").value,
+             portfolioTitle: document.getElementById("portfolioTitle").value,
+             portfolioContent: document.getElementById("portfolioContent").value,
+             thumbnailImage: document.getElementById("currentThumbnail").textContent.trim(),
+             portfolioFilePaths: Array.from(document.querySelectorAll(".currentPortfolioFile")).map(el => el.textContent.trim()),
+             categoryNo: document.getElementById("categoryNo").value,
+             itemNo: document.getElementById("itemNo").value,
+             surveyAnswers: Array.from(document.querySelectorAll("input[type='radio']:checked")).map(input => input.value),
+             proAnswer1: document.getElementById("proAnswer1")?.value.trim(), // 필수
+             proAnswer2: document.getElementById("proAnswer2")?.value.trim() || null, // null 허용
+             proAnswer3: document.getElementById("proAnswer3")?.value.trim() || null, // null 허용
+             proAnswer4: document.getElementById("proAnswer4")?.value.trim() || null, // null 허용
+             proAnswer5: document.getElementById("proAnswer5")?.value.trim() || null // null 허용
+         };
+
+         console.log("📤 전송할 데이터:", requestData);
+
+         try {
+             const response = await fetch("/portfolio/update", {
+                 method: "POST",
+                 headers: {
+                     "Content-Type": "application/json"
+                 },
+                 body: JSON.stringify(requestData)
+             });
+
+             const responseData = await response.json();
+
+             if (!response.ok) {
+                 throw new Error(responseData.message || 'DB 저장 실패');
+             }
+             // if (response.status === 409) {
+             //     const result = await response.json();
+             //     alert(result.message);
+             //     return;
+             // }
+
+             alert("포트폴리오가 성공적으로 수정되었습니다.");
+             window.location.href = "/portfolioList";
+         } catch (error) {
+             console.error("🚨 오류 발생:", error);
+             alert("동일한 전문분야의 포트폴리오로 수정할 수 없습니다.");
+         }
+     });
 
 
     // ✅ 취소 버튼

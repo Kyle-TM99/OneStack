@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
            const phoneInput = document.getElementById("phone");
            if (phoneInput) {
                phoneInput.removeEventListener("input", handlePhoneInput);
-               phoneInput.addEventListener("input", handlePhoneInput);
+               phoneInput.addEventListener("input", handlePhoneInput, { once: true });
            }
 
            // ✅ MutationObserver (중복 실행 방지)
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
            const memberIdInput = document.getElementById("memberId");
            if (memberIdInput) {
                memberIdInput.removeEventListener("input", handleMemberIdInput); // 중복 방지
-               memberIdInput.addEventListener("input", handleMemberIdInput);
+               memberIdInput.addEventListener("input", handleMemberIdInput, { once: true });
            }
                });
            if (shouldReinitialize) {
@@ -334,12 +334,14 @@ function openMemberModal(memberData) {
             const typeValue = memberData.type; // "0", "1", "2"
             console.log("회원 유형 값 확인:", typeValue); // 디버깅 로그
 
-            if (typeValue == "0") {
+            if (typeValue === "0") {
                 memberTypeElement.value = "0"; // 초보자
-            } else if (typeValue == "1") {
+            } else if (typeValue === "1") {
                 memberTypeElement.value = "1"; // 전문가
-            } else {
+            } else if(typeValue === "2") {
                 memberTypeElement.value = "2"; // 심사중
+            } else{
+                memberTypeElement.value = "3";
             }
         }
 
@@ -349,11 +351,11 @@ function openMemberModal(memberData) {
             const statusValue = memberData.status;
             console.log("회원 상태 값 확인:", statusValue); // 디버깅 로그
 
-            if (statusValue == "0") {
+            if (statusValue === "0") {
                 memberStatusElement.value = "0"; // 활성화
-            } else if (statusValue == "1") {
+            } else if (statusValue === "1") {
                 memberStatusElement.value = "1"; // 비활성화
-            } else if (statusValue == "2") {
+            } else if (statusValue === "2") {
                 memberStatusElement.value = "2"; // 정지
             } else {
                 memberStatusElement.value = "3"; // 탈퇴
@@ -417,7 +419,7 @@ function initializeScreeningManagement() {
 
     const saveButton = document.getElementById('saveScreening');
     if (saveButton) {
-        saveButton.addEventListener('click', handleSaveScreening);
+        saveButton.addEventListener('click', handleSaveScreening, { once: true });
     }
 }
 
@@ -473,7 +475,7 @@ function handleSaveScreening() {
         },
         body: JSON.stringify({
             proNo: proNo,
-            professorStatus: status,             
+            professorStatus: status,
             screeningMsg: message || ''
         })
     })
@@ -559,8 +561,6 @@ function initializeScreeningModification() {
         console.warn('Save button with id "saveModScreening" not found');
     }
 }
-
-// 심사 수정 저장 처리 함수
 function handleSaveModifiedScreening() {
     const saveButton = document.getElementById('saveModScreening');
     if (!saveButton) return;
@@ -592,18 +592,63 @@ function handleSaveModifiedScreening() {
             if (!response.ok) throw new Error('서버 응답 오류');
             return response.text();
         })
-        .then(() => {
-            const modalElement = document.getElementById('modScreeningModal');
-            closeModal(modalElement);
-
-            alert('심사 수정이 완료되었습니다.');
+        .then((message) => {
+            alert(message);
             window.location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('수정 중 오류가 발생했습니다.');
+            alert('심사 처리 중 오류가 발생했습니다.');
         })
         .finally(() => {
             saveButton.disabled = false;
         });
 }
+
+// 심사 수정 저장 처리 함수
+// function handleSaveModifiedScreening() {
+//     const saveButton = document.getElementById('saveModScreening');
+//     if (!saveButton) return;
+//
+//     saveButton.disabled = true;
+//
+//     const proNo = document.getElementById('proNo').value;
+//     const status = document.querySelector('input[name="professorStatus"]:checked')?.value;
+//     const message = document.getElementById('screeningMsg').value;
+//
+//     if (!status) {
+//         alert('승인 또는 거부를 선택해주세요.');
+//         saveButton.disabled = false;
+//         return;
+//     }
+//
+//     fetch('/updateReviewPro', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             proNo: proNo,
+//             professorStatus: status,
+//             screeningMsg: message || ''
+//         })
+//     })
+//         .then(response => {
+//             if (!response.ok) throw new Error('서버 응답 오류');
+//             return response.text();
+//         })
+//         .then(() => {
+//             const modalElement = document.getElementById('modScreeningModal');
+//             closeModal(modalElement);
+//
+//             alert('심사 수정이 완료되었습니다.');
+//             window.location.reload();
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('수정 중 오류가 발생했습니다.');
+//         })
+//         .finally(() => {
+//             saveButton.disabled = false;
+//         });
+
