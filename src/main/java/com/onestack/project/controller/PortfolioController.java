@@ -30,7 +30,7 @@ public class PortfolioController {
     private SurveyService surveyService;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
+    private final String IMAGE_BASE_URL = "https://54.180.105.7/images/";
 
     @GetMapping("/getByItem")
     public ResponseEntity<List<Survey>> getSurveyByItem(@RequestParam("itemNo") int itemNo) {
