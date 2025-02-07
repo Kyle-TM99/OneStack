@@ -97,7 +97,7 @@
 	SELECT * 
 	FROM Member 
 	WHERE member_status != 3  <!-- 탈퇴회원 제외 -->
-   	ORDER BY member_reg_date DESC
+   	ORDER BY member_reg_date ASC
 </select>
 <!-- 회원 조회 -->
 <select id = "getMember" parameterType = "int" resultType = "Member">
@@ -126,7 +126,9 @@
 	address2 = #{address2},
 	member_type = #{memberType},
 	member_status = #{memberStatus},
-	ban_end_date = #{banEndDate}
+	ban_end_date = #{banEndDate},
+	member_stop = #{memberStop}
+
 	WHERE member_no = #{memberNo}
 </update>
 	<!-- 신고 정보 저장 -->
@@ -342,12 +344,14 @@
 	WHERE community_reply_no = #{communityReplyNo}
 </update>
 
-<!-- QnA 댓글 비활성화 -->
-<update id="disableQnaReply">
-	UPDATE QnAReply
-	SET qna_reply_activation = 0
-	WHERE qna_reply_no = #{qnaReplyNo}
+<!--회원 비활성화 기본 1개월 정지-->
+<update id="disableMember">
+	UPDATE Member
+	SET member_status = 1,
+		ban_end_date = NOW() + INTERVAL 1 MONTH
+	WHERE member_no = #{memberNo}
 </update>
+
 
 <!-- 리뷰 비활성화 -->
 <update id="disableReview">

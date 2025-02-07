@@ -24,7 +24,7 @@ public class ProfessionalService {
     private ProfessionalMapper professionalMapper;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
+    private final String IMAGE_BASE_URL = "https://13.209.72.20/images/";
 
     // 심사요청 시 각각 데이터 전문가/전문가고급정보/포트폴리오 테이블에 저장
     public void saveProConversionData(ProConversionRequest request) {
@@ -65,7 +65,7 @@ public class ProfessionalService {
             professionalMapper.addProAdvancedInfo(advancedInfo);
             int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
-            final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
+            final String IMAGE_BASE_URL = "https://13.209.72.20/images/";
 
             String thumbnailUrl = request.getThumbnailImage();
             if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
@@ -94,7 +94,6 @@ public class ProfessionalService {
 
             professionalMapper.addPortfolio(portfolio);
         }
-
 
     /* 전문가 정보 조회 */
     public List<MemberWithProfessional> getPro2(int proNo) {
@@ -291,7 +290,7 @@ public class ProfessionalService {
     public MemProPortPaiCate getPortfolioDetail(int portfolioNo) {
         MemProPortPaiCate portfolio = professionalMapper.getPortfolioDetail(portfolioNo);
 
-        // 🔹 디버깅 로그 추가
+        //  디버깅 로그 추가
         System.out.println("PortfolioService 반환 데이터: " + portfolio);
 
         return portfolio;
@@ -301,6 +300,7 @@ public class ProfessionalService {
         return professionalMapper.getItemNoByPortfolio(portfolioNo);
     }
 
+    @Transactional
     public void submitProConversionData(Pro2ConversionRequest request, HttpSession session) {
 
         // 1. 로그인한 회원의 정보를 가져오기
@@ -348,7 +348,7 @@ public class ProfessionalService {
             proAdvancedNo = advancedInfo.getProAdvancedNo(); // 생성된 PK 가져오기
         }
 
-        final String IMAGE_BASE_URL = "http://3.37.88.97/images/";
+        final String IMAGE_BASE_URL = "https://13.209.72.20/images/";
         String thumbnailUrl = request.getThumbnailImage();
         if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
             thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;

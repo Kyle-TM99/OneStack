@@ -64,8 +64,7 @@ public interface ManagerMapper {
 
 	void disableCommunity(@Param("communityBoardNo") int communityBoardNo);
 	void disableCommunityReply(@Param("communityReplyNo") int communityReplyNo);
-	void disableQna(@Param("qnaBoardNo") int qnaBoardNo);
-	void disableQnaReply(@Param("qnaReplyNo") int qnaReplyNo);
+	void disableMember(@Param("memberNo") int memberNo);
 	void disableReview(@Param("reviewNo") int reviewNo);
 
 	// 신고 처리 상태 업데이트

@@ -44,7 +44,7 @@ public class AdminService {
 
 			// ✅ 2. 회원 타입 업데이트 (승인: 전문가 유지, 거부: 일반회원으로 변경)
 			if (professorStatus == 0) {
-				managerMapper.updateMemberType(proNo, 3);
+				managerMapper.updateMemberType(proNo, 0);
 			} else if (professorStatus == 1) {
 				managerMapper.updateMemberType(proNo, 1);
 			}
@@ -96,6 +96,8 @@ public class AdminService {
 		params.put("address2", member.getAddress2());
 		params.put("memberType", member.getMemberType());
 		params.put("memberStatus", member.getMemberStatus());
+		params.put("memberStop", member.getMemberStop());
+
 
 		// `banEndDate` 변환 (String → Timestamp) 포맷 오류 해결
 		if (member.getMemberStatus() == 1 && member.getBanEndDate() != null) {
@@ -166,11 +168,8 @@ public class AdminService {
 			case "communityReply":
 				managerMapper.disableCommunityReply(targetId);
 				break;
-			case "qna":
-				managerMapper.disableQna(targetId);
-				break;
-			case "qnaReply":
-				managerMapper.disableQnaReply(targetId);
+			case "member" :
+				managerMapper.disableMember(targetId);
 				break;
 			case "review":
 				managerMapper.disableReview(targetId);
