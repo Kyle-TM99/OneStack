@@ -138,7 +138,7 @@ public class MemberController {
                 memberService.updateMember(member);
             }
 
-            // 업데이트 후 DB에서 재조회하여 확인
+            // 업데이트 후 DB 재조회하여 확인
             Member updatedMember = memberService.getMemberByNo(member.getMemberNo());
             log.info("Memer Nickname : {}", updatedMember.getNickname());
             log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
