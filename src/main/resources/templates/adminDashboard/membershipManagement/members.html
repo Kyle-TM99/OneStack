@@ -13,7 +13,6 @@
             <table class="table">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col"></th>
                         <th scope="col">
                             이름
                            </th>
@@ -48,12 +47,12 @@
                              data-address2=${member.address2},
                              data-status=${member.memberStatus},
                              data-join-date=${#dates.format(member.memberRegDate, 'yyyy-MM-dd HH:mm:ss')},
-                             data-ban-end-date=${#dates.format(member.banEndDate, 'yyyy-MM-dd HH:mm:ss')}">
-                    <td><input type="checkbox"/></td>
+                             data-ban-end-date=${#dates.format(member.banEndDate, 'yyyy-MM-dd HH:mm:ss')},
+                                data-member-stop=${member.memberStop}">
                     <td th:text="${member.name}">이름</td>
                     <td th:text="${member.nickname}" class="d-none">닉네임</td>
                     <td th:text="${member.memberId}">아이디</td>
-                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : (member.memberType == 2 ? '심사중': '반려'))}">회원 타입</td>
+                    <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
                     <td th:text="${member.email}">이메일</td>
                     <td th:text="${member.phone}" class="d-none">전화번호</td>
                     <td th:text="${member.address}" class="d-none">주소</td>
@@ -82,8 +81,6 @@
                         </a>
                     </li>
                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
@@ -160,7 +157,12 @@
                                 <input type="date" class="form-control" id="banEndDate" name="banEndDate" value="">
                             </div>
                         </div>
-                    </div>
+                            <div class="col-md-12" id="memberStopContainer" style="display: none;">
+                                <label class="form-label text-muted small">정지 사유</label>
+                                <textarea class="form-control" id="memberStop" name="memberStop" rows="4" placeholder="정지 사유를 입력하세요."></textarea>
+                            </div>
+
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

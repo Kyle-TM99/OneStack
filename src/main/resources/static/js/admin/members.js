@@ -225,7 +225,8 @@ function initializeMemberManagement() {
                 status: row.getAttribute('data-status'),
                 joinDate: row.getAttribute('data-join-date'),
                 banEndDate: row.getAttribute('data-ban-end-date'),
-                memberNo: row.getAttribute('data-member-no')
+                memberNo: row.getAttribute('data-member-no'),
+                memberStop: row.getAttribute('data-member-stop')
             };
 
             console.log("바인딩된 memberData:", memberData);
@@ -260,27 +261,39 @@ function initializeMemberManagement() {
          address: document.getElementById('address').value.trim(),
          address2: document.getElementById('address2').value.trim(),
          memberStatus: document.getElementById('memberStatus').value,
-         banEndDate: null
+         banEndDate: null,
+         memberStop: null
      };
 
-    const banEndDateInput = document.getElementById("banEndDate").value.trim();
+     const banEndDateInput = document.getElementById("banEndDate").value.trim();
+     const memberStopInput = document.getElementById("memberStop") ? document.getElementById("memberStop").value.trim() : "";
 
-    // 정지 상태일 경우, banEndDate 필수 입력
-    if (updatedData.memberStatus == "1") {
-        if (!banEndDateInput) {
-            alert("정지 종료일을 선택해주세요.");
-            return;
-        }
-        updatedData.banEndDate = banEndDateInput; // 🔥 'yyyy-MM-dd' 형식으로 전송
-    }
+     if (updatedData.memberStatus === "1") {
+         // ✅ 기간 정지 상태일 경우, 정지 종료일 필수 입력
+         if (!banEndDateInput) {
+             alert("정지 종료일을 선택해주세요.");
+             return;
+         }
+         updatedData.banEndDate = banEndDateInput;
+         updatedData.memberStop = null; // 기간 정지일 경우 정지 사유 초기화
+     } else if (updatedData.memberStatus === "2") {
+         // ✅ 영구 정지 상태일 경우, 정지 사유 필수 입력
+         if (!memberStopInput) {
+             alert("정지 사유를 입력해주세요.");
+             return;
+         }
+         updatedData.memberStop = memberStopInput;
+         updatedData.banEndDate = null; // 영구 정지일 경우 정지 종료일 초기화
+     }
 
-     // 필수 입력값 확인
+// ✅ 필수 입력값 확인 (banEndDate 또는 memberStopReason은 제외)
      for (let key in updatedData) {
-         if (!updatedData[key] && key !== "banEndDate") {
+         if (!updatedData[key] && key !== "banEndDate" && key !== "memberStop") {
              alert(`${key} 값을 입력해주세요.`);
              return;
          }
      }
+
 
      console.log('Updated member data:', updatedData);
 
@@ -338,10 +351,8 @@ function openMemberModal(memberData) {
                 memberTypeElement.value = "0"; // 초보자
             } else if (typeValue === "1") {
                 memberTypeElement.value = "1"; // 전문가
-            } else if(typeValue === "2") {
+            } else {
                 memberTypeElement.value = "2"; // 심사중
-            } else{
-                memberTypeElement.value = "3";
             }
         }
 
@@ -396,17 +407,36 @@ function setMinBanDate() {
 }
 
 function toggleBanDate() {
-    const statusSelect = document.getElementById("memberStatus");
+    const memberStatus = document.getElementById("memberStatus").value;
     const banDateContainer = document.getElementById("banDateContainer");
-    const banEndDateInput = document.getElementById("banEndDate");
+    const memberStopContainer = document.getElementById("memberStopContainer");
 
-    if (statusSelect.value == "1") {
+    // 정지 상태 선택 시, 정지 종료일과 정지 사유 입력란을 표시
+    if (memberStatus === "1") {
         banDateContainer.style.display = "block";
+        memberStopContainer.style.display = "none";
+    } else if (memberStatus === "2") {
+        banDateContainer.style.display = "none";
+        memberStopContainer.style.display = "block";
     } else {
         banDateContainer.style.display = "none";
-        banEndDateInput.value = "";
+        memberStopContainer.style.display = "none";
     }
 }
+
+
+//     function toggleBanDate() {
+//     const statusSelect = document.getElementById("memberStatus");
+//     const banDateContainer = document.getElementById("banDateContainer");
+//     const banEndDateInput = document.getElementById("banEndDate");
+//
+//     if (statusSelect.value == "1") {
+//         banDateContainer.style.display = "block";
+//     } else {
+//         banDateContainer.style.display = "none";
+//         banEndDateInput.value = "";
+//     }
+// }
 
 // 심사 관리 초기화 함수
 function initializeScreeningManagement() {

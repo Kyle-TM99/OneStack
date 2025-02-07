@@ -24,7 +24,7 @@ public class ProfessionalService {
     private ProfessionalMapper professionalMapper;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
+    private final String IMAGE_BASE_URL = "https://54.180.105.7/images/";
 
     // 심사요청 시 각각 데이터 전문가/전문가고급정보/포트폴리오 테이블에 저장
     public void saveProConversionData(ProConversionRequest request) {
@@ -65,7 +65,7 @@ public class ProfessionalService {
             professionalMapper.addProAdvancedInfo(advancedInfo);
             int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
-            final String IMAGE_BASE_URL = "http://54.180.105.7/images/";
+            final String IMAGE_BASE_URL = "https://54.180.105.7/images/";
 
             String thumbnailUrl = request.getThumbnailImage();
             if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
