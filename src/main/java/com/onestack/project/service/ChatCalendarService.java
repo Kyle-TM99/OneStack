@@ -20,7 +20,14 @@ public class ChatCalendarService {
     }
     
     public List<ChatCalendarEvent> getEventList(String roomId) {
-        return chatCalendarMapper.getEventList(roomId);
+        try {
+            List<ChatCalendarEvent> events = chatCalendarMapper.getEventList(roomId);
+            log.info("조회된 일정 목록: {}", events);
+            return events;
+        } catch (Exception e) {
+            log.error("일정 목록 조회 중 오류: {}", e.getMessage(), e);
+            throw new RuntimeException("일정 목록을 조회하는 중 오류가 발생했습니다.", e);
+        }
     }
     
     public ChatCalendarEvent getEvent(Long eventId) {

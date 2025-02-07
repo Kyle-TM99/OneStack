@@ -158,10 +158,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 // ✅ 필수 값 체크
-                const surveyAnswers = Array.from(document.querySelectorAll('[name^="answer_"]:checked'))
-                    .map(input => input.value);
-                if (surveyAnswers.length === 0) {
-                    alert('모든 설문 질문에 답변해주세요.');
+                const surveyQuestions = document.querySelectorAll('#surveyContainer .fw-bold');
+                const totalQuestions = surveyQuestions.length;
+
+                let answeredCount = 0;
+                let surveyAnswers = [];
+
+                // 각 설문조사 항목에 대해 체크박스를 확인합니다.
+                surveyQuestions.forEach(question => {
+                    // 설문 질문의 텍스트를 가져오고, 그 아래에 있는 라디오 버튼을 확인합니다.
+                    const radioButtons = question.nextElementSibling.querySelectorAll('input[type="radio"]');
+
+                    let isChecked = false; // 선택된 답변이 있는지 여부
+                    radioButtons.forEach(radio => {
+                        if (radio.checked) {
+                            isChecked = true;
+                            surveyAnswers.push(radio.value); // 체크된 답변 값을 배열에 추가
+                        }
+                    });
+
+                    // 하나라도 체크된 항목이 있으면 응답 갯수를 증가시킵니다.
+                    if (isChecked) {
+                        answeredCount++;
+                    }
+                });
+
+                // 모든 설문 항목에 대해 응답을 했는지 확인
+                if (answeredCount < totalQuestions) {
+                    alert(`모든 설문 질문에 답변해주세요. (${totalQuestions}개 중 ${answeredCount}개 선택됨)`);
                     return;
                 }
 

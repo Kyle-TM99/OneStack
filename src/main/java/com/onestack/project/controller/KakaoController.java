@@ -157,6 +157,7 @@ public class KakaoController {
             member.setPass(encodedPassword);
             member.setSocial(true);
             member.setSocialType("kakao");
+            member.setMemberType(0);
             
             log.info("Registering social member: {}", member);
             memberService.insertMember(member);

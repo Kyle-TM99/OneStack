@@ -15,14 +15,22 @@
         <div id="applicationFormContainer"
              class="container d-flex justify-content-center">
             <!-- 왼쪽: 전문가 전환 신청서 -->
+
             <div id="applicationForm" class="col-md-6">
-               <div class="card" style="width: 100%;">
+                <!-- 심사 안내 문구 -->
+                <span class="d-block text-center text-muted my-4 fw-semibold">
+                     * 심사결과에 따라 반려될 수도 있습니다. 반려된 경우 수정 후 다시 신청할 수 있습니다.
+                </span>
+
+                <div class="card" style="width: 100%;">
                     <input type="hidden" name="memberId" th:value="${memberId}">
                     <input type="hidden" name="memberNo" th:value="${member.memberNo}">
                     <input type="hidden" name="proAnswers" th:each="answer, iterStat : ${surveyAnswers}" th:value="${answer}" />
 
 
-                        <!-- 이름 -->
+
+
+                   <!-- 이름 -->
                         <div class="row">
                             <div class="form-field">
                                 <label for="name">이름</label>

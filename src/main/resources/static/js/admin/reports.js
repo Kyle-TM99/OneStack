@@ -2,7 +2,6 @@ document.addEventListener("click", function (e) {
     // 신고 상세 보기 버튼 클릭 시
     if (e.target.classList.contains("report-edit-btn")) {
         e.stopImmediatePropagation(); // ✅ 중복 실행 방지
-        handleReportEdit(e);
         // 버튼에서 신고 번호 가져오기
         const reportId = e.target.getAttribute("data-report-id");
         console.log(`신고 상세 보기 클릭: reportId=${reportId}`);
@@ -34,7 +33,6 @@ document.addEventListener("click", function (e) {
      // 비활성화 버튼 클릭 시
      if (e.target.classList.contains("btn-disable")) {
          e.stopImmediatePropagation(); // ✅ 중복 실행 방지
-         handleDisableReport(e);
          const reportsNo = document.getElementById("reportsNo").value;
          const targetId = document.querySelector(`tr[data-report-no="${reportsNo}"]`).getAttribute("data-target-id");
          const reportsType = document.getElementById("reportsType").value.toLowerCase();

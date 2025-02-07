@@ -23,6 +23,7 @@ public class PaymentVerificationRequest {
     int memberNo;
     String payContent;
     int channelNum;
+    String room;
 
 
 }

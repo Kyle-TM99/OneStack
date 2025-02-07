@@ -240,7 +240,7 @@ VALUES
 (10, 10, '감사합니다. 기다릴게요.', NULL, '2025-02-01 11:10:43');
 
        -- Community 테이블 더미 데이터
-insert into Community (community_board_no, member_no, community_board_title, community_board_content, community_board_reg_date)
+insert IGNORE into Community (community_board_no, member_no, community_board_title, community_board_content, community_board_reg_date)
 values
     (1, 1, '이 외주, 진짜 대박이었어!', '이 방법대로 외주 진행했더니 진짜 효과 있더라.', sysdate()),
     (2, 2, '외주 프로젝트, 이렇게 하면 성공!', '여기서 이런 방식으로 진행했더니 성공했어.', sysdate()),
@@ -308,7 +308,7 @@ values
 
 
 -- CommunityReply 테이블 더미 데이터
-insert into CommunityReply (community_reply_no, community_board_no, member_no, community_reply_content, community_reply_reg_date)
+insert IGNORE into CommunityReply (community_reply_no, community_board_no, member_no, community_reply_content, community_reply_reg_date)
 values
     (1, 1, 1, '대박이다.. 말이 돼?', sysdate()),
     (2, 1, 2, '여기서 저렇게 했더니 요래 됐더라', sysdate()),

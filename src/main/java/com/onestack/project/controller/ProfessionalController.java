@@ -479,5 +479,4 @@ public class ProfessionalController {
             System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
             return ResponseEntity.ok(response);
         }
-
 }
