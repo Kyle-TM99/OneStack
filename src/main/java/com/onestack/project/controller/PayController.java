@@ -5,6 +5,8 @@ import com.onestack.project.mapper.PayMapper;
 import com.onestack.project.service.ChatService;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
+import com.onestack.project.service.ProService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

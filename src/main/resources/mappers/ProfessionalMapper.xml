@@ -447,5 +447,11 @@
 		WHERE pro_advanced_no = #{proAdvancedNo}
 	</update>
 
+	<!-- 전문가 memberNo 가져오기 -->
+	<select id="getMemberNo" parameterType="int" resultType="int">
+		SELECT member_no
+		FROM Professional
+		WHERE pro_no = #{proNo}
+	</select>
 
 </mapper>
