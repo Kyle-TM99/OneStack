@@ -3,8 +3,6 @@ package com.onestack.project.controller;
 import com.onestack.project.domain.*;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
-import com.onestack.project.service.ProService;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +20,6 @@ public class PayController {
 
     @Autowired
     PayService payService;
-    @Autowired
-    private ProService proService;
     @Autowired
     private MemberService memberService;
 
@@ -76,7 +72,6 @@ public class PayController {
             payService.insertPay(pay);
 
             // 방금 결제한 결제 내역의 payNo를 가져오기
-            Pay pay1 = new Pay();
             int payNo = payService.getPayNo(estimationNo);
 
             // proNo 가져오기
@@ -108,6 +103,7 @@ public class PayController {
         return ResponseEntity.ok(response);
     }
 
+    /* 결제 내역 폼 */
     @GetMapping("/payReceipt")
     public String payReceipt(Model model, @SessionAttribute("member") Member member) {
         int memberNo = member.getMemberNo();  // member 객체에서 memberNo 추출

@@ -8,92 +8,136 @@
     <title>결제 내역</title>
     <style>
         .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #215EA3;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 1.2rem;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
         .card-header {
-            background-color: #215EA3;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            background-color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+            border-radius: 12px !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .card-header:hover {
+            background-color: #f8f9fa;
         }
         .card-body {
-            background-color: #f0f7ff;
-            color: #495057;
-            padding: 20px;
-            border-bottom-right-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-        .card-body p {
-            margin-bottom: 1rem;
-            font-size: 1rem;
+            background-color: #f8f9fa;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            padding: 1.5rem;
         }
         .container-fluid {
-            padding-top: 50px;
+            max-width: 1200px;
+            padding: 3rem 1rem;
         }
         h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            color: #215EA3;
-        }
-        .text-muted {
-            font-size: 1rem;
-            color: #6c757d;
+            color: #2d3436;
+            margin-bottom: 2rem;
         }
         .payment-summary {
-            background-color: #f8f9fa;
-            padding: 20px;
+            background-color: white;
+            padding: 1.5rem;
             border-radius: 10px;
-            margin-bottom: 20px;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
         }
         .payment-summary .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 15px;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .payment-summary .summary-item:last-child {
+            border-bottom: none;
         }
         .payment-summary .summary-item strong {
-            color: #215EA3;
+            color: #2d3436;
+            font-weight: 600;
+        }
+        .payment-badge {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .payment-amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1976d2;
+        }
+        .payment-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .no-payments {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            color: #666;
         }
     </style>
 </head>
 
 <div layout:fragment="content">
     <div class="container-fluid">
-        <h2 class="mb-4 text-center">결제 내역</h2>
-        <p class="text-center text-muted">총 [[ ${payCount} ]]건</p>
+        <h2 class="text-center">결제 내역</h2>
+        <p class="text-center text-muted mb-5">총 [[ ${payCount} ]]건의 결제 내역이 있습니다</p>
 
         <div class="row">
-            <div class="col-lg-5 mx-auto">
-                <div th:if="${not #lists.isEmpty(recipetList)}" >
-                    <div th:each="recipetList, status: ${recipetList}">
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                결제 번호: [[ ${recipetList.pay.payNo} ]]
+            <div class="col-lg-8 mx-auto">
+                <div th:if="${not #lists.isEmpty(recipetList)}">
+                    <div class="accordion" id="paymentAccordion">
+                        <div th:each="receipt, status: ${recipetList}" class="card">
+                            <div class="card-header d-flex align-items-center justify-content-between"
+                                 data-bs-toggle="collapse"
+                                 th:attr="data-bs-target='#collapse' + ${status.index}"
+                                 aria-expanded="false"
+                                 th:aria-controls="'collapse' + ${status.index}">
+                                
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="payment-badge">결제완료</span>
+                                    <span class="payment-date">[[ ${#dates.format(receipt.pay.payDate, 'yyyy.MM.dd')} ]]</span>
+                                </div>
+                                <span class="payment-amount">[[ ${receipt.pay.payPrice} ]]원</span>
                             </div>
-                            <div class="card-body">
-                                <div class="payment-summary">
-                                    <div class="summary-item">
-                                        <span><strong>견적 번호:</strong></span>
-                                        <span>[[ ${recipetList.pay.estimationNo} ]]</span>
-                                    </div>
-                                    <div class="summary-item">
-                                        <span><strong>결제 타입:</strong></span>
-                                        <span>[[ ${recipetList.pay.payType} ]]</span>
-                                    </div>
-                                    <div class="summary-item">
-                                        <span><strong>결제 내용:</strong></span>
-                                        <span>[[ ${recipetList.pay.payContent} ]]</span>
-                                    </div>
-                                    <div class="summary-item">
-                                        <span><strong>결제 금액:</strong></span>
-                                        <span>[[ ${recipetList.pay.payPrice} ]]원</span>
-                                    </div>
-                                    <div class="summary-item">
-                                        <span><strong>결제 일자:</strong></span>
-                                        <span>[[ ${#dates.format(recipetList.pay.payDate, 'yyyy-MM-dd HH:mm:ss')} ]]</span>
+                            
+                            <div th:id="'collapse' + ${status.index}" class="collapse" data-bs-parent="#paymentAccordion">
+                                <div class="card-body">
+                                    <div class="payment-summary">
+                                        <div class="summary-item">
+                                            <span><strong>결제 번호</strong></span>
+                                            <span>[[ ${receipt.pay.payNo} ]]</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span><strong>견적 번호</strong></span>
+                                            <span>[[ ${receipt.pay.estimationNo} ]]</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span><strong>결제 방식</strong></span>
+                                            <span>[[ ${receipt.pay.payType} ]]</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span><strong>결제 내용</strong></span>
+                                            <span>[[ ${receipt.pay.payContent} ]]</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span><strong>결제 일시</strong></span>
+                                            <span>[[ ${#dates.format(receipt.pay.payDate, 'yyyy-MM-dd HH:mm:ss')} ]]</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -101,14 +145,10 @@
                     </div>
                 </div>
 
-                <div th:unless="${not #lists.isEmpty(recipetList)}" >
-                    <div class="alert alert-light border text-center p-5 my-5">
-                        <i class="bi bi-credit-card-2-front fs-1 text-secondary mb-3"></i>
-                        <p class="fs-5 mb-2">결제 내역이 존재하지 않습니다</p>
-                    </div>
+                <div th:unless="${not #lists.isEmpty(recipetList)}" class="no-payments">
+                    <i class="bi bi-credit-card-2-front fs-1 text-muted mb-3 d-block"></i>
+                    <p class="fs-5 mb-0">아직 결제 내역이 없습니다</p>
                 </div>
-
-
             </div>
         </div>
     </div>
