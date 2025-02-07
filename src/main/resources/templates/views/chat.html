@@ -10,8 +10,6 @@
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/ko.global.min.js'></script>
     <!-- Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <!-- Moment.js와 Timezone 플러그인 추가 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
     <title>채팅방</title>
     <!-- 포트원 결제 -->
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -274,11 +272,11 @@
         </div>
 
         <!-- 일정 추가 모달 -->
-        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel">
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" role="dialog" aria-modal="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">일정 추가</h5>
+                        <h5 class="modal-title" id="eventModalLabel">일정 등록</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -304,8 +302,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-primary" onclick="submitEvent()">저장</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="취소">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="submitEvent()" aria-label="일정 저장">저장</button>
                     </div>
                 </div>
             </div>
@@ -763,14 +761,14 @@
                         type: 'GET',
                         success: function(events) {
                             const calendarEvents = events.map(event => {
-                                // 날짜 변환 시 명시적으로 시간대 처리
-                                const start = moment(event.startDate).format('YYYY-MM-DDTHH:mm:ss');
-                                const end = moment(event.endDate).format('YYYY-MM-DDTHH:mm:ss');
+                                // 날짜를 직접 Date 객체로 변환
+                                const start = new Date(event.startDate);
+                                const end = new Date(event.endDate);
                                 return {
                                     id: event.eventId,
                                     title: event.title,
-                                    start: moment.tz(start, 'Asia/Seoul').toDate(),
-                                    end: moment.tz(end, 'Asia/Seoul').toDate(),
+                                    start: start,
+                                    end: end,
                                     description: event.description,
                                     allDay: event.all_day,
                                     display: 'block',
@@ -783,8 +781,7 @@
                                     }
                                 };
                             });
-                            console.log('서버에서 받은 이벤트:', events); // 디버깅
-                            console.log('변환된 이벤트:', calendarEvents); // 디버깅
+                            console.log('변환된 이벤트:', calendarEvents); // 디버깅용
                             successCallback(calendarEvents);
                         },
                         error: function(error) {
