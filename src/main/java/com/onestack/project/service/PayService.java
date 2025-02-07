@@ -190,4 +190,7 @@ public class PayService {
     // 전문가 고용 횟수 증가
     public void updateStudentCount(int proNo) {payMapper.updateStudentCount(proNo);}
 
+    // 결제 내역 페이징네이션
+    public List<MemPay> getReceiptWithPaging(int memberNo, int offset, int pageSize) {return payMapper.getReceiptWithPaging(memberNo, offset, pageSize);}
+
 }

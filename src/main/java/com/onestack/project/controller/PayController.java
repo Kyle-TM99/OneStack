@@ -1,6 +1,7 @@
 package com.onestack.project.controller;
 
 import com.onestack.project.domain.*;
+import com.onestack.project.mapper.PayMapper;
 import com.onestack.project.service.ChatService;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
@@ -29,6 +30,9 @@ public class PayController {
     private ProService proService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PayMapper payMapper;
+
     @Autowired
     private ChatService chatService;
     @Autowired
@@ -99,7 +103,6 @@ public class PayController {
             messagingTemplate.convertAndSend("/topic/chat/room/" + request.getRoom(), systemMessage);
 
             // 방금 결제한 결제 내역의 payNo를 가져오기
-            Pay pay1 = new Pay();
             int payNo = payService.getPayNo(estimationNo);
 
             // proNo 가져오기
@@ -131,16 +134,31 @@ public class PayController {
         return ResponseEntity.ok(response);
     }
 
+    /* 결제 내역 폼 */
     @GetMapping("/payReceipt")
-    public String payReceipt(Model model, @SessionAttribute("member") Member member) {
-        int memberNo = member.getMemberNo();  // member 객체에서 memberNo 추출
+    public String payReceipt(Model model,
+                           @SessionAttribute("member") Member member,
+                           @RequestParam(defaultValue = "1") int page) {
+        int memberNo = member.getMemberNo();
+        int pageSize = 5; // 페이지당 표시할 항목 수
+        int offset = (page - 1) * pageSize;
 
-        List<MemPay> recipetList = payService.getReceipt(memberNo);
-        int payCount = payService.getMemPayCount(memberNo);
+        List<MemPay> recipetList = payService.getReceiptWithPaging(memberNo, offset, pageSize);
+        int totalPayCount = payService.getMemPayCount(memberNo);
+
+        // 총 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) totalPayCount / pageSize);
 
         model.addAttribute("recipetList", recipetList);
-        model.addAttribute("payCount", payCount);
+        model.addAttribute("payCount", totalPayCount);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "views/payReceiptForm";
+    }
+
+    public List<MemPay> getReceiptWithPaging(int memberNo, int offset, int limit) {
+        return payMapper.getReceiptWithPaging(memberNo, offset, limit);
     }
 
 
