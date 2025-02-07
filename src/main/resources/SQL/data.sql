@@ -27,7 +27,7 @@ VALUES
     (25, '박지영', 'user25', '$2a$10$zEOw5GnZ8N7F79ZFTmwPQ2cAZdITLZJEXteF1uUq2hT5WuoE7HJ7C', 'nickname25', '1992-11-10', 'female', '34567', '서울특별시 마포구', '홍익로 789', 'user25@example.com', 1, '010-5636-6666', SYSDATE(), 1, 0,'/images/default-profile.png'),
     (26, '이민호', 'user26', '$2a$10$yGQ.d2QqlOCTu9QzF.L.gJrDRa4vmF9J4XnqshYX8t5hUEI6nLZgS', 'nickname26', '1994-03-25', 'male', '45678', '경기도 성남시', '분당구 황새울로 101', 'user26@example.com', 0, '010-3424-8888', SYSDATE(), 1, 0,'/images/default-profile.png'),
     (27, '최수정', 'user27', '$2a$10$Lg8zxzyQFvAB1y9QYXq7eFihtlhP5zNS7okfQxeRf8oN35DN7VoGq', 'nickname27', '1988-07-30', 'female', '56789', '부산광역시 해운대구', '해운대해변로 123', 'user27@example.com', 0, '010-2144-0000', SYSDATE(), 1, 0,'/images/default-profile.png'),
-    (28, '전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 2, 0,'/images/default-profile.png'),
+    (28, '전문가', 'user100', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname100', '1990-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user100@example.com', 1, '010-1217-2222', SYSDATE(), 1, 0,'/images/default-profile.png'),
     (29, '전몬가', 'user200', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname200', '1992-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user200@example.com', 1, '010-1217-3333', SYSDATE(), 2, 0,'/images/default-profile.png'),
     (30, '전먼가', 'user300', '$2a$10$.g6l.wyIFO1.j4u4gvVtKOnG9ACBUT1GRlDwlMZcjBxZPrCAURLaG', 'nickname300', '1994-05-15', 'male', '12345', '서울특별시 강남구', '테헤란로 123', 'user300@example.com', 1, '010-1217-5555', SYSDATE(), 0, 0,'/images/default-profile.png');
 
@@ -240,7 +240,7 @@ VALUES
 (10, 10, '감사합니다. 기다릴게요.', NULL, '2025-02-01 11:10:43');
 
        -- Community 테이블 더미 데이터
-insert into Community (community_board_no, member_no, community_board_title, community_board_content, community_board_reg_date)
+insert IGNORE into Community (community_board_no, member_no, community_board_title, community_board_content, community_board_reg_date)
 values
     (1, 1, '이 외주, 진짜 대박이었어!', '이 방법대로 외주 진행했더니 진짜 효과 있더라.', sysdate()),
     (2, 2, '외주 프로젝트, 이렇게 하면 성공!', '여기서 이런 방식으로 진행했더니 성공했어.', sysdate()),
@@ -308,7 +308,7 @@ values
 
 
 -- CommunityReply 테이블 더미 데이터
-insert into CommunityReply (community_reply_no, community_board_no, member_no, community_reply_content, community_reply_reg_date)
+insert IGNORE into CommunityReply (community_reply_no, community_board_no, member_no, community_reply_content, community_reply_reg_date)
 values
     (1, 1, 1, '대박이다.. 말이 돼?', sysdate()),
     (2, 1, 2, '여기서 저렇게 했더니 요래 됐더라', sysdate()),

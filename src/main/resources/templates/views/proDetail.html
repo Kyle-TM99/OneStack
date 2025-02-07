@@ -161,6 +161,9 @@
 <body>
     <div layout:fragment="content">
         <div th:each="pro, status: ${proList}" class="container py-5">
+            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+            <input type="hidden" name="reportedMemberNo" th:value="${pro.professional.memberNo}" />
+
             <div class="row">
                 <!-- 메인 컨텐츠 -->
                 <div class="col-lg-9">
@@ -171,7 +174,14 @@
                                 <img th:src="${pro.member.memberImage}" alt="전문가 프로필">
                             </div>
                             <div class="profile-info">
-                                <h3 class="mb-2">[[${pro.member.nickname}]]</h3>
+                                <div class="row mb-2">
+                                    <div class="col-md-6 h3">
+                                        [[${pro.member.nickname}]]
+                                    </div>
+                                    <div class="col-md-6 text-end h3">
+                                        <i id="reporstBtn" class="bi-exclamation-triangle text-danger "></i>
+                                    </div>
+                                </div>
                                 <div class="stats-container">
                                     <div class="stat-item">
                                         <i class="bi bi-person-check"></i>
@@ -206,9 +216,7 @@
                         <!-- 서비스 카테고리 -->
                         <div class="section-title">제공 서비스</div>
                         <div class="service-categories mb-4">
-                            <span class="service-category">웹 개발</span>
-                            <span class="service-category">모바일 앱</span>
-                            <span class="service-category">서버 개발</span>
+                            <span th:each="itemNamesList : ${itemNamesList}" class="service-category" th:text="${itemNamesList}"></span>
                         </div>
 
                         <!-- 수상 경력 -->
@@ -274,10 +282,117 @@
                 </div>
             </div>
         </div>
+
+        <!-- 신고 모달 -->
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">신고하기</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/reports}" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" name="memberNo" th:value="${session.member.memberNo}" />
+                            <input type="hidden" name="reportedMemberNo"/>
+
+                            <div class="mb-3">
+                                <label for="reportsType" class="form-label">신고 유형</label>
+                                <select id="reportsType" name="reportsType" class="form-select" disabled>
+                                    <option value="community">자유게시판</option>
+                                    <option value="member" selected>회원</option>
+                                    <option value="reply">댓글</option>
+                                    <option value="review">리뷰</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reportsTarget" class="form-label">신고 항목</label>
+                                <select id="reportsTarget" name="reportsTarget" class="form-select">
+                                    <option value="욕설">욕설</option>
+                                    <option value="광고">광고</option>
+                                    <option value="스팸">스팸</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reportsReason" class="form-label">신고 사유</label>
+                                <textarea id="reportsReason" name="reportsReason" class="form-control" rows="3" placeholder="신고 사유를 작성해주세요"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-primary" onclick="submitReport()">신고 접수</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <th:block layout:fragment="script">
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            const reporstBtn = document.getElementById("reporstBtn");
+            const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
+            reporstBtn.addEventListener("click", function() {
+                reportModal.show();
+            });
+        </script>
+        <script>
+            function submitReport() {
+                // HTML 요소에서 값 가져오기
+                const memberNo = document.querySelector('input[name="memberNo"]').value; // 숨겨진 input
+                const reportedMemberNo = document.querySelector('input[name="reportedMemberNo"]').value; // 숨겨진 input
+                const reportsType = document.querySelector('#reportsType').value; // 신고 유형 select
+                const reportsTarget = document.querySelector('#reportsTarget').value; // 신고 항목 select
+                const reportsReason = document.querySelector('#reportsReason').value; // 신고 사유 textarea
+                    const url = new URL(window.location.href); // 현재 URL 객체 생성
+                    const pathname = url.pathname;
+                    const searchParams = new URLSearchParams(url.search);
+                    const proNo = searchParams.get("proNo");
+                const reportsTargetLink = proNo ? `${pathname}?proNo=${proNo}` : pathname;
+
+                // report 객체 생성
+                const report = {
+                    memberNo: parseInt(memberNo), // 숫자로 변환
+                    reportedMemberNo: parseInt(reportedMemberNo), // 숫자로 변환
+                    reportsType: reportsType,
+                    reportsTarget: reportsTarget,
+                    reportsReason: reportsReason,
+                    reportsStatus: 0, // 초기값
+                    reportsTargetLink: reportsTargetLink // 현재 페이지 경로
+                };
+
+                // 데이터 전송
+                fetch('/reports', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(report)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else {
+                            throw new Error("신고 처리 중 오류 발생");
+                        }
+                    })
+                    .then(data => {
+                        alert("신고가 완료되었습니다."); // 성공 메시지 알림
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                        modal.hide(); // 모달 창 닫기
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('신고 처리 중 오류가 발생했습니다.');
+                    });
+            }
+        </script>
         <script>
             const btnEstimation2 = document.getElementById("btnEstimation2");
             btnEstimation2.addEventListener("click", estimationForm);

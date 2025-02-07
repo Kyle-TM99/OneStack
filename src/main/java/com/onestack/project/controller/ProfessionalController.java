@@ -108,6 +108,32 @@ public class ProfessionalController {
     public String getProDetail(Model model, @RequestParam(value = "proNo") int proNo) {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
         List<Review> reviewList = reviewService.getReviewList(proNo);
+        List<Integer> itemNoList = professionalService.getItemNo(proNo);
+
+        Map<Integer, String> itemNames = new HashMap<>();
+        itemNames.put(11, "기획");
+        itemNames.put(12, "웹 개발");
+        itemNames.put(13, "소프트웨어 개발");
+        itemNames.put(14, "안드로이드 개발");
+        itemNames.put(15, "iOS 개발");
+        itemNames.put(16, "게임 개발");
+        itemNames.put(17, "AI 개발");
+        itemNames.put(18, "QA 및 테스트");
+        itemNames.put(21, "가공 및 라벨링");
+        itemNames.put(22, "데이터 복구");
+        itemNames.put(23, "크롤링");
+        itemNames.put(24, "DB 구축");
+        itemNames.put(25, "통계분석");
+
+        List<String> itemNamesList = new ArrayList<>();
+        if (itemNoList != null && !itemNoList.isEmpty()) {
+            for (Integer itemNo : itemNoList) {
+                String name = itemNames.getOrDefault(itemNo, "기타");
+                itemNamesList.add(name);
+            }
+        } else {
+            itemNamesList.add("없음");
+        }
 
         int sum = 0;
         int cnt = 0;
@@ -122,6 +148,7 @@ public class ProfessionalController {
         model.addAttribute("proList", proList);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("reviewRateAvg", sum);
+        model.addAttribute("itemNamesList", itemNamesList);
 
         return "views/proDetail";
     }

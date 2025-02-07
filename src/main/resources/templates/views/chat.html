@@ -272,11 +272,11 @@
         </div>
 
         <!-- 일정 추가 모달 -->
-        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel">
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" role="dialog" aria-modal="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">일정 추가</h5>
+                        <h5 class="modal-title" id="eventModalLabel">일정 등록</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -302,8 +302,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-primary" onclick="submitEvent()">저장</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="취소">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="submitEvent()" aria-label="일정 저장">저장</button>
                     </div>
                 </div>
             </div>
@@ -503,6 +503,11 @@
                 // 연결 상태 저장
                 sessionStorage.setItem('isConnected_' + roomId, 'true');
             }
+            
+            // 초기 메시지 로드 후 스크롤 이동
+            loadMessages().then(() => {
+                scrollToBottom();
+            });
         }, function(error) {
             console.error('STOMP error: ' + error);
             alert('채팅 서버 연결에 실패했습니다. 페이지를 새로고침해주세요.');
@@ -524,6 +529,7 @@
                     sentAt: new Date()
                 }));
                 messageInput.value = '';
+                scrollToBottom();
             }
         }
         
@@ -948,6 +954,8 @@
                     });
                 }
             }
+            
+            scrollToBottom();
         });
 
         // 게시글 작성 모달 열기
@@ -1204,7 +1212,8 @@
                             estimationNo: projectNumber,
                             memberNo: memberNo,
                             payContent: quotationContent,
-                            channelNum: channelNum
+                            channelNum: channelNum,
+                            room : roomId
                         })
                     }).then(response => {
                         if (!response.ok) {
@@ -1390,6 +1399,14 @@
                 sessionStorage.removeItem('isConnected_' + roomId);
             }
         });
+
+        // 채팅 메시지 컨테이너의 스크롤을 맨 아래로 이동시키는 함수
+        function scrollToBottom() {
+            const messageContainer = document.querySelector('.chat-messages');
+            if (messageContainer) {
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+        }
 
     </script>
 </th:block>

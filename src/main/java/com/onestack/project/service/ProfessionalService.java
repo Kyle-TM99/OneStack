@@ -100,6 +100,9 @@ public class ProfessionalService {
         return professionalMapper.getPro2(proNo);
     }
 
+    /* 전문가 itemNo 조회 */
+    public List<Integer> getItemNo(int proNo) {return professionalMapper.getItemNo(proNo);}
+
     // 포트폴리오 리스트 조회
     public List<Portfolio> getPortfoliosByMember(int memberNo) {
         return professionalMapper.getPortfoliosByMember(memberNo);
