@@ -290,7 +290,7 @@ public class ProfessionalService {
     public MemProPortPaiCate getPortfolioDetail(int portfolioNo) {
         MemProPortPaiCate portfolio = professionalMapper.getPortfolioDetail(portfolioNo);
 
-        // 🔹 디버깅 로그 추가
+        //  디버깅 로그 추가
         System.out.println("PortfolioService 반환 데이터: " + portfolio);
 
         return portfolio;
