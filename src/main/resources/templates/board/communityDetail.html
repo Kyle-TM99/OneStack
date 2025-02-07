@@ -363,7 +363,11 @@
                 link.setAttribute('rel', 'noopener noreferrer');
             });
 
-            $('#deletBtn').click(function() {  // onclick을 click으로 수정
+        $('#deletBtn').click(function(e) {  // onclick을 click으로 수정
+            e.preventDefault(); // 기본 동작 방지
+
+            // 확인 대화 상자 표시
+            if (confirm('정말 게시글을 삭제하시겠습니까?')) {
                 const memberNo = $('#memberNo').val();
                 const communityBoardNo = $('#communityBoardNo').val();
                 console.log(memberNo, communityBoardNo);
@@ -378,16 +382,17 @@
                     success: function(response) {
                         alert(response.message);
 
-                        if(response.status == "success") {
-                            location.href = "/community";  // 경로가 맞는지 확인해보세요
+                        if (response.status == "success") {
+                            location.href = "/community";  // 삭제 후 커뮤니티 페이지로 이동
                         }
                     },
-                    error: function(xhr, status, error) {  // 에러 파라미터 추가
+                    error: function(xhr, status, error) {
                         console.error('Error:', error);
                         alert('게시물 삭제 중 오류가 발생되었습니다.');
                     }
                 });
-            });
+            }
+        });
         </script>
     </th:block>
 

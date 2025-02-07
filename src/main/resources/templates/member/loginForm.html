@@ -35,7 +35,6 @@
 							<p th:if="${param.error[0] == 'withdrawn'}">탈퇴한 계정입니다.</p>
 							<p th:if="${param.error[0] != 'not_found' and param.error[0] != 'deactivated' and param.error[0] != 'suspended' and param.error[0] != 'withdrawn'}">
 								로그인 실패: 아이디 또는 비밀번호를 확인하세요.
-							</p>
 						</div>
 						<form id="loginForm" action="login" method="post">
 							<div class="form-floating mb-3">
