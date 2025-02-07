@@ -89,66 +89,6 @@ public class MemberController {
         }
     }
 
-/*    @PostMapping("/updateMember")
-    @ResponseBody
-    public Map<String, Object> updateMember(HttpSession session, Member member,
-                               @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Member sessionMember = (Member) session.getAttribute("member");
-            member.setMemberNo(sessionMember.getMemberNo());
-            // 소셜 타입 설정 추가
-            member.setSocialType(sessionMember.getSocialType());
-
-            if (profileImage != null && !profileImage.isEmpty()) {
-                try {
-                    // 개발 환경에서 임시로 이미지 URL 생성
-                    String fileName = UUID.randomUUID().toString() + "_" + profileImage.getOriginalFilename();
-                    String imageUrl = "http://3.37.88.97/images/" + fileName;
-
-                    // 실제 파일은 저장하지 않고 URL만 설정 (개발 환경)
-                    member.setMemberImage(imageUrl);
-                    log.info("개발 환경 - 이미지 URL 설정: {}", imageUrl);
-
-                } catch (Exception e) {
-                    log.error("이미지 처리 중 에러 발생: {}", e.getMessage());
-                }
-            } else {
-                member.setMemberImage(sessionMember.getMemberImage());
-            }
-
-            // 회원 정보 업데이트
-            String socialType = sessionMember.getSocialType();
-            if (socialType.equals("kakao") || socialType.equals("google")) {
-                member.setMemberId(sessionMember.getMemberId());
-                member.setPass(sessionMember.getPass());
-                memberService.updateSocialMember(member);
-            } else {
-                memberService.updateMember(member);
-            }
-
-            // DB에서 업데이트된 정보 확인
-            Member updatedMember = memberService.getMember(member.getMemberId());
-            session.setAttribute("member", updatedMember);
-            log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
-
-            // 세션 업데이트
-            updateSessionMember(session, member);
-
-            response.put("success",true);
-            response.put("message", "회원정보가 성공적으로 수정되었습니다.");
-
-            return response;
-
-        } catch (Exception e) {
-            log.error("회원 정보 수정 실패: {}", e.getMessage());
-            response.put("error", e.getMessage());
-            response.put("message", "회원정보 수정에 실패했습니다.");
-            return response;
-        }
-    }*/
-
-
 
 
     @PostMapping("/updateMember")
@@ -198,12 +138,13 @@ public class MemberController {
                 memberService.updateMember(member);
             }
 
-            // 업데이트 후 DB에서 재조회하여 확인
-            Member updatedMember = memberService.getMember(member.getMemberId());
+            // 업데이트 후 DB 재조회하여 확인
+            Member updatedMember = memberService.getMemberByNo(member.getMemberNo());
+            log.info("Memer Nickname : {}", updatedMember.getNickname());
             log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
 
             // 세션 업데이트
-            updateSessionMember(session, member);
+            updateSessionMember(session, updatedMember);
 
             response.put("success", true);
             response.put("message", "회원 정보가 성공적으로 수정되었습니다.");
@@ -239,22 +180,6 @@ public class MemberController {
         session.setAttribute("member", sessionMember);
     }
 
-    // 프로필 이미지 저장 메서드 (필요한 경우)
-    private String saveProfileImage(MultipartFile profileImage) throws IOException {
-        String originalFilename = profileImage.getOriginalFilename();
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
-
-        // 파일 저장 경로 설정
-        Path uploadPath = Paths.get("src/main/resources/static/images/profile");
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        Path filePath = uploadPath.resolve(uniqueFileName);
-        profileImage.transferTo(filePath.toFile());
-
-        return uniqueFileName;
-    }
 
     @GetMapping("/updateMemberForm")
     public String myPage(Model model, HttpSession session,
@@ -281,6 +206,7 @@ public class MemberController {
     public String login(Model model, @RequestParam("memberId") String memberId, @RequestParam("pass") String pass, HttpSession session, HttpServletResponse response)
             throws ServletException, IOException {
         int result = memberService.login(memberId, pass);
+
         if(result == -1 || result == 0) { // 회원 아이디가 존재하지 않으면
             response.setContentType("text/html; charset=utf-8");
             PrintWriter out = response.getWriter();
@@ -291,7 +217,20 @@ public class MemberController {
             return null;
         }
 
+        // 회원 정보 조회
         Member member = memberService.getMember(memberId);
+
+        // 회원 상태 체크
+        if (member.getMemberStatus() == 2) { // 정지된 회원
+            response.setContentType("text/html; charset=utf-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>");
+            out.println(" alert('정지된 회원입니다.');");
+            out.println(" location.href='loginForm'");
+            out.println("</script>");
+            return null;
+        }
+
         session.setAttribute("isLogin", true);
         session.setAttribute("member", member);
         return "redirect:/mainPage";
@@ -441,7 +380,7 @@ public class MemberController {
     @PostMapping("/findPass")
     @ResponseBody
     public Map<String, Object> findPass(
-        @RequestParam(name = "memberId") String memberId, 
+        @RequestParam(name = "memberId") String memberId,
         @RequestParam(name = "email") String email
     ) {
         Map<String, Object> response = new HashMap<>();
@@ -464,14 +403,14 @@ public class MemberController {
     @PostMapping("/resetPassword")
     @ResponseBody
     public Map<String, Object> resetPassword(
-        @RequestParam(name = "token") String token, 
+        @RequestParam(name = "token") String token,
         @RequestParam(name = "newPassword") String newPassword
     ) {
         Map<String, Object> response = new HashMap<>();
         try {
             // 디버깅을 위한 로그 추가
             log.info("Token: {}, NewPassword: {}", token, newPassword);
-            
+
             memberService.resetPassword(token, newPassword);
             response.put("status", "success");
             response.put("message", "비밀번호가 성공적으로 변경되었습니다.");

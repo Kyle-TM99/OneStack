@@ -15,7 +15,7 @@ $(document).ready(function() {
 
     // 정규식 패턴 정의
     const patterns = {
-        name: /^[가-힣]{1,5}$/,
+        name: /^(?:[가-힣]{1,5}|[A-Za-z]{1,5})$/,
         memberId: /^[A-Za-z0-9$!*_&]{4,20}$/,
         password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/,
         nickname: /^[A-Za-z0-9가-힣$!*_&]{2,20}$/,
@@ -150,7 +150,7 @@ $(document).ready(function() {
     $("#name").on("input", function() {
         const name = $(this).val();
         if (!patterns.name.test(name)) {
-            $("#nameMessage").text("한글로 1~5자까지만 입력 가능합니다.").css("color", "red");
+            $("#nameMessage").text("한글 혹은 영어로 1~5자까지만 입력 가능합니다.").css("color", "red");
             $(this).css("border-color", "red");
             validationState.name = false;
         } else {
@@ -402,7 +402,7 @@ $(document).ready(function() {
 
         // 각 필드별 유효성 검사
         if (!patterns.name.test($("#name").val())) {
-            alert("이름은 한글 1~5자만 가능합니다.");
+            alert("이름은 한글 혹은 영어로 1~5자만 가능합니다.");
             $("#name").focus();
             return false;
         }
