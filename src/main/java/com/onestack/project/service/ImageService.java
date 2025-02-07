@@ -32,7 +32,7 @@ public class ImageService {
         // 파일 저장
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        return IMAGE_BASE_URL + fileName;
+        return IMAGE_BASE_URL + filePath;
     }
 
     public void deleteImage(String fileName) throws IOException {
