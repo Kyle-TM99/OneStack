@@ -14,7 +14,6 @@
         <table class="table">
             <thead class="table-light">
             <tr>
-                <th scope="col"></th>
                 <th scope="col">신고 번호</th>
                 <th scope="col">신고자</th>
                 <th scope="col">신고 대상</th>
@@ -28,7 +27,6 @@
             </thead>
             <tbody id="memberTableBody">
             <tr th:each="report : ${reportsList}" th:if="${report.reportsStatus == 0}" th:attr="data-report-no=${report.reportsNo},data-target-id=${report.reportedMemberNo}">
-                <td><input type="checkbox"/></td>
                 <td th:text="${report.reportsNo}">신고 번호</td>
                 <td th:text="${report.reporterNickname}">신고자</td>
                 <td th:text="${report.reportedNickname}">신고 대상</td>
@@ -65,8 +63,6 @@
                     </a>
                 </li>
                 <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -78,8 +74,7 @@
 </div>
 
 <!-- 신고 상세 정보 모달 -->
-<!-- 신고 상세 정보 모달 -->
-<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -135,6 +130,5 @@
         </div>
     </div>
 </div>
-<script src="/js/admin/reports.js"></script>
 </body>
 </html>

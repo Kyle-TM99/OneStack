@@ -3,6 +3,7 @@ package com.onestack.project.controller;
 import java.util.*;
 
 import com.onestack.project.domain.*;
+import com.onestack.project.mapper.ProfessionalMapper;
 import com.onestack.project.service.ProService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,10 @@ public class ProfessionalController {
 
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private ProfessionalMapper professionalMapper;
 
-	/* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
+    /* itemNo에 따른 필터링, 전문가 전체 리스트 출력 */
 	@GetMapping("/findPro")
 
 	public String getProList(Model model, @RequestParam(value = "itemNo") int itemNo) {
@@ -109,6 +112,7 @@ public class ProfessionalController {
         List<MemberWithProfessional> proList = professionalService.getPro2(proNo);
         List<Review> reviewList = reviewService.getReviewList(proNo);
         List<Integer> itemNoList = professionalService.getItemNo(proNo);
+        int memberNo = professionalMapper.getMemberNo(proNo);
 
         Map<Integer, String> itemNames = new HashMap<>();
         itemNames.put(11, "기획");
@@ -145,10 +149,13 @@ public class ProfessionalController {
             sum /= cnt;
         }
 
+        List<Portfolio> portfolioList = professionalService.getPortfoliosByMember(memberNo);
+
         model.addAttribute("proList", proList);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("reviewRateAvg", sum);
         model.addAttribute("itemNamesList", itemNamesList);
+        model.addAttribute("portfolioList", portfolioList);
 
         return "views/proDetail";
     }
@@ -479,5 +486,4 @@ public class ProfessionalController {
             System.out.println("✅ 포트폴리오 상세 조회 성공: " + response);
             return ResponseEntity.ok(response);
         }
-
 }

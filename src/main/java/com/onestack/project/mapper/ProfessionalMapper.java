@@ -90,4 +90,6 @@ public interface ProfessionalMapper {
 
     Map<String, Object> getPortfolioFiles(@Param("portfolioNo") int portfolioNo);
 
+    int getMemberNo(@Param("proNo") int proNo);
+
 }

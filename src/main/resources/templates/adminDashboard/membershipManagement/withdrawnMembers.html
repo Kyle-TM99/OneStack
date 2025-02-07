@@ -14,7 +14,6 @@
         <table class="table">
             <thead class="table-light">
             <tr>
-                <th scope="col"></th>
                 <th scope="col">
                     이름
                 </th>
@@ -34,7 +33,6 @@
             </thead>
             <tbody id="memberTableBody">
             <tr th:each="member : ${members}">
-                <td><input type="checkbox"/></td>
                 <td th:text="${member.name}">이름</td>
                 <td th:text="${member.memberId}">아이디</td>
                 <td th:text="${member.memberType == 0 ? '초보자' : (member.memberType == 1 ? '전문가' : '심사중')}">회원 타입</td>
@@ -55,8 +53,6 @@
                     </a>
                 </li>
                 <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>

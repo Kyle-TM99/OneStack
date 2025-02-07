@@ -42,4 +42,10 @@
     LIMIT #{num1} OFFSET #{num2}
   </select>
 
+  <!-- 전문가 리뷰 수 증가 -->
+  <update id="increaseReviewCount" parameterType="int">
+    UPDATE Professional
+    SET review_count = review_count + 1
+    WHERE pro_no = #{proNo}
+  </update>
 </mapper>

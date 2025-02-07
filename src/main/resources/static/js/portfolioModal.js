@@ -67,7 +67,7 @@ const modalContent = document.querySelector(".modal-content");
                 // 1️⃣ 썸네일 이미지 (항상 첫 번째)
                 imagesHtml += `
                     <div class="carousel-item active">
-                        <img src="${data.thumbnailImage}" class="d-block w-100 rounded shadow-lg" alt="썸네일 이미지">
+                        <img th:src="${data.thumbnailImage}" class="d-block w-100 rounded shadow-lg" alt="썸네일 이미지">
                     </div>
                 `;
 

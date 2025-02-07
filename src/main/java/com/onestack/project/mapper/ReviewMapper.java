@@ -17,5 +17,8 @@ public interface ReviewMapper {
 
   // 메인 페이지 리뷰 조회
   List<Review> getMainReviewList(int num1, int num2);
+
+  // 리뷰 수 증가
+  public void increaseReviewCount(int proNo);
   
 }

@@ -193,10 +193,11 @@
                                 </div>
                             </div>
                             <div class="chat-status">
-                                <span th:class="'status-badge ' + 
-                                    (${room.progress == 2 ? 'status-active' : 'status-pending'})"
-                                    th:text="${room.progress == 2 ? '진행중' : '대기중'}">
-                                </span>
+                                <span th:if="${room.progress == 0}" class="status-badge status-pending">요청중</span>
+                                <span th:if="${room.progress == 1}" class="status-badge status-pending">채팅중</span>
+                                <span th:if="${room.progress == 2}" class="status-badge status-pending">결제중</span>
+                                <span th:if="${room.progress == 3}" class="status-badge status-pending">완료</span>
+                                <span th:if="${room.progress == 4}" class="status-badge status-pending">거절</span>
                             </div>
                         </div>
                         <div class="chat-body">

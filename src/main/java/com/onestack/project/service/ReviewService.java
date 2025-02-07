@@ -29,5 +29,10 @@ public class ReviewService {
   public List<Review> getMainReviewList(int num1, int num2) {
     return reviewMapper.getMainReviewList(num1, num2);
   }
+
+  // 리뷰 수 증가
+  public void increaseReviewCount(int proNo) {
+    reviewMapper.increaseReviewCount(proNo);
+  }
   
 }

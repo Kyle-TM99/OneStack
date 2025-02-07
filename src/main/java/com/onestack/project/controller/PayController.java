@@ -1,6 +1,8 @@
 package com.onestack.project.controller;
 
 import com.onestack.project.domain.*;
+import com.onestack.project.mapper.PayMapper;
+import com.onestack.project.service.ChatService;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.PayService;
 import com.onestack.project.service.ProService;
@@ -8,10 +10,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,13 @@ public class PayController {
     private ProService proService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PayMapper payMapper;
 
+    @Autowired
+    private ChatService chatService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     /* 결제 요청 폼 */
     @GetMapping("/payForm")
@@ -49,12 +59,14 @@ public class PayController {
 
     /* 결제 검증 */
     @PostMapping("/api/payment/verify")
-    public ResponseEntity<String> paymentVerify(@RequestBody PaymentVerificationRequest request) throws Exception {
+    public ResponseEntity<String> paymentVerify(@RequestBody PaymentVerificationRequest request, HttpSession session) throws Exception {
 
         log.info("/verify : " + request.getImpUid());
         boolean isVerified = payService.verifyPayment(request.getImpUid(), request.getEstimationNo(), request.getPaidAmount());
+        Member member = (Member) session.getAttribute("member");
 
         int estimationNo = request.getEstimationNo();
+
 
         if (isVerified) {
             // 최종 결제 처리 - DB(결제 테이블) 작업
@@ -75,8 +87,22 @@ public class PayController {
             // 결제 정보 DB에 저장
             payService.insertPay(pay);
 
+            // 시스템 메시지 전송
+            ChatMessage systemMessage = new ChatMessage();
+            systemMessage.setRoomId(request.getRoom());
+            systemMessage.setSender(member.getMemberId());
+            systemMessage.setNickname(member.getNickname());
+            systemMessage.setType("SYSTEM");
+            systemMessage.setMessage("회원이 리뷰를 작성하였습니다.");
+            systemMessage.setSentAt(LocalDateTime.now());
+
+            // DB에 시스템 메시지 저장
+            chatService.saveMessage(systemMessage);
+
+            // 시스템 메시지를 웹소켓으로 전송
+            messagingTemplate.convertAndSend("/topic/chat/room/" + request.getRoom(), systemMessage);
+
             // 방금 결제한 결제 내역의 payNo를 가져오기
-            Pay pay1 = new Pay();
             int payNo = payService.getPayNo(estimationNo);
 
             // proNo 가져오기
@@ -108,16 +134,31 @@ public class PayController {
         return ResponseEntity.ok(response);
     }
 
+    /* 결제 내역 폼 */
     @GetMapping("/payReceipt")
-    public String payReceipt(Model model, @SessionAttribute("member") Member member) {
-        int memberNo = member.getMemberNo();  // member 객체에서 memberNo 추출
+    public String payReceipt(Model model,
+                           @SessionAttribute("member") Member member,
+                           @RequestParam(defaultValue = "1") int page) {
+        int memberNo = member.getMemberNo();
+        int pageSize = 5; // 페이지당 표시할 항목 수
+        int offset = (page - 1) * pageSize;
 
-        List<MemPay> recipetList = payService.getReceipt(memberNo);
-        int payCount = payService.getMemPayCount(memberNo);
+        List<MemPay> recipetList = payService.getReceiptWithPaging(memberNo, offset, pageSize);
+        int totalPayCount = payService.getMemPayCount(memberNo);
+
+        // 총 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) totalPayCount / pageSize);
 
         model.addAttribute("recipetList", recipetList);
-        model.addAttribute("payCount", payCount);
+        model.addAttribute("payCount", totalPayCount);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "views/payReceiptForm";
+    }
+
+    public List<MemPay> getReceiptWithPaging(int memberNo, int offset, int limit) {
+        return payMapper.getReceiptWithPaging(memberNo, offset, limit);
     }
 
 

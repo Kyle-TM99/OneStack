@@ -30,6 +30,7 @@
 
               <label for="itemNo">전문분야 *</label>
               <select id="itemNo" name="itemNo" class="form-select mb-3">
+                <option value="" hidden>전문분야를 선택해주세요.</option>
                 <option value="11" th:selected="${selectedItemNo == 11}">기획</option>
                 <option value="12" th:selected="${selectedItemNo == 12}">웹</option>
                 <option value="13" th:selected="${selectedItemNo == 13}">소프트웨어</option>
@@ -44,6 +45,7 @@
                 <option value="24" th:selected="${selectedItemNo == 24}">DB 구축</option>
                 <option value="25" th:selected="${selectedItemNo == 25}">통계분석</option>
               </select>
+
 
               <!-- ✅ 설문조사 영역 -->
               <div id="surveyContainer" class="p-3 border rounded bg-light">
