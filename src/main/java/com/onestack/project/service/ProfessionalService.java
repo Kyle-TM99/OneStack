@@ -297,6 +297,7 @@ public class ProfessionalService {
         return professionalMapper.getItemNoByPortfolio(portfolioNo);
     }
 
+    @Transactional
     public void submitProConversionData(Pro2ConversionRequest request, HttpSession session) {
 
         // 1. 로그인한 회원의 정보를 가져오기
