@@ -170,4 +170,13 @@
         WHERE pro_no = #{proNo}
     </update>
 
+    <select id="getReceiptWithPaging" resultMap="MemPayResultMap">
+        SELECT p.*, m.*
+        FROM Pay p JOIN Member m
+            ON p.member_no = m.member_no
+        WHERE p.member_no = #{memberNo}
+        ORDER BY p.pay_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
 </mapper>

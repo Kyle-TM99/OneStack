@@ -89,6 +89,33 @@
             border-radius: 12px;
             color: #666;
         }
+        .pagination {
+            margin-top: 2rem;
+        }
+        
+        .page-link {
+            color: #1976d2;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #1976d2;
+            border-color: #1976d2;
+        }
+        
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+        }
+        
+        .page-link:hover {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
     </style>
 </head>
 
@@ -149,6 +176,35 @@
                     <i class="bi bi-credit-card-2-front fs-1 text-muted mb-3 d-block"></i>
                     <p class="fs-5 mb-0">아직 결제 내역이 없습니다</p>
                 </div>
+            </div>
+        </div>
+        
+        <!-- 페이지네이션 추가 -->
+        <div class="row mt-4">
+            <div class="col-lg-8 mx-auto">
+                <nav th:if="${totalPages > 1}" aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- 이전 페이지 -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/payReceipt(page=${currentPage - 1})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        
+                        <!-- 페이지 번호 -->
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${pageNum == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/payReceipt(page=${pageNum})}" th:text="${pageNum}"></a>
+                        </li>
+                        
+                        <!-- 다음 페이지 -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/payReceipt(page=${currentPage + 1})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
