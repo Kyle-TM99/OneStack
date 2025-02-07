@@ -14,7 +14,7 @@
     <select id="getEventList" resultType="ChatCalendarEvent">
         SELECT e.*, m.nickname as creatorNickname, m.member_image as creatorImage
         FROM chat_calendar_event e
-        JOIN member m ON e.created_by = m.member_id
+        JOIN Member m ON e.created_by = m.member_id
         WHERE e.room_id = #{roomId}
         ORDER BY e.start_date ASC
     </select>
@@ -22,7 +22,7 @@
     <select id="getEvent" resultType="ChatCalendarEvent">
         SELECT e.*, m.nickname as creatorNickname, m.member_image as creatorImage
         FROM chat_calendar_event e
-        JOIN member m ON e.created_by = m.member_id
+        JOIN Member m ON e.created_by = m.member_id
         WHERE e.event_id = #{eventId}
     </select>
     
