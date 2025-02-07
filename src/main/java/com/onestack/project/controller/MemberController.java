@@ -139,15 +139,12 @@ public class MemberController {
             }
 
             // 업데이트 후 DB에서 재조회하여 확인
-            Member updatedMember = memberService.getMember(member.getMemberId());
+            Member updatedMember = memberService.getMemberByNo(member.getMemberNo());
+            log.info("Memer Nickname : {}", updatedMember.getNickname());
             log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
 
             // 세션 업데이트
-            if (sessionMember.isSocial()) {
-                updateSessionSocialMember(session, updatedMember);
-            } else {
-                updateSessionMember(session, updatedMember);
-            }
+            updateSessionMember(session, updatedMember);
 
             response.put("success", true);
             response.put("message", "회원 정보가 성공적으로 수정되었습니다.");
@@ -183,30 +180,6 @@ public class MemberController {
         session.setAttribute("member", sessionMember);
     }
 
-
-    // 세션 정보 업데이트 메서드 분리
-    private void updateSessionSocialMember(HttpSession session, Member updatedMember) {
-        Member sessionMember = (Member) session.getAttribute("member");
-
-        // 로그 추가
-        log.info("updateSessionSocialMember 호출됨. 업데이트할 멤버 정보: {}", updatedMember.toString());
-        sessionMember.setNickname(updatedMember.getNickname());
-        sessionMember.setEmail(updatedMember.getEmail());
-        sessionMember.setPhone(updatedMember.getPhone());
-        sessionMember.setZipcode(updatedMember.getZipcode());
-        sessionMember.setAddress(updatedMember.getAddress());
-        sessionMember.setAddress2(updatedMember.getAddress2());
-        sessionMember.setEmailGet(updatedMember.isEmailGet());
-
-        // 프로필 이미지가 업데이트된 경우
-        if (updatedMember.getMemberImage() != null) {
-            sessionMember.setMemberImage(updatedMember.getMemberImage());
-            log.info("프로필 이미지 업데이트됨: {}", updatedMember.getMemberImage());
-        }
-
-        session.setAttribute("member", sessionMember);
-        log.info("세션 업데이트 완료: {}", sessionMember.toString());
-    }
 
     @GetMapping("/updateMemberForm")
     public String myPage(Model model, HttpSession session,
