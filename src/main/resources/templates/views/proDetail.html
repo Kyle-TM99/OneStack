@@ -275,10 +275,16 @@
                             <a class="nav-link" href="#review">리뷰</a>
                         </nav>
                         <p class="text-center mb-3">지금 견적을 요청해보세요</p>
-                        <button type="button" class="btn-estimation" id="btnEstimation2"
-                            th:attr="data-pro-no=${pro.professional.proNo}">
-                            견적 요청하기
-                        </button>
+                        <!-- 자신의 프로필일 경우 버튼 비활성화 -->
+                        <th:block th:if="${session.member != null}">
+                            <button type="button" class="btn-estimation" id="btnEstimation2"
+                                th:attr="data-pro-no=${pro.professional.proNo}"
+                                th:disabled="${session.member.memberNo == pro.member.memberNo}"
+                                th:style="${session.member.memberNo == pro.member.memberNo ? 'background-color: #ccc; cursor: not-allowed;' : ''}">
+                                <span th:text="${session.member.memberNo == pro.member.memberNo ? '견척 요청 불가' : '견적 요청하기'}">
+                                </span>
+                            </button>
+                        </th:block>
                     </div>
                 </div>
             </div>
