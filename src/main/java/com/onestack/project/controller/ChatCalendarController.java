@@ -2,6 +2,8 @@ package com.onestack.project.controller;
 
 import com.onestack.project.domain.ChatCalendarEvent;
 import com.onestack.project.service.ChatCalendarService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/chat/calendar")
 public class ChatCalendarController {
+    
+    private static final Logger log = LoggerFactory.getLogger(ChatCalendarController.class);
     
     @Autowired
     private ChatCalendarService chatCalendarService;
@@ -33,7 +37,10 @@ public class ChatCalendarController {
     
     @GetMapping("/{roomId}")
     public ResponseEntity<List<ChatCalendarEvent>> getEventList(@PathVariable String roomId) {
-        return ResponseEntity.ok(chatCalendarService.getEventList(roomId));
+        log.info("일정 조회 요청 - roomId: {}", roomId);
+        List<ChatCalendarEvent> events = chatCalendarService.getEventList(roomId);
+        log.info("조회된 일정: {}", events);
+        return ResponseEntity.ok(events);
     }
     
     @GetMapping("/detail/{eventId}")

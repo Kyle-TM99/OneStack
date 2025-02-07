@@ -10,6 +10,8 @@
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/ko.global.min.js'></script>
     <!-- Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- Moment.js와 Timezone 플러그인 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
     <title>채팅방</title>
     <!-- 포트원 결제 -->
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -761,14 +763,14 @@
                         type: 'GET',
                         success: function(events) {
                             const calendarEvents = events.map(event => {
-                                // 날짜를 직접 Date 객체로 변환
-                                const start = new Date(event.startDate);
-                                const end = new Date(event.endDate);
+                                // 날짜 변환 시 명시적으로 시간대 처리
+                                const start = moment(event.startDate).format('YYYY-MM-DDTHH:mm:ss');
+                                const end = moment(event.endDate).format('YYYY-MM-DDTHH:mm:ss');
                                 return {
                                     id: event.eventId,
                                     title: event.title,
-                                    start: start,
-                                    end: end,
+                                    start: moment.tz(start, 'Asia/Seoul').toDate(),
+                                    end: moment.tz(end, 'Asia/Seoul').toDate(),
                                     description: event.description,
                                     allDay: event.all_day,
                                     display: 'block',
@@ -781,7 +783,8 @@
                                     }
                                 };
                             });
-                            console.log('변환된 이벤트:', calendarEvents); // 디버깅용
+                            console.log('서버에서 받은 이벤트:', events); // 디버깅
+                            console.log('변환된 이벤트:', calendarEvents); // 디버깅
                             successCallback(calendarEvents);
                         },
                         error: function(error) {
