@@ -81,6 +81,11 @@ public class ReviewController {
             // 시스템 메시지를 웹소켓으로 전송
             messagingTemplate.convertAndSend("/topic/chat/room/" + review.getRoomId(), systemMessage);
 
+            // 전문가 리뷰 수 증가
+            reviewService.increaseReviewCount(review.getProNo());
+
+
+
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", e.getMessage());
