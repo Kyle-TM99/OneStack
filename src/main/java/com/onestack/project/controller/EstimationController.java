@@ -162,7 +162,7 @@ public class EstimationController {
                 systemMessage.setSender(pro.getMemberId());
                 systemMessage.setNickname(pro.getNickname());
                 systemMessage.setType("SYSTEM");
-                systemMessage.setMessage("전문가 " + pro.getNickname() + " 님이 견적 요청을 수락하였습니다. " + member.getNickname() + " 님, 견적 확인 후 결제를 진행하실 수 있습니다.");
+                systemMessage.setMessage("전문가 " + pro.getNickname() + " 님이 견적 요청을 수락하였습니다. " + member.getNickname() + " 님의 견적 확인 후 결제를 진행하실 수 있습니다.");
                 systemMessage.setSentAt(LocalDateTime.now());
 
                 // DB에 시스템 메시지 저장
@@ -182,7 +182,7 @@ public class EstimationController {
                 systemMessage.setSender(member.getMemberId());
                 systemMessage.setNickname(member.getNickname());
                 systemMessage.setType("SYSTEM");
-                systemMessage.setMessage("회원이 견적 요청을 수락하였습니다. 결제를 진행해주세요.");
+                systemMessage.setMessage(member.getNickname() + "님이 최종 견적을 확인하였습니다. 프로젝트 결제를 진행해주세요.");
                 systemMessage.setSentAt(LocalDateTime.now());
 
                 // DB에 시스템 메시지 저장
