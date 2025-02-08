@@ -48,4 +48,9 @@ public interface PayMapper {
     // 전문가 고용 횟수 증가
     public void updateStudentCount(@Param("proNo") int proNo);
 
+    // 페이징된 결제 내역 가져오기
+    public List<MemPay> getReceiptWithPaging(@Param("memberNo") int memberNo, 
+                                           @Param("offset") int offset, 
+                                           @Param("limit") int limit);
+
 }

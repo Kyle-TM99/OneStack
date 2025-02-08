@@ -45,6 +45,7 @@ public class CommunityController {
 
         Community community = communityService.getCommunity(communityBoardNo, true, memberNo);
         // community.communityBoardContent에는 Quill에서 생성된 HTML이 저장되어 있어야 함
+
         model.addAttribute("community", community);
         model.addAttribute("pageNum", pageNum);
 
@@ -271,6 +272,7 @@ public class CommunityController {
         }
         return "redirect:/community"; // 수정 후 커뮤니티 목록으로 리다이렉트
     }
+
 
 
     /* 자유게시판 삭제 */
