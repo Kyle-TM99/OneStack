@@ -103,16 +103,6 @@ CREATE TABLE IF NOT EXISTS Filter (filter_no INTEGER AUTO_INCREMENT KEY,
 	 CONSTRAINT item_no_filter_fk FOREIGN KEY (item_no) REFERENCES Category(item_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ProfessionalBoard - 전문가 찾기 게시판
-CREATE TABLE IF NOT EXISTS ProfessionalBoard (
-	item_no   INTEGER   NOT NULL,
-	pro_no INTEGER NOT NULL,
-	survey_no INTEGER NOT NULL,
-	CONSTRAINT item_no_professionalBoard_fk FOREIGN KEY (item_no) REFERENCES Category(item_no) ON DELETE CASCADE,
-	CONSTRAINT pro_no_professionalBoard_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE,
-	CONSTRAINT survey_no_professionalBoard_fk FOREIGN KEY (survey_no) REFERENCES Survey(survey_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- Estimation - 견적
 CREATE TABLE IF NOT EXISTS Estimation (
 	estimation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -140,18 +130,6 @@ CREATE TABLE IF NOT EXISTS Matching (matching_no   INTEGER AUTO_INCREMENT PRIMAR
    CONSTRAINT pro_no_mathcing_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Quotation - 견적서
-CREATE TABLE IF NOT EXISTS Quotation (quotation_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-                        matching_no INTEGER   NOT NULL,
-                        member_no INTEGER NOT NULL,
-                        pro_no INTEGER NOT NULL,
-                        quotation_content VARCHAR(500) NOT NULL,
-                        quotation_price   DECIMAL(10,2) NOT NULL,
-                        quotation_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                        CONSTRAINT matching_no_quotation_fk FOREIGN KEY (matching_no) REFERENCES Matching(matching_no) ON DELETE CASCADE,
-                        CONSTRAINT member_no_quotation_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE,
-                        CONSTRAINT pro_no_quotation_fk FOREIGN KEY (pro_no) REFERENCES Professional(pro_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Review - 리뷰
 CREATE TABLE IF NOT EXISTS Review (
@@ -267,15 +245,6 @@ CREATE TABLE IF NOT EXISTS InquiryAnswer (inquiry_answer_no INTEGER AUTO_INCREME
 	inquiry_answer_file   VARCHAR(100) NULL,
 	CONSTRAINT inquiry_no_inquiryAnswer_fk FOREIGN KEY (inquiry_no) REFERENCES Inquiry(inquiry_no) ON DELETE CASCADE,
 	CONSTRAINT member_no_inquiryAnswer_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ManagerLog - 관리자 로그
-CREATE TABLE IF NOT EXISTS ManagerLog (log_no INTEGER AUTO_INCREMENT PRIMARY KEY,
-	 member_no INTEGER NOT NULL,
-	 log_type INTEGER NOT NULL,
-	 log_content   VARCHAR(50)   NOT NULL,
-	 log_reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	 CONSTRAINT member_no_managerLog_fk FOREIGN KEY (member_no) REFERENCES Member(member_no) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Reports - 신고

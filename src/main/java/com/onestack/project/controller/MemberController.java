@@ -216,6 +216,20 @@ public class MemberController {
 
         session.setAttribute("isLogin", true);
         session.setAttribute("member", member);
+
+        Member memberPro = (Member) session.getAttribute("member");
+        if (memberPro != null) {
+            int memberNo = memberPro.getMemberNo();
+
+            int proNo = memberService.getProNo(memberNo);
+            if (proNo > 0) {
+                session.setAttribute("proNo", proNo);
+            }
+        }
+
+
+
+
         return "redirect:/mainPage";
     }
 
