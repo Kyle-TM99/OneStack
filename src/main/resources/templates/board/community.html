@@ -90,14 +90,6 @@
                                          style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-height: 3em; line-height: 1.5em;">
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <!-- 이미지 -->
-                                    <div th:if="${community.communityFile != null}" class="position-relative" style="width: 120px; height: 120px;">
-                                        <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
-                                             class="rounded"
-                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="게시물 이미지">
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="col-12 mt-3">
@@ -130,14 +122,6 @@
                                     <h5 class="fw-bold mb-1" th:text="${community.communityBoardTitle}"></h5>
                                     <div class="ql-editor content-preview" th:utext="${community.communityBoardContent}"
                                          style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; max-height: 3em; line-height: 1.5em;">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <!-- 이미지 -->
-                                    <div th:if="${community.communityFile != null}" class="position-relative" style="width: 120px; height: 120px;">
-                                        <img th:src="@{/uploads/{filename}(filename=${community.communityFile})}"
-                                             class="rounded"
-                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="게시물 이미지">
                                     </div>
                                 </div>
                             </div>

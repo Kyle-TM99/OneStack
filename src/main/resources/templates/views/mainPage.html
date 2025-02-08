@@ -164,18 +164,34 @@
                 justify-content: center;
             }
 
-            .row.mt-5 {
-                max-width: 400px;
-                margin: 2rem auto;
-            }
-        }
+			.row.mt-5 {
+				max-width: 400px;
+				margin: 2rem auto;
+			}
 
-        .community-box {
-            max-height: 200px; /* 원하는 높이로 설정 */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
+			/* Community */
+			.content-preview {
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				max-height: 1.5em;
+				line-height: 1.5em;
+				color: #666;
+				font-size: 0.9rem;
+			}
+
+			.community-box {
+				min-height: 120px;
+				transition: transform 0.2s ease;
+			}
+
+			.community-box:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			}
+		}
+	</style>
 </head>
 
 <body>
@@ -408,48 +424,48 @@
                                 <i class="bi bi-people-fill me-2"></i>커뮤니티에서 자유롭게 글을 써보세요
                             </h5>
 
-                            <th:block th:each="commu : ${cList}">
-                                <a th:href="@{/communityDetail(communityBoardNo=${commu.communityBoardNo})}"
-                                   class="text-decoration-none">
-                                    <div class="community-box p-4 bg-white rounded-3 shadow-sm my-4 hover-effect">
-                                        <!-- 제목과 내용 영역 -->
-                                        <div class="d-flex flex-column mb-3">
-                                            <h5 class="mb-2 fw-bold text-dark">
-                                                <i class="bi bi-file-text me-2 text-primary"></i>
-                                                [[${commu.communityBoardTitle}]]
-                                            </h5>
-                                            <p class="text-muted mb-3">[[${commu.communityBoardContent}]]</p>
-                                        </div>
+							<th:block th:each="commu : ${cList}">
+								<a th:href="@{/communityDetail(communityBoardNo=${commu.communityBoardNo})}" class="text-decoration-none">
+									<div class="community-box p-4 bg-white rounded-3 shadow-sm my-4 hover-effect">
+										<!-- 제목과 내용 영역 -->
+										<div class="d-flex flex-column mb-3">
+											<h5 class="mb-2 fw-bold text-dark">
+												<i class="bi bi-file-text me-2 text-primary"></i>
+												[[${commu.communityBoardTitle}]]
+											</h5>
+											<div class="content-preview" th:text="${#strings.abbreviate(commu.communityBoardContent, 100)}" style="color: gray">
+											</div>
+										</div>
 
-                                        <!-- 하단 정보 영역 -->
-                                        <div class="row border-top pt-3">
-                                            <!-- 좋아요/싫어요 -->
-                                            <div class="col-3 d-flex gap-4 justify-content-start">
+										<!-- 하단 정보 영역 -->
+										<div class="row border-top pt-3">
+											<!-- 좋아요/싫어요 -->
+											<div class="col-3 d-flex gap-4 justify-content-start">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-heart-fill me-1 text-danger"></i>
+                        <span class="text-muted">[[${commu.communityBoardLike}]]</span>
+                    </span>
 												<span class="d-flex align-items-center">
-													<i class="bi bi-heart-fill me-1 text-danger"></i>
-													<span class="text-muted">[[${commu.communityBoardLike}]]</span>
-												</span>
-                                                <span class="d-flex align-items-center">
-													<i class="bi bi-hand-thumbs-down-fill me-1 text-secondary"></i>
-													<span class="text-muted">[[${commu.communityBoardDislike}]]</span>
-												</span>
-                                            </div>
-                                            <div class="col-6"></div>
-                                            <!-- 조회수/댓글수 -->
-                                            <div class="col-3 d-flex gap-4 justify-content-end">
+                        <i class="bi bi-hand-thumbs-down-fill me-1 text-secondary"></i>
+                        <span class="text-muted">[[${commu.communityBoardDislike}]]</span>
+                    </span>
+											</div>
+											<div class="col-6"></div>
+											<!-- 조회수/댓글수 -->
+											<div class="col-3 d-flex gap-4 justify-content-end">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-eye-fill me-1 text-secondary"></i>
+                        <span class="text-muted">[[${commu.communityView}]]</span>
+                    </span>
 												<span class="d-flex align-items-center">
-													<i class="bi bi-eye-fill me-1 text-secondary"></i>
-													<span class="text-muted">[[${commu.communityView}]]</span>
-												</span>
-                                                <span class="d-flex align-items-center">
-													<i class="bi bi-chat-fill me-1 text-primary"></i>
-													<span class="text-muted">[[${commu.communityReplyCount}]]</span>
-												</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </th:block>
+                        <i class="bi bi-chat-fill me-1 text-primary"></i>
+                        <span class="text-muted">[[${commu.communityReplyCount}]]</span>
+                    </span>
+											</div>
+										</div>
+									</div>
+								</a>
+							</th:block>
 
                         </div>
                     </div>
@@ -534,6 +550,27 @@
 </th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+function stripHtmlAndGetFirstLine(html) {
+// HTML 태그 제거
+let temp = document.createElement('div');
+temp.innerHTML = html;
+let text = temp.textContent || temp.innerText;
+
+// 첫 줄만 반환
+let lines = text.split('\n');
+return lines[0];
+}
+
+// 모든 content-preview 요소에 대해 처리
+document.querySelectorAll('.content-preview').forEach(function(element) {
+let content = element.innerHTML;
+element.textContent = stripHtmlAndGetFirstLine(content);
+});
+});
+</script>
 </body>
 
 </html>
