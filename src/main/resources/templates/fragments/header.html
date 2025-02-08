@@ -134,7 +134,7 @@
 														<!-- 회원 정보 전문가 영역 -->
 													<th:block th:if="${session.member != null && session.member.memberType == 1 && !session.member.isAdmin != false}">
 														<li><a class="dropdown-item text-manager" href="/portfolioList">포트폴리오 관리</a></li>
-														<!-- <li><a class="dropdown-item" th:href="@{/proDetail(proNo=${session.member.proNo})}">상세보기</a></li> -->
+														 <li><a class="dropdown-item" th:href="@{/proDetail(proNo=${session.proNo})}">상세보기</a></li>
 													</th:block>
 
 													<li><a th:href="@{/payReceipt}" class="dropdown-item">결제 내역</a></li>

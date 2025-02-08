@@ -72,7 +72,7 @@ public class PayController {
             // 최종 결제 처리 - DB(결제 테이블) 작업
 
             Pay pay = new Pay();
-            pay.setEstimationNo(request.getEstimationNo()); // 주문 정보의 quotationNo
+            pay.setEstimationNo(request.getEstimationNo()); // 주문 정보의 estimationNo
             pay.setMemberNo(request.getMemberNo()); // 주문 정보의 memberNo
             // 결제 타입
             if(request.getChannelNum() == 1) {

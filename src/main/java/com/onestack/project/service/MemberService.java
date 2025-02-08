@@ -356,4 +356,9 @@ public class MemberService {
     public int getMainEstimationCount() {
         return memberMapper.getMainEstimationCount();
     }
+
+    // 전문가 번호 조회
+    public int getProNo(int memberNo) {
+        return memberMapper.getProNo(memberNo);
+    }
 }
