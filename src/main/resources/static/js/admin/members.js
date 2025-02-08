@@ -452,6 +452,8 @@ function handleScreeningClick(e) {
     e.preventDefault();
     console.log('Screening button clicked');
 
+     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+
     const proNo = this.getAttribute('data-pro-no');
     const name = this.getAttribute('data-name');
     const itemTitle = this.getAttribute('data-item-title');
@@ -492,6 +494,11 @@ function handleSaveScreening() {
         saveButton.disabled = false;
         return;
     }
+
+     console.log("👀 심사 승인 요청 보내는 중...");
+        console.log("📌 요청 URL: /reviewPro");
+        console.log("📌 요청 데이터:", { proNo, professorStatus: status, screeningMsg: message });
+
 
     fetch('/reviewPro', {
         method: 'POST',
@@ -534,6 +541,10 @@ function initializeScreeningModification() {
 
     modScreeningButtons.forEach(button => {
         button.addEventListener('click', function () {
+
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+
+
             const proNo = this.getAttribute('data-pro-no');
             const name = this.getAttribute('data-name');
             const itemTitle = this.getAttribute('data-item-title');
@@ -603,6 +614,11 @@ function handleSaveModifiedScreening() {
         return;
     }
 
+     console.log("👀 심사 수정 요청 보내는 중...");
+        console.log("📌 요청 URL: /updateReviewPro");
+        console.log("📌 요청 데이터:", { proNo, professorStatus: status, screeningMsg: message });
+
+
     fetch('/updateReviewPro', {
         method: 'POST',
         headers: {
@@ -619,7 +635,9 @@ function handleSaveModifiedScreening() {
             return response.text();
         })
         .then((message) => {
-            alert(message);
+            console.log("✅ 응답 메시지:", message);
+            alert('심사 수정이 완료되었습니다.');
+             document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
             window.location.reload();
         })
         .catch(error => {
