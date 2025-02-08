@@ -165,7 +165,7 @@ public class AdminService {
 			case "community":
 				managerMapper.disableCommunity(targetId);
 				break;
-			case "communityReply":
+			case "reply":
 				managerMapper.disableCommunityReply(targetId);
 				break;
 			case "member" :

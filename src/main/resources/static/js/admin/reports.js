@@ -1,7 +1,6 @@
 document.addEventListener("click", function (e) {
     // 신고 상세 보기 버튼 클릭 시
     if (e.target.classList.contains("report-edit-btn")) {
-        e.stopImmediatePropagation(); // ✅ 중복 실행 방지
         // 버튼에서 신고 번호 가져오기
         const reportId = e.target.getAttribute("data-report-id");
         console.log(`신고 상세 보기 클릭: reportId=${reportId}`);
@@ -10,18 +9,18 @@ document.addEventListener("click", function (e) {
         const reportRow = document.querySelector(`tr[data-report-no="${reportId}"]`);
         if (reportRow) {
             // 테이블 데이터 가져와 모달에 채우기
-            document.getElementById("reportsNo").value = reportRow.querySelector("td:nth-child(2)").textContent.trim();
-            document.getElementById("reporterNickname").value = reportRow.querySelector("td:nth-child(3)").textContent.trim();
-            document.getElementById("reportedNickname").value = reportRow.querySelector("td:nth-child(4)").textContent.trim();
-            document.getElementById("reportsType").value = reportRow.querySelector("td:nth-child(5)").textContent.trim();
-            document.getElementById("reportsDate").value = reportRow.querySelector("td:nth-child(8)").textContent.trim();
+            document.getElementById("reportsNo").value = reportRow.querySelector("td:nth-child(1)").textContent.trim();
+            document.getElementById("reporterNickname").value = reportRow.querySelector("td:nth-child(2)").textContent.trim();
+            document.getElementById("reportedNickname").value = reportRow.querySelector("td:nth-child(3)").textContent.trim();
+            document.getElementById("reportsType").value = reportRow.querySelector("td:nth-child(4)").textContent.trim();
+            document.getElementById("reportsDate").value = reportRow.querySelector("td:nth-child(7)").textContent.trim();
 
             // 신고사유는 버튼의 data-attribute에서 가져옴
             const reportsReason = e.target.getAttribute("data-reports-reason");
             document.getElementById("reportsReason").value = reportsReason ? reportsReason.trim() : "내용 없음";
 
             // 활성화 여부 업데이트
-            const statusText = reportRow.querySelector("td:nth-child(9)").textContent.trim();
+            const statusText = reportRow.querySelector("td:nth-child(8)").textContent.trim();
             document.getElementById("reportsStatus").value = statusText === "처리 완료" ? "비활성화" : statusText;
 
             console.log("모달 데이터 업데이트 완료");
@@ -32,7 +31,6 @@ document.addEventListener("click", function (e) {
 
      // 비활성화 버튼 클릭 시
      if (e.target.classList.contains("btn-disable")) {
-         e.stopImmediatePropagation(); // ✅ 중복 실행 방지
          const reportsNo = document.getElementById("reportsNo").value;
          const targetId = document.querySelector(`tr[data-report-no="${reportsNo}"]`).getAttribute("data-target-id");
          const reportsType = document.getElementById("reportsType").value.toLowerCase();
@@ -72,7 +70,7 @@ document.addEventListener("click", function (e) {
       });
 
 // 모달 닫기 이벤트 (모달 초기화)
-document.getElementById("reportModal").addEventListener("hidden.bs.modal", function () {
-    document.getElementById("reportForm").reset();
-    console.log("모달 초기화 완료");
-});
+//document.getElementById("reportModal").addEventListener("hidden.bs.modal", function () {
+//    document.getElementById("reportForm").reset();
+//    console.log("모달 초기화 완료");
+//});
