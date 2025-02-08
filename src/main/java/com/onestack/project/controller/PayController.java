@@ -93,7 +93,7 @@ public class PayController {
             systemMessage.setSender(member.getMemberId());
             systemMessage.setNickname(member.getNickname());
             systemMessage.setType("SYSTEM");
-            systemMessage.setMessage("회원이 리뷰를 작성하였습니다.");
+            systemMessage.setMessage("결제가 완료되었습니다. 프로젝트에 대한 평가를 리뷰로 남겨주세요!");
             systemMessage.setSentAt(LocalDateTime.now());
 
             // DB에 시스템 메시지 저장

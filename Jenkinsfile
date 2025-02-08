@@ -3,6 +3,15 @@ pipeline {
     
     environment {
         DOCKER_COMPOSE = '/usr/local/bin/docker-compose'
+        KAKAO_CLIENT_ID = credentials('kakao-client-id')
+        KAKAO_REDIRECT_URI = credentials('kakao-redirect-uri')
+        GOOGLE_CLIENT_ID = credentials('google-client-id')
+        GOOGLE_CLIENT_SECRET = credentials('google-client-secret')
+        GOOGLE_REDIRECT_URI = credentials('google-redirect-uri')
+        GMAIL_USERNAME = credentials('gmail-username')
+        GMAIL_PASSWORD = credentials('gmail-password')
+        PORTONE_API_KEY = credentials('portone-api-key')
+        PORTONE_API_SECRET = credentials('portone-api-secret')
     }
     
     stages {

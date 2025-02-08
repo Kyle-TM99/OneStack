@@ -201,7 +201,11 @@
                             </div>
                         </div>
                         <div class="chat-body">
-                            <p class="last-message" th:text="${room.lastMessage ?: '새로운 채팅방이 생성되었습니다.'}"></p>
+                            <p class="last-message" th:if="${room.lastMessage != null and !room.lastMessage.isEmpty()}" 
+                               th:text="${#strings.abbreviate(room.lastMessage, 30)}"></p>
+                            <p class="last-message text-muted" th:if="${room.lastMessage == null or room.lastMessage.isEmpty()}">
+                                새로운 채팅방이 생성되었습니다.
+                            </p>
                         </div>
                         <div class="chat-footer">
                             <span th:text="${#temporals.format(room.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>

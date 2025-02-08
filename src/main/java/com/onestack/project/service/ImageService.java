@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class ImageService {
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "https://13.209.73.20/images/";
+    private final String IMAGE_BASE_URL = "https://www.onestack.store/images/";
 
     public String uploadImage(MultipartFile file) throws IOException {
         // 파일명 생성 (UUID 사용)
