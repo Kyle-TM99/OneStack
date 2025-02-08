@@ -42,11 +42,12 @@
                         <td th:text="${#dates.format(pro.professional.proDate, 'yyyy-MM-dd HH:mm:ss')}">심사일</td>
                         <td th:text="${pro.professional.professorStatus == 1 ? '승인' : '거부'}">승인 여부</td>
                         <td>
-							<button class="btn btn-outline-dark btn-sm modScreening-btn" 
+							<button class="btn btn-outline-dark btn-sm modScreening-btn"
 							        th:data-pro-no="${pro.professional.proNo}"
 							        th:data-name="${pro.member.name}"
 							        th:data-item-title="${pro.category.itemTitle}"
-							        th:data-pro-date="${#dates.format(pro.professional.proDate, 'yyyy-MM-dd HH:mm:ss')}">
+							        th:data-pro-date="${#dates.format(pro.professional.proDate, 'yyyy-MM-dd HH:mm:ss')}"
+                                    th:data-screening-msg="${pro.professional.screeningMsg}">
 							    승인 수정
 							</button>
                         </td>
@@ -54,7 +55,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <!-- 페이지네이션을 하단에 고정 -->
         <div class="mt-auto border-top">
             <nav aria-label="Page navigation">
@@ -74,7 +75,7 @@
             </nav>
         </div>
     </div>
-    
+
  <!-- 심사 수정 모달 -->
 <div class="modal fade" id="modScreeningModal" tabindex="-1" aria-labelledby="modScreeningModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered"> <!-- 중앙 정렬 추가 -->
@@ -103,7 +104,7 @@
                         <div class="d-flex justify-content-center gap-5 mt-2">
                             <div class="form-check ">
                                 <input class="form-check-input" type="radio" name="professorStatus" id="approve" value="1">
-                                <label class="form-check-label" for="approve">승인</label>
+                                <label class="form-check-label" for="approve">승인 확정</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="professorStatus" id="reject" value="0">
@@ -112,10 +113,13 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-muted small">심사 수정 사유 (선택사항)</label>
-                        <textarea class="form-control" id="screeningMsg" rows="3" 
-                                placeholder="심사 수정에 대한 사유를 입력해주세요. (선택사항)"></textarea>
+                        <label class="form-label text-muted small">1차 심사 사유 </label>
+                        <textarea class="form-control" id="screeningMsg" rows="3"
+                                  th:value="${pro[0].professional != null ? pro[0].professional.screeningMsg : ''}" readonly></textarea>
                     </div>
+
+
+
                 </form>
             </div>
             <div class="modal-footer border-top-0 px-4"> <!-- 푸터 테두리 제거 -->
