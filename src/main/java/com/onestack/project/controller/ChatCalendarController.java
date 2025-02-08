@@ -1,14 +1,22 @@
 package com.onestack.project.controller;
 
 import com.onestack.project.domain.ChatCalendarEvent;
+import com.onestack.project.domain.ChatMessage;
+import com.onestack.project.domain.Member;
 import com.onestack.project.service.ChatCalendarService;
+import com.onestack.project.service.ChatService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +29,39 @@ public class ChatCalendarController {
     
     @Autowired
     private ChatCalendarService chatCalendarService;
+
+    @Autowired
+    private ChatService chatService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     
     //일정 등록
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createEvent(@RequestBody ChatCalendarEvent event) {
+
+    public ResponseEntity<Map<String, Object>> createEvent(@RequestBody ChatCalendarEvent event, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         try {
             chatCalendarService.createEvent(event);
             response.put("success", true);
             response.put("message", "일정이 추가되었습니다.");
+
+            Member member = (Member) session.getAttribute("member");
+
+            // 시스템 메시지 생성
+            ChatMessage systemMessage = new ChatMessage();
+            systemMessage.setRoomId(event.getRoomId());
+            systemMessage.setSender(member.getMemberId());
+            systemMessage.setNickname(member.getNickname());
+            systemMessage.setType("SYSTEM");
+            systemMessage.setMessage(member.getNickname() + "님이 일정을 등록하였습니다.");
+            systemMessage.setSentAt(LocalDateTime.now());
+
+            // DB에 시스템 메시지 저장
+            chatService.saveMessage(systemMessage);
+
+            // 시스템 메시지를 웹소켓으로 전송
+            messagingTemplate.convertAndSend("/topic/chat/room/" + event.getRoomId(), systemMessage);
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", e.getMessage());
