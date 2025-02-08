@@ -8,7 +8,6 @@ import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ChatService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -163,7 +162,7 @@ public class EstimationController {
                 systemMessage.setSender(pro.getMemberId());
                 systemMessage.setNickname(pro.getNickname());
                 systemMessage.setType("SYSTEM");
-                systemMessage.setMessage("전문가가 견적 요청을 수락하였습니다.");
+                systemMessage.setMessage("전문가 " + pro.getNickname() + " 님이 견적 요청을 수락하였습니다. " + member.getNickname() + " 님, 견적 확인 후 결제를 진행하실 수 있습니다.");
                 systemMessage.setSentAt(LocalDateTime.now());
 
                 // DB에 시스템 메시지 저장
