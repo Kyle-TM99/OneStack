@@ -144,7 +144,7 @@ public class AdminService {
 		managerMapper.incrementReportedCount(report.getReportedMemberNo());
 	}
 
-	// 회원 기간 정지 자동 해제
+	// 회원 기간 정지 자동 해제함
 	@Scheduled(cron = "0 0 0 * * ?") // 00:00에 초기화
 	public void releaseSuspendMember(){
 		managerMapper.releaseSuspendMember();
