@@ -57,7 +57,7 @@ public class GoogleController {
                 model.addAttribute("googleEmail", email);
                 model.addAttribute("googleName", name);
                 model.addAttribute("googlePicture", picture);
-                return "/member/googleAddJoinForm";
+                return "member/googleAddJoinForm";
             } else {
                 // 기존 회원인 경우 로그인 처리
                 session.setAttribute("member", member);
@@ -99,6 +99,7 @@ public String logout(HttpServletRequest request, HttpServletResponse response) {
             member.setPass(encodedPassword);
             member.setSocial(true);
             member.setSocialType("google");
+            member.setMemberType(0);
             
             memberService.insertMember(member);
             

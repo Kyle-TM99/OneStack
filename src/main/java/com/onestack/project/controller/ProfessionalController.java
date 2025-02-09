@@ -303,6 +303,7 @@ public class ProfessionalController {
             log.warn("🚨 세션에 로그인된 회원이 없습니다. 로그인 페이지로 리다이렉트");
             return "redirect:/loginForm";
         }
+
         log.info("✅ 로그인된 회원 - memberNo: {}", member.getMemberNo());
 
         // ✅ 기존 포트폴리오, 전문가, 전문가 고급정보 가져오기
