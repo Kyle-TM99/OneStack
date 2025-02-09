@@ -78,7 +78,7 @@ public class MainController {
 		return "views/mainPage";
 	}
 
-	@GetMapping("/loginForm")
+	@GetMapping({"/loginForm", "/login"})
 	public String loginForm(Model model) {
 		return "member/loginForm";
 	}
