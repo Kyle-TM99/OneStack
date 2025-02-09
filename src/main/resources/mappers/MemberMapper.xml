@@ -534,24 +534,25 @@
 	</select>
 
 	<!-- 회원 수 확인 -->
-	<select id="getMemberCount">
+	<select id="getMemberCount" resultType="int">
 		SELECT COUNT(*)
 		FROM Member
 		WHERE member_type = 0
 	</select>
 
 	<!-- 완료된 외주 수 확인 -->
-	<select id="getMainEstimationCount">
+	<select id="getMainEstimationCount" resultType="int">
 		SELECT COUNT(*)
 		FROM Estimation
 		WHERE progress = 4
 	</select>
 
-	<!-- 전문가 번호 조회 -->
-	<select id="getProNo" parameterType="int" resultType="int">
-		SELECT pro_no
-		FROM Professional
-		WHERE member_no = #{memberNo}
+	<!-- 전문가 번호 조회 수정 -->
+	<select id="getProNo" parameterType="int" resultType="Integer">
+		SELECT p.pro_no
+		FROM Professional p
+		JOIN Member m ON p.member_no = m.member_no
+		WHERE m.member_no = #{memberNo}
 	</select>
 	
 </mapper>

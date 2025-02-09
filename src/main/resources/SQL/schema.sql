@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Member (member_no INTEGER AUTO_INCREMENT PRIMARY KEY,
 	 member_reg_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	 member_type   INTEGER DEFAULT 0 NOT NULL, -- 0(초보자) 1(전문가) 2(심사중)--
 	 member_status INTEGER DEFAULT 0 NOT NULL, -- 0(활성화) 1(비활성화) 2(정지) 3(탈퇴) --
-	 member_image VARCHAR(100) NULL,
+	 member_image VARCHAR(500) NULL,
 	 member_stop VARCHAR(5000) NULL,  -- 정지 사유 (member_status가 2(정지)일때만)
 	 withdrawal_end_date   TIMESTAMP NULL,
 	 ban_end_date   TIMESTAMP NULL,

@@ -4,6 +4,7 @@ import com.onestack.project.domain.ChatMessage;
 import com.onestack.project.domain.ChatRoom;
 import com.onestack.project.domain.Member;
 import com.onestack.project.mapper.ChatMapper;
+import com.onestack.project.mapper.ProfessionalMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class ChatService {
     
     @Autowired
     private ChatMapper chatMapper;
+
+    @Autowired
+    private ProfessionalMapper professionalMapper;
 
     // 채팅방 삭제
     public void deleteChatRoom(String roomId) {
@@ -87,7 +91,7 @@ public class ChatService {
     public boolean isParticipant(String roomId, int memberNo) {
         try {
             ChatRoom room = chatMapper.getChatRoomById(roomId);
-            return room != null && (room.getMemberNo() == memberNo || room.getProNo() == memberNo);
+            return room != null && (room.getMemberNo() == memberNo || professionalMapper.getMemberNo(room.getProNo()) == memberNo);
         } catch (Exception e) {
             log.error("참여자 확인 실패: {}", e.getMessage());
             throw new RuntimeException("참여자 확인에 실패했습니다.", e);
