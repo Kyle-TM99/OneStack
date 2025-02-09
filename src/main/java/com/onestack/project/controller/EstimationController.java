@@ -4,8 +4,10 @@ import com.onestack.project.domain.ChatMessage;
 import com.onestack.project.domain.ChatRoom;
 import com.onestack.project.domain.Estimation;
 import com.onestack.project.domain.Member;
+import com.onestack.project.mapper.ProfessionalMapper;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ChatService;
+import com.onestack.project.service.ProfessionalService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -30,6 +32,7 @@ public class EstimationController {
     private final MemberService memberService;
     private final ChatService chatService;  // ChatService 주입
     private final SimpMessagingTemplate messagingTemplate;
+    private final ProfessionalMapper professionalMapper;
     
 
     // 견적 페이지
@@ -119,6 +122,7 @@ public class EstimationController {
             chatRoom.setRoomName(estimation.getMemberNickname() + " 님이 " + member.getNickname() + " 님에게 요청한 " + estimation.getCategoryName() + " 프로젝트");
             chatRoom.setMemberNo(estimation.getMemberNo());
             chatRoom.setProNo(memberService.getProNo(member.getMemberNo()));
+            chatRoom.setRoomAdmin(member.getMemberNo());
             chatRoom.setEstimationNo(estimationNo);
             
             String roomId = chatService.createRoom(chatRoom);
@@ -215,9 +219,9 @@ public class EstimationController {
         HttpSession session
     ) {
         Map<String, Object> response = new HashMap<>();
-        
         try {
             Member member = (Member) session.getAttribute("member");
+
             if (member == null) {
                 throw new RuntimeException("로그인이 필요합니다.");
             }
@@ -229,7 +233,7 @@ public class EstimationController {
             }
 
             // 권한 체크 (전문가만 수정 가능)
-            if (member.getMemberNo() != estimation.getProNo()) {
+            if (member.getMemberNo() != professionalMapper.getMemberNo(estimation.getProNo())) {
                 throw new RuntimeException("견적 금액 수정 권한이 없습니다.");
             }
 
