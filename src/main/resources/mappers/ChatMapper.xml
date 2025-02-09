@@ -69,8 +69,9 @@
             p.nickname as proNickname
         FROM chat_room cr
         JOIN Estimation e ON cr.estimation_no = e.estimation_no
+        JOIN Professional pr ON cr.pro_no = pr.pro_no
         JOIN Member m ON cr.member_no = m.member_no
-        JOIN Member p ON cr.pro_no = p.member_no
+        JOIN Member p ON cr.pro_no = pr.member_no
         WHERE cr.room_id = #{roomId}
     </select>
     
