@@ -462,8 +462,11 @@
 	<select id="getEstimationCount" parameterType="int" resultType="int">
 		SELECT COUNT(*)
 		FROM Estimation e
-		JOIN Professional pr ON e.pro_no = pr.member_no
-		WHERE pr.pro_no = #{proNo}
+		WHERE e.pro_no = (
+			SELECT member_no 
+			FROM Professional 
+			WHERE pro_no = #{proNo}
+		)
 		AND e.progress = 0
 	</select>
 
@@ -476,12 +479,16 @@
 			c.item_title as categoryName
 		FROM 
 			Estimation e
-			JOIN Professional pr ON e.pro_no = pr.member_no
 			LEFT JOIN Member m ON e.member_no = m.member_no
-			LEFT JOIN Member p ON pr.member_no = p.member_no
+			LEFT JOIN Professional pr ON pr.pro_no = #{proNo}
+			LEFT JOIN Member p ON e.pro_no = p.member_no
 			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
-			pr.pro_no = #{proNo}
+			e.pro_no = (
+				SELECT member_no 
+				FROM Professional 
+				WHERE pro_no = #{proNo}
+			)
 			AND e.progress = 0
 		ORDER BY 
 			e.created_at DESC
@@ -504,9 +511,8 @@
 			c.item_title as categoryName
 		FROM 
 			Estimation e
-			JOIN Professional pr ON e.pro_no = pr.member_no
 			LEFT JOIN Member m ON e.member_no = m.member_no
-			LEFT JOIN Member p ON pr.member_no = p.member_no
+			LEFT JOIN Member p ON e.pro_no = p.member_no
 			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
 			e.estimation_no = #{estimationNo}
