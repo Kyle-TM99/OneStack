@@ -54,9 +54,11 @@ public class EstimationController {
         
         int startPage = (pageNum - 1) / pageGroup * pageGroup + 1;
         int endPage = Math.min(startPage + pageGroup - 1, pageCount);
-        
+
+        int proNo = memberService.getProNo(member.getMemberNo());
+
         // 현재 페이지의 견적 목록 조회
-        List<Estimation> estimations = memberService.getEstimationsByPage(member.getMemberNo(), pageNum, pageSize);
+        List<Estimation> estimations = memberService.getEstimationsByPage(proNo, pageNum, pageSize);
         
         // 페이지네이션 정보를 모델에 추가
         model.addAttribute("estimations", estimations);

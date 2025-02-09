@@ -485,6 +485,14 @@
             const destination = `/topic/chat/room/${roomId}`;
             ws.subscribe(destination, function(message) {
                 var recv = JSON.parse(message.body);
+                
+                // 시스템 메시지인 경우 페이지 새로고침
+                if (recv.type === 'SYSTEM') {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500); // 메시지를 잠깐 보여주기 위해 0.5초 후 새로고침
+                }
+                
                 displayMessage(recv);
             });
 
