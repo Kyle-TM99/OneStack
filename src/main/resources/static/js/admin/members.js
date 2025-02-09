@@ -156,13 +156,19 @@ function initializeCommonEvents() {
     });
 }
 
-// 모달 닫기 함수
 function closeModal(modalElement) {
+    if (!modalElement) return;
+
     modalElement.classList.remove('show');
     modalElement.style.display = 'none';
     document.body.classList.remove('modal-open');
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) backdrop.remove();
+
+    // ✅ 회색 배경(`modal-backdrop`)이 두 번 삭제되지 않도록 보장
+    setTimeout(() => {
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.remove();
+        });
+    }, 10);
 }
 
 function initializeCheckboxes() {
@@ -207,6 +213,8 @@ function initializeCheckboxes() {
     // 초기 버튼 상태 업데이트
     updateDeleteButton();
 }
+
+
 function initializeMemberManagement() {
     document.querySelectorAll('.member-edit-btn').forEach(button => {
         button.addEventListener('click', function () {
@@ -234,91 +242,92 @@ function initializeMemberManagement() {
         });
     });
 
-// 회원정보 수정
- document.getElementById('editInformation')?.addEventListener('click', function () {
-     const memberNo = parseInt(window.currentMemberNo);
-     if (!memberNo) {
-         alert('회원 번호가 누락되었습니다.');
-         return;
-     }
-
-     const phoneInput = document.getElementById("phone");
-     if (phoneInput) {
-         phoneInput.setAttribute("maxlength", "13");
-         phoneInput.addEventListener("input", function () {
-             this.value = formatPhoneNumber(this.value);
-         });
-     }
-
-     const updatedData = {
-         memberNo: memberNo,
-         name: document.getElementById('memberName').value.trim(),
-         nickname: document.getElementById('nickname').value.trim(),
-         memberId: document.getElementById('memberId').value.trim(),
-         memberType: document.getElementById('memberType').value,  // 🔥 숫자로 변환
-         email: document.getElementById('memberEmail').value.trim(),
-         phone: phoneInput.value.trim(),
-         address: document.getElementById('address').value.trim(),
-         address2: document.getElementById('address2').value.trim(),
-         memberStatus: document.getElementById('memberStatus').value,
-         banEndDate: null,
-         memberStop: null
-     };
-
-     const banEndDateInput = document.getElementById("banEndDate").value.trim();
-     const memberStopInput = document.getElementById("memberStop") ? document.getElementById("memberStop").value.trim() : "";
-
-     if (updatedData.memberStatus === "1") {
-         // ✅ 기간 정지 상태일 경우, 정지 종료일 필수 입력
-         if (!banEndDateInput) {
-             alert("정지 종료일을 선택해주세요.");
-             return;
-         }
-         updatedData.banEndDate = banEndDateInput;
-         updatedData.memberStop = null; // 기간 정지일 경우 정지 사유 초기화
-     } else if (updatedData.memberStatus === "2") {
-         // ✅ 영구 정지 상태일 경우, 정지 사유 필수 입력
-         if (!memberStopInput) {
-             alert("정지 사유를 입력해주세요.");
-             return;
-         }
-         updatedData.memberStop = memberStopInput;
-         updatedData.banEndDate = null; // 영구 정지일 경우 정지 종료일 초기화
-     }
-
-// ✅ 필수 입력값 확인 (banEndDate 또는 memberStopReason은 제외)
-     for (let key in updatedData) {
-         if (!updatedData[key] && key !== "banEndDate" && key !== "memberStop") {
-             alert(`${key} 값을 입력해주세요.`);
-             return;
-         }
-     }
-
-
-     console.log('Updated member data:', updatedData);
-
-     fetch('/adminPage/updateMember', {
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(updatedData),
-     })
-     .then(response => response.json())
-     .then(data => {
-         if (data.message.includes("실패")) {
-             alert(data.message);
-         } else {
-             alert(data.message);
-             location.reload();
-         }
-     })
-     .catch(error => {
-         console.error('Error updating member:', error);
-         alert("회원 정보 수정 중 오류 발생");
-     });
- });
+    // ✅ 기존 이벤트 제거 후 한 번만 등록 (중복 실행 방지)
+    const editButton = document.getElementById('editInformation');
+    if (editButton) {
+        editButton.removeEventListener('click', handleEditInformation); // 기존 이벤트 제거
+        editButton.addEventListener('click', handleEditInformation); // 한 번만 등록
+    }
 }
+
+function handleEditInformation(event) {
+    event.preventDefault(); // 기본 동작 방지
+
+    const editButton = document.getElementById('editInformation');
+    if (editButton.disabled) return; // ✅ 이미 비활성화된 경우 실행 안 함
+    editButton.disabled = true; // ✅ 클릭 후 즉시 비활성화 (중복 실행 방지)
+
+    const memberNo = parseInt(window.currentMemberNo);
+    if (!memberNo) {
+        alert('회원 번호가 누락되었습니다.');
+        editButton.disabled = false;
+        return;
+    }
+
+    const phoneInput = document.getElementById("phone");
+    if (phoneInput) {
+        phoneInput.setAttribute("maxlength", "13");
+        phoneInput.addEventListener("input", function () {
+            this.value = formatPhoneNumber(this.value);
+        });
+    }
+
+    const updatedData = {
+        memberNo: memberNo,
+        name: document.getElementById('memberName').value.trim(),
+        nickname: document.getElementById('nickname').value.trim(),
+        memberId: document.getElementById('memberId').value.trim(),
+        memberType: document.getElementById('memberType').value,
+        email: document.getElementById('memberEmail').value.trim(),
+        phone: phoneInput.value.trim(),
+        address: document.getElementById('address').value.trim(),
+        address2: document.getElementById('address2').value.trim(),
+        memberStatus: document.getElementById('memberStatus').value,
+        banEndDate: null,
+        memberStop: null
+    };
+
+    const banEndDateInput = document.getElementById("banEndDate").value.trim();
+    const memberStopInput = document.getElementById("memberStop") ? document.getElementById("memberStop").value.trim() : "";
+
+    if (updatedData.memberStatus === "1" && !banEndDateInput) {
+        alert("정지 종료일을 선택해주세요.");
+        editButton.disabled = false;
+        return;
+    }
+
+    if (updatedData.memberStatus === "2" && !memberStopInput) {
+        alert("정지 사유를 입력해주세요.");
+        editButton.disabled = false;
+        return;
+    }
+
+    if (updatedData.memberStatus === "1") updatedData.banEndDate = banEndDateInput;
+    if (updatedData.memberStatus === "2") updatedData.memberStop = memberStopInput;
+
+    console.log('Updated member data:', updatedData);
+
+    fetch('/adminPage/updateMember', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (!data.message.includes("실패")) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error updating member:', error);
+        alert("회원 정보 수정 중 오류 발생");
+    })
+    .finally(() => {
+        editButton.disabled = false; // ✅ 요청 완료 후 다시 활성화
+    });
+}
+
 
 function openMemberModal(memberData) {
     window.currentMemberNo = memberData.memberNo;
@@ -424,20 +433,6 @@ function toggleBanDate() {
     }
 }
 
-
-//     function toggleBanDate() {
-//     const statusSelect = document.getElementById("memberStatus");
-//     const banDateContainer = document.getElementById("banDateContainer");
-//     const banEndDateInput = document.getElementById("banEndDate");
-//
-//     if (statusSelect.value == "1") {
-//         banDateContainer.style.display = "block";
-//     } else {
-//         banDateContainer.style.display = "none";
-//         banEndDateInput.value = "";
-//     }
-// }
-
 // 심사 관리 초기화 함수
 function initializeScreeningManagement() {
     const screeningButtons = document.querySelectorAll('.screening-btn');
@@ -456,6 +451,8 @@ function initializeScreeningManagement() {
 function handleScreeningClick(e) {
     e.preventDefault();
     console.log('Screening button clicked');
+
+     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
 
     const proNo = this.getAttribute('data-pro-no');
     const name = this.getAttribute('data-name');
@@ -498,6 +495,11 @@ function handleSaveScreening() {
         return;
     }
 
+     console.log("👀 심사 승인 요청 보내는 중...");
+        console.log("📌 요청 URL: /reviewPro");
+        console.log("📌 요청 데이터:", { proNo, professorStatus: status, screeningMsg: message });
+
+
     fetch('/reviewPro', {
         method: 'POST',
         headers: {
@@ -539,10 +541,15 @@ function initializeScreeningModification() {
 
     modScreeningButtons.forEach(button => {
         button.addEventListener('click', function () {
+
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+
+
             const proNo = this.getAttribute('data-pro-no');
             const name = this.getAttribute('data-name');
             const itemTitle = this.getAttribute('data-item-title');
             const proDate = this.getAttribute('data-pro-date');
+            const screeningMsg = this.getAttribute('data-screening-msg');
 
             const modalElement = document.getElementById('modScreeningModal');
             if (!modalElement) {
@@ -562,7 +569,7 @@ function initializeScreeningModification() {
             });
 
             // 메모 필드 초기화
-            modalElement.querySelector('#screeningMsg').value = '';
+            modalElement.querySelector('#screeningMsg').value = screeningMsg || '';
 
             // 모달 표시
             modalElement.classList.add('show');
@@ -607,6 +614,11 @@ function handleSaveModifiedScreening() {
         return;
     }
 
+     console.log("👀 심사 수정 요청 보내는 중...");
+        console.log("📌 요청 URL: /updateReviewPro");
+        console.log("📌 요청 데이터:", { proNo, professorStatus: status, screeningMsg: message });
+
+
     fetch('/updateReviewPro', {
         method: 'POST',
         headers: {
@@ -623,7 +635,9 @@ function handleSaveModifiedScreening() {
             return response.text();
         })
         .then((message) => {
-            alert(message);
+            console.log("✅ 응답 메시지:", message);
+            alert('심사 수정이 완료되었습니다.');
+             document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
             window.location.reload();
         })
         .catch(error => {
@@ -634,51 +648,3 @@ function handleSaveModifiedScreening() {
             saveButton.disabled = false;
         });
 }
-
-// 심사 수정 저장 처리 함수
-// function handleSaveModifiedScreening() {
-//     const saveButton = document.getElementById('saveModScreening');
-//     if (!saveButton) return;
-//
-//     saveButton.disabled = true;
-//
-//     const proNo = document.getElementById('proNo').value;
-//     const status = document.querySelector('input[name="professorStatus"]:checked')?.value;
-//     const message = document.getElementById('screeningMsg').value;
-//
-//     if (!status) {
-//         alert('승인 또는 거부를 선택해주세요.');
-//         saveButton.disabled = false;
-//         return;
-//     }
-//
-//     fetch('/updateReviewPro', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//             proNo: proNo,
-//             professorStatus: status,
-//             screeningMsg: message || ''
-//         })
-//     })
-//         .then(response => {
-//             if (!response.ok) throw new Error('서버 응답 오류');
-//             return response.text();
-//         })
-//         .then(() => {
-//             const modalElement = document.getElementById('modScreeningModal');
-//             closeModal(modalElement);
-//
-//             alert('심사 수정이 완료되었습니다.');
-//             window.location.reload();
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             alert('수정 중 오류가 발생했습니다.');
-//         })
-//         .finally(() => {
-//             saveButton.disabled = false;
-//         });
-

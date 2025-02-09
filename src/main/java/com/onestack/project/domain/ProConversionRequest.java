@@ -3,6 +3,7 @@ package com.onestack.project.domain;
 import java.util.List;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ProConversionRequest {
@@ -19,5 +20,8 @@ public class ProConversionRequest {
     private String portfolioContent;
     private String thumbnailImage;
     private List<String> portfolioFilePaths;
+
+    private MultipartFile thumbnailImageFile; // 썸네일 파일
+    private List<MultipartFile> portfolioFiles; // 포트폴리오 파일들
 }
 

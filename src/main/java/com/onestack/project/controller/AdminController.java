@@ -109,7 +109,7 @@ public class AdminController {
             // 전문가 심사 상태 업데이트
             adminService.updateProStatus(proNo, professorStatus, screeningMsg);
 
-            return ResponseEntity.ok("심사가 완료되었습니다.");
+            return ResponseEntity.ok("심사 승인이 완료되었습니다.");
         } catch (Exception e) {
             log.error("심사 처리 중 오류 발생: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -117,21 +117,7 @@ public class AdminController {
         }
     }
     
-//    @PostMapping("/updateReviewPro")
-//    public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
-//        try {
-//            int proNo = Integer.parseInt(request.get("proNo").toString());
-//            Integer professorStatus = Integer.parseInt(request.get("professorStatus").toString());
-//            String screeningMsg = (String) request.get("screeningMsg");
-//
-//            adminService.updateProStatus(proNo, professorStatus, screeningMsg);
-//            return ResponseEntity.ok("승인수정이 완료되었습니다.");
-//        } catch (Exception e) {
-//            log.error("승인 수정 처리 중 오류 발생: ", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                               .body("승인 수정 중 오류가 발생했습니다.");
-//        }
-//    }
+
 @PostMapping("/updateReviewPro")
 public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> request) {
     try {
@@ -147,7 +133,7 @@ public ResponseEntity<String> updateReviewPro(@RequestBody Map<String, Object> r
             adminService.rejectAndDeleteProfessional(proNo);
         }
 
-        return ResponseEntity.ok("승인 수정이 완료되었습니다.");
+        return ResponseEntity.ok("심사 수정이 완료되었습니다.");
     } catch (Exception e) {
         log.error("승인 수정 처리 중 오류 발생: ", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
