@@ -459,30 +459,41 @@
 	</update>
 
 	<!-- 전체 견적 수 조회 -->
-	<select id="getEstimationCount" resultType="int">
+	<select id="getEstimationCount" parameterType="int" resultType="int">
 		SELECT COUNT(*)
 		FROM Estimation e
-		WHERE e.pro_no = #{proNo}
-		AND e.progress = 0
+		WHERE e.pro_no = (
+			SELECT member_no 
+			FROM Professional 
+			WHERE pro_no = #{proNo}
+		)
 	</select>
 
 	<!-- 페이지별 견적 목록 조회 -->
 	<select id="getEstimationsByPage" resultType="Estimation">
 		SELECT 
-			e.*, 
-			m.name as memberName, 
+			e.*,
 			m.nickname as memberNickname,
+			p.nickname as proNickname,
 			c.item_title as categoryName
 		FROM 
 			Estimation e
-			JOIN Member m ON e.member_no = m.member_no
-			JOIN Category c ON e.item_no = c.item_no
+			LEFT JOIN Member m ON e.member_no = m.member_no
+			LEFT JOIN Member p ON e.pro_no = (
+				SELECT member_no 
+				FROM Professional 
+				WHERE pro_no = #{proNo}
+			)
+			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
-			e.pro_no = #{proNo}
-			AND e.progress = 0
+			e.pro_no = (
+				SELECT member_no 
+				FROM Professional 
+				WHERE pro_no = #{proNo}
+			)
 		ORDER BY 
-			e.estimation_no DESC
-		LIMIT #{offset}, #{pageSize}
+			e.created_at DESC
+		LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 
 	<!-- 회원 번호로 회원 정보 조회 -->
@@ -502,7 +513,8 @@
 		FROM 
 			Estimation e
 			LEFT JOIN Member m ON e.member_no = m.member_no
-			LEFT JOIN Member p ON e.pro_no = p.member_no
+			LEFT JOIN Professional pr ON e.pro_no = pr.member_no
+			LEFT JOIN Member p ON pr.member_no = p.member_no
 			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
 			e.estimation_no = #{estimationNo}

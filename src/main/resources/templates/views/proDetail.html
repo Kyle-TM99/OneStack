@@ -189,8 +189,8 @@
                                     </div>
                                     <div class="stat-item">
                                         <i class="bi bi-star-fill text-warning"></i>
-                                        <span th:if="${pro.professional.reviewCount > 0}">평점 [[${pro.professional.rate}]]</span>
-                                        <span th:unless="${pro.professional.reviewCount > 0}">평점 없음</span>
+                                        <span th:if="${reviewRateAvg > 0}">평점 [[${reviewRateAvg}]]</span>
+                                        <span th:unless="${reviewRateAvg > 0}">평점 없음</span>
                                     </div>
                                     <div class="stat-item">
                                         <i class="bi bi-briefcase"></i>
