@@ -19,39 +19,38 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
-	// 폼 제출 처리
-	const memberUpdateForm = document.getElementById('memberUpdateForm');
-	if (memberUpdateForm) {
-		memberUpdateForm.addEventListener('submit', function (e) {
-			e.preventDefault();
+	document.getElementById('memberUpdateForm').addEventListener('submit', function (e) {
+		e.preventDefault();
 
-			const formData = new FormData(this);
+		const formData = new FormData(this);
 
-			// 이미지가 변경되었을 경우만 FormData에 추가
-			if (uploadedImage) {
-				formData.set('profileImage', uploadedImage);
-			}
+		// 이미지가 변경되었을 경우만 FormData에 추가
+		if (uploadedImage) {
+			formData.set('profileImage', uploadedImage);
+		}
 
-			$.ajax({
-				url: '/updateMember',
-				type: 'POST',
-				data: formData,
-				processData: false,
-				contentType: false,
-				success: function (response) {
-					console.log(response);
-					if (response.success) {
-						alert(response.message);
-						window.location.href = '/main'
-					}
-				},
-				error: function (xhr) {
-					alert('회원 정보 수정 중 오류가 발생했습니다.');
+		$.ajax({
+			url: '/updateMember',
+			type: 'POST',
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (response) {
+				if (response && response.success) {
+					alert(response.message);
+					window.location.href = '/main';
+				} else {
+					alert(response.message || '회원 정보 수정에 실패했습니다.');
 					window.location.href = '/updateMemberForm';
 				}
-			});
+			},
+			error: function (xhr, status, error) {
+				console.error('Error:', error);
+				alert('회원 정보 수정 중 오류가 발생했습니다.');
+				window.location.href = '/updateMemberForm';
+			}
 		});
-	}
+	});
 
 	// 각 필드의 유효성 상태 추적
 	const validationState = {

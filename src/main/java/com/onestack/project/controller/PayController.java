@@ -72,7 +72,7 @@ public class PayController {
             // 최종 결제 처리 - DB(결제 테이블) 작업
 
             Pay pay = new Pay();
-            pay.setEstimationNo(request.getEstimationNo()); // 주문 정보의 quotationNo
+            pay.setEstimationNo(request.getEstimationNo()); // 주문 정보의 estimationNo
             pay.setMemberNo(request.getMemberNo()); // 주문 정보의 memberNo
             // 결제 타입
             if(request.getChannelNum() == 1) {
@@ -93,7 +93,7 @@ public class PayController {
             systemMessage.setSender(member.getMemberId());
             systemMessage.setNickname(member.getNickname());
             systemMessage.setType("SYSTEM");
-            systemMessage.setMessage("회원이 리뷰를 작성하였습니다.");
+            systemMessage.setMessage("결제가 완료되었습니다. 프로젝트에 대한 평가를 리뷰로 남겨주세요!");
             systemMessage.setSentAt(LocalDateTime.now());
 
             // DB에 시스템 메시지 저장

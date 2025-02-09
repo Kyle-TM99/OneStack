@@ -100,23 +100,15 @@ public class MemberController {
         try {
             Member sessionMember = (Member) session.getAttribute("member");
             member.setMemberNo(sessionMember.getMemberNo());
+            boolean imageUpdated = false;
 
-            // 현재 상태 로깅
-            log.info("프로필 이미지 업데이트 시작");
-            log.info("기존 이미지 URL: {}", sessionMember.getMemberImage());
-
+            // 이미지 처리
             if (profileImage != null && !profileImage.isEmpty()) {
                 try {
-                    log.info("새 이미지 파일명: {}", profileImage.getOriginalFilename());
                     String imageUrl = imageService.uploadImage(profileImage);
-                    log.info("생성된 이미지 URL: {}", imageUrl);
-
-                    // null 체크 추가
                     if (imageUrl != null && !imageUrl.isEmpty()) {
                         member.setMemberImage(imageUrl);
-                        log.info("Member 객체에 설정된 이미지 URL: {}", member.getMemberImage());
-                    } else {
-                        log.error("이미지 URL이 null 또는 비어있음");
+                        imageUpdated = true;
                     }
                 } catch (IOException e) {
                     log.error("이미지 업로드 중 에러 발생: {}", e.getMessage());
@@ -125,25 +117,20 @@ public class MemberController {
                     return response;
                 }
             } else {
-                log.info("새로운 이미지가 업로드되지 않음. 기존 이미지 유지");
                 member.setMemberImage(sessionMember.getMemberImage());
             }
 
-            // 업데이트 전 member 객체 상태 확인
-            log.info("업데이트 전 member 객체: {}", member.toString());
-
+            // 회원 정보 업데이트
             if (sessionMember.isSocial()) {
                 memberService.updateSocialMember(member);
             } else {
                 memberService.updateMember(member);
             }
 
-            // 업데이트 후 DB 재조회하여 확인
+            // DB에서 업데이트된 회원 정보 조회
             Member updatedMember = memberService.getMemberByNo(member.getMemberNo());
-            log.info("Memer Nickname : {}", updatedMember.getNickname());
-            log.info("DB 업데이트 후 이미지 URL: {}", updatedMember.getMemberImage());
 
-            // 세션 업데이트
+            // 세션 정보 업데이트
             updateSessionMember(session, updatedMember);
 
             response.put("success", true);
@@ -171,11 +158,7 @@ public class MemberController {
         sessionMember.setAddress(updatedMember.getAddress());
         sessionMember.setAddress2(updatedMember.getAddress2());
         sessionMember.setEmailGet(updatedMember.isEmailGet());
-
-        // 프로필 이미지가 업데이트된 경우
-        if (updatedMember.getMemberImage() != null) {
-            sessionMember.setMemberImage(updatedMember.getMemberImage());
-        }
+        sessionMember.setMemberImage(updatedMember.getMemberImage());
 
         session.setAttribute("member", sessionMember);
     }
@@ -233,6 +216,20 @@ public class MemberController {
 
         session.setAttribute("isLogin", true);
         session.setAttribute("member", member);
+
+        Member memberPro = (Member) session.getAttribute("member");
+        if (memberPro != null) {
+            int memberNo = memberPro.getMemberNo();
+
+            int proNo = memberService.getProNo(memberNo);
+            if (proNo > 0) {
+                session.setAttribute("proNo", proNo);
+            }
+        }
+
+
+
+
         return "redirect:/mainPage";
     }
 

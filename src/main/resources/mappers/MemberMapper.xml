@@ -545,5 +545,12 @@
 		FROM Estimation
 		WHERE progress = 4
 	</select>
+
+	<!-- 전문가 번호 조회 -->
+	<select id="getProNo" parameterType="int" resultType="int">
+		SELECT pro_no
+		FROM Professional
+		WHERE member_no = #{memberNo}
+	</select>
 	
 </mapper>

@@ -248,4 +248,13 @@ public class KakaoController {
     public String showAdditionalInfoForm(Model model) {
         return "member/additionalInfo";
     }
+
+    @GetMapping("/login")
+    public String kakaoLogin() {
+        String kakaoAuthUrl = String.format(
+            "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s&scope=profile_nickname,profile_image&prompt=login consent",
+            CLIENT_ID, REDIRECT_URI
+        );
+        return "redirect:" + kakaoAuthUrl;
+    }
 }

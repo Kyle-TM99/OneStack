@@ -1,4 +1,3 @@
-// 중복 선언을 피하기 위해 첫 번째 위치에서만 선언하고 이후에는 재사용
 window.communityState = {
     isSubmitting: false
 };

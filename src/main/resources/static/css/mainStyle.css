@@ -185,3 +185,9 @@
 	display: flex;
 	justify-content: space-between;
 }
+
+.review-container .card {
+    max-height: 200px; /* 원하는 높이로 설정 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
