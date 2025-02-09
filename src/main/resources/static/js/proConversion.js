@@ -382,7 +382,7 @@
 				window.location.href = "/mainPage";
 		    } catch (error) {
 				console.error('오류 발생:', error);
-				alert('동일한 전문분야의 포트폴리오는 추가할 수 없습니다.');
+//				alert('동일한 전문분야의 포트폴리오는 추가할 수 없습니다.');
 
 		    }
 		});
