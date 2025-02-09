@@ -92,6 +92,18 @@ public class KakaoController {
                 log.info("Existing member found. Logging in...");
                 session.setAttribute("member", existingMember);
                 session.setAttribute("isLogin", true);
+
+                Member memberPro = (Member) session.getAttribute("member");
+                if (memberPro != null) {
+                    int memberNo = memberPro.getMemberNo();
+                    int proNo = memberService.getProNo(memberNo);
+                    
+                    if (proNo > 0) {
+                        session.setAttribute("proNo", proNo);
+                    }
+                }
+
+
                 return "redirect:/mainPage";
             } else {
                 // 5b. 신규 회원이면 추가 정보 입력 페이지로

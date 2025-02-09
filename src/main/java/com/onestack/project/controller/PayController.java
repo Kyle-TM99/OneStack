@@ -111,6 +111,9 @@ public class PayController {
             // 전문가 고용 수 증가
             payService.updateStudentCount(proNo);
 
+            // 견적 상태 수정
+            memberService.updateEstimationProgress(estimationNo, 3);
+
 
             return ResponseEntity.ok(String.valueOf(payNo));
         }

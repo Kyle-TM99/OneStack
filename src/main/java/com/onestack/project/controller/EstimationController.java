@@ -190,6 +190,9 @@ public class EstimationController {
 
                 // 시스템 메시지를 웹소켓으로 전송
                 messagingTemplate.convertAndSend("/topic/chat/room/" + roomId, systemMessage);
+
+                // 견적 상태 수정
+                memberService.updateEstimationProgress(estimationNo, 2);
                 
                 response.put("success", true);
             }

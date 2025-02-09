@@ -114,5 +114,5 @@ public interface MemberMapper {
 	int getMainEstimationCount();
 
 	// 전문가 번호 조회
-	int getProNo(@Param("memberNo") int memberNo);
+	Integer getProNo(@Param("memberNo") int memberNo);
 }

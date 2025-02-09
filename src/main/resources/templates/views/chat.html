@@ -209,7 +209,9 @@
                                         <span id="estimationPrice" th:text="${#numbers.formatDecimal(estimation.estimationPrice, 0, 'COMMA', 0, 'POINT')}"></span>원
                                         <!-- 전문가만 수정 가능하도록 -->
                                         <th:block th:if="${session.member.memberNo == room.roomAdmin}">
+                                            <th:block th:if="${estimation.progress == 2}">
                                             <i class="bi bi-pencil-square" onclick="togglePriceEdit()" style="cursor: pointer; margin-left: 5px;"></i>
+                                            </th:block>
                                         </th:block>
                                     </p>
                                     <!-- 금액 수정 폼 (기본적으로 숨김) -->

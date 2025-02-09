@@ -359,6 +359,7 @@ public class MemberService {
 
     // 전문가 번호 조회
     public int getProNo(int memberNo) {
-        return memberMapper.getProNo(memberNo);
+        Integer proNo = memberMapper.getProNo(memberNo);
+        return proNo != null ? proNo : 0;  // null인 경우 0 반환
     }
 }

@@ -220,9 +220,9 @@ public class MemberController {
         Member memberPro = (Member) session.getAttribute("member");
         if (memberPro != null) {
             int memberNo = memberPro.getMemberNo();
-
-            if (memberService.getProNo(memberNo) > 0) {
-                int proNo = memberService.getProNo(memberNo);
+            int proNo = memberService.getProNo(memberNo);
+            
+            if (proNo > 0) {
                 session.setAttribute("proNo", proNo);
             }
         }
@@ -252,7 +252,6 @@ public class MemberController {
             member.setSocial(false);
             member.setSocialType("none");
             member.setMemberImage("/images/default-profile.png");
-
 
 
             // 회원 등록

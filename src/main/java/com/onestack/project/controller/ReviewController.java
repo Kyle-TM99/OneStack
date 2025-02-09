@@ -84,6 +84,10 @@ public class ReviewController {
             // 전문가 리뷰 수 증가
             reviewService.increaseReviewCount(review.getProNo());
 
+            // 견적 상태 수정
+            memberService.updateEstimationProgress(review.getEstimationNo(), 4);
+
+
 
 
         } catch (Exception e) {
