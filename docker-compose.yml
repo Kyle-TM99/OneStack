@@ -16,10 +16,12 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost || exit 1"]
+      interval: 20s  # 20초마다 체크
+      timeout: 10s   # 10초 대기
+      retries: 10    # 10번 재시도
+      start_period: 30s  # 컨테이너 시작 후 30초 기다림
+    restart: always  # 컨테이너가 죽으면 자동 재시작
 
   app:
     build:
