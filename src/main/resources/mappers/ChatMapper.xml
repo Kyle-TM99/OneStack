@@ -55,7 +55,7 @@
     
     <!-- 특정 채팅방 조회 -->
     <select id="getChatRoomById" resultType="ChatRoom">
-        SELECT 
+        SELECT
             cr.room_id as roomId,
             cr.room_name as roomName,
             cr.member_no as memberNo,
@@ -68,11 +68,11 @@
             m.nickname as memberNickname,
             p.nickname as proNickname
         FROM chat_room cr
-        JOIN Estimation e ON cr.estimation_no = e.estimation_no
-        JOIN Professional pr ON cr.pro_no = pr.pro_no
-        JOIN Member m ON cr.member_no = m.member_no
-        JOIN Member p ON cr.pro_no = pr.member_no
-        WHERE cr.room_id = #{roomId}
+                 JOIN Estimation e ON cr.estimation_no = e.estimation_no
+                 JOIN Professional pr ON cr.pro_no = pr.pro_no
+                 JOIN Member m ON cr.member_no = m.member_no
+                 JOIN Member p ON p.member_no = pr.member_no
+        WHERE cr.room_id = #{roomId};
     </select>
     
     <!-- 비밀번호 확인 -->
