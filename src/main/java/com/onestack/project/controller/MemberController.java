@@ -221,13 +221,11 @@ public class MemberController {
         if (memberPro != null) {
             int memberNo = memberPro.getMemberNo();
 
-            int proNo = memberService.getProNo(memberNo);
-            if (proNo > 0) {
+            if (memberService.getProNo(memberNo) > 0) {
+                int proNo = memberService.getProNo(memberNo);
                 session.setAttribute("proNo", proNo);
             }
         }
-
-
 
 
         return "redirect:/mainPage";
