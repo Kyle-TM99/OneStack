@@ -322,8 +322,8 @@
 
 	<!-- 회원 가입 -->
 	<insert id="insertMember" parameterType="Member" useGeneratedKeys="true" keyProperty="memberNo">
-		INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_image, is_social, social_type)
-		VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW(), #{memberImage}, #{isSocial}, #{socialType})
+		INSERT INTO Member (name, member_id, pass, nickname, birth, gender, zipcode, address, address2, email, email_get, phone, member_reg_date, member_image)
+		VALUES (#{name}, #{memberId}, #{pass}, #{nickname}, #{birth}, #{gender}, #{zipcode}, #{address}, #{address2}, #{email}, #{emailGet}, #{phone}, NOW(), #{memberImage})
 	</insert>
 
 	<!-- ID 중복 체크 -->
@@ -459,40 +459,30 @@
 	</update>
 
 	<!-- 전체 견적 수 조회 -->
-	<select id="getEstimationCount" parameterType="int" resultType="int">
+	<select id="getEstimationCount" resultType="int">
 		SELECT COUNT(*)
 		FROM Estimation e
-		WHERE e.pro_no = (
-			SELECT member_no 
-			FROM Professional 
-			WHERE pro_no = #{proNo}
-		)
+		WHERE e.pro_no = #{proNo}
 		AND e.progress = 0
 	</select>
 
 	<!-- 페이지별 견적 목록 조회 -->
 	<select id="getEstimationsByPage" resultType="Estimation">
 		SELECT 
-			e.*,
+			e.*, 
+			m.name as memberName, 
 			m.nickname as memberNickname,
-			p.nickname as proNickname,
 			c.item_title as categoryName
 		FROM 
 			Estimation e
-			LEFT JOIN Member m ON e.member_no = m.member_no
-			LEFT JOIN Professional pr ON pr.pro_no = #{proNo}
-			LEFT JOIN Member p ON e.pro_no = p.member_no
-			LEFT JOIN Category c ON e.item_no = c.item_no
+			JOIN Member m ON e.member_no = m.member_no
+			JOIN Category c ON e.item_no = c.item_no
 		WHERE 
-			e.pro_no = (
-				SELECT member_no 
-				FROM Professional 
-				WHERE pro_no = #{proNo}
-			)
+			e.pro_no = #{proNo}
 			AND e.progress = 0
 		ORDER BY 
-			e.created_at DESC
-		LIMIT #{pageSize} OFFSET #{offset}
+			e.estimation_no DESC
+		LIMIT #{offset}, #{pageSize}
 	</select>
 
 	<!-- 회원 번호로 회원 정보 조회 -->
@@ -507,12 +497,11 @@
 		SELECT 
 			e.*,
 			m.nickname as memberNickname,
-			p.nickname as proNickname,
+			(SELECT nickname FROM Member WHERE member_no = e.pro_no) as proNickname,
 			c.item_title as categoryName
 		FROM 
 			Estimation e
 			LEFT JOIN Member m ON e.member_no = m.member_no
-			LEFT JOIN Member p ON e.pro_no = p.member_no
 			LEFT JOIN Category c ON e.item_no = c.item_no
 		WHERE 
 			e.estimation_no = #{estimationNo}
@@ -557,11 +546,10 @@
 	</select>
 
 	<!-- 전문가 번호 조회 -->
-	<select id="getProNo" parameterType="int" resultType="Integer">
+	<select id="getProNo" parameterType="int" resultType="int">
 		SELECT pro_no
 		FROM Professional
 		WHERE member_no = #{memberNo}
-		LIMIT 1
 	</select>
 	
 </mapper>
