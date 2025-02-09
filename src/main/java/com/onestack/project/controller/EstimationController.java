@@ -118,7 +118,7 @@ public class EstimationController {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setRoomName(estimation.getMemberNickname() + " 님이 " + member.getNickname() + " 님에게 요청한 " + estimation.getCategoryName() + " 프로젝트");
             chatRoom.setMemberNo(estimation.getMemberNo());
-            chatRoom.setProNo(member.getMemberNo());
+            chatRoom.setProNo(memberService.getProNo(member.getMemberNo()));
             chatRoom.setEstimationNo(estimationNo);
             
             String roomId = chatService.createRoom(chatRoom);
