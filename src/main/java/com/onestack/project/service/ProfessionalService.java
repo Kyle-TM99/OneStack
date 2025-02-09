@@ -34,85 +34,19 @@ public class ProfessionalService {
     private ImageService imageService;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "https://13.209.73.20/images/";
+    private final String IMAGE_BASE_URL = "https://www.onestack.store/images/";
 
     // 심사요청 시 각각 데이터 전문가/전문가고급정보/포트폴리오 테이블에 분리 저장
-//    @Transactional
-//    public void saveProConversionData(ProConversionRequest request) {
-//
-//        Professional existingProfessional = professionalMapper.findByMemberNoAndItemNo(request.getMemberNo(), request.getItemNo());
-//
-//        if (existingProfessional != null) {
-//
-//            throw new IllegalStateException("이미 같은 전문 분야의 포트폴리오가 존재합니다.");
-//        }
-//
-//        professionalMapper.updateMemberType(2, request.getMemberNo());
-//
-//        // 전문가 저장
-//        Professional professional = new Professional();
-//        professional.setMemberNo(request.getMemberNo());
-//        professional.setCategoryNo(request.getCategoryNo());
-//        professional.setSelfIntroduction(request.getSelfIntroduction());
-//        professional.setCareer(String.join("\n", request.getCareer()));
-//        professional.setAwardCareer(String.join("\n", request.getAwardCareer()));
-//        professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
-//
-//        professionalMapper.addPro(professional);
-//        int proNo = professional.getProNo();
-//
-//        // 전문가 고급정보 저장
-//            ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
-//            advancedInfo.setProNo(proNo);
-//            advancedInfo.setItemNo(request.getItemNo());
-//            List<String> surveyAnswers = request.getSurveyAnswers();
-//            advancedInfo.setProAnswer1(surveyAnswers.get(0));
-//            advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ?surveyAnswers.get(1) : null);
-//            advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ?surveyAnswers.get(2) : null);
-//            advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ?surveyAnswers.get(3) : null);
-//            advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ?surveyAnswers.get(4) : null);
-//
-//
-//            professionalMapper.addProAdvancedInfo(advancedInfo);
-//            int proAdvancedNo = advancedInfo.getProAdvancedNo();
-//
-//            String thumbnailUrl = request.getThumbnailImage();
-//            if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
-//                thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
-//            }
-//
-//            // 포폴 저장
-//            Portfolio portfolio = new Portfolio();
-//            portfolio.setProNo(proNo);
-//            portfolio.setProAdvancedNo(proAdvancedNo);
-//            portfolio.setPortfolioTitle(request.getPortfolioTitle());
-//            portfolio.setPortfolioContent(request.getPortfolioContent());
-//            portfolio.setVisibility(true); // 공개
-//            portfolio.setThumbnailImage(thumbnailUrl);
-//            List<String> portfolioFilePaths = request.getPortfolioFilePaths();
-//            portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
-//            portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
-//            portfolio.setPortfolioFile3(portfolioFilePaths.size() > 2 ? portfolioFilePaths.get(2) : null);
-//            portfolio.setPortfolioFile4(portfolioFilePaths.size() > 3 ? portfolioFilePaths.get(3) : null);
-//            portfolio.setPortfolioFile5(portfolioFilePaths.size() > 4 ? portfolioFilePaths.get(4) : null);
-//            portfolio.setPortfolioFile6(portfolioFilePaths.size() > 5 ? portfolioFilePaths.get(5) : null);
-//            portfolio.setPortfolioFile7(portfolioFilePaths.size() > 6 ? portfolioFilePaths.get(6) : null);
-//            portfolio.setPortfolioFile8(portfolioFilePaths.size() > 7 ? portfolioFilePaths.get(7) : null);
-//            portfolio.setPortfolioFile9(portfolioFilePaths.size() > 8 ? portfolioFilePaths.get(8) : null);
-//            portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
-//
-//            professionalMapper.addPortfolio(portfolio);
-//        }
-
     @Transactional
-    public void saveProConversionData(ProConversionRequest request) throws IOException {
-        // 이미 존재하는 전문 분야의 포트폴리오가 있는지 확인
+    public void saveProConversionData(ProConversionRequest request) {
+
         Professional existingProfessional = professionalMapper.findByMemberNoAndItemNo(request.getMemberNo(), request.getItemNo());
+
         if (existingProfessional != null) {
+
             throw new IllegalStateException("이미 같은 전문 분야의 포트폴리오가 존재합니다.");
         }
 
-        // 멤버 타입 업데이트
         professionalMapper.updateMemberType(2, request.getMemberNo());
 
         // 전문가 저장
@@ -128,98 +62,47 @@ public class ProfessionalService {
         int proNo = professional.getProNo();
 
         // 전문가 고급정보 저장
-        ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
-        advancedInfo.setProNo(proNo);
-        advancedInfo.setItemNo(request.getItemNo());
-        List<String> surveyAnswers = request.getSurveyAnswers();
-        advancedInfo.setProAnswer1(surveyAnswers.get(0));
-        advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ? surveyAnswers.get(1) : null);
-        advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ? surveyAnswers.get(2) : null);
-        advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ? surveyAnswers.get(3) : null);
-        advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ? surveyAnswers.get(4) : null);
+            ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
+            advancedInfo.setProNo(proNo);
+            advancedInfo.setItemNo(request.getItemNo());
+            List<String> surveyAnswers = request.getSurveyAnswers();
+            advancedInfo.setProAnswer1(surveyAnswers.get(0));
+            advancedInfo.setProAnswer2(surveyAnswers.size() > 1 ?surveyAnswers.get(1) : null);
+            advancedInfo.setProAnswer3(surveyAnswers.size() > 2 ?surveyAnswers.get(2) : null);
+            advancedInfo.setProAnswer4(surveyAnswers.size() > 3 ?surveyAnswers.get(3) : null);
+            advancedInfo.setProAnswer5(surveyAnswers.size() > 4 ?surveyAnswers.get(4) : null);
 
-        professionalMapper.addProAdvancedInfo(advancedInfo);
-        int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
-        // 썸네일 이미지 처리
-        String thumbnailUrl = request.getThumbnailImage();
-        if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
-            // 썸네일 이미지 파일 경로로 변환하여 업로드
-            String thumbnailFilePath = saveFileLocally(thumbnailUrl);
-            thumbnailUrl = uploadImage(thumbnailFilePath);
-        }
+            professionalMapper.addProAdvancedInfo(advancedInfo);
+            int proAdvancedNo = advancedInfo.getProAdvancedNo();
 
-        // 포트폴리오 저장
-        Portfolio portfolio = new Portfolio();
-        portfolio.setProNo(proNo);
-        portfolio.setProAdvancedNo(proAdvancedNo);
-        portfolio.setPortfolioTitle(request.getPortfolioTitle());
-        portfolio.setPortfolioContent(request.getPortfolioContent());
-        portfolio.setVisibility(true); // 공개
-        portfolio.setThumbnailImage(thumbnailUrl);
-
-        // 포트폴리오 파일들 업로드
-        List<String> portfolioFilePaths = request.getPortfolioFilePaths();
-        for (int i = 0; i < portfolioFilePaths.size(); i++) {
-            String portfolioFilePath = portfolioFilePaths.get(i);
-            if (portfolioFilePath != null && !portfolioFilePath.startsWith("http")) {
-                // 포트폴리오 파일 경로로 변환하여 업로드
-                String portfolioFilePathLocal = saveFileLocally(portfolioFilePath);
-                String portfolioFileUrl = uploadImage(portfolioFilePathLocal);
-
-                // 1~10번 포트폴리오 파일 필드에 동적으로 할당
-                if (i == 0) portfolio.setPortfolioFile1(portfolioFileUrl);
-                else if (i == 1) portfolio.setPortfolioFile2(portfolioFileUrl);
-                else if (i == 2) portfolio.setPortfolioFile3(portfolioFileUrl);
-                else if (i == 3) portfolio.setPortfolioFile4(portfolioFileUrl);
-                else if (i == 4) portfolio.setPortfolioFile5(portfolioFileUrl);
-                else if (i == 5) portfolio.setPortfolioFile6(portfolioFileUrl);
-                else if (i == 6) portfolio.setPortfolioFile7(portfolioFileUrl);
-                else if (i == 7) portfolio.setPortfolioFile8(portfolioFileUrl);
-                else if (i == 8) portfolio.setPortfolioFile9(portfolioFileUrl);
-                else if (i == 9) portfolio.setPortfolioFile10(portfolioFileUrl);
+            String thumbnailUrl = request.getThumbnailImage();
+            if (thumbnailUrl != null && !thumbnailUrl.startsWith("http")) {
+                thumbnailUrl = IMAGE_BASE_URL + thumbnailUrl;
             }
+
+            // 포폴 저장
+            Portfolio portfolio = new Portfolio();
+            portfolio.setProNo(proNo);
+            portfolio.setProAdvancedNo(proAdvancedNo);
+            portfolio.setPortfolioTitle(request.getPortfolioTitle());
+            portfolio.setPortfolioContent(request.getPortfolioContent());
+            portfolio.setVisibility(true); // 공개
+            portfolio.setThumbnailImage(thumbnailUrl);
+            List<String> portfolioFilePaths = request.getPortfolioFilePaths();
+            portfolio.setPortfolioFile1(portfolioFilePaths.get(0));
+            portfolio.setPortfolioFile2(portfolioFilePaths.size() > 1 ? portfolioFilePaths.get(1) : null);
+            portfolio.setPortfolioFile3(portfolioFilePaths.size() > 2 ? portfolioFilePaths.get(2) : null);
+            portfolio.setPortfolioFile4(portfolioFilePaths.size() > 3 ? portfolioFilePaths.get(3) : null);
+            portfolio.setPortfolioFile5(portfolioFilePaths.size() > 4 ? portfolioFilePaths.get(4) : null);
+            portfolio.setPortfolioFile6(portfolioFilePaths.size() > 5 ? portfolioFilePaths.get(5) : null);
+            portfolio.setPortfolioFile7(portfolioFilePaths.size() > 6 ? portfolioFilePaths.get(6) : null);
+            portfolio.setPortfolioFile8(portfolioFilePaths.size() > 7 ? portfolioFilePaths.get(7) : null);
+            portfolio.setPortfolioFile9(portfolioFilePaths.size() > 8 ? portfolioFilePaths.get(8) : null);
+            portfolio.setPortfolioFile10(portfolioFilePaths.size() > 9 ? portfolioFilePaths.get(9) : null);
+
+            professionalMapper.addPortfolio(portfolio);
         }
-
-        // 포트폴리오 저장
-        professionalMapper.addPortfolio(portfolio);
-    }
-
-    // 파일 경로를 받아 로컬 파일 시스템에 저장하는 메서드
-    private String saveFileLocally(String filePath) throws IOException {
-        // String 파일 경로에서 File 객체 생성
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new FileNotFoundException("파일을 찾을 수 없습니다.");
-        }
-
-        // 로컬 저장 경로
-        Path localFilePath = Paths.get(IMAGE_DIRECTORY + file.getName());
-
-        // 파일을 로컬 디렉토리에 저장
-        Files.copy(file.toPath(), localFilePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return localFilePath.toString();
-    }
-
-    // 이미지 업로드 메서드
-    private String uploadImage(String filePath) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new FileNotFoundException("파일을 찾을 수 없습니다.");
-        }
-
-        Path filePathToSave = Paths.get(IMAGE_DIRECTORY + file.getName());
-
-        // 실제 파일 저장
-        Files.copy(new FileInputStream(file), filePathToSave, StandardCopyOption.REPLACE_EXISTING);
-
-        return IMAGE_BASE_URL + file.getName();
-    }
-
-
-
-
 
     /* 전문가 정보 조회 */
     public List<MemberWithProfessional> getPro2(int proNo) {
@@ -386,16 +269,6 @@ public class ProfessionalService {
         portfolio.setPortfolioFile10(filePaths.size() > 9 ? filePaths.get(9) : existingPortfolio.getPortfolioFile10());
 
         professionalMapper.updatePortfolio(portfolio);
-
-//        // ✅ 전문가 정보 업데이트
-//        Professional professional = new Professional();
-//        professional.setProNo(request.getProNo());
-//        professional.setCategoryNo(request.getCategoryNo());
-//        professional.setSelfIntroduction(request.getSelfIntroduction());
-//        professional.setCareer(String.join(",", request.getCareer()));
-//        professional.setAwardCareer(String.join(",", request.getAwardCareer()));
-//        professional.setContactableTime(request.getContactableTimeStart() + " - " + request.getContactableTimeEnd());
-//        professionalMapper.updateProfessional(professional);
 
         // ✅ 전문가 고급 정보 업데이트
         ProfessionalAdvancedInformation advancedInfo = new ProfessionalAdvancedInformation();
