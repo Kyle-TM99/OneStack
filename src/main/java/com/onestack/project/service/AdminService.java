@@ -39,10 +39,10 @@ public class AdminService {
 	@Transactional
 	public void updateProStatus(int proNo, Integer professorStatus, String screeningMsg) {
 		try {
-			// ✅ 1. 전문가 승인/거부 상태 업데이트
+			// 1. 전문가 승인/거부 상태 업데이트
 			managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
 
-			// ✅ 2. 회원 타입 업데이트 (승인: 전문가 유지, 거부: 일반회원으로 변경)
+			// 2. 회원 타입 업데이트 (승인: 전문가 유지, 거부: 일반회원으로 변경)
 			if (professorStatus == 0) {
 				managerMapper.updateMemberType(proNo, 0);
 			} else if (professorStatus == 1) {
@@ -69,20 +69,6 @@ public class AdminService {
 		managerMapper.updateMemberType(proNo, 1);
 	}
 
-
-//	// 전문가 심사
-//	public void updateProStatus(int proNo, Integer professorStatus, String screeningMsg) {
-//		try {
-//			// 전문가 승인/거부 업데이트
-//			managerMapper.updateProStatus(proNo, professorStatus, screeningMsg);
-//			// Member 테이블 memberType 업데이트 (승인: 1, 거부: 0)
-//			managerMapper.updateMemberType(proNo, professorStatus);
-//		} catch (Exception e) {
-//			log.error("전문가 심사 업데이트 중 오류 발생: ", e);
-//			throw new RuntimeException("전문가 심사 업데이트 중 오류가 발생했습니다.");
-//		}
-//	}
-	
 	// 회원 유형/상태 변경
 	public void updateMember(Member member) {
 		Map<String, Object> params = new HashMap<>();
@@ -144,7 +130,7 @@ public class AdminService {
 		managerMapper.incrementReportedCount(report.getReportedMemberNo());
 	}
 
-	// 회원 기간 정지 자동 해제
+	// 회원 기간 정지 자동 해제함
 	@Scheduled(cron = "0 0 0 * * ?") // 00:00에 초기화
 	public void releaseSuspendMember(){
 		managerMapper.releaseSuspendMember();
@@ -165,7 +151,7 @@ public class AdminService {
 			case "community":
 				managerMapper.disableCommunity(targetId);
 				break;
-			case "communityReply":
+			case "reply":
 				managerMapper.disableCommunityReply(targetId);
 				break;
 			case "member" :

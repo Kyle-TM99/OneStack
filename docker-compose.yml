@@ -15,18 +15,23 @@ services:
       - onestack-network
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./src/main/resources/SQL:/docker-entrypoint-initdb.d
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pKyle9907!"]
+      interval: 30s
+      timeout: 10s
       retries: 5
+      start_period: 60s
+    restart: always
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - BUILDKIT_INLINE_CACHE=1
     container_name: onestack
     ports:
       - "1234:8080"
@@ -37,6 +42,20 @@ services:
       - /usr/share/nginx/html/images:/usr/share/nginx/html/images
     networks:
       - onestack-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onestack?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: kyle
+      SPRING_DATASOURCE_PASSWORD: Kyle9907!
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      GMAIL_USERNAME: ${GMAIL_USERNAME}
+      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+      PORTONE_API_KEY: ${PORTONE_API_KEY}
+      PORTONE_API_SECRET: ${PORTONE_API_SECRET}
+    restart: always
 
 networks:
   onestack-network:

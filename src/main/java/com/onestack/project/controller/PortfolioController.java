@@ -30,7 +30,7 @@ public class PortfolioController {
     private SurveyService surveyService;
 
     private final String IMAGE_DIRECTORY = "/usr/share/nginx/html/images/";
-    private final String IMAGE_BASE_URL = "https://13.209.72.20/images/";
+    private final String IMAGE_BASE_URL = "https://www.onestack.store/images/";
 
     @GetMapping("/getByItem")
     public ResponseEntity<List<Survey>> getSurveyByItem(@RequestParam("itemNo") int itemNo) {
@@ -95,9 +95,20 @@ public class PortfolioController {
         return IMAGE_BASE_URL + fileName;
     }
 
-    public void deleteImage(String fileName) throws IOException {
-        Path filePath = Paths.get(IMAGE_DIRECTORY + fileName);
-        Files.delete(filePath);
+    @DeleteMapping("/portfolio/deleteImage")
+    public ResponseEntity<String> deleteImage(@RequestParam String fileName) {
+        try {
+            Path filePath = Paths.get(IMAGE_DIRECTORY + fileName);
+            if (Files.exists(filePath)) {
+                Files.delete(filePath); // 파일 삭제
+                System.out.println("파일 삭제됨: " + filePath);
+                return ResponseEntity.ok("파일 삭제 성공");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("파일을 찾을 수 없습니다.");
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 삭제 실패");
+        }
     }
 
     public List<String> getAllImages() throws IOException {

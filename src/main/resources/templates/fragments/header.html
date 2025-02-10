@@ -78,10 +78,7 @@
 								<div class="d-flex align-items-center gap-3">
 									<th:block th:if="${session.isLogin}">
 										<div class="right-menu d-flex">
-											<a th:href="@{/payReceipt}" class="nav-link px-3 d-flex align-items-center">
-												<i class="bi bi-credit-card-2-front me-1"></i>
-												<span>결제 내역</span>
-											</a>
+
 											<a th:href="@{/chat}" class="nav-link px-3 d-flex align-items-center">
 												<i class="bi bi-chat-right me-1"></i>
 												<span>채팅</span>
@@ -119,6 +116,8 @@
 													<i class="fas fa-chevron-down small text-muted"></i>
 												</a>
 												<ul class="dropdown-menu dropdown-menu-end">
+
+													<!-- 프로필 영역 -->
 													<strong><li><h6 class="dropdown-item-text text-center fs-5">[[${session.member.nickname}]]</h6></li></strong>
 													<th:block th:if="${session.member.memberType == 0}">
 														<li class="dropdown-item-text text-center text-muted">일반 회원</li>
@@ -129,18 +128,29 @@
 													<th:block th:if="${session.member.memberType == 2}">
 														<li class="dropdown-item-text text-center text-muted">전문가 심사중</li>
 													</th:block>
+
 													<li><hr class="dropdown-divider"></li>
-														<li><a class="dropdown-item" href="/memberInquiry">고객 문의</a></li>
+													<!-- 회원 정보 영역 -->
+														<!-- 회원 정보 전문가 영역 -->
+													<th:block th:if="${session.member != null && session.member.memberType == 1 && !session.member.isAdmin != false}">
+														<li><a class="dropdown-item text-manager" href="/portfolioList">포트폴리오 관리</a></li>
+														 <li><a class="dropdown-item" th:href="@{/proDetail(proNo=${session.proNo})}">상세보기</a></li>
+													</th:block>
+
+													<li><a th:href="@{/payReceipt}" class="dropdown-item">결제 내역</a></li>
 													<th:block th:unless="${session.member.isAdmin()}">
                                                     <li><a class="dropdown-item" href="/updateMemberForm">회원정보수정</a></li>
 													</th:block>
-													<!-- 관리자 페이지 버튼 -->
+
+													<li><hr class="dropdown-divider"></li>
+													<!-- 고객 지원 영역 -->
+													<li><a class="dropdown-item" href="/memberInquiry">고객 문의</a></li>
+
+													<!-- 관리자 영역 -->
 													<th:block th:if="${session.member != null && session.member.isAdmin()}">
 														<li><a class="dropdown-item text-manager" href="/adminPage">관리자 페이지 이동</a></li>
 													</th:block>
-													<th:block th:if="${session.member != null && session.member.memberType == 1 && !session.member.isAdmin != false}">
-														<li><a class="dropdown-item text-manager" href="/portfolioList">포트폴리오 관리</a></li>
-													</th:block>
+
 													<li><hr class="dropdown-divider"></li>
 													<th:block th:if="${session.member != null}">
 														<th:block th:if="${session.member.socialType == 'none'}">

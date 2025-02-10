@@ -29,6 +29,9 @@ public class MainController {
 	@Autowired
 	private CommunityMapper communityMapper;
 
+	@Autowired
+	private  CommunityService communityService;
+
 	@GetMapping({"/", "/mainPage", "/main"})
 	public String mainPage(Model model) {
 		// 리뷰 리스트 초기화 (null이 되지 않도록)
@@ -55,6 +58,15 @@ public class MainController {
 		if (rList1 == null) rList1 = new ArrayList<>();
 		if (rList2 == null) rList2 = new ArrayList<>();
 
+		// 내용 처리
+		cList.forEach(community -> {
+			String content = community.getCommunityBoardContent();
+			// HTML 태그 제거 및 첫 줄만 추출
+			content = content.replaceAll("<[^>]*>", "")
+					.split("\n")[0];
+			community.setCommunityBoardContent(content);
+		});
+
 		model.addAttribute("rList1", rList1);
 		model.addAttribute("rList2", rList2);
 		model.addAttribute("proCount", proCount);
@@ -66,7 +78,7 @@ public class MainController {
 		return "views/mainPage";
 	}
 
-	@GetMapping("/loginForm")
+	@GetMapping({"/loginForm", "/login"})
 	public String loginForm(Model model) {
 		return "member/loginForm";
 	}

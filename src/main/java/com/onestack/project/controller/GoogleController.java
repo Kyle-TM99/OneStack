@@ -57,14 +57,26 @@ public class GoogleController {
                 model.addAttribute("googleEmail", email);
                 model.addAttribute("googleName", name);
                 model.addAttribute("googlePicture", picture);
-                return "/member/googleAddJoinForm";
+                return "member/googleAddJoinForm";
             } else {
                 // 기존 회원인 경우 로그인 처리
                 session.setAttribute("member", member);
                 session.setAttribute("isLogin", true);
+
+                Member memberPro = (Member) session.getAttribute("member");
+                if (memberPro != null) {
+                    int memberNo = memberPro.getMemberNo();
+                    int proNo = memberService.getProNo(memberNo);
+                    
+                    if (proNo > 0) {
+                        session.setAttribute("proNo", proNo);
+                    }
+                }
+
                 return "redirect:/mainPage";
             }
             
+
         } catch (Exception e) {
             log.error("Google 로그인 처리 중 오류 발생: {}", e.getMessage(), e);
             return "redirect:/loginForm?error=google";
@@ -99,6 +111,7 @@ public String logout(HttpServletRequest request, HttpServletResponse response) {
             member.setPass(encodedPassword);
             member.setSocial(true);
             member.setSocialType("google");
+            member.setMemberType(0);
             
             memberService.insertMember(member);
             

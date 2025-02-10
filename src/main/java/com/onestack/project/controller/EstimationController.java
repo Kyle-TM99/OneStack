@@ -4,11 +4,12 @@ import com.onestack.project.domain.ChatMessage;
 import com.onestack.project.domain.ChatRoom;
 import com.onestack.project.domain.Estimation;
 import com.onestack.project.domain.Member;
+import com.onestack.project.mapper.ProfessionalMapper;
 import com.onestack.project.service.MemberService;
 import com.onestack.project.service.ChatService;
+import com.onestack.project.service.ProfessionalService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ public class EstimationController {
     private final MemberService memberService;
     private final ChatService chatService;  // ChatService 주입
     private final SimpMessagingTemplate messagingTemplate;
+    private final ProfessionalMapper professionalMapper;
     
 
     // 견적 페이지
@@ -55,9 +57,11 @@ public class EstimationController {
         
         int startPage = (pageNum - 1) / pageGroup * pageGroup + 1;
         int endPage = Math.min(startPage + pageGroup - 1, pageCount);
-        
+
+        int proNo = memberService.getProNo(member.getMemberNo());
+
         // 현재 페이지의 견적 목록 조회
-        List<Estimation> estimations = memberService.getEstimationsByPage(member.getMemberNo(), pageNum, pageSize);
+        List<Estimation> estimations = memberService.getEstimationsByPage(proNo, pageNum, pageSize);
         
         // 페이지네이션 정보를 모델에 추가
         model.addAttribute("estimations", estimations);
@@ -117,7 +121,8 @@ public class EstimationController {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setRoomName(estimation.getMemberNickname() + " 님이 " + member.getNickname() + " 님에게 요청한 " + estimation.getCategoryName() + " 프로젝트");
             chatRoom.setMemberNo(estimation.getMemberNo());
-            chatRoom.setProNo(member.getMemberNo());
+            chatRoom.setProNo(memberService.getProNo(member.getMemberNo()));
+            chatRoom.setRoomAdmin(member.getMemberNo());
             chatRoom.setEstimationNo(estimationNo);
             
             String roomId = chatService.createRoom(chatRoom);
@@ -163,7 +168,7 @@ public class EstimationController {
                 systemMessage.setSender(pro.getMemberId());
                 systemMessage.setNickname(pro.getNickname());
                 systemMessage.setType("SYSTEM");
-                systemMessage.setMessage("전문가가 견적 요청을 수락하였습니다.");
+                systemMessage.setMessage("전문가 " + pro.getNickname() + " 님이 견적 요청을 수락하였습니다. " + member.getNickname() + " 님의 견적 확인 후 결제를 진행하실 수 있습니다.");
                 systemMessage.setSentAt(LocalDateTime.now());
 
                 // DB에 시스템 메시지 저장
@@ -183,7 +188,7 @@ public class EstimationController {
                 systemMessage.setSender(member.getMemberId());
                 systemMessage.setNickname(member.getNickname());
                 systemMessage.setType("SYSTEM");
-                systemMessage.setMessage("회원이 견적 요청을 수락하였습니다. 결제를 진행해주세요.");
+                systemMessage.setMessage(member.getNickname() + "님이 최종 견적을 확인하였습니다. 프로젝트 결제를 진행해주세요.");
                 systemMessage.setSentAt(LocalDateTime.now());
 
                 // DB에 시스템 메시지 저장
@@ -191,6 +196,9 @@ public class EstimationController {
 
                 // 시스템 메시지를 웹소켓으로 전송
                 messagingTemplate.convertAndSend("/topic/chat/room/" + roomId, systemMessage);
+
+                // 견적 상태 수정
+                memberService.updateEstimationProgress(estimationNo, 2);
                 
                 response.put("success", true);
             }
@@ -211,9 +219,9 @@ public class EstimationController {
         HttpSession session
     ) {
         Map<String, Object> response = new HashMap<>();
-        
         try {
             Member member = (Member) session.getAttribute("member");
+
             if (member == null) {
                 throw new RuntimeException("로그인이 필요합니다.");
             }
@@ -225,7 +233,7 @@ public class EstimationController {
             }
 
             // 권한 체크 (전문가만 수정 가능)
-            if (member.getMemberNo() != estimation.getProNo()) {
+            if (member.getMemberNo() != professionalMapper.getMemberNo(estimation.getProNo())) {
                 throw new RuntimeException("견적 금액 수정 권한이 없습니다.");
             }
 

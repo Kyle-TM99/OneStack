@@ -92,6 +92,18 @@ public class KakaoController {
                 log.info("Existing member found. Logging in...");
                 session.setAttribute("member", existingMember);
                 session.setAttribute("isLogin", true);
+
+                Member memberPro = (Member) session.getAttribute("member");
+                if (memberPro != null) {
+                    int memberNo = memberPro.getMemberNo();
+                    int proNo = memberService.getProNo(memberNo);
+                    
+                    if (proNo > 0) {
+                        session.setAttribute("proNo", proNo);
+                    }
+                }
+
+
                 return "redirect:/mainPage";
             } else {
                 // 5b. 신규 회원이면 추가 정보 입력 페이지로
@@ -247,5 +259,14 @@ public class KakaoController {
     @GetMapping("/additionalInfo")
     public String showAdditionalInfoForm(Model model) {
         return "member/additionalInfo";
+    }
+
+    @GetMapping("/login")
+    public String kakaoLogin() {
+        String kakaoAuthUrl = String.format(
+            "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s&scope=profile_nickname,profile_image&prompt=login consent",
+            CLIENT_ID, REDIRECT_URI
+        );
+        return "redirect:" + kakaoAuthUrl;
     }
 }

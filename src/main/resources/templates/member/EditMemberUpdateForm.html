@@ -26,8 +26,7 @@
                                              alt="프로필" id="previewImage" class="profile-image-container"
                                              style="width: 150px; height: 150px; border-radius: 15px; object-fit: cover;"
                                              onclick="document.getElementById('profileImage').click();"> <!-- 이미지 클릭 시 파일 선택 -->
-                                        <input type="file" id="profileImage" name="profileImage" class="d-none" accept="image/*"
-                                               onchange="previewImage(event)"> <!-- 파일 선택 후 미리보기 함수 호출 -->
+                                        <input type="file" id="profileImage" name="profileImage" class="d-none" accept="image/*">
                                     </div>
                                     <button type="button" class="btn btn-sm btn-edit-profile"
                                             onclick="document.getElementById('profileImage').click()"
@@ -192,8 +191,7 @@
 
 <th:block layout:fragment="script">
     <script th:src="@{/js/join.js}"></script>
-    <script th:src="@{/js/memberMyPage.js}"></script>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </th:block>
 </body>
 </html>

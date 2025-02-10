@@ -208,11 +208,7 @@ public class ProfessionalController {
             professionalService.saveProConversionData(request);
 
             return ResponseEntity.ok(Collections.singletonMap("message", "전문가 신청이 완료되었습니다."));
-        } catch (IllegalStateException e) {
-            // 같은 itemNo를 선택한 전문가가 있을 경우 409 Conflict 반환
-            log.warn("중복된 itemNo: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Collections.singletonMap("message", "이미 같은 전문 분야를 선택한 전문가가 존재합니다."));
+
         } catch (Exception e) {
             log.error("전문가 데이터 저장 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -313,6 +309,7 @@ public class ProfessionalController {
             log.warn("🚨 세션에 로그인된 회원이 없습니다. 로그인 페이지로 리다이렉트");
             return "redirect:/loginForm";
         }
+
         log.info("✅ 로그인된 회원 - memberNo: {}", member.getMemberNo());
 
         // ✅ 기존 포트폴리오, 전문가, 전문가 고급정보 가져오기

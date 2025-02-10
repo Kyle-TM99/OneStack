@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<body xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/main_layout}">
 
 <head>
 	<link th:href="@{/css/joinForm.css}" rel="stylesheet">
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
-
 <body>
-<div layout:fragment="content" class="d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+<div layout:fragment="content"
+	class="d-flex align-items-center justify-content-center"
+	style="min-height: 90vh;">
 	<div class="d-flex align-items-center justify-content-center vh-80">
 		<div class="container">
 			<h3 class="fw-bold mt-5 text-center">추가 정보 기입</h3>
@@ -38,13 +41,11 @@
 							<label class="fw-bold">&nbsp;성별 *</label>
 							<div class="d-flex mb-2">
 								<div class="form-check me-4">
-									<input class="form-check-input" type="radio" name="gender" id="male" value="male"
-										required>
+									<input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
 									<label class="form-check-label" for="male">남성</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="gender" id="female"
-										value="female" required>
+									<input class="form-check-input" type="radio" name="gender" id="female" value="female" required>
 									<label class="form-check-label" for="female">여성</label>
 								</div>
 							</div>
@@ -59,8 +60,7 @@
 						</div>
 						<div class="mb-3 ms-1">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent"
-									checked>
+								<input class="form-check-input" type="checkbox" id="emailConsent" name="emailConsent" checked>
 								<label class="form-check-label" for="emailConsent">이메일 수신에 동의합니다.</label>
 							</div>
 						</div>

@@ -208,8 +208,10 @@
                                         <strong>견적 금액:</strong>
                                         <span id="estimationPrice" th:text="${#numbers.formatDecimal(estimation.estimationPrice, 0, 'COMMA', 0, 'POINT')}"></span>원
                                         <!-- 전문가만 수정 가능하도록 -->
-                                        <th:block th:if="${session.member.memberNo == room.roomAdmin}">
+                                        <th:block th:if="${session.proNo == room.roomAdmin}">
+                                            <th:block th:if="${estimation.progress == 2 || estimation.progress == 1}">
                                             <i class="bi bi-pencil-square" onclick="togglePriceEdit()" style="cursor: pointer; margin-left: 5px;"></i>
+                                            </th:block>
                                         </th:block>
                                     </p>
                                     <!-- 금액 수정 폼 (기본적으로 숨김) -->
@@ -246,7 +248,7 @@
                     </div>
                     <div class="modal-footer">
                         <!-- 전문가일 경우 견적 확인 버튼 표시 -->
-                        <th:block th:if="${session.member.memberNo == estimation.proNo}">
+                        <th:block th:if="${session.proNo == estimation.proNo}">
                             <button th:if="${estimation.estimationCheck == 0}"
                                     type="button"
                                     class="btn btn-primary"
@@ -483,6 +485,14 @@
             const destination = `/topic/chat/room/${roomId}`;
             ws.subscribe(destination, function(message) {
                 var recv = JSON.parse(message.body);
+                
+                // 시스템 메시지인 경우 페이지 새로고침
+                if (recv.type === 'SYSTEM') {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500); // 메시지를 잠깐 보여주기 위해 0.5초 후 새로고침
+                }
+                
                 displayMessage(recv);
             });
 

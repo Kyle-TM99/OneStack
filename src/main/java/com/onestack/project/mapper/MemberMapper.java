@@ -113,4 +113,6 @@ public interface MemberMapper {
 	// 완료된 외주 수 조회
 	int getMainEstimationCount();
 
+	// 전문가 번호 조회
+	Integer getProNo(@Param("memberNo") int memberNo);
 }

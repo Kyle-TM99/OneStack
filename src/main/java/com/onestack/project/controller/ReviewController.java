@@ -39,6 +39,7 @@ public class ReviewController {
     @Autowired
     private ProService proService;
 
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> createReview(@RequestBody Review review) {
         Map<String, Object> response = new HashMap<>();
@@ -83,6 +84,10 @@ public class ReviewController {
 
             // 전문가 리뷰 수 증가
             reviewService.increaseReviewCount(review.getProNo());
+
+            // 견적 상태 수정
+            memberService.updateEstimationProgress(review.getEstimationNo(), 4);
+
 
 
 
