@@ -2814,7 +2814,7 @@ INSERT IGNORE INTO Reports (member_no, reported_member_no, reports_type, reports
 (178, 239, 'member', '기타', 'https://example.com/member/823', '기타 부적절한 내용', 1, NOW()),
 (51, 370, 'member', '기타', 'https://example.com/member/737', '기타 부적절한 내용', 1, NOW()),
 (424, 415, 'reply', '기타', 'https://example.com/reply/538', '기타 부적절한 내용', 0, NOW()),
-(65, 499, 'review', '기타', 'https://example.com/review/197', '기타 부적절한 내용', 0, NOW()),Quotation
+(65, 499, 'review', '기타', 'https://example.com/review/197', '기타 부적절한 내용', 0, NOW()),
 (388, 249, 'community', '기타', 'https://example.com/community/448', '기타 부적절한 내용', 1, NOW()),
 (24, 182, 'community', '스팸', 'https://example.com/community/534', '무의미한 반복 문자', 0, NOW()),
 (355, 345, 'community', '욕설', 'https://example.com/community/820', '비하 및 욕설 포함', 0, NOW()),
