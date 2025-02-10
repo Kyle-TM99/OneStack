@@ -46,7 +46,7 @@
 		}
 
 		.category-box .overlay {
-			background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+			background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
 			position: absolute;
 			bottom: 0;
 			left: 0;
@@ -57,7 +57,7 @@
 		.card {
 			border: none;
 			border-radius: 15px;
-			box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 			transition: transform 0.3s ease;
 		}
 
@@ -73,7 +73,7 @@
 
 		.expert-box:hover {
 			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 		}
 
 		.badge {
@@ -132,9 +132,15 @@
 		}
 
 		@keyframes float {
-			0% { transform: translateY(0px); }
-			50% { transform: translateY(-10px); }
-			100% { transform: translateY(0px); }
+			0% {
+				transform: translateY(0px);
+			}
+			50% {
+				transform: translateY(-10px);
+			}
+			100% {
+				transform: translateY(0px);
+			}
 		}
 
 		.btn-lg {
@@ -161,6 +167,28 @@
 			.row.mt-5 {
 				max-width: 400px;
 				margin: 2rem auto;
+			}
+
+			/* Community */
+			.content-preview {
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				max-height: 1.5em;
+				line-height: 1.5em;
+				color: #666;
+				font-size: 0.9rem;
+			}
+
+			.community-box {
+				min-height: 120px;
+				transition: transform 0.2s ease;
+			}
+
+			.community-box:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 			}
 		}
 	</style>
@@ -206,13 +234,16 @@
 				<div class="col-lg-6 position-relative">
 					<div class="position-relative">
 						<!-- 떠다니는 아이콘들 -->
-						<div class="position-absolute" style="top: 10%; left: 10%; animation: float 3s ease-in-out infinite;">
+						<div class="position-absolute"
+							 style="top: 10%; left: 10%; animation: float 3s ease-in-out infinite;">
 							<i class="bi bi-code-square text-primary" style="font-size: 2.5rem;"></i>
 						</div>
-						<div class="position-absolute" style="top: 20%; right: 15%; animation: float 4s ease-in-out infinite;">
+						<div class="position-absolute"
+							 style="top: 20%; right: 15%; animation: float 4s ease-in-out infinite;">
 							<i class="bi bi-laptop text-success" style="font-size: 2rem;"></i>
 						</div>
-						<div class="position-absolute" style="bottom: 15%; left: 20%; animation: float 3.5s ease-in-out infinite;">
+						<div class="position-absolute"
+							 style="bottom: 15%; left: 20%; animation: float 3.5s ease-in-out infinite;">
 							<i class="bi bi-phone text-info" style="font-size: 2rem;"></i>
 						</div>
 					</div>
@@ -295,19 +326,22 @@
 	</section>
 
 
-	<!-- Review Section -->
-	<div th:unless="${rList1 != null and rList2 != null and !rList1.isEmpty() and !rList2.isEmpty()}"
-		 class="text-center py-5">
-		<p>등록된 리뷰가 없습니다.</p>
-	</div>
+	<section class="py-5">
+		<div class="container">
+			<h3 class="section-title">Best Review</h3>
+			<div id="reviewCarousel" class="carousel slide"
+				 data-bs-ride="carousel">
+				<div class="carousel-inner">
 
-	<div th:if="${rList1 != null and !rList1.isEmpty()}" class="review-container">
-		<section class="py-5">
-			<div class="container">
-				<h3 class="section-title">Best Review</h3>
-				<div id="reviewCarousel" class="carousel slide"
-					 data-bs-ride="carousel">
-					<div class="carousel-inner">
+					<!-- Review Section -->
+					<div th:unless="${rList1 != null and rList2 != null and !rList1.isEmpty() and !rList2.isEmpty()}"
+						 class="text-center py-5">
+						<p>등록된 리뷰가 없습니다.</p>
+					</div>
+
+					<div th:if="${rList1 != null and rList2 != null and !rList1.isEmpty() and !rList2.isEmpty()}"
+						 class="review-container">
+
 
 						<!-- 리뷰 섹터 1 -->
 						<div class="carousel-item active">
@@ -320,11 +354,12 @@
 												<p class="card-text">[[${review.reviewContent}]]</p>
 												<p class="card-text text-muted">작성자 : [[${review.memberNickname}]]</p>
 												<div class="d-flex justify-content-between">
-														<span class="text-warning">
-															<th:block th:each="i : ${#numbers.sequence(1, review.reviewRate)}">
-																⭐️
-															</th:block>
-														</span>
+                                          <span class="text-warning">
+                                             <th:block
+													 th:each="i : ${#numbers.sequence(1, review.reviewRate)}">
+                                                ⭐️
+                                             </th:block>
+                                          </span>
 												</div>
 											</div>
 										</div>
@@ -344,11 +379,12 @@
 												<p class="card-text">[[${review.reviewContent}]]</p>
 												<p class="card-text text-muted">작성자 : [[${review.memberNickname}]]</p>
 												<div class="d-flex justify-content-between">
-														<span class="text-warning">
-															<th:block th:each="i : ${#numbers.sequence(1, review.reviewRate)}">
-																⭐️
-															</th:block>
-														</span>
+                                          <span class="text-warning">
+                                             <th:block
+													 th:each="i : ${#numbers.sequence(1, review.reviewRate)}">
+                                                ⭐️
+                                             </th:block>
+                                          </span>
 												</div>
 											</div>
 										</div>
@@ -358,20 +394,21 @@
 						</div>
 
 					</div>
-					<button class="carousel-control-prev" type="button"
+					<button class="carousel-control-prev ms-3" type="button"
 							data-bs-target="#reviewCarousel" data-bs-slide="prev">
 						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 						<span class="visually-hidden">Previous</span>
 					</button>
-					<button class="carousel-control-next" type="button"
+					<button class="carousel-control-next me-3" type="button"
 							data-bs-target="#reviewCarousel" data-bs-slide="next">
 						<span class="carousel-control-next-icon" aria-hidden="true"></span>
 						<span class="visually-hidden">Next</span>
 					</button>
 				</div>
 			</div>
-		</section>
-	</div>
+		</div>
+	</section>
+
 
 	<!-- Community -->
 	<section class="py-5">
@@ -396,33 +433,34 @@
 												<i class="bi bi-file-text me-2 text-primary"></i>
 												[[${commu.communityBoardTitle}]]
 											</h5>
-											<p class="text-muted mb-3">[[${commu.communityBoardContent}]]</p>
+											<div class="content-preview" th:text="${#strings.abbreviate(commu.communityBoardContent, 100)}" style="color: gray">
+											</div>
 										</div>
 
 										<!-- 하단 정보 영역 -->
 										<div class="row border-top pt-3">
 											<!-- 좋아요/싫어요 -->
 											<div class="col-3 d-flex gap-4 justify-content-start">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-heart-fill me-1 text-danger"></i>
+                        <span class="text-muted">[[${commu.communityBoardLike}]]</span>
+                    </span>
 												<span class="d-flex align-items-center">
-													<i class="bi bi-heart-fill me-1 text-danger"></i>
-													<span class="text-muted">[[${commu.communityBoardLike}]]</span>
-												</span>
-												<span class="d-flex align-items-center">
-													<i class="bi bi-hand-thumbs-down-fill me-1 text-secondary"></i>
-													<span class="text-muted">[[${commu.communityBoardDislike}]]</span>
-												</span>
+                        <i class="bi bi-hand-thumbs-down-fill me-1 text-secondary"></i>
+                        <span class="text-muted">[[${commu.communityBoardDislike}]]</span>
+                    </span>
 											</div>
 											<div class="col-6"></div>
 											<!-- 조회수/댓글수 -->
 											<div class="col-3 d-flex gap-4 justify-content-end">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-eye-fill me-1 text-secondary"></i>
+                        <span class="text-muted">[[${commu.communityView}]]</span>
+                    </span>
 												<span class="d-flex align-items-center">
-													<i class="bi bi-eye-fill me-1 text-secondary"></i>
-													<span class="text-muted">[[${commu.communityView}]]</span>
-												</span>
-												<span class="d-flex align-items-center">
-													<i class="bi bi-chat-fill me-1 text-primary"></i>
-													<span class="text-muted">[[${commu.communityReplyCount}]]</span>
-												</span>
+                        <i class="bi bi-chat-fill me-1 text-primary"></i>
+                        <span class="text-muted">[[${commu.communityReplyCount}]]</span>
+                    </span>
 											</div>
 										</div>
 									</div>
@@ -450,38 +488,38 @@
 						전문가 전환하기
 					</button>
 
-						<button class="custom-button"
-								th:if="${session.member != null and session.member.memberType == 0}"
-								th:onclick="|location.href='/proConversion'|">
-							전문가 전환하기
-						</button>
-						<button class="custom-button"
-								th:if="${session.member != null and session.member.memberType == 1 and session.member.isAdmin != true}"
-								th:onclick="alert('전문가로 이미 등록되어 있습니다. 더 많은 기회를 찾아보세요!')">
-							전문가 전환하기
-						</button>
-						<button class="custom-button"
-								th:if="${session.member != null and session.member.memberType == 2 and session.member.isAdmin != true}"
-								th:onclick="alert('심사 중입니다.')">
-							전문가 전환하기
-						</button>
-						<button class="custom-button"
-								th:if="${session.member != null and session.member.isAdmin == true}"
-								th:onclick="alert('관리자는 전문가 등록 심사를 할 수 없습니다.')">
-							전문가 전환하기
-						</button>
-					</div>
-					<div class="col-lg-6">
-						<div class="col-12 mb-3">
-							<div class="card">
-								<div class="body">
-									<div class="text m-3">
-										<div class="title" style="font-weight: bold;">협업 관리 도구</div>
-										<p class="body-text-for">회원과 매칭된 후 협의된 사항을 관리해보세요!</p>
-									</div>
+					<button class="custom-button"
+							th:if="${session.member != null and session.member.memberType == 0 and session.member.isAdmin != true}"
+							th:onclick="|location.href='/proConversion'|">
+						전문가 전환하기
+					</button>
+					<button class="custom-button"
+							th:if="${session.member != null and session.member.memberType == 1 and session.member.isAdmin != true}"
+							th:onclick="alert('전문가로 이미 등록되어 있습니다. 더 많은 기회를 찾아보세요!')">
+						전문가 전환하기
+					</button>
+					<button class="custom-button"
+							th:if="${session.member != null and session.member.memberType == 2 and session.member.isAdmin != true}"
+							th:onclick="alert('심사 중입니다.')">
+						전문가 전환하기
+					</button>
+					<button class="custom-button"
+							th:if="${session.member != null and session.member.isAdmin == true}"
+							th:onclick="alert('관리자는 전문가 등록 심사를 할 수 없습니다.')">
+						전문가 전환하기
+					</button>
+				</div>
+				<div class="col-lg-6">
+					<div class="col-12 mb-3">
+						<div class="card">
+							<div class="body">
+								<div class="text m-3">
+									<div class="title" style="font-weight: bold;">협업 관리 도구</div>
+									<p class="body-text-for">회원과 매칭된 후 협의된 사항을 관리해보세요!</p>
 								</div>
 							</div>
 						</div>
+					</div>
 
 					<div class="col-12 mb-3">
 						<div class="card">
@@ -512,6 +550,27 @@
 </th:block>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+
+		function stripHtmlAndGetFirstLine(html) {
+// HTML 태그 제거
+			let temp = document.createElement('div');
+			temp.innerHTML = html;
+			let text = temp.textContent || temp.innerText;
+
+// 첫 줄만 반환
+			let lines = text.split('\n');
+			return lines[0];
+		}
+
+// 모든 content-preview 요소에 대해 처리
+		document.querySelectorAll('.content-preview').forEach(function(element) {
+			let content = element.innerHTML;
+			element.textContent = stripHtmlAndGetFirstLine(content);
+		});
+	});
+</script>
 </body>
 
 </html>

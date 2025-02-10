@@ -543,7 +543,7 @@
 	<select id="getMainEstimationCount">
 		SELECT COUNT(*)
 		FROM Estimation
-		WHERE progress = 4
+		WHERE progress = 4 AND progress = 3
 	</select>
 	
 </mapper>
