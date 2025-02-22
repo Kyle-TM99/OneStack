@@ -1,7 +1,7 @@
 # 🛠 OneStack - IT 전문가 매칭 플랫폼
 
 <p align="center">
-  <img src="https://www.onestack.store/images/onestack.png" alt="OneStack Logo" width="300">
+  <img src="https://www.onestack.store/images/onestack.png" alt="OneStack Logo" width="200">
 </p>
 
 ## 📌 프로젝트 소개
