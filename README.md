@@ -126,4 +126,3 @@ D -->|CI/CD| C
 ## 🔗 링크
 
 - [서비스 링크](https://www.onestack.store)
-- [API 문서](https://api.onestack.store/docs)
