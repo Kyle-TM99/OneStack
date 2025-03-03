@@ -121,7 +121,7 @@ D -->|CI/CD| C
 ## 🖥️ 자료
 - [기획 자료](https://pids.tistory.com/235)
 - [OAuth2 로그인](https://pids.tistory.com/240)
-
+- [JavaMailSender](https://pids.tistory.com/241)
 
 ## 📝 라이센스
 
